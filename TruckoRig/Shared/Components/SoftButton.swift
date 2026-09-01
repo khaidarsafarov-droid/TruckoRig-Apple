@@ -45,39 +45,12 @@ struct SoftButton: View {
     }
 }
 
-/// Compact pill used for filters and week chips.
-struct SoftChip: View {
-    let title: String
-    var isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.appCaptionMedium)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(
-                    isSelected ? Color.forestPrimary : Color.forestSurfaceMuted,
-                    in: Capsule()
-                )
-                .foregroundStyle(isSelected ? Color.forestOnPrimary : Color.forestTextSecondary)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
-    }
-}
-
 #Preview {
     VStack(spacing: Spacing.standard) {
         SoftButton(title: "journal.addLoad", systemImage: "plus", action: {})
         SoftButton(title: "action.save", isLoading: true, action: {})
         SoftButton(title: "action.cancel", role: .secondary, action: {})
         SoftButton(title: "action.delete", role: .destructive, action: {})
-        HStack {
-            SoftChip(title: "W32", isSelected: true, action: {})
-            SoftChip(title: "W31", isSelected: false, action: {})
-        }
     }
     .padding()
     .forestBackground()

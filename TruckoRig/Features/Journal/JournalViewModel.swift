@@ -6,13 +6,14 @@ import SwiftUI
 struct JournalSection: Identifiable {
     let week: WeekRef
     let label: String
+    /// `"August 2025"`, set only on the first week of each month so the list reads
+    /// year → month → week without nested sections.
+    let monthMarker: String?
     let loads: [Load]
 
     var id: WeekRef { week }
 
     var totals: LoadTotals { LoadTotals.of(loads.map(\.summary)) }
-    /// Shown on the header when the week starts a new year.
-    var yearLabel: String { String(week.year) }
 }
 
 /// Search, filtering and week grouping for the journal.
@@ -48,15 +49,16 @@ final class JournalViewModel {
         let filtered = loads.filter(matches)
         let grouped = Dictionary(grouping: filtered) { WeekRef(weekNumber: $0.weekNumber, year: $0.year) }
 
-        return grouped
-            .map { ref, loads in
-                JournalSection(
-                    week: ref,
-                    label: formatter.label(for: ref),
-                    loads: loads.sorted { $0.date > $1.date }
-                )
-            }
-            .sorted { $0.week > $1.week }
+        let orderedWeeks = grouped.keys.sorted(by: >)
+        return orderedWeeks.enumerated().map { index, ref in
+            let previous = index > 0 ? orderedWeeks[index - 1] : nil
+            return JournalSection(
+                week: ref,
+                label: formatter.label(for: ref),
+                monthMarker: formatter.monthMarker(for: ref, after: previous),
+                loads: (grouped[ref] ?? []).sorted { $0.date > $1.date }
+            )
+        }
     }
 
     func matches(_ load: Load) -> Bool {

@@ -31,6 +31,7 @@
 		9ACBDD71D83EA113854A7C6C /* APIClient.swift */ = {isa = PBXBuildFile; fileRef = 7C963BCE8BE3476742231F26 /* APIClient.swift */; };
 		1819A670F4D30D1CDD974DBE /* Endpoints.swift */ = {isa = PBXBuildFile; fileRef = B15674A76D43E6723917FB14 /* Endpoints.swift */; };
 		C051A58112A1DECC3BC060AB /* JWTStore.swift */ = {isa = PBXBuildFile; fileRef = C64F1A5EF3A36F95B250918B /* JWTStore.swift */; };
+		4C22070BD4DCF1F41134CA88 /* MediaUploader.swift */ = {isa = PBXBuildFile; fileRef = 290569E3E9AF1B6B97374B96 /* MediaUploader.swift */; };
 		6B256DF095C108AE77277690 /* SyncEngine.swift */ = {isa = PBXBuildFile; fileRef = 07364B34ECC4DC8F8BD82311 /* SyncEngine.swift */; };
 		01CB12AE511E643CA54BD0CF /* SyncModels.swift */ = {isa = PBXBuildFile; fileRef = 981B58B76D5BA1FA50B20F9D /* SyncModels.swift */; };
 		512D6791792E4032E227341D /* AccountScopedContainer.swift */ = {isa = PBXBuildFile; fileRef = 4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */; };
@@ -177,6 +178,7 @@
 		7C963BCE8BE3476742231F26 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIClient.swift"; sourceTree = "<group>"; };
 		B15674A76D43E6723917FB14 /* Endpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Endpoints.swift"; sourceTree = "<group>"; };
 		C64F1A5EF3A36F95B250918B /* JWTStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JWTStore.swift"; sourceTree = "<group>"; };
+		290569E3E9AF1B6B97374B96 /* MediaUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaUploader.swift"; sourceTree = "<group>"; };
 		07364B34ECC4DC8F8BD82311 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncEngine.swift"; sourceTree = "<group>"; };
 		981B58B76D5BA1FA50B20F9D /* SyncModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncModels.swift"; sourceTree = "<group>"; };
 		4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountScopedContainer.swift"; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 				7C963BCE8BE3476742231F26 /* APIClient.swift */,
 				B15674A76D43E6723917FB14 /* Endpoints.swift */,
 				C64F1A5EF3A36F95B250918B /* JWTStore.swift */,
+				290569E3E9AF1B6B97374B96 /* MediaUploader.swift */,
 				07364B34ECC4DC8F8BD82311 /* SyncEngine.swift */,
 				981B58B76D5BA1FA50B20F9D /* SyncModels.swift */,
 			);
@@ -827,6 +830,7 @@
 				9ACBDD71D83EA113854A7C6C /* APIClient.swift */,
 				1819A670F4D30D1CDD974DBE /* Endpoints.swift */,
 				C051A58112A1DECC3BC060AB /* JWTStore.swift */,
+				4C22070BD4DCF1F41134CA88 /* MediaUploader.swift */,
 				6B256DF095C108AE77277690 /* SyncEngine.swift */,
 				01CB12AE511E643CA54BD0CF /* SyncModels.swift */,
 				512D6791792E4032E227341D /* AccountScopedContainer.swift */,
@@ -1000,7 +1004,6 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TruckoRig/Resources/Info.plist;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1023,7 +1026,6 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TruckoRig/Resources/Info.plist;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

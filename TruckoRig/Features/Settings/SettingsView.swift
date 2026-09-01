@@ -64,6 +64,7 @@ struct SettingsView: View {
                     }
                 }
                 syncStatusRow
+                pendingChangesRows
                 Button("settings.sync.now") {
                     Task { await appState.sync.syncNow() }
                 }
@@ -137,6 +138,24 @@ struct SettingsView: View {
             Label(message, systemImage: "exclamationmark.triangle")
                 .font(.appCaption)
                 .foregroundStyle(Color.forestError)
+        }
+    }
+
+    /// Why sync is behind, in the driver's own terms: how much is queued, since when, and what
+    /// the server said the last time it was tried.
+    @ViewBuilder
+    private var pendingChangesRows: some View {
+        let pending = appState.sync.pending
+        if pending.count > 0 {
+            LabeledContent("settings.sync.pendingChanges", value: "\(pending.count)")
+            if let oldest = pending.oldest {
+                LabeledContent("settings.sync.oldestChange", value: DateUtils.dateTime(oldest))
+            }
+            if let lastError = pending.lastError {
+                Text("settings.sync.lastError \(lastError)")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestError)
+            }
         }
     }
 

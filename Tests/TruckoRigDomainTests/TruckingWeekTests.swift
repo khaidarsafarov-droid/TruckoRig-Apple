@@ -71,4 +71,33 @@ final class TruckingWeekTests: XCTestCase {
 
         XCTAssertEqual(formatter.label(for: ref), "Aug 3 – Aug 9, 2025")
     }
+
+    func testMonthLabelFollowsMidweekNotTheFirstDay() {
+        let formatter = WeekLabelFormatter(week: week, locale: Locale(identifier: "en_US"))
+        // Sun Aug 31 – Sat Sep 6, 2025: six of its seven days are September.
+        let straddling = week.week(for: makeDate(2025, 9, 2))
+
+        XCTAssertEqual(formatter.monthLabel(for: straddling), "September 2025")
+        XCTAssertEqual(formatter.monthLabel(for: week.week(for: makeDate(2025, 8, 6))), "August 2025")
+    }
+
+    func testMonthMarkerOnlyAppearsOnTheFirstWeekOfAMonth() {
+        let formatter = WeekLabelFormatter(week: week, locale: Locale(identifier: "en_US"))
+        let first = week.week(for: makeDate(2025, 8, 6))
+        let second = week.week(for: makeDate(2025, 8, 13))
+        let nextMonth = week.week(for: makeDate(2025, 9, 10))
+
+        XCTAssertEqual(formatter.monthMarker(for: first, after: nil), "August 2025")
+        XCTAssertNil(formatter.monthMarker(for: second, after: first))
+        XCTAssertEqual(formatter.monthMarker(for: nextMonth, after: second), "September 2025")
+    }
+
+    func testMonthMarkerCrossesTheYearBoundary() {
+        let formatter = WeekLabelFormatter(week: week, locale: Locale(identifier: "en_US"))
+        let december = week.week(for: makeDate(2025, 12, 17))
+        let january = week.week(for: makeDate(2026, 1, 7))
+
+        XCTAssertEqual(formatter.monthLabel(for: december), "December 2025")
+        XCTAssertEqual(formatter.monthMarker(for: january, after: december), "January 2026")
+    }
 }

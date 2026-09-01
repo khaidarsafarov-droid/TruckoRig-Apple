@@ -47,40 +47,12 @@ enum DateUtils {
         string(date, template: "MMMdjm", locale: locale)
     }
 
-    static func time(_ date: Date, locale: Locale = .current) -> String {
-        string(date, template: "jm", locale: locale)
-    }
-
     /// `2025-08-06`, for exports and file names.
     static func isoDay(_ date: Date, timeZone: TimeZone = .current) -> String {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
         let parts = calendar.dateComponents([.year, .month, .day], from: date)
         return String(format: "%04d-%02d-%02d", parts.year ?? 0, parts.month ?? 0, parts.day ?? 0)
-    }
-
-    static func parseISODay(_ text: String, timeZone: TimeZone = .current) -> Date? {
-        let parts = text.prefix(10).split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3 else { return nil }
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = timeZone
-        var components = DateComponents()
-        components.year = parts[0]
-        components.month = parts[1]
-        components.day = parts[2]
-        components.hour = 12
-        return calendar.date(from: components)
-    }
-
-    /// `Today` / `Yesterday` / `Aug 6`.
-    static func relativeDay(_ date: Date, now: Date = Date(), locale: Locale = .current) -> String {
-        let calendar = Calendar.current
-        if calendar.isDate(date, inSameDayAs: now) { return String(localized: "date.today") }
-        if let yesterday = calendar.date(byAdding: .day, value: -1, to: now),
-           calendar.isDate(date, inSameDayAs: yesterday) {
-            return String(localized: "date.yesterday")
-        }
-        return shortDay(date, locale: locale)
     }
 
     /// `2 days` / `1 day`, for load durations.

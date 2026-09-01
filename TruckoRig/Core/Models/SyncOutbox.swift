@@ -54,10 +54,4 @@ final class SyncOutbox {
         self.lastError = lastError
     }
 
-    /// Exponential backoff, capped so a permanently failing row still retries once an hour.
-    func nextAttemptDate() -> Date {
-        guard let lastAttemptAt else { return timestamp }
-        let delay = min(3600, pow(2, Double(min(retryCount, 12))) * 5)
-        return lastAttemptAt.addingTimeInterval(delay)
-    }
 }

@@ -766,40 +766,6 @@
         }
       }
     },
-    "date.today": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Today"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сегодня"
-          }
-        }
-      }
-    },
-    "date.yesterday": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yesterday"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вчера"
-          }
-        }
-      }
-    },
     "diesel.add": {
       "extractionState": "manual",
       "localizations": {
@@ -2874,6 +2840,40 @@
         }
       }
     },
+    "media.error.missingFile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file is no longer on this phone"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Файла больше нет на телефоне"
+          }
+        }
+      }
+    },
+    "media.error.upload": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storage refused the upload"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Хранилище отклонило загрузку"
+          }
+        }
+      }
+    },
     "paycheck.add": {
       "extractionState": "manual",
       "localizations": {
@@ -4217,6 +4217,23 @@
         }
       }
     },
+    "settings.sync.lastError %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last attempt failed: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Последняя попытка не удалась: %@"
+          }
+        }
+      }
+    },
     "settings.sync.lastSynced": {
       "extractionState": "manual",
       "localizations": {
@@ -4264,6 +4281,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Синхронизировать сейчас"
+          }
+        }
+      }
+    },
+    "settings.sync.oldestChange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oldest change"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Самое старое изменение"
+          }
+        }
+      }
+    },
+    "settings.sync.pendingChanges": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting to sync"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ждут отправки"
           }
         }
       }

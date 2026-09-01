@@ -17,12 +17,14 @@ jobs:
         run: swift test
 
   project-file:
-    name: Xcode project file
+    name: Project file and strings
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Validate project.pbxproj
         run: python3 Tools/validate_pbxproj.py
+      - name: Validate the string catalog
+        run: python3 Tools/check_strings.py
       - name: Check the generator output is committed
         run: |
           python3 Tools/generate_xcodeproj.py

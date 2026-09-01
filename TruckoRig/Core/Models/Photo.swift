@@ -40,5 +40,4 @@ final class Photo {
     }
 
     var loadId: UUID? { load?.id }
-    var hasLocation: Bool { latitude != nil && longitude != nil }
 }

@@ -9,24 +9,10 @@ public enum RPMCalculator {
         return (rate / miles * 100).rounded() / 100
     }
 
-    public static func ratePerMile(_ load: LoadSummary) -> Double {
-        ratePerMile(rate: load.totalRate, miles: load.totalMiles)
-    }
-
     public static func band(for rpm: Double, thresholds: RPMThresholds = .default) -> RPMBand {
         guard rpm > 0 else { return .unknown }
         if rpm >= thresholds.targetProfit { return .good }
         if rpm >= thresholds.minProfit { return .acceptable }
         return .low
-    }
-
-    public static func band(for load: LoadSummary, thresholds: RPMThresholds = .default) -> RPMBand {
-        band(for: ratePerMile(load), thresholds: thresholds)
-    }
-
-    /// Fleet-level RPM: total gross over total miles, not an average of per-load RPMs.
-    public static func aggregateRatePerMile(_ loads: [LoadSummary]) -> Double {
-        let totals = LoadTotals.of(loads)
-        return ratePerMile(rate: totals.totalRate, miles: totals.totalMiles)
     }
 }

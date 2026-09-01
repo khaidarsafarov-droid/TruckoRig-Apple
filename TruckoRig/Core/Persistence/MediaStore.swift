@@ -86,12 +86,6 @@ struct MediaStore {
         try? FileManager.default.removeItem(at: url)
     }
 
-    func fileSize(of fileName: String, kind: Kind) -> Int {
-        guard let url = url(for: fileName, kind: kind),
-              let attributes = try? FileManager.default.attributesOfItem(atPath: url.path)
-        else { return 0 }
-        return (attributes[.size] as? Int) ?? 0
-    }
 }
 
 enum MediaStoreError: Error, LocalizedError {

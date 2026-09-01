@@ -67,24 +67,34 @@ struct LoadRowView: View {
     }
 }
 
-/// Week header with the week's gross, miles and load count.
+/// Week header with the week's gross, miles and load count, preceded by a month caption on the
+/// first week of each month.
 struct WeekHeaderView: View {
     let section: JournalSection
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(section.label)
-                    .font(.appCaptionMedium)
+        VStack(alignment: .leading, spacing: 6) {
+            if let monthMarker = section.monthMarker {
+                Text(monthMarker)
+                    .font(.appHeadline)
                     .foregroundStyle(Color.forestText)
-                Text("journal.week.summary \(section.loads.count) \(Formatters.miles(section.totals.totalMiles))")
-                    .font(.appCaption)
-                    .foregroundStyle(Color.forestTextSecondary)
+                    .padding(.top, 8)
             }
-            Spacer()
-            Text(Formatters.money(section.totals.totalRate))
-                .font(.appCaptionMedium)
-                .foregroundStyle(Color.forestPrimary)
+
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(section.label)
+                        .font(.appCaptionMedium)
+                        .foregroundStyle(Color.forestText)
+                    Text("journal.week.summary \(section.loads.count) \(Formatters.miles(section.totals.totalMiles))")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
+                Spacer()
+                Text(Formatters.money(section.totals.totalRate))
+                    .font(.appCaptionMedium)
+                    .foregroundStyle(Color.forestPrimary)
+            }
         }
         .textCase(nil)
         .padding(.vertical, 2)

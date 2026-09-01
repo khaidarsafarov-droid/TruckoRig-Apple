@@ -33,13 +33,6 @@ enum GeoUtils {
         return MKCoordinateRegion(center: center, span: span)
     }
 
-    /// Great-circle distance in miles.
-    static func miles(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) -> Double {
-        let start = CLLocation(latitude: from.latitude, longitude: from.longitude)
-        let end = CLLocation(latitude: to.latitude, longitude: to.longitude)
-        return start.distance(from: end) / 1609.344
-    }
-
     /// Geocodes a `"City, ST"` string. Used only when a stop has no coordinates of its own.
     static func geocode(cityState: String) async -> CLLocationCoordinate2D? {
         guard !cityState.trimmed.isEmpty else { return nil }

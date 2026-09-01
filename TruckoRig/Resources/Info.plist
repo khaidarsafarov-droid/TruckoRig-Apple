@@ -19,6 +19,12 @@
 		<string>DMSans-Bold.ttf</string>
 	</array>
 
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
+
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

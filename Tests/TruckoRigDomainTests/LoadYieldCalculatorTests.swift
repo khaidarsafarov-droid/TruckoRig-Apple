@@ -90,13 +90,13 @@ final class LoadYieldCalculatorTests: XCTestCase {
         XCTAssertEqual(RPMCalculator.band(for: 0), .unknown)
     }
 
-    func testAggregateRatePerMileUsesTotalsNotAnAverageOfRatios() {
-        let loads = [
+    func testTotalsRatePerMileUsesTotalsNotAnAverageOfRatios() {
+        let totals = LoadTotals.of([
             LoadSummary(totalRate: 1000, totalMiles: 200),
             LoadSummary(totalRate: 1000, totalMiles: 800),
-        ]
+        ])
 
-        XCTAssertEqual(RPMCalculator.aggregateRatePerMile(loads), 2.0, accuracy: 0.001)
+        XCTAssertEqual(totals.ratePerMile, 2.0, accuracy: 0.001)
     }
 
     func testThresholdValidation() {

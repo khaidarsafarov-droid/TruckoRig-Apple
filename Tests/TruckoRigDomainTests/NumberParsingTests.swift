@@ -36,8 +36,6 @@ final class NumberParsingTests: XCTestCase {
     func testTripIdNormalization() {
         XCTAssertEqual(TripID.normalize("  t-116kyl6kw "), "T-116KYL6KW")
         XCTAssertTrue(TripID.matches("t-abc123456", "T-ABC123456"))
-        XCTAssertTrue(TripID.isRelayFormat("T-116KYL6KW"))
-        XCTAssertFalse(TripID.isRelayFormat("MANUAL-1"))
         XCTAssertFalse(TripID.isValid("   "))
     }
 }

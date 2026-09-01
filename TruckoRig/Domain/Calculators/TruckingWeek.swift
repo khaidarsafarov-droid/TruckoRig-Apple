@@ -111,11 +111,6 @@ public struct TruckingWeek: Sendable {
         dateRange(of: week)?.contains(date) ?? false
     }
 
-    /// Noon on the first day of the week — a DST-safe anchor for week pickers.
-    public func anchorDate(of week: WeekRef) -> Date? {
-        startDate(of: week).flatMap { calendar.date(byAdding: .hour, value: 12, to: $0) }
-    }
-
     // MARK: - Day counts
 
     /// 1 on the first day of the week … 7 on the last.

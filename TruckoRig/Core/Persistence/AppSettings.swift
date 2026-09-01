@@ -21,7 +21,7 @@ final class AppSettings {
         self.syncBackendURL = Self.read(defaults, scope, .syncBackendURL, default: "")
         self.rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
         self.rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
-        self.hasCompletedWelcome = Self.read(defaults, scope, .hasCompletedWelcome, default: false)
+        self.lastSyncCursor = Self.read(defaults, scope, .lastSyncCursor, default: "")
     }
 
     // MARK: - Values
@@ -33,7 +33,8 @@ final class AppSettings {
     var syncBackendURL: String { didSet { write(.syncBackendURL, syncBackendURL) } }
     var rpmMinProfit: Double { didSet { write(.rpmMinProfit, rpmMinProfit) } }
     var rpmTargetProfit: Double { didSet { write(.rpmTargetProfit, rpmTargetProfit) } }
-    var hasCompletedWelcome: Bool { didSet { write(.hasCompletedWelcome, hasCompletedWelcome) } }
+    /// Last server change marker this device applied. Empty until the first successful pull.
+    var lastSyncCursor: String { didSet { write(.lastSyncCursor, lastSyncCursor) } }
 
     // MARK: - Derived
 
@@ -63,7 +64,7 @@ final class AppSettings {
         syncBackendURL = Self.read(defaults, scope, .syncBackendURL, default: "")
         rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
         rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
-        hasCompletedWelcome = Self.read(defaults, scope, .hasCompletedWelcome, default: false)
+        lastSyncCursor = Self.read(defaults, scope, .lastSyncCursor, default: "")
     }
 
     // MARK: - Storage
@@ -76,7 +77,7 @@ final class AppSettings {
         case syncBackendURL
         case rpmMinProfit
         case rpmTargetProfit
-        case hasCompletedWelcome
+        case lastSyncCursor
     }
 
     private static func storageKey(_ scope: AccountScope, _ key: Key) -> String {

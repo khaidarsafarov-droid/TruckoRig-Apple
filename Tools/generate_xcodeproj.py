@@ -454,7 +454,8 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "ENABLE_PREVIEWS": "YES",
             "GENERATE_INFOPLIST_FILE": "YES",
             "INFOPLIST_FILE": f"{APP_DIR}/Resources/Info.plist",
-            "INFOPLIST_KEY_UILaunchScreen_Generation": "YES",
+            # The launch screen is declared in Info.plist (a brand-coloured field); letting Xcode
+            # also generate one would write a duplicate UILaunchScreen key.
             "INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad":
                 '"UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown '
                 'UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"',

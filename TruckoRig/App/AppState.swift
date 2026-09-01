@@ -61,8 +61,6 @@ final class AppState {
     /// Whether the login screen should cover the app.
     var needsAuthentication: Bool { auth.session == nil }
 
-    var currentWeek: WeekRef { settings.truckingWeek.currentWeek() }
-
     /// Re-points settings, database and sync at the account that is now signed in.
     ///
     /// Called whenever the session changes; the container swap is what guarantees one driver never
@@ -71,7 +69,7 @@ final class AppState {
         let scope = auth.session?.scope ?? .local
         settings.rebind(to: scope)
         persistence.switchTo(scope)
-        sync.refreshPendingCount()
+        sync.refreshPending()
     }
 
     func bootstrap() async {
