@@ -12,7 +12,8 @@ enum OCRService {
     /// Languages tried, most likely first.
     static let languages = ["en-US", "ru-RU"]
 
-    struct Result {
+    /// Recognised text plus how sure Vision was about it.
+    struct Recognition {
         var text: String
         var averageConfidence: Double
     }
@@ -20,7 +21,7 @@ enum OCRService {
     /// Recognises text in `image`. Returns `nil` when nothing legible was found.
     ///
     /// Recognised text is never logged: scans routinely carry names, addresses and rates.
-    static func recognizeText(in image: UIImage) async -> Result? {
+    static func recognizeText(in image: UIImage) async -> Recognition? {
         guard let cgImage = image.cgImage else { return nil }
 
         return await withCheckedContinuation { continuation in
@@ -48,7 +49,7 @@ enum OCRService {
                     return
                 }
                 let average = confidences.reduce(0, +) / Double(confidences.count)
-                continuation.resume(returning: Result(text: lines.joined(separator: "\n"), averageConfidence: average))
+                continuation.resume(returning: Recognition(text: lines.joined(separator: "\n"), averageConfidence: average))
             }
 
             request.recognitionLevel = .accurate

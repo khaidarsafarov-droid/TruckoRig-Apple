@@ -1,0 +1,30 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  domain-tests:
+    name: Domain tests
+    runs-on: ubuntu-latest
+    # The domain layer is Foundation-only on purpose, so it can be tested without macOS runners.
+    container: swift:6.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: swift test
+        run: swift test
+
+  project-file:
+    name: Xcode project file
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate project.pbxproj
+        run: python3 Tools/validate_pbxproj.py
+      - name: Check the generator output is committed
+        run: |
+          python3 Tools/generate_xcodeproj.py
+          git diff --exit-code -- TruckoRig.xcodeproj \
+            || (echo "::error::TruckoRig.xcodeproj is stale — run python3 Tools/generate_xcodeproj.py" && exit 1)
