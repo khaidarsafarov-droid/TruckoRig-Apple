@@ -161,8 +161,9 @@ struct JournalView: View {
 }
 
 #Preview {
-    NavigationStack {
-        JournalView()
+    PreviewHost {
+        NavigationStack {
+            JournalView()
+        }
     }
-    .environment(AppState())
 }

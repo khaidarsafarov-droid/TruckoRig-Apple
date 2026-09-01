@@ -78,15 +78,6 @@ public struct LoadDraft: Equatable, Sendable {
         case nonPositiveRate
         case negativeMiles
         case finishBeforeStart
-
-        public var messageKey: String {
-            switch self {
-            case .missingTripId: return "load.error.tripId"
-            case .nonPositiveRate: return "load.error.rate"
-            case .negativeMiles: return "load.error.miles"
-            case .finishBeforeStart: return "load.error.finishDate"
-            }
-        }
     }
 
     public var validationErrors: [ValidationError] {

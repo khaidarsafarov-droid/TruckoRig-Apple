@@ -17,7 +17,7 @@ struct RoutePin: Identifiable, Hashable {
 /// Pickups and deliveries of a load, or of the most recent load when opened from the sidebar.
 struct RouteMapView: View {
 
-    var load: Load?
+    var load: Load? = nil
 
     @Environment(AppState.self) private var appState
     @Query(sort: \Load.date, order: .reverse) private var loads: [Load]

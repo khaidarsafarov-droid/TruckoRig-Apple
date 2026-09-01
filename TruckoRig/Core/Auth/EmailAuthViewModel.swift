@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 /// Form state for email sign-in and registration.
 @MainActor
@@ -12,10 +13,10 @@ final class EmailAuthViewModel {
 
         var id: String { rawValue }
 
-        var title: String {
+        var title: LocalizedStringKey {
             switch self {
-            case .signIn: return String(localized: "auth.signIn")
-            case .signUp: return String(localized: "auth.signUp")
+            case .signIn: return "auth.signIn"
+            case .signUp: return "auth.signUp"
             }
         }
     }

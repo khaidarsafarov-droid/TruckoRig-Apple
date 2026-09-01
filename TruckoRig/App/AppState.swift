@@ -110,6 +110,12 @@ final class AppState {
         WidgetBridge.publish(progress)
     }
 
+    /// Entry point for background refresh: sync, then refresh the widget.
+    func syncFromBackground() async {
+        await sync.syncNow()
+        publishWidgetSnapshot()
+    }
+
     /// Handles a silent `type=sync` push.
     func handleRemoteNotification(userInfo: [AnyHashable: Any]) async {
         guard userInfo["type"] as? String == "sync" else { return }

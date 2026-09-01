@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import UIKit
 import UniformTypeIdentifiers
 
 /// Language, week start, cloud sync, RPM bands and backup.
@@ -39,7 +40,7 @@ struct SettingsView: View {
                 SoftNumberField(title: "settings.rpm.min", value: $settings.rpmMinProfit)
                 SoftNumberField(title: "settings.rpm.target", value: $settings.rpmTargetProfit)
                 if let failure = settings.rpmThresholds.validationFailure {
-                    Text(thresholdMessage(failure))
+                    Text(failure.localizedMessage)
                         .font(.appCaption)
                         .foregroundStyle(Color.forestError)
                 }
@@ -148,13 +149,6 @@ struct SettingsView: View {
         let symbols = Calendar.current.weekdaySymbols
         let index = day.calendarWeekday - 1
         return symbols.indices.contains(index) ? symbols[index].capitalized : day.rawValue
-    }
-
-    private func thresholdMessage(_ failure: RPMThresholdError) -> LocalizedStringKey {
-        switch failure {
-        case .negative: return "settings.rpm.error.negative"
-        case .outOfOrder: return "settings.rpm.error.order"
-        }
     }
 
     private func exportBackup() {

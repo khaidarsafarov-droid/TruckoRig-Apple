@@ -7,8 +7,6 @@ struct RootView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        @Bindable var state = appState
-
         Group {
             if horizontalSizeClass == .regular {
                 SidebarView()
@@ -102,9 +100,7 @@ struct SidebarView: View {
     var body: some View {
         NavigationSplitView {
             List(SidebarItem.allCases, selection: $selection) { item in
-                NavigationLink(value: item) {
-                    Label(item.title, systemImage: item.systemImage)
-                }
+                Label(item.title, systemImage: item.systemImage)
             }
             .navigationTitle("app.name")
             .listStyle(.sidebar)

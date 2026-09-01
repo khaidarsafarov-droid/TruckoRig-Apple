@@ -12,7 +12,7 @@ extension PaceStatus {
         }
     }
 
-    var title: LocalizedStringResource {
+    var title: LocalizedStringKey {
         switch self {
         case .goalMet: return "goal.status.met"
         case .ahead: return "goal.status.ahead"

@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 /// Range and aggregation choices for the analytics screen.
 @Observable
@@ -12,7 +13,7 @@ final class AnalyticsViewModel {
 
         var id: Int { rawValue }
 
-        var title: LocalizedStringResource {
+        var title: LocalizedStringKey {
             switch self {
             case .fourWeeks: return "analytics.range.4"
             case .twelveWeeks: return "analytics.range.12"

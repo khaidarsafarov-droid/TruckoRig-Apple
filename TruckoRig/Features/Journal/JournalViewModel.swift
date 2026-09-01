@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 /// One week of loads in the journal list.
 struct JournalSection: Identifiable {
@@ -28,7 +29,7 @@ final class JournalViewModel {
 
         var id: String { rawValue }
 
-        var title: LocalizedStringResource {
+        var title: LocalizedStringKey {
             switch self {
             case .all: return "journal.filter.all"
             case .disputes: return "journal.filter.disputes"

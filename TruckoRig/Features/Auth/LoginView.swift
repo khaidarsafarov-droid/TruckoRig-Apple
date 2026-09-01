@@ -92,6 +92,7 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
-        .environment(AppState())
+    PreviewHost {
+        LoginView()
+    }
 }

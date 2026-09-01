@@ -130,5 +130,5 @@ struct StopRowView: View {
         scheduledTime: Date()
     )
 
-    return StopEditorView(stop: $stop)
+    StopEditorView(stop: $stop)
 }

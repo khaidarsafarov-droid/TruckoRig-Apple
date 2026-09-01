@@ -32,8 +32,7 @@ final class AddLoadViewModel {
 
         let results = AmazonRelayParser.parseAll(relayText, reference: now)
         guard let first = results.first else {
-            let failure = AmazonRelayParser.diagnose(relayText)
-            errorMessage = String(localized: String.LocalizationValue(failure.messageKey))
+            errorMessage = AmazonRelayParser.diagnose(relayText).localizedMessage
             return
         }
 

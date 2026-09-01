@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Labelled text field with the soft-UI treatment and a focus ring.
 struct SoftTextField: View {
@@ -99,10 +100,10 @@ struct SoftNumberField: View {
     @Previewable @State var text = ""
     @Previewable @State var amount: Double = 2500
 
-    return VStack(spacing: Spacing.standard) {
+    VStack(spacing: Spacing.standard) {
         SoftTextField(title: "load.tripId", text: $text, placeholder: "T-116KYL6KW", autocapitalization: .characters)
         SoftNumberField(title: "load.totalRate", value: $amount)
-        SoftTextField(title: "auth.password", text: $text, isSecure: true, errorMessage: "auth.error.password")
+        SoftTextField(title: "auth.password", text: $text, isSecure: true)
     }
     .padding()
     .forestBackground()

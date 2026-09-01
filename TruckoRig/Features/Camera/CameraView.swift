@@ -5,7 +5,7 @@ import UIKit
 /// Takes a geotagged photo and attaches it to a load.
 struct CameraView: View {
 
-    var load: Load?
+    var load: Load? = nil
 
     @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var modelContext

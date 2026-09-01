@@ -17,11 +17,15 @@ struct TruckoRigApp: App {
                 .task {
                     appDelegate.appState = appState
                     await appState.bootstrap()
+                    await BackgroundSync.schedule()
+                    if appState.sync.isConfigured {
+                        await appDelegate.requestPushAuthorization()
+                    }
                 }
         }
         .backgroundTask(.appRefresh(BackgroundSync.taskIdentifier)) {
             await BackgroundSync.schedule()
-            await appState.sync.syncNow()
+            await appState.syncFromBackground()
         }
     }
 

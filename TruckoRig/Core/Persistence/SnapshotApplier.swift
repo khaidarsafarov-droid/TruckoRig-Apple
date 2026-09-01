@@ -276,7 +276,7 @@ enum SnapshotApplier {
         report: inout Report,
         make: (DTO) -> Model,
         update: (Model, DTO) -> Void
-    ) throws {
+    ) {
         let index = Dictionary(local.map { ($0[keyPath: localId], $0) }, uniquingKeysWith: { first, _ in first })
         for dto in remote {
             guard let existing = index[dto[keyPath: id]] else {

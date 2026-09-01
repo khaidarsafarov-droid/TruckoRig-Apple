@@ -74,7 +74,14 @@ struct AnalyticsView: View {
                     }
                 }
                 .chartYAxis {
-                    AxisMarks(format: .currency(code: Formatters.currencyCode).precision(.fractionLength(0)))
+                    AxisMarks { value in
+                        AxisGridLine()
+                        AxisValueLabel {
+                            if let amount = value.as(Double.self) {
+                                Text(Formatters.money(amount))
+                            }
+                        }
+                    }
                 }
                 .frame(height: 200)
                 .accessibilityLabel("analytics.grossByWeek")
@@ -100,7 +107,14 @@ struct AnalyticsView: View {
                     .cornerRadius(4)
                 }
                 .chartXAxis {
-                    AxisMarks(format: .currency(code: Formatters.currencyCode).precision(.fractionLength(0)))
+                    AxisMarks { value in
+                        AxisGridLine()
+                        AxisValueLabel {
+                            if let amount = value.as(Double.self) {
+                                Text(Formatters.money(amount))
+                            }
+                        }
+                    }
                 }
                 .frame(height: CGFloat(states.count) * 28 + 20)
 

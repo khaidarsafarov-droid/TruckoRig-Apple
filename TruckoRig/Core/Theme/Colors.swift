@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 extension Color {
     /// `#RRGGBB` or `#RRGGBBAA`. Falls back to clear rather than trapping on a bad literal.

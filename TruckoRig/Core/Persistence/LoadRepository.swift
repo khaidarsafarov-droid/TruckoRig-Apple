@@ -10,7 +10,7 @@ enum LoadRepositoryError: Error, LocalizedError, Equatable {
         case .duplicateTripId(let tripId):
             return String(localized: "load.error.duplicate \(tripId)")
         case .invalidDraft(let errors):
-            return errors.first.map { String(localized: String.LocalizationValue($0.messageKey)) }
+            return errors.first?.localizedMessage
         }
     }
 }

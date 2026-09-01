@@ -72,7 +72,7 @@ struct RelayTextInputView: View {
     Del-address: TOL3, Perrysburg, OH
     """
 
-    return RelayTextInputView(
+    RelayTextInputView(
         text: $text,
         parseMessage: "Parsed T-116KYL6KW",
         errorMessage: nil,

@@ -39,12 +39,9 @@ struct AddLoadView: View {
                 if !viewModel.draft.isValid, !viewModel.draft.tripId.isEmpty {
                     Section {
                         ForEach(viewModel.draft.validationErrors, id: \.self) { error in
-                            Label(
-                                String(localized: String.LocalizationValue(error.messageKey)),
-                                systemImage: "exclamationmark.circle"
-                            )
-                            .font(.appCaption)
-                            .foregroundStyle(Color.forestError)
+                            Label(error.localizedMessage, systemImage: "exclamationmark.circle")
+                                .font(.appCaption)
+                                .foregroundStyle(Color.forestError)
                         }
                     }
                 }
@@ -150,6 +147,7 @@ struct StopEditTarget: Identifiable, Hashable {
 }
 
 #Preview {
-    AddLoadView()
-        .environment(AppState())
+    PreviewHost {
+        AddLoadView()
+    }
 }

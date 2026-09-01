@@ -5,9 +5,10 @@ import UserNotifications
 ///
 /// Pushes are signals, never payloads: the server sends `type=sync` with `content-available` and
 /// the app pulls its own data. Nothing about the account travels in a notification.
+@MainActor
 final class AppDelegate: NSObject, UIApplicationDelegate {
 
-    @MainActor weak var appState: AppState?
+    weak var appState: AppState?
 
     func application(
         _ application: UIApplication,
@@ -19,7 +20,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
     /// Asks for permission and registers with APNs. Declining is fine — sync still runs in the
     /// foreground and on background refresh.
-    @MainActor
     func requestPushAuthorization() async {
         let center = UNUserNotificationCenter.current()
         let granted = (try? await center.requestAuthorization(options: [.alert, .badge, .sound])) ?? false
@@ -32,9 +32,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
-        Task { @MainActor in
-            appState?.registerPushToken(token)
-        }
+        appState?.registerPushToken(token)
     }
 
     func application(

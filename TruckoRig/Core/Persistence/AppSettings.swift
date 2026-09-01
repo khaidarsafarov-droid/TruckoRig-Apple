@@ -5,35 +5,84 @@ import Observation
 ///
 /// Keys are namespaced by account so two drivers sharing a phone do not inherit each other's goal,
 /// week start or backend URL. Nothing secret lives here — tokens go to the Keychain.
+///
+/// Each setting is a computed property over a cached value rather than a stored one with a
+/// `didSet`: `@Observable` cannot transform properties that already have observers, and the
+/// explicit `access`/`withMutation` pair is what makes a write both persist and refresh the UI.
 @Observable
 final class AppSettings {
 
-    private let defaults: UserDefaults
+    @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private var cache: Values
     private(set) var scope: AccountScope
 
     init(scope: AccountScope = .local, defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.scope = scope
-        self.weeklyGoal = Self.read(defaults, scope, .weeklyGoal, default: 0)
-        self.language = Self.readEnum(defaults, scope, .language, default: .system)
-        self.weekStart = Self.readEnum(defaults, scope, .weekStart, default: .sunday)
-        self.isCloudSyncEnabled = Self.read(defaults, scope, .cloudSyncEnabled, default: false)
-        self.syncBackendURL = Self.read(defaults, scope, .syncBackendURL, default: "")
-        self.rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
-        self.rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
-        self.hasCompletedWelcome = Self.read(defaults, scope, .hasCompletedWelcome, default: false)
+        self.cache = Values(defaults: defaults, scope: scope)
     }
 
     // MARK: - Values
 
-    var weeklyGoal: Double { didSet { write(.weeklyGoal, weeklyGoal) } }
-    var language: AppLanguage { didSet { write(.language, language.rawValue) } }
-    var weekStart: WeekStartDay { didSet { write(.weekStart, weekStart.rawValue) } }
-    var isCloudSyncEnabled: Bool { didSet { write(.cloudSyncEnabled, isCloudSyncEnabled) } }
-    var syncBackendURL: String { didSet { write(.syncBackendURL, syncBackendURL) } }
-    var rpmMinProfit: Double { didSet { write(.rpmMinProfit, rpmMinProfit) } }
-    var rpmTargetProfit: Double { didSet { write(.rpmTargetProfit, rpmTargetProfit) } }
-    var hasCompletedWelcome: Bool { didSet { write(.hasCompletedWelcome, hasCompletedWelcome) } }
+    var weeklyGoal: Double {
+        get { access(keyPath: \.weeklyGoal); return cache.weeklyGoal }
+        set { withMutation(keyPath: \.weeklyGoal) { cache.weeklyGoal = newValue; write(.weeklyGoal, newValue) } }
+    }
+
+    var language: AppLanguage {
+        get { access(keyPath: \.language); return cache.language }
+        set { withMutation(keyPath: \.language) { cache.language = newValue; write(.language, newValue.rawValue) } }
+    }
+
+    var weekStart: WeekStartDay {
+        get { access(keyPath: \.weekStart); return cache.weekStart }
+        set { withMutation(keyPath: \.weekStart) { cache.weekStart = newValue; write(.weekStart, newValue.rawValue) } }
+    }
+
+    var isCloudSyncEnabled: Bool {
+        get { access(keyPath: \.isCloudSyncEnabled); return cache.isCloudSyncEnabled }
+        set {
+            withMutation(keyPath: \.isCloudSyncEnabled) {
+                cache.isCloudSyncEnabled = newValue
+                write(.cloudSyncEnabled, newValue)
+            }
+        }
+    }
+
+    var syncBackendURL: String {
+        get { access(keyPath: \.syncBackendURL); return cache.syncBackendURL }
+        set {
+            withMutation(keyPath: \.syncBackendURL) {
+                cache.syncBackendURL = newValue
+                write(.syncBackendURL, newValue)
+            }
+        }
+    }
+
+    var rpmMinProfit: Double {
+        get { access(keyPath: \.rpmMinProfit); return cache.rpmMinProfit }
+        set { withMutation(keyPath: \.rpmMinProfit) { cache.rpmMinProfit = newValue; write(.rpmMinProfit, newValue) } }
+    }
+
+    var rpmTargetProfit: Double {
+        get { access(keyPath: \.rpmTargetProfit); return cache.rpmTargetProfit }
+        set {
+            withMutation(keyPath: \.rpmTargetProfit) {
+                cache.rpmTargetProfit = newValue
+                write(.rpmTargetProfit, newValue)
+            }
+        }
+    }
+
+    var hasCompletedWelcome: Bool {
+        get { access(keyPath: \.hasCompletedWelcome); return cache.hasCompletedWelcome }
+        set {
+            withMutation(keyPath: \.hasCompletedWelcome) {
+                cache.hasCompletedWelcome = newValue
+                write(.hasCompletedWelcome, newValue)
+            }
+        }
+    }
 
     // MARK: - Derived
 
@@ -56,17 +105,50 @@ final class AppSettings {
     func rebind(to scope: AccountScope) {
         guard scope != self.scope else { return }
         self.scope = scope
-        weeklyGoal = Self.read(defaults, scope, .weeklyGoal, default: 0)
-        language = Self.readEnum(defaults, scope, .language, default: .system)
-        weekStart = Self.readEnum(defaults, scope, .weekStart, default: .sunday)
-        isCloudSyncEnabled = Self.read(defaults, scope, .cloudSyncEnabled, default: false)
-        syncBackendURL = Self.read(defaults, scope, .syncBackendURL, default: "")
-        rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
-        rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
-        hasCompletedWelcome = Self.read(defaults, scope, .hasCompletedWelcome, default: false)
+        let values = Values(defaults: defaults, scope: scope)
+        // Assigning through the setters keeps observers notified; the writes are no-ops because
+        // the values came from that account's own storage.
+        weeklyGoal = values.weeklyGoal
+        language = values.language
+        weekStart = values.weekStart
+        isCloudSyncEnabled = values.isCloudSyncEnabled
+        syncBackendURL = values.syncBackendURL
+        rpmMinProfit = values.rpmMinProfit
+        rpmTargetProfit = values.rpmTargetProfit
+        hasCompletedWelcome = values.hasCompletedWelcome
     }
 
     // MARK: - Storage
+
+    private struct Values {
+        var weeklyGoal: Double
+        var language: AppLanguage
+        var weekStart: WeekStartDay
+        var isCloudSyncEnabled: Bool
+        var syncBackendURL: String
+        var rpmMinProfit: Double
+        var rpmTargetProfit: Double
+        var hasCompletedWelcome: Bool
+
+        init(defaults: UserDefaults, scope: AccountScope) {
+            func read<T>(_ key: Key, _ fallback: T) -> T {
+                defaults.object(forKey: AppSettings.storageKey(scope, key)) as? T ?? fallback
+            }
+            func readEnum<T: RawRepresentable>(_ key: Key, _ fallback: T) -> T where T.RawValue == String {
+                guard let raw = defaults.string(forKey: AppSettings.storageKey(scope, key)) else { return fallback }
+                return T(rawValue: raw) ?? fallback
+            }
+
+            weeklyGoal = read(.weeklyGoal, 0)
+            language = readEnum(.language, .system)
+            weekStart = readEnum(.weekStart, .sunday)
+            isCloudSyncEnabled = read(.cloudSyncEnabled, false)
+            syncBackendURL = read(.syncBackendURL, "")
+            rpmMinProfit = read(.rpmMinProfit, RPMThresholds.default.minProfit)
+            rpmTargetProfit = read(.rpmTargetProfit, RPMThresholds.default.targetProfit)
+            hasCompletedWelcome = read(.hasCompletedWelcome, false)
+        }
+    }
 
     private enum Key: String {
         case weeklyGoal
@@ -85,19 +167,5 @@ final class AppSettings {
 
     private func write(_ key: Key, _ value: Any) {
         defaults.set(value, forKey: Self.storageKey(scope, key))
-    }
-
-    private static func read<T>(_ defaults: UserDefaults, _ scope: AccountScope, _ key: Key, default fallback: T) -> T {
-        defaults.object(forKey: storageKey(scope, key)) as? T ?? fallback
-    }
-
-    private static func readEnum<T: RawRepresentable>(
-        _ defaults: UserDefaults,
-        _ scope: AccountScope,
-        _ key: Key,
-        default fallback: T
-    ) -> T where T.RawValue == String {
-        guard let raw = defaults.string(forKey: storageKey(scope, key)) else { return fallback }
-        return T(rawValue: raw) ?? fallback
     }
 }

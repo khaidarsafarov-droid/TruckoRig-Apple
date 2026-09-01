@@ -37,14 +37,7 @@ struct MaintenanceListView: View {
                 }
             }
             if visible.isEmpty {
-                EmptyStateView(
-                    systemImage: "wrench.and.screwdriver",
-                    title: showsArchived ? "maintenance.archive.empty.title" : "maintenance.empty.title",
-                    message: showsArchived ? "maintenance.archive.empty.message" : "maintenance.empty.message",
-                    actionTitle: showsArchived ? nil : "maintenance.add",
-                    action: showsArchived ? nil : { isAdding = true }
-                )
-                .listRowBackground(Color.clear)
+                emptyState
             }
         }
         .listStyle(.insetGrouped)
@@ -75,6 +68,21 @@ struct MaintenanceListView: View {
             actions: { Button("action.ok") { errorMessage = nil } },
             message: { Text(errorMessage ?? "") }
         )
+    }
+
+    /// The archive has nothing to add, so it shows the same placeholder without an action.
+    private var emptyState: some View {
+        let addAction: (() -> Void)? = showsArchived ? nil : { isAdding = true }
+        let actionTitle: LocalizedStringKey? = showsArchived ? nil : "maintenance.add"
+
+        return EmptyStateView(
+            systemImage: "wrench.and.screwdriver",
+            title: showsArchived ? "maintenance.archive.empty.title" : "maintenance.empty.title",
+            message: showsArchived ? "maintenance.archive.empty.message" : "maintenance.empty.message",
+            actionTitle: actionTitle,
+            action: addAction
+        )
+        .listRowBackground(Color.clear)
     }
 
     private func taskRow(_ task: MaintenanceTask) -> some View {

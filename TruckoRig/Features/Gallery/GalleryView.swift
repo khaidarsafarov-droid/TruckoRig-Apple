@@ -5,24 +5,24 @@ import UIKit
 /// Grid of photos and scans, optionally filtered to one load.
 struct GalleryView: View {
 
-    var load: Load?
+    var load: Load? = nil
 
     @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Photo.timestamp, order: .reverse) private var allPhotos: [Photo]
     @Query(sort: \Scan.timestamp, order: .reverse) private var allScans: [Scan]
 
-    @State private var section: Section = .photos
+    @State private var section: MediaSection = .photos
     @State private var preview: GalleryItem?
     @State private var errorMessage: String?
 
-    enum Section: String, CaseIterable, Identifiable {
+    enum MediaSection: String, CaseIterable, Identifiable {
         case photos
         case scans
 
         var id: String { rawValue }
 
-        var title: LocalizedStringResource {
+        var title: LocalizedStringKey {
             switch self {
             case .photos: return "gallery.photos"
             case .scans: return "gallery.scans"
@@ -56,7 +56,7 @@ struct GalleryView: View {
     var body: some View {
         ScrollView {
             Picker("gallery.section", selection: $section) {
-                ForEach(Section.allCases) { section in
+                ForEach(MediaSection.allCases) { section in
                     Text(section.title).tag(section)
                 }
             }

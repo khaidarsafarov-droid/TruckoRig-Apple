@@ -6,7 +6,7 @@ import VisionKit
 /// Scans a document, runs text recognition and files it against a load.
 struct ScannerView: View {
 
-    var load: Load?
+    var load: Load? = nil
 
     @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var modelContext

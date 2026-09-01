@@ -6,16 +6,6 @@ public enum RelayParseFailure: Error, Equatable, Sendable {
     case missingTripId
     case missingRate
     case missingAddress
-
-    /// Localization key for the message shown under the paste field.
-    public var messageKey: String {
-        switch self {
-        case .notLoadLike: return "relay.error.notLoadLike"
-        case .missingTripId: return "relay.error.missingTripId"
-        case .missingRate: return "relay.error.missingRate"
-        case .missingAddress: return "relay.error.missingAddress"
-        }
-    }
 }
 
 /// A parsed trip plus the derived numbers the goal math needs.
