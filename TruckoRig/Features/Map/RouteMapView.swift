@@ -41,7 +41,7 @@ struct RouteMapView: View {
                             .font(.appCaption)
                             .foregroundStyle(Color.forestText)
                     }
-                    .accessibilityLabel("\(pin.title), \(pin.subtitle)")
+                    .accessibilityLabel(pin.subtitle + ", " + pin.title)
                 }
             }
 

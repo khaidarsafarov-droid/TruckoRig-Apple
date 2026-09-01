@@ -77,7 +77,7 @@ struct StateHeatmapView: View {
                 )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(USStates.name(code: entry.state) ?? entry.state), \(Formatters.money(entry.gross))")
+        .accessibilityLabel((USStates.name(code: entry.state) ?? entry.state) + ", " + Formatters.money(entry.gross))
     }
 
     private func detailCard(_ entry: StateRevenue) -> some View {
