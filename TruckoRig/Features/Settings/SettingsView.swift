@@ -31,6 +31,7 @@ struct SettingsView: View {
                         Text(weekdayName(day)).tag(day)
                     }
                 }
+                .onChange(of: settings.weekStart) { reindexWeeks() }
                 Text("settings.weekStart.hint")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
@@ -149,6 +150,16 @@ struct SettingsView: View {
         let symbols = Calendar.current.weekdaySymbols
         let index = day.calendarWeekday - 1
         return symbols.indices.contains(index) ? symbols[index].capitalized : day.rawValue
+    }
+
+    /// Week numbers are cached on every load, so switching the week start has to refile them.
+    private func reindexWeeks() {
+        do {
+            try WeekReindexer.reindex(in: modelContext, week: appState.settings.truckingWeek)
+            appState.publishWidgetSnapshot()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     private func exportBackup() {
