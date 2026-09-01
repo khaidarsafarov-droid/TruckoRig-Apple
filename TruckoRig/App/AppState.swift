@@ -118,6 +118,39 @@ final class AppState {
     func handleRemoteNotification(userInfo: [AnyHashable: Any]) async {
         guard userInfo["type"] as? String == "sync" else { return }
         await sync.pullOnly()
+        publishWidgetSnapshot()
+    }
+
+    /// The only way views should obtain a load repository: writes also refresh the widget.
+    func loadRepository(in context: ModelContext) -> LoadRepository {
+        LoadRepository(
+            context: context,
+            sync: sync,
+            week: settings.truckingWeek,
+            onDidSave: { [weak self] in self?.publishWidgetSnapshot() }
+        )
+    }
+
+    /// Writes the weekly gross target to settings and the profile row so a later snapshot
+    /// push carries the number the driver just typed, not a stale copy.
+    func setWeeklyGoal(_ amount: Double) {
+        settings.weeklyGoal = amount
+        let context = persistence.mainContext
+        if let profile = try? context.fetch(FetchDescriptor<DriverProfile>()).first {
+            profile.weeklyGoal = amount
+            profile.updatedAt = Date()
+            sync.enqueue(.profile, id: profile.id, operation: .update, in: context)
+            try? context.save()
+        }
+        publishWidgetSnapshot()
+    }
+
+    /// Settings follow the profile row after a pull or backup restore.
+    func adoptSyncedGoal() {
+        guard let profile = try? persistence.mainContext.fetch(FetchDescriptor<DriverProfile>()).first else {
+            return
+        }
+        settings.weeklyGoal = profile.weeklyGoal
     }
 
     func registerPushToken(_ token: String) {

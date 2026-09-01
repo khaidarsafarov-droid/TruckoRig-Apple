@@ -99,7 +99,7 @@ struct WeeklyGoalWidgetView: View {
                     Text("goal.daysLeft")
                         .font(.appCaption)
                         .foregroundStyle(Color.forestTextSecondary)
-                    Text("\(snapshot.daysRemaining)")
+                    Text(String(snapshot.daysRemaining))
                         .font(.appNumber)
                 }
             }

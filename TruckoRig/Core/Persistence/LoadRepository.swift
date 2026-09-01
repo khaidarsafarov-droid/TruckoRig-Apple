@@ -25,11 +25,24 @@ struct LoadRepository {
     let context: ModelContext
     let sync: SyncEngine
     let week: TruckingWeek
+    /// Called after a successful save so the home-screen widget can catch up.
+    let onDidSave: (() -> Void)?
 
-    init(context: ModelContext, sync: SyncEngine, week: TruckingWeek = TruckingWeek()) {
+    init(
+        context: ModelContext,
+        sync: SyncEngine,
+        week: TruckingWeek = TruckingWeek(),
+        onDidSave: (() -> Void)? = nil
+    ) {
         self.context = context
         self.sync = sync
         self.week = week
+        self.onDidSave = onDidSave
+    }
+
+    private func persist() throws {
+        try context.save()
+        onDidSave?()
     }
 
     // MARK: - Queries
@@ -79,7 +92,7 @@ struct LoadRepository {
         load.refreshDerivedFields(week: week)
 
         sync.enqueue(.load, id: load.id, operation: .create, in: context)
-        try context.save()
+        try persist()
         return load
     }
 
@@ -135,7 +148,7 @@ struct LoadRepository {
         load.refreshDerivedFields(week: week)
 
         sync.enqueue(.load, id: load.id, operation: .update, in: context)
-        try context.save()
+        try persist()
     }
 
     func setDispute(_ load: Load, isDispute: Bool, completed: Bool, amount: Double?, responseDate: Date?) throws {
@@ -145,7 +158,7 @@ struct LoadRepository {
         load.disputeResponseDate = responseDate
         load.touch()
         sync.enqueue(.load, id: load.id, operation: .update, in: context)
-        try context.save()
+        try persist()
     }
 
     func addPenalty(to load: Load, summary: String, amount: Double, date: Date) throws {
@@ -154,7 +167,7 @@ struct LoadRepository {
         context.insert(penalty)
         load.touch()
         sync.enqueue(.load, id: load.id, operation: .update, in: context)
-        try context.save()
+        try persist()
     }
 
     func remove(_ penalty: Penalty) throws {
@@ -164,7 +177,7 @@ struct LoadRepository {
             load.touch()
             sync.enqueue(.load, id: load.id, operation: .update, in: context)
         }
-        try context.save()
+        try persist()
     }
 
     // MARK: - Delete
@@ -173,6 +186,6 @@ struct LoadRepository {
         let id = load.id
         context.delete(load)
         sync.enqueue(.load, id: id, operation: .delete, in: context)
-        try context.save()
+        try persist()
     }
 }

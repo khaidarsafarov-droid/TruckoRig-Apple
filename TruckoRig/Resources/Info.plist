@@ -38,6 +38,8 @@
 
 	<key>NSCameraUsageDescription</key>
 	<string>TruckoRig uses the camera to photograph paperwork and scan documents for your loads.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>TruckoRig can pick an existing photo of paperwork when the camera is not available, for example on a simulator.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>TruckoRig can save load photos to your photo library.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

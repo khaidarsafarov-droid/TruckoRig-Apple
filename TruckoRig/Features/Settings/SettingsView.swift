@@ -108,14 +108,14 @@ struct SettingsView: View {
         }
         .alert(
             "error.title",
-            isPresented: .constant(errorMessage != nil),
-            actions: { Button("action.ok") { errorMessage = nil } },
+            isPresented: .isPresented($errorMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(errorMessage ?? "") }
         )
         .alert(
             "settings.backup.done",
-            isPresented: .constant(statusMessage != nil),
-            actions: { Button("action.ok") { statusMessage = nil } },
+            isPresented: .isPresented($statusMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(statusMessage ?? "") }
         )
     }
@@ -197,6 +197,8 @@ struct SettingsView: View {
                 into: modelContext,
                 week: appState.settings.truckingWeek
             )
+            appState.adoptSyncedGoal()
+            appState.publishWidgetSnapshot()
             statusMessage = String(
                 localized: "settings.backup.report \(report.inserted) \(report.updated) \(report.skipped)"
             )

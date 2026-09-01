@@ -44,8 +44,16 @@ struct EditLoadView: View {
                     stops: $draft.stops,
                     onEdit: { editingStop = StopEditTarget(index: $0) },
                     onAdd: { draft.stops.append(StopDraft(type: $0, stopNumber: draft.stops.count + 1)) },
-                    onDelete: { draft.stops.remove(atOffsets: $0) },
-                    onMove: { draft.stops.move(fromOffsets: $0, toOffset: $1) }
+                    onDelete: {
+                        editingStop = nil
+                        draft.stops.remove(atOffsets: $0)
+                        draft.renumberStops()
+                    },
+                    onMove: {
+                        editingStop = nil
+                        draft.stops.move(fromOffsets: $0, toOffset: $1)
+                        draft.renumberStops()
+                    }
                 )
 
                 disputeSection
@@ -63,7 +71,9 @@ struct EditLoadView: View {
                 }
             }
             .sheet(item: $editingStop) { target in
-                StopEditorView(stop: $draft.stops[target.index])
+                if draft.stops.indices.contains(target.index) {
+                    StopEditorView(stop: $draft.stops[target.index])
+                }
             }
             .sheet(isPresented: $isAddingPenalty) {
                 PenaltyEditorView { summary, amount, date in
@@ -72,8 +82,8 @@ struct EditLoadView: View {
             }
             .alert(
                 "error.title",
-                isPresented: .constant(errorMessage != nil),
-                actions: { Button("action.ok") { errorMessage = nil } },
+                isPresented: .isPresented($errorMessage),
+                actions: { Button("action.ok") {} },
                 message: { Text(errorMessage ?? "") }
             )
         }
@@ -130,7 +140,7 @@ struct EditLoadView: View {
     }
 
     private var repository: LoadRepository {
-        LoadRepository(context: modelContext, sync: appState.sync, week: appState.settings.truckingWeek)
+        appState.loadRepository(in: modelContext)
     }
 
     private func save() {

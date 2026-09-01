@@ -112,9 +112,16 @@ extension AppleAuthHandler: ASAuthorizationControllerDelegate {
 
 extension AppleAuthHandler: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        let scene = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .first { $0.activationState == .foregroundActive }
-        return scene?.keyWindow ?? ASPresentationAnchor()
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let scene = scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
+        if let window = scene?.windows.first(where: \.isKeyWindow) ?? scene?.windows.first {
+            return window
+        }
+        // A scene-less UIWindow is not a valid presentation anchor on iOS 15+. Attach to the
+        // scene we do have rather than returning `ASPresentationAnchor()` with no window scene.
+        if let scene {
+            return UIWindow(windowScene: scene)
+        }
+        return ASPresentationAnchor()
     }
 }

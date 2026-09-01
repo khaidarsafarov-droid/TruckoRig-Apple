@@ -93,8 +93,8 @@ struct GalleryView: View {
         }
         .alert(
             "error.title",
-            isPresented: .constant(errorMessage != nil),
-            actions: { Button("action.ok") { errorMessage = nil } },
+            isPresented: .isPresented($errorMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(errorMessage ?? "") }
         )
     }

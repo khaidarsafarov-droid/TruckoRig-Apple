@@ -41,7 +41,7 @@ Background Modes (Background fetch + Remote notifications), App Groups (`group.c
 swift test
 ```
 
-72 теста: парсинг реальных сообщений Relay, определение года по истории чата, недельные границы
+76 теста: парсинг реальных сообщений Relay, определение года по истории чата, недельные границы
 на стыке лет, статусы темпа, дедуп Trip ID, CSV round-trip.
 
 ## Структура

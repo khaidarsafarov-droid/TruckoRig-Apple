@@ -132,6 +132,9 @@ final class SyncEngine {
 
         let remote = try await client.send(Endpoints.fetchSnapshot, as: AccountCloudSnapshot.self)
         try SnapshotApplier.apply(remote, to: context, week: settings.truckingWeek)
+        if let profile = try? context.fetch(FetchDescriptor<DriverProfile>()).first {
+            settings.weeklyGoal = profile.weeklyGoal
+        }
 
         if let remoteCursor {
             settings.lastSyncCursor = remoteCursor.value

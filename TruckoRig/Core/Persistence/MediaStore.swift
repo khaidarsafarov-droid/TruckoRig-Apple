@@ -1,4 +1,5 @@
 import Foundation
+import ImageIO
 import UIKit
 
 /// On-disk storage for photos and scans.

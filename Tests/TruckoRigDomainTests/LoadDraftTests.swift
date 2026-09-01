@@ -60,6 +60,16 @@ final class LoadDraftTests: XCTestCase {
         XCTAssertEqual(draft.normalizedStops.map(\.stopNumber), [1, 2, 3])
     }
 
+    func testRenumberStopsAfterDeleteKeepsOrder() {
+        var draft = draft()
+        draft.stops.append(StopDraft(type: .delivery, stopNumber: 9, city: "Toledo", state: "OH"))
+        draft.stops.remove(at: 1)
+        draft.renumberStops()
+
+        XCTAssertEqual(draft.stops.map(\.stopNumber), [1, 2])
+        XCTAssertEqual(draft.stops.map(\.city), ["Garner", "Toledo"])
+    }
+
     func testDraftFromParsedLoadCarriesEverythingOver() throws {
         let text = """
         Trip ID: T-116KYL6KW

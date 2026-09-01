@@ -71,6 +71,11 @@ public struct LoadDraft: Equatable, Sendable {
         }
     }
 
+    /// Rewrites `stopNumber` to match the current array order, used after a drag or delete.
+    public mutating func renumberStops() {
+        stops = normalizedStops
+    }
+
     // MARK: - Validation
 
     public enum ValidationError: Equatable, Sendable {

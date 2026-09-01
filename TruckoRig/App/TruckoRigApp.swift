@@ -10,6 +10,9 @@ struct TruckoRigApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                // Recreate the whole tree when the account store changes so @Query and
+                // navigation never keep objects from the previous driver's database.
+                .id(appState.persistence.scope.storeKey)
                 .environment(appState)
                 .modelContainer(appState.persistence.container)
                 .tint(.forestPrimary)

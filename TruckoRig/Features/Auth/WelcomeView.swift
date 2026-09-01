@@ -8,6 +8,8 @@ struct WelcomeView: View {
     @State private var isShowingEmailForm = false
 
     var body: some View {
+        @Bindable var auth = appState.auth
+
         VStack(spacing: Spacing.section) {
             Spacer()
 
@@ -62,9 +64,9 @@ struct WelcomeView: View {
         }
         .alert(
             "auth.error.title",
-            isPresented: .constant(appState.auth.errorMessage != nil),
-            actions: { Button("action.ok") { appState.auth.errorMessage = nil } },
-            message: { Text(appState.auth.errorMessage ?? "") }
+            isPresented: .isPresented($auth.errorMessage),
+            actions: { Button("action.ok") {} },
+            message: { Text(auth.errorMessage ?? "") }
         )
         .loadingOverlay(appState.auth.isAuthenticating, message: "auth.signingIn")
     }

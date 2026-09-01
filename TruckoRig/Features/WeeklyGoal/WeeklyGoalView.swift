@@ -39,7 +39,7 @@ struct WeeklyGoalView: View {
         }
         .sheet(isPresented: $model.isEditingGoal) {
             GoalEditorView(goal: $model.goalInput) { newGoal in
-                appState.settings.weeklyGoal = newGoal
+                appState.setWeeklyGoal(newGoal)
             }
         }
         // The widget cannot read the account's database, so publish the current week whenever

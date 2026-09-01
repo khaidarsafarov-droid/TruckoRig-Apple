@@ -58,12 +58,12 @@ final class AddLoadViewModel {
 
     func removeStops(at offsets: IndexSet) {
         draft.stops.remove(atOffsets: offsets)
-        draft.stops = draft.normalizedStops
+        draft.renumberStops()
     }
 
     func moveStops(from source: IndexSet, to destination: Int) {
         draft.stops.move(fromOffsets: source, toOffset: destination)
-        draft.stops = draft.normalizedStops
+        draft.renumberStops()
     }
 
     // MARK: - Save

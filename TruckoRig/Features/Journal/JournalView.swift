@@ -76,18 +76,18 @@ struct JournalView: View {
         }
         .confirmationDialog(
             "journal.delete.confirm",
-            isPresented: .constant(viewModel.loadPendingDeletion != nil),
+            isPresented: .isPresented($model.loadPendingDeletion),
             titleVisibility: .visible
         ) {
             Button("action.delete", role: .destructive) { deletePending() }
-            Button("action.cancel", role: .cancel) { viewModel.loadPendingDeletion = nil }
+            Button("action.cancel", role: .cancel) {}
         } message: {
             Text(viewModel.loadPendingDeletion?.tripId ?? "")
         }
         .alert(
             "error.title",
-            isPresented: .constant(viewModel.errorMessage != nil),
-            actions: { Button("action.ok") { viewModel.errorMessage = nil } },
+            isPresented: .isPresented($model.errorMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(viewModel.errorMessage ?? "") }
         )
     }
@@ -147,11 +147,7 @@ struct JournalView: View {
     private func deletePending() {
         guard let load = viewModel.loadPendingDeletion else { return }
         viewModel.loadPendingDeletion = nil
-        let repository = LoadRepository(
-            context: modelContext,
-            sync: appState.sync,
-            week: appState.settings.truckingWeek
-        )
+        let repository = appState.loadRepository(in: modelContext)
         do {
             try repository.delete(load)
         } catch {

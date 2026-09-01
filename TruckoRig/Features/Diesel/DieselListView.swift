@@ -81,8 +81,8 @@ struct DieselListView: View {
         .sheet(item: $editing) { fill in DieselEditorView(fill: fill) }
         .alert(
             "error.title",
-            isPresented: .constant(errorMessage != nil),
-            actions: { Button("action.ok") { errorMessage = nil } },
+            isPresented: .isPresented($errorMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(errorMessage ?? "") }
         )
     }
@@ -93,7 +93,7 @@ struct DieselListView: View {
                 Text(fill.location ?? String(localized: "diesel.untitled"))
                     .font(.appBodyMedium)
                     .foregroundStyle(Color.forestText)
-                Text("\(DateUtils.mediumDate(fill.date)) · \(Formatters.gallons(fill.gallons))")
+                Text("\(DateUtils.mediumDate(fill.date)) · \(Formatters.gallons(fill.gallons))" as String)
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             }
@@ -188,8 +188,8 @@ struct DieselEditorView: View {
             }
             .alert(
                 "error.title",
-                isPresented: .constant(errorMessage != nil),
-                actions: { Button("action.ok") { errorMessage = nil } },
+                isPresented: .isPresented($errorMessage),
+                actions: { Button("action.ok") {} },
                 message: { Text(errorMessage ?? "") }
             )
         }

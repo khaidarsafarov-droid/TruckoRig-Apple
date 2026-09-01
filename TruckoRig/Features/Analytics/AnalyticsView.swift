@@ -59,14 +59,15 @@ struct AnalyticsView: View {
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             } else {
-                Chart(series) { point in
-                    BarMark(
-                        x: .value(String(localized: "analytics.axis.week"), "W\(point.week.weekNumber)"),
-                        y: .value(String(localized: "stat.gross"), point.gross)
-                    )
-                    .foregroundStyle(Color.forestPrimary)
-                    .cornerRadius(4)
-
+                Chart {
+                    ForEach(series) { point in
+                        BarMark(
+                            x: .value(String(localized: "analytics.axis.week"), "W\(point.week.weekNumber)"),
+                            y: .value(String(localized: "stat.gross"), point.gross)
+                        )
+                        .foregroundStyle(Color.forestPrimary)
+                        .cornerRadius(4)
+                    }
                     if appState.settings.weeklyGoal > 0 {
                         RuleMark(y: .value(String(localized: "goal.target"), appState.settings.weeklyGoal))
                             .foregroundStyle(Color.forestAccent)

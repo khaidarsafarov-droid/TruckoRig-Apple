@@ -70,8 +70,8 @@ struct PaycheckListView: View {
         }
         .alert(
             "error.title",
-            isPresented: .constant(errorMessage != nil),
-            actions: { Button("action.ok") { errorMessage = nil } },
+            isPresented: .isPresented($errorMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(errorMessage ?? "") }
         )
     }
@@ -82,7 +82,7 @@ struct PaycheckListView: View {
                 Text(paycheck.company ?? String(localized: "paycheck.untitled"))
                     .font(.appBodyMedium)
                     .foregroundStyle(Color.forestText)
-                Text("\(DateUtils.mediumDate(paycheck.date)) · W\(paycheck.weekNumber)")
+                Text("\(DateUtils.mediumDate(paycheck.date)) · W\(paycheck.weekNumber)" as String)
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             }
@@ -152,8 +152,8 @@ struct PaycheckEditorView: View {
             }
             .alert(
                 "error.title",
-                isPresented: .constant(errorMessage != nil),
-                actions: { Button("action.ok") { errorMessage = nil } },
+                isPresented: .isPresented($errorMessage),
+                actions: { Button("action.ok") {} },
                 message: { Text(errorMessage ?? "") }
             )
         }

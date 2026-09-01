@@ -65,14 +65,14 @@ struct CameraView: View {
         }
         .alert(
             "error.title",
-            isPresented: .constant(errorMessage != nil),
-            actions: { Button("action.ok") { errorMessage = nil } },
+            isPresented: .isPresented($errorMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(errorMessage ?? "") }
         )
     }
 
     private func save() {
-        guard let capturedImage else { return }
+        guard let capturedImage, !isSaving else { return }
         isSaving = true
         Task {
             let fix = await location.currentLocation()

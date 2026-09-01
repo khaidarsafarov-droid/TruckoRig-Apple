@@ -90,7 +90,7 @@ struct RouteMapView: View {
         SoftCard(padding: 12) {
             Text(load.route)
                 .font(.appBodyMedium)
-            Text("\(load.tripId) · \(Formatters.miles(load.totalMiles))")
+            Text("\(load.tripId) · \(Formatters.miles(load.totalMiles))" as String)
                 .font(.appCaption)
                 .foregroundStyle(Color.forestTextSecondary)
         }

@@ -12,6 +12,7 @@ struct LoadDetailView: View {
 
     @State private var isEditing = false
     @State private var isConfirmingDelete = false
+    @State private var showMap = false
     @State private var errorMessage: String?
 
     private var band: RPMBand {
@@ -39,9 +40,7 @@ struct LoadDetailView: View {
                     Button { isEditing = true } label: {
                         Label("action.edit", systemImage: "pencil")
                     }
-                    NavigationLink {
-                        RouteMapView(load: load)
-                    } label: {
+                    Button { showMap = true } label: {
                         Label("screen.map", systemImage: "map")
                     }
                     Button(role: .destructive) { isConfirmingDelete = true } label: {
@@ -55,14 +54,17 @@ struct LoadDetailView: View {
         .sheet(isPresented: $isEditing) {
             EditLoadView(load: load)
         }
+        .navigationDestination(isPresented: $showMap) {
+            RouteMapView(load: load)
+        }
         .confirmationDialog("journal.delete.confirm", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("action.delete", role: .destructive) { delete() }
             Button("action.cancel", role: .cancel) {}
         }
         .alert(
             "error.title",
-            isPresented: .constant(errorMessage != nil),
-            actions: { Button("action.ok") { errorMessage = nil } },
+            isPresented: .isPresented($errorMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(errorMessage ?? "") }
         )
     }
@@ -243,11 +245,7 @@ struct LoadDetailView: View {
     }
 
     private func delete() {
-        let repository = LoadRepository(
-            context: modelContext,
-            sync: appState.sync,
-            week: appState.settings.truckingWeek
-        )
+        let repository = appState.loadRepository(in: modelContext)
         do {
             try repository.delete(load)
             dismiss()

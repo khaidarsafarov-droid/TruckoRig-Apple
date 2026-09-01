@@ -32,8 +32,14 @@ struct AddLoadView: View {
                     stops: $model.draft.stops,
                     onEdit: { editingStop = StopEditTarget(index: $0) },
                     onAdd: { viewModel.addStop($0) },
-                    onDelete: { viewModel.removeStops(at: $0) },
-                    onMove: { viewModel.moveStops(from: $0, to: $1) }
+                    onDelete: {
+                        editingStop = nil
+                        viewModel.removeStops(at: $0)
+                    },
+                    onMove: {
+                        editingStop = nil
+                        viewModel.moveStops(from: $0, to: $1)
+                    }
                 )
 
                 if !viewModel.draft.isValid, !viewModel.draft.tripId.isEmpty {
@@ -58,12 +64,14 @@ struct AddLoadView: View {
                 }
             }
             .sheet(item: $editingStop) { target in
-                StopEditorView(stop: $model.draft.stops[target.index])
+                if model.draft.stops.indices.contains(target.index) {
+                    StopEditorView(stop: $model.draft.stops[target.index])
+                }
             }
             .alert(
                 "load.duplicate.title",
-                isPresented: .constant(viewModel.duplicateTripId != nil),
-                actions: { Button("action.ok") { viewModel.duplicateTripId = nil } },
+                isPresented: .isPresented($model.duplicateTripId),
+                actions: { Button("action.ok") {} },
                 message: { Text("load.duplicate.message \(viewModel.duplicateTripId ?? "")") }
             )
             .loadingOverlay(viewModel.isSaving, message: "status.saving")
@@ -71,11 +79,7 @@ struct AddLoadView: View {
     }
 
     private func save() {
-        let repository = LoadRepository(
-            context: modelContext,
-            sync: appState.sync,
-            week: appState.settings.truckingWeek
-        )
+        let repository = appState.loadRepository(in: modelContext)
         if viewModel.save(using: repository) {
             dismiss()
         }

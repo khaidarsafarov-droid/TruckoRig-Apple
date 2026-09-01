@@ -64,8 +64,8 @@ struct MaintenanceListView: View {
         .sheet(item: $editing) { task in MaintenanceEditorView(task: task) }
         .alert(
             "error.title",
-            isPresented: .constant(errorMessage != nil),
-            actions: { Button("action.ok") { errorMessage = nil } },
+            isPresented: .isPresented($errorMessage),
+            actions: { Button("action.ok") {} },
             message: { Text(errorMessage ?? "") }
         )
     }
@@ -86,35 +86,37 @@ struct MaintenanceListView: View {
     }
 
     private func taskRow(_ task: MaintenanceTask) -> some View {
-        Button { editing = task } label: {
-            HStack {
-                Button {
-                    setCompleted(task, completed: !task.isCompleted)
-                } label: {
-                    Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(task.isCompleted ? Color.forestSuccess : Color.forestTextSecondary)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(task.isCompleted ? "maintenance.markOpen" : "maintenance.markDone")
+        HStack {
+            Button {
+                setCompleted(task, completed: !task.isCompleted)
+            } label: {
+                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(task.isCompleted ? Color.forestSuccess : Color.forestTextSecondary)
+            }
+            .buttonStyle(.borderless)
+            .accessibilityLabel(task.isCompleted ? "maintenance.markOpen" : "maintenance.markDone")
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(task.title)
-                        .font(.appBodyMedium)
-                        .foregroundStyle(Color.forestText)
-                        .strikethrough(task.isCompleted)
-                    Text(subtitle(task))
-                        .font(.appCaption)
-                        .foregroundStyle(task.isOverdue() ? Color.forestError : Color.forestTextSecondary)
-                }
-                Spacer()
-                if let cost = task.cost {
-                    Text(Formatters.moneyPrecise(cost))
-                        .font(.appCaptionMedium)
-                        .foregroundStyle(Color.forestTextSecondary)
+            Button { editing = task } label: {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(task.title)
+                            .font(.appBodyMedium)
+                            .foregroundStyle(Color.forestText)
+                            .strikethrough(task.isCompleted)
+                        Text(subtitle(task))
+                            .font(.appCaption)
+                            .foregroundStyle(task.isOverdue() ? Color.forestError : Color.forestTextSecondary)
+                    }
+                    Spacer()
+                    if let cost = task.cost {
+                        Text(Formatters.moneyPrecise(cost))
+                            .font(.appCaptionMedium)
+                            .foregroundStyle(Color.forestTextSecondary)
+                    }
                 }
             }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
         .listRowBackground(Color.forestCard)
         .swipeActions {
             Button(role: .destructive) { delete(task) } label: {
@@ -206,8 +208,8 @@ struct MaintenanceEditorView: View {
             }
             .alert(
                 "error.title",
-                isPresented: .constant(errorMessage != nil),
-                actions: { Button("action.ok") { errorMessage = nil } },
+                isPresented: .isPresented($errorMessage),
+                actions: { Button("action.ok") {} },
                 message: { Text(errorMessage ?? "") }
             )
         }

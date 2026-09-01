@@ -14,12 +14,22 @@ struct RootView: View {
                 MainTabView()
             }
         }
-        .fullScreenCover(isPresented: .constant(appState.needsAuthentication)) {
+        .fullScreenCover(isPresented: loginCover) {
             WelcomeView()
+                .interactiveDismissDisabled()
         }
         .onChange(of: appState.auth.session) {
             appState.applySessionScope()
+            appState.selectedTab = .journal
         }
+    }
+
+    /// Login is required until a session exists; a swipe must not dismiss the cover.
+    private var loginCover: Binding<Bool> {
+        Binding(
+            get: { appState.needsAuthentication },
+            set: { _ in }
+        )
     }
 }
 
@@ -64,7 +74,7 @@ struct SidebarView: View {
     enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
         case journal, goal, analytics, paycheck, diesel, maintenance, map, gallery, profile, settings
 
-        var id: String { rawValue }
+        var id: Self { self }
 
         var title: LocalizedStringKey {
             switch self {
@@ -99,8 +109,11 @@ struct SidebarView: View {
 
     var body: some View {
         NavigationSplitView {
-            List(SidebarItem.allCases, selection: $selection) { item in
-                Label(item.title, systemImage: item.systemImage)
+            List(selection: $selection) {
+                ForEach(SidebarItem.allCases) { item in
+                    Label(item.title, systemImage: item.systemImage)
+                        .tag(item)
+                }
             }
             .navigationTitle("app.name")
             .listStyle(.sidebar)
