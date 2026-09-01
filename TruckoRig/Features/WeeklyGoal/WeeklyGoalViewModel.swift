@@ -50,23 +50,3 @@ final class WeeklyGoalViewModel {
         )
     }
 }
-
-extension PaceStatus {
-    var title: LocalizedStringResource {
-        switch self {
-        case .goalMet: return "goal.status.met"
-        case .ahead: return "goal.status.ahead"
-        case .onTrack: return "goal.status.onTrack"
-        case .behind: return "goal.status.behind"
-        }
-    }
-
-    var systemImage: String {
-        switch self {
-        case .goalMet: return "checkmark.seal.fill"
-        case .ahead: return "arrow.up.right.circle.fill"
-        case .onTrack: return "equal.circle.fill"
-        case .behind: return "arrow.down.right.circle.fill"
-        }
-    }
-}

@@ -47,25 +47,3 @@ extension Color {
 
     static let forestOnPrimary = Color.adaptive(light: "FFFFFF", dark: "0E1210")
 }
-
-extension PaceStatus {
-    var tint: Color {
-        switch self {
-        case .goalMet: return .forestAccent
-        case .ahead: return .forestSuccess
-        case .onTrack: return .forestSecondary
-        case .behind: return .forestWarning
-        }
-    }
-}
-
-extension RPMBand {
-    var tint: Color {
-        switch self {
-        case .good: return .forestSuccess
-        case .acceptable: return .forestWarning
-        case .low: return .forestError
-        case .unknown: return .forestTextSecondary
-        }
-    }
-}

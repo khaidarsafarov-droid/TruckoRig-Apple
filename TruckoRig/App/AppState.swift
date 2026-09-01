@@ -78,6 +78,7 @@ final class AppState {
         applySessionScope()
         await auth.verifyAppleCredentialIfNeeded()
         ensureProfileExists()
+        publishWidgetSnapshot()
         await sync.registerDevice(pushToken: pushToken)
         await sync.syncNow()
     }
@@ -87,6 +88,26 @@ final class AppState {
         persistence.signOut(eraseStore: eraseLocalData)
         settings.rebind(to: .local)
         selectedTab = .journal
+        WidgetBridge.clear()
+    }
+
+    /// Refreshes the home-screen widget from the current week.
+    func publishWidgetSnapshot(now: Date = Date()) {
+        let week = settings.truckingWeek
+        let ref = week.currentWeek(now: now)
+        let weekNumber = ref.weekNumber
+        let year = ref.year
+        let descriptor = FetchDescriptor<Load>(
+            predicate: #Predicate { $0.weekNumber == weekNumber && $0.year == year }
+        )
+        guard let loads = try? persistence.mainContext.fetch(descriptor) else { return }
+        let progress = WeeklyGoalCalculator(week: week).calculate(
+            target: settings.weeklyGoal,
+            loads: loads.map(\.summary),
+            for: ref,
+            now: now
+        )
+        WidgetBridge.publish(progress)
     }
 
     /// Handles a silent `type=sync` push.

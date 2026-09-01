@@ -42,6 +42,13 @@ struct WeeklyGoalView: View {
                 appState.settings.weeklyGoal = newGoal
             }
         }
+        // The widget cannot read the account's database, so publish the current week whenever
+        // this screen recomputes it.
+        .task(id: progress) {
+            if viewModel.isCurrentWeek(in: calendar) {
+                WidgetBridge.publish(progress)
+            }
+        }
     }
 
     // MARK: - Sections
