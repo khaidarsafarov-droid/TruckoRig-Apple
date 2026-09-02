@@ -95,11 +95,7 @@ struct PaycheckListView: View {
     }
 
     private func delete(_ paycheck: Paycheck) {
-        let repository = FinanceRepository(
-            context: modelContext,
-            sync: appState.sync,
-            week: appState.settings.truckingWeek
-        )
+        let repository = appState.financeRepository(in: modelContext)
         do {
             try repository.delete(paycheck)
         } catch {
@@ -160,11 +156,7 @@ struct PaycheckEditorView: View {
     }
 
     private func save() {
-        let repository = FinanceRepository(
-            context: modelContext,
-            sync: appState.sync,
-            week: appState.settings.truckingWeek
-        )
+        let repository = appState.financeRepository(in: modelContext)
         do {
             if let paycheck {
                 try repository.update(paycheck, amount: amount, date: date, company: company, notes: notes)

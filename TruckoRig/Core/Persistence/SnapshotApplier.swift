@@ -1,11 +1,11 @@
 import Foundation
 import SwiftData
 
-/// Merges a server snapshot into the local database.
+/// Merges a backup snapshot into the local database.
 ///
-/// Conflicts resolve last-write-wins on `updatedAt`, matching the Android client. A row the server
-/// has but this device does not is inserted; a row this device edited more recently is kept, so a
-/// sync never overwrites work the driver just did in a tunnel.
+/// Conflicts resolve last-write-wins on `updatedAt`. A row the file has but this device does not
+/// is inserted; a row this device edited more recently is kept, so a restore never overwrites
+/// work recorded after the backup.
 enum SnapshotApplier {
 
     struct Report: Equatable {
@@ -18,7 +18,7 @@ enum SnapshotApplier {
     @MainActor
     @discardableResult
     static func apply(
-        _ snapshot: AccountCloudSnapshot,
+        _ snapshot: AccountSnapshot,
         to context: ModelContext,
         week: TruckingWeek = TruckingWeek()
     ) throws -> Report {

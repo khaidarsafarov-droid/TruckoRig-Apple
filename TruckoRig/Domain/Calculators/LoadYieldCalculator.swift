@@ -24,7 +24,7 @@ public enum LoadYieldCalculator {
     /// Active days for a load that may not have its stops hydrated.
     ///
     /// Recomputes whenever schedule data is available and only falls back to the stored value
-    /// for rows loaded without stops (list projections, cloud snapshots).
+    /// for rows loaded without stops (list projections, JSON backups).
     public static func resolvedDurationDays(of load: LoadSummary) -> Double {
         if load.firstPickupAt != nil || load.actualFinishAt != nil {
             return activeDurationDays(of: load)

@@ -103,7 +103,7 @@ struct SoftNumberField: View {
     VStack(spacing: Spacing.standard) {
         SoftTextField(title: "load.tripId", text: $text, placeholder: "T-116KYL6KW", autocapitalization: .characters)
         SoftNumberField(title: "load.totalRate", value: $amount)
-        SoftTextField(title: "auth.password", text: $text, isSecure: true)
+        SoftTextField(title: "profile.licensePlate", text: $text, isSecure: true)
     }
     .padding()
     .forestBackground()

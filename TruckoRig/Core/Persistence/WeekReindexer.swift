@@ -30,8 +30,6 @@ enum WeekReindexer {
             if WeekRef(weekNumber: paycheck.weekNumber, year: paycheck.year) != before { report.paychecks += 1 }
         }
 
-        // Deliberately no outbox rows and no `updatedAt` bump: this is a local re-derivation of a
-        // cached field, not an edit the other devices need to hear about.
         try context.save()
         return report
     }

@@ -17,7 +17,6 @@ enum TruckoRigSchema {
         Photo.self,
         Scan.self,
         DriverProfile.self,
-        SyncOutbox.self,
     ]
 
     static var schema: Schema { Schema(models) }

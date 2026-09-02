@@ -3,8 +3,8 @@ import Observation
 
 /// Driver preferences, stored in `UserDefaults` and scoped per account.
 ///
-/// Keys are namespaced by account so two drivers sharing a phone do not inherit each other's goal,
-/// week start or backend URL. Nothing secret lives here — tokens go to the Keychain.
+/// Keys are namespaced by account so two drivers sharing a phone do not inherit each other's goal
+/// or week start.
 @Observable
 final class AppSettings {
 
@@ -17,11 +17,8 @@ final class AppSettings {
         self.weeklyGoal = Self.read(defaults, scope, .weeklyGoal, default: 0)
         self.language = Self.readEnum(defaults, scope, .language, default: .system)
         self.weekStart = Self.readEnum(defaults, scope, .weekStart, default: .sunday)
-        self.isCloudSyncEnabled = Self.read(defaults, scope, .cloudSyncEnabled, default: false)
-        self.syncBackendURL = Self.read(defaults, scope, .syncBackendURL, default: "")
         self.rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
         self.rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
-        self.lastSyncCursor = Self.read(defaults, scope, .lastSyncCursor, default: "")
     }
 
     // MARK: - Values
@@ -29,12 +26,8 @@ final class AppSettings {
     var weeklyGoal: Double { didSet { write(.weeklyGoal, weeklyGoal) } }
     var language: AppLanguage { didSet { write(.language, language.rawValue) } }
     var weekStart: WeekStartDay { didSet { write(.weekStart, weekStart.rawValue) } }
-    var isCloudSyncEnabled: Bool { didSet { write(.cloudSyncEnabled, isCloudSyncEnabled) } }
-    var syncBackendURL: String { didSet { write(.syncBackendURL, syncBackendURL) } }
     var rpmMinProfit: Double { didSet { write(.rpmMinProfit, rpmMinProfit) } }
     var rpmTargetProfit: Double { didSet { write(.rpmTargetProfit, rpmTargetProfit) } }
-    /// Last server change marker this device applied. Empty until the first successful pull.
-    var lastSyncCursor: String { didSet { write(.lastSyncCursor, lastSyncCursor) } }
 
     // MARK: - Derived
 
@@ -46,13 +39,6 @@ final class AppSettings {
         TruckingWeek(weekStart: weekStart)
     }
 
-    /// Backend base URL, or `nil` when sync is off or the URL is unusable.
-    var resolvedBackendURL: URL? {
-        guard isCloudSyncEnabled else { return nil }
-        guard let url = URL(string: syncBackendURL.trimmed), url.scheme != nil, url.host != nil else { return nil }
-        return url
-    }
-
     /// Re-reads every value for a different account.
     func rebind(to scope: AccountScope) {
         guard scope != self.scope else { return }
@@ -60,11 +46,8 @@ final class AppSettings {
         weeklyGoal = Self.read(defaults, scope, .weeklyGoal, default: 0)
         language = Self.readEnum(defaults, scope, .language, default: .system)
         weekStart = Self.readEnum(defaults, scope, .weekStart, default: .sunday)
-        isCloudSyncEnabled = Self.read(defaults, scope, .cloudSyncEnabled, default: false)
-        syncBackendURL = Self.read(defaults, scope, .syncBackendURL, default: "")
         rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
         rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
-        lastSyncCursor = Self.read(defaults, scope, .lastSyncCursor, default: "")
     }
 
     // MARK: - Storage
@@ -73,11 +56,8 @@ final class AppSettings {
         case weeklyGoal
         case language
         case weekStart
-        case cloudSyncEnabled
-        case syncBackendURL
         case rpmMinProfit
         case rpmTargetProfit
-        case lastSyncCursor
     }
 
     private static func storageKey(_ scope: AccountScope, _ key: Key) -> String {

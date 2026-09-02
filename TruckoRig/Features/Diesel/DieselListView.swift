@@ -110,11 +110,7 @@ struct DieselListView: View {
     }
 
     private func delete(_ fill: Diesel) {
-        let repository = FinanceRepository(
-            context: modelContext,
-            sync: appState.sync,
-            week: appState.settings.truckingWeek
-        )
+        let repository = appState.financeRepository(in: modelContext)
         do {
             try repository.delete(fill)
         } catch {
@@ -196,11 +192,7 @@ struct DieselEditorView: View {
     }
 
     private func save() {
-        let repository = FinanceRepository(
-            context: modelContext,
-            sync: appState.sync,
-            week: appState.settings.truckingWeek
-        )
+        let repository = appState.financeRepository(in: modelContext)
         let odometer = Int(odometerText.filter(\.isNumber))
         let normalizedState = state.trimmed.isEmpty ? nil : USStates.normalize(state)
         do {

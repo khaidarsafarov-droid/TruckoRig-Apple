@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 
-/// Language, week start, cloud sync, RPM bands and backup.
+/// Language, week start, RPM bands and backup.
 struct SettingsView: View {
 
     @Environment(AppState.self) private var appState
@@ -45,30 +45,6 @@ struct SettingsView: View {
                         .font(.appCaption)
                         .foregroundStyle(Color.forestError)
                 }
-            }
-
-            Section("settings.sync") {
-                Toggle("settings.sync.enabled", isOn: $settings.isCloudSyncEnabled)
-                if settings.isCloudSyncEnabled {
-                    SoftTextField(
-                        title: "settings.sync.backend",
-                        text: $settings.syncBackendURL,
-                        placeholder: "https://api.example.com",
-                        keyboard: .URL,
-                        autocapitalization: .never
-                    )
-                    if settings.resolvedBackendURL == nil {
-                        Text("settings.sync.invalidURL")
-                            .font(.appCaption)
-                            .foregroundStyle(Color.forestWarning)
-                    }
-                }
-                syncStatusRow
-                pendingChangesRows
-                Button("settings.sync.now") {
-                    Task { await appState.sync.syncNow() }
-                }
-                .disabled(appState.sync.state == .syncing)
             }
 
             Section("settings.backup") {
@@ -120,45 +96,6 @@ struct SettingsView: View {
         )
     }
 
-    @ViewBuilder
-    private var syncStatusRow: some View {
-        switch appState.sync.state {
-        case .idle:
-            if let lastSyncedAt = appState.sync.lastSyncedAt {
-                LabeledContent("settings.sync.lastSynced", value: DateUtils.dateTime(lastSyncedAt))
-            } else {
-                LabeledContent("settings.sync.lastSynced", value: String(localized: "settings.sync.never"))
-            }
-        case .syncing:
-            HStack {
-                ProgressView().controlSize(.small)
-                Text("status.syncing")
-            }
-        case .failed(let message):
-            Label(message, systemImage: "exclamationmark.triangle")
-                .font(.appCaption)
-                .foregroundStyle(Color.forestError)
-        }
-    }
-
-    /// Why sync is behind, in the driver's own terms: how much is queued, since when, and what
-    /// the server said the last time it was tried.
-    @ViewBuilder
-    private var pendingChangesRows: some View {
-        let pending = appState.sync.pending
-        if pending.count > 0 {
-            LabeledContent("settings.sync.pendingChanges", value: "\(pending.count)")
-            if let oldest = pending.oldest {
-                LabeledContent("settings.sync.oldestChange", value: DateUtils.dateTime(oldest))
-            }
-            if let lastError = pending.lastError {
-                Text("settings.sync.lastError \(lastError)")
-                    .font(.appCaption)
-                    .foregroundStyle(Color.forestError)
-            }
-        }
-    }
-
     private static var appVersion: String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
@@ -197,7 +134,7 @@ struct SettingsView: View {
                 into: modelContext,
                 week: appState.settings.truckingWeek
             )
-            appState.adoptSyncedGoal()
+        appState.adoptRestoredGoal()
             appState.publishWidgetSnapshot()
             statusMessage = String(
                 localized: "settings.backup.report \(report.inserted) \(report.updated) \(report.skipped)"

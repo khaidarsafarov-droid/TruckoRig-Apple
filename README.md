@@ -3,19 +3,16 @@
 Нативный iOS-порт Android-приложения [TruckoRig / MyFinance](https://github.com/khaidarsafarov-droid/MyFinance) —
 журнала дальнобойщика: рейсы, зарплата, дизель, ТО, фото и сканы документов.
 
-Local-first: интерфейс всегда читает локальную базу, сеть никогда не блокирует UI. Облачная
-синхронизация опциональна.
+Данные живут на телефоне. Облачного сервера, Supabase и REST-синхронизации в этом клиенте нет.
 
 | | |
 |---|---|
 | Язык | Swift 5.9+ |
 | UI | SwiftUI, iOS 17+ |
 | База | SwiftData (`@Model`, `@Query`, `ModelContext`) |
-| Сеть | `URLSession` + async/await |
-| Auth | Sign in with Apple, email/пароль, локальный режим |
+| Auth | Sign in with Apple, локальный режим |
 | Карты | MapKit |
 | OCR | Vision (`VNRecognizeTextRequest`, ru + en) |
-| Токены | Keychain |
 | Локализация | String Catalog (`.xcstrings`), RU + EN |
 
 ## Как открыть
@@ -25,8 +22,7 @@ open TruckoRig.xcodeproj
 ```
 
 Проект собирается схемой `TruckoRig` (iOS 17+). Перед запуском на устройстве укажите свою
-`DEVELOPMENT_TEAM` и включите capabilities: Sign in with Apple, Push Notifications,
-Background Modes (Background fetch + Remote notifications), App Groups (`group.com.truckorig`).
+`DEVELOPMENT_TEAM` и включите capabilities: Sign in with Apple, App Groups (`group.com.truckorig`).
 
 Шрифт DM Sans не хранится в репозитории — см. [`TruckoRig/Resources/DM-Sans/README.md`](TruckoRig/Resources/DM-Sans/README.md).
 Без него приложение работает и выглядит так же, только системным шрифтом.
@@ -48,12 +44,11 @@ swift test
 
 ```
 TruckoRig/
-├── App/          TruckoRigApp, AppState (composition root), RootView, AppDelegate
+├── App/          TruckoRigApp, AppState (composition root), RootView
 ├── Core/
 │   ├── Models/         @Model-сущности + производные поля
-│   ├── Persistence/    контейнеры на аккаунт, репозитории, снапшоты, бэкап, мост к виджету
-│   ├── Networking/     APIClient, Endpoints, SyncEngine, JWTStore
-│   ├── Auth/           AuthManager, AppleAuthHandler, EmailAuthViewModel
+│   ├── Persistence/    контейнеры на аккаунт, репозитории, JSON-бэкап, мост к виджету
+│   ├── Auth/           AuthManager, AppleAuthHandler
 │   ├── Theme/          палитра Mindwell Forest, DM Sans, soft UI
 │   └── Utils/          даты, форматтеры, гео, OCR, локация, логи
 ├── Domain/       чистая логика: парсеры, калькуляторы, модели (без UI и БД)
@@ -70,13 +65,12 @@ Tests/            тесты доменного слоя (SwiftPM)
 
 Это то, что нельзя сломать при доработках — каждый пункт закрыт кодом и/или тестом.
 
-1. **Local-first.** Любая мутация: сначала запись в SwiftData вместе со строкой `SyncOutbox` в
-   одной транзакции, и только потом — попытка отправки. Всё пишется через
+1. **Local-first.** Любая мутация сразу пишется в SwiftData. Всё идёт через
    `LoadRepository` / `FinanceRepository` / `MediaRepository`, напрямую из View в базу никто не пишет.
 2. **Дедуп по Trip ID.** `LoadRepository.create` отклоняет уже существующий `tripId` ошибкой
    `duplicateTripId`, UI показывает алерт. Relay пересылает один и тот же рейс десятки раз.
 3. **`parsedAt` неизменяем.** Ставится один раз при создании; при редактировании меняется только
-   `updatedAt`. В `SnapshotApplier` при слиянии с сервером `parsedAt` тоже не переписывается.
+   `updatedAt`. При восстановлении из бэкапа `parsedAt` тоже не переписывается.
 4. **Изоляция аккаунтов.** `AccountScopedContainer` создаёт отдельный файл базы
    `TruckoRig_<userId>.store`; `PersistenceController.switchTo` полностью заменяет `ModelContainer`
    при смене пользователя. Настройки в `UserDefaults` и медиа-папки тоже разделены по аккаунту.
@@ -86,36 +80,15 @@ Tests/            тесты доменного слоя (SwiftPM)
 6. **Недельная цель.** Активные дни = длительность от первого PU до окончания (override водителя
    или последний DEL), округление вверх, минимум 1 день. Для закрытых недель `dailyTargetNeeded`
    равен нулю, а не «весь остаток за один день».
-7. **Только webhook.** На iOS нет Telegram long-poll и foreground service — пуш приходит как
-   тихий сигнал `type=sync`, приложение само идёт за данными.
-8. **Медиа мимо бэкенда.** Байты грузятся по presigned URL прямо в хранилище. JWT, OCR-текст и
-   подписанные URL не логируются (`AppLog.redact`).
-9. **Sign in with Apple** реализован рядом с email-входом, как требует App Store.
+7. **Виджет.** Обновляется сразу после сохранения/удаления рейса и после смены недельной цели
+   через App Group `group.com.truckorig`.
+8. **Sign in with Apple** реализован рядом с локальным режимом, как требует App Store. Отдельного
+   сервера аккаунтов нет.
 
-## Синхронизация
+## Бэкап
 
-Настраивается в Settings: тумблер и адрес своего бэкенда. Пока он не задан, `SyncEngine` пишет
-локальное зеркало `cloud_account_mirror_<account>.json` — данные всё равно можно выгрузить.
-
-Порядок одного прохода:
-
-1. Медиа. Фото и сканы, которых ещё нет в облаке, уходят по presigned URL прямо в хранилище
-   (`POST /media/upload-url` → `PUT` в хранилище → `POST /media/complete`). Байты не идут через
-   бэкенд, а сам `PUT` отправляется «голым» `URLSession` — подпись уже в URL, и прикладывать к
-   нему bearer-токен аккаунта нельзя.
-2. Push. Локальный снапшот отправляется первым: телефон водителя — источник правды для всего,
-   что он набрал без сети.
-3. Pull. Сначала `GET /sync/cursor`; если курсор совпадает с последним применённым, снапшот не
-   качается вовсе — на раздаче с телефона это заметная экономия.
-4. Outbox очищается только после того, как медиа и снапшот действительно ушли.
-
-Эндпоинты (`/v1`): `GET|PUT /sync/snapshot`, `GET|PUT /sync/cursor`, `POST /devices/register`,
-`PUT /devices/push-token`, `POST /media/upload-url`, `POST /media/complete`, плюс
-`/auth/apple`, `/auth/sign-in`, `/auth/sign-up`, `/auth/refresh`.
-
-Конфликты разрешаются last-write-wins по `updatedAt` — то же правило, что в Android-клиенте, так
-что один аккаунт может работать с обоих телефонов. Если отправка не удалась, в Settings видно,
-сколько изменений ждёт очереди, с какого момента и что ответил сервер.
+В Settings: экспорт и импорт JSON. Формат тот же, что раньше уходил в облачный снапшот, поэтому
+старые файлы `.truckorig.json` по-прежнему открываются. Конфликты — last-write-wins по `updatedAt`.
 
 ## Осознанные отличия от Android-версии
 
@@ -131,8 +104,8 @@ Tests/            тесты доменного слоя (SwiftPM)
   неделя №1 — та, в которую попадает 1 января. Номера недель совпадают с Android для того же рейса.
 - **Без Tesseract.** Vision распознаёт русский и английский на устройстве; вторая OCR-библиотека
   добавила бы десятки мегабайт ради того же результата.
-- **Без Google Drive.** Бэкап — JSON-файл в том же формате, что и облачный снапшот, через
-  системный share sheet и файловый импорт (iCloud Drive, Files, почта — на выбор водителя).
+- **Без Google Drive, без Ktor/Supabase.** Бэкап — JSON-файл через системный share sheet и
+  файловый импорт (iCloud Drive, Files, почта — на выбор водителя).
 
 ## Xcode-проект генерируется
 
@@ -150,7 +123,7 @@ python3 Tools/check_strings.py        # ключи в коде против ка
 
 ## Локализация
 
-Все строки — в `TruckoRig/Resources/Localizable.xcstrings` (298 ключей, RU + EN). Ключи в коде
+Все строки — в `TruckoRig/Resources/Localizable.xcstrings` (RU + EN). Ключи в коде
 литеральные, а `Tools/check_strings.py` в CI сверяет каталог с кодом: пропущенный перевод,
 осиротевший ключ или несовпадение числа `%@`/`%lld` между языками валят проверку. Доменный слой
 локализации не знает: ошибки — типизированные значения, а их текст живёт в

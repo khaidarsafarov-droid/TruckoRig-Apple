@@ -104,9 +104,6 @@ struct JournalView: View {
                     tint: RPMCalculator.band(for: totals.ratePerMile, thresholds: appState.settings.rpmThresholds).tint
                 )
             }
-            if appState.sync.pendingCount > 0 {
-                PendingSyncBanner(pendingCount: appState.sync.pendingCount)
-            }
         }
         .listRowBackground(Color.forestCard)
     }

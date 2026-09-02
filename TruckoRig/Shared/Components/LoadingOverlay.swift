@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Blocking progress overlay for operations the driver must wait on (import, restore, upload).
+/// Blocking progress overlay for operations the driver must wait on (import, restore).
 struct LoadingOverlay: View {
     var message: LocalizedStringKey = "status.working"
 
@@ -33,30 +33,9 @@ extension View {
     }
 }
 
-/// Inline banner shown when local changes are waiting to reach the server.
-struct PendingSyncBanner: View {
-    let pendingCount: Int
-
-    var body: some View {
-        if pendingCount > 0 {
-            HStack(spacing: Spacing.tight) {
-                Image(systemName: "arrow.triangle.2.circlepath")
-                Text("sync.pending \(pendingCount)")
-                    .font(.appCaption)
-            }
-            .foregroundStyle(Color.forestTextSecondary)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color.forestSurfaceMuted, in: Capsule())
-        }
-    }
-}
-
 #Preview {
-    VStack {
-        PendingSyncBanner(pendingCount: 3)
-    }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .forestBackground()
-    .loadingOverlay(true, message: "status.syncing")
+    Color.clear
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .forestBackground()
+        .loadingOverlay(true, message: "status.working")
 }

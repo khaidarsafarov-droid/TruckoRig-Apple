@@ -140,7 +140,7 @@ struct MaintenanceListView: View {
     }
 
     private var repository: FinanceRepository {
-        FinanceRepository(context: modelContext, sync: appState.sync, week: appState.settings.truckingWeek)
+        FinanceRepository(context: modelContext, week: appState.settings.truckingWeek)
     }
 
     private func setCompleted(_ task: MaintenanceTask, completed: Bool) {
@@ -216,11 +216,7 @@ struct MaintenanceEditorView: View {
     }
 
     private func save() {
-        let repository = FinanceRepository(
-            context: modelContext,
-            sync: appState.sync,
-            week: appState.settings.truckingWeek
-        )
+        let repository = appState.financeRepository(in: modelContext)
         let odometer = Int(odometerText.filter(\.isNumber))
         do {
             if let task {

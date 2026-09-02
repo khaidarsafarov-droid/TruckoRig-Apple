@@ -1,12 +1,12 @@
 import Foundation
 import SwiftData
 
-/// Reads the local database into a cloud snapshot.
+/// Reads the local database into a backup snapshot.
 enum SnapshotBuilder {
 
     @MainActor
-    static func build(from context: ModelContext, now: Date = Date()) throws -> AccountCloudSnapshot {
-        AccountCloudSnapshot(
+    static func build(from context: ModelContext, now: Date = Date()) throws -> AccountSnapshot {
+        AccountSnapshot(
             updatedAt: now,
             loads: try context.fetch(FetchDescriptor<Load>()).map(dto),
             paychecks: try context.fetch(FetchDescriptor<Paycheck>()).map(dto),

@@ -104,7 +104,6 @@ struct ProfileView: View {
     private var providerLabel: String {
         switch appState.auth.session?.provider {
         case .apple: return String(localized: "profile.provider.apple")
-        case .email: return appState.auth.session?.email ?? String(localized: "profile.provider.email")
         case .local, .none: return String(localized: "profile.provider.local")
         }
     }
@@ -176,7 +175,6 @@ struct ProfileEditorView: View {
         target.weeklyGoal = appState.settings.weeklyGoal
         target.updatedAt = Date()
 
-        appState.sync.enqueue(.profile, id: target.id, operation: .update, in: modelContext)
         try? modelContext.save()
         dismiss()
     }

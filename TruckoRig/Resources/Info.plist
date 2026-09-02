@@ -25,17 +25,6 @@
 		<string>LaunchBackground</string>
 	</dict>
 
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>processing</string>
-		<string>remote-notification</string>
-	</array>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.truckorig.sync.refresh</string>
-	</array>
-
 	<key>NSCameraUsageDescription</key>
 	<string>TruckoRig uses the camera to photograph paperwork and scan documents for your loads.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

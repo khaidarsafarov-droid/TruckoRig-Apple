@@ -17,25 +17,22 @@ enum LoadRepositoryError: Error, LocalizedError, Equatable {
 
 /// Every write path for loads.
 ///
-/// Local-first by construction: the SwiftData write and its outbox row are saved together, and
-/// only then does anything reach the network. Nothing in the UI writes loads directly.
+/// Local-first: the SwiftData write is saved, then the home-screen widget is refreshed.
+/// Nothing in the UI writes loads directly.
 @MainActor
 struct LoadRepository {
 
     let context: ModelContext
-    let sync: SyncEngine
     let week: TruckingWeek
     /// Called after a successful save so the home-screen widget can catch up.
     let onDidSave: (() -> Void)?
 
     init(
         context: ModelContext,
-        sync: SyncEngine,
         week: TruckingWeek = TruckingWeek(),
         onDidSave: (() -> Void)? = nil
     ) {
         self.context = context
-        self.sync = sync
         self.week = week
         self.onDidSave = onDidSave
     }
@@ -91,7 +88,6 @@ struct LoadRepository {
         context.insert(load)
         load.refreshDerivedFields(week: week)
 
-        sync.enqueue(.load, id: load.id, operation: .create, in: context)
         try persist()
         return load
     }
@@ -147,7 +143,6 @@ struct LoadRepository {
         load.touch()
         load.refreshDerivedFields(week: week)
 
-        sync.enqueue(.load, id: load.id, operation: .update, in: context)
         try persist()
     }
 
@@ -157,7 +152,6 @@ struct LoadRepository {
         load.disputeAmount = amount
         load.disputeResponseDate = responseDate
         load.touch()
-        sync.enqueue(.load, id: load.id, operation: .update, in: context)
         try persist()
     }
 
@@ -166,7 +160,6 @@ struct LoadRepository {
         penalty.load = load
         context.insert(penalty)
         load.touch()
-        sync.enqueue(.load, id: load.id, operation: .update, in: context)
         try persist()
     }
 
@@ -175,7 +168,6 @@ struct LoadRepository {
         context.delete(penalty)
         if let load {
             load.touch()
-            sync.enqueue(.load, id: load.id, operation: .update, in: context)
         }
         try persist()
     }
@@ -183,9 +175,7 @@ struct LoadRepository {
     // MARK: - Delete
 
     func delete(_ load: Load) throws {
-        let id = load.id
         context.delete(load)
-        sync.enqueue(.load, id: id, operation: .delete, in: context)
         try persist()
     }
 }

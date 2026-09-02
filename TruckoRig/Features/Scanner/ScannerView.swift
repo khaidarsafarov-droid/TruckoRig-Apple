@@ -96,11 +96,7 @@ struct ScannerView: View {
     private func save() {
         guard !pages.isEmpty else { return }
         isProcessing = true
-        let repository = MediaRepository(
-            context: modelContext,
-            sync: appState.sync,
-            store: MediaStore(scope: appState.persistence.scope)
-        )
+        let repository = appState.mediaRepository(in: modelContext)
         do {
             // Each page becomes its own scan; the recognised text belongs to the page it came from.
             for (index, page) in pages.enumerated() {

@@ -1,11 +1,10 @@
 import AuthenticationServices
 import SwiftUI
 
-/// Login wall. Three ways in: Apple, email, or no account at all.
+/// Login wall: Sign in with Apple, or continue with data only on this phone.
 struct WelcomeView: View {
 
     @Environment(AppState.self) private var appState
-    @State private var isShowingEmailForm = false
 
     var body: some View {
         @Bindable var auth = appState.auth
@@ -39,10 +38,6 @@ struct WelcomeView: View {
                 .clipShape(RoundedRectangle(cornerRadius: Spacing.controlRadius, style: .continuous))
                 .accessibilityLabel("auth.apple")
 
-                SoftButton(title: "auth.email", systemImage: "envelope", role: .secondary) {
-                    isShowingEmailForm = true
-                }
-
                 Button("welcome.localMode") {
                     appState.auth.continueLocally()
                 }
@@ -59,9 +54,6 @@ struct WelcomeView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .forestBackground()
-        .sheet(isPresented: $isShowingEmailForm) {
-            LoginView()
-        }
         .alert(
             "auth.error.title",
             isPresented: .isPresented($auth.errorMessage),

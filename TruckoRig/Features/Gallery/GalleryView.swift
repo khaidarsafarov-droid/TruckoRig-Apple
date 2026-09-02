@@ -100,7 +100,7 @@ struct GalleryView: View {
     }
 
     private func delete(_ item: GalleryItem) {
-        let repository = MediaRepository(context: modelContext, sync: appState.sync, store: store)
+        let repository = appState.mediaRepository(in: modelContext, store: store)
         do {
             switch item.kind {
             case .photo:

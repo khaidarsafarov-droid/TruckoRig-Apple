@@ -38,11 +38,8 @@ final class AppState {
     let settings: AppSettings
     let persistence: PersistenceController
     let auth: AuthManager
-    let sync: SyncEngine
 
     var selectedTab: MainTab = .journal
-    /// APNs device token, forwarded to the backend once an account exists.
-    var pushToken: String?
 
     init() {
         let restored = AuthSessionStore.load()
@@ -50,18 +47,17 @@ final class AppState {
 
         let settings = AppSettings(scope: scope)
         let persistence = PersistenceController(scope: scope)
-        let auth = AuthManager(settings: settings)
+        let auth = AuthManager()
 
         self.settings = settings
         self.persistence = persistence
         self.auth = auth
-        self.sync = SyncEngine(settings: settings, auth: auth, persistence: persistence)
     }
 
     /// Whether the login screen should cover the app.
     var needsAuthentication: Bool { auth.session == nil }
 
-    /// Re-points settings, database and sync at the account that is now signed in.
+    /// Re-points settings and the database at the account that is now signed in.
     ///
     /// Called whenever the session changes; the container swap is what guarantees one driver never
     /// sees another's journal on a shared phone.
@@ -69,7 +65,6 @@ final class AppState {
         let scope = auth.session?.scope ?? .local
         settings.rebind(to: scope)
         persistence.switchTo(scope)
-        sync.refreshPending()
     }
 
     func bootstrap() async {
@@ -77,12 +72,10 @@ final class AppState {
         await auth.verifyAppleCredentialIfNeeded()
         ensureProfileExists()
         publishWidgetSnapshot()
-        await sync.registerDevice(pushToken: pushToken)
-        await sync.syncNow()
     }
 
     func signOut(eraseLocalData: Bool = false) {
-        auth.signOut(eraseLocalData: eraseLocalData)
+        auth.signOut()
         persistence.signOut(eraseStore: eraseLocalData)
         settings.rebind(to: .local)
         selectedTab = .journal
@@ -108,54 +101,44 @@ final class AppState {
         WidgetBridge.publish(progress)
     }
 
-    /// Entry point for background refresh: sync, then refresh the widget.
-    func syncFromBackground() async {
-        await sync.syncNow()
-        publishWidgetSnapshot()
-    }
-
-    /// Handles a silent `type=sync` push.
-    func handleRemoteNotification(userInfo: [AnyHashable: Any]) async {
-        guard userInfo["type"] as? String == "sync" else { return }
-        await sync.pullOnly()
-        publishWidgetSnapshot()
-    }
-
     /// The only way views should obtain a load repository: writes also refresh the widget.
     func loadRepository(in context: ModelContext) -> LoadRepository {
         LoadRepository(
             context: context,
-            sync: sync,
             week: settings.truckingWeek,
             onDidSave: { [weak self] in self?.publishWidgetSnapshot() }
         )
     }
 
-    /// Writes the weekly gross target to settings and the profile row so a later snapshot
-    /// push carries the number the driver just typed, not a stale copy.
+    func financeRepository(in context: ModelContext) -> FinanceRepository {
+        FinanceRepository(context: context, week: settings.truckingWeek)
+    }
+
+    func mediaRepository(in context: ModelContext, store: MediaStore? = nil) -> MediaRepository {
+        MediaRepository(
+            context: context,
+            store: store ?? MediaStore(scope: persistence.scope)
+        )
+    }
+
+    /// Writes the weekly gross target to settings and the profile row.
     func setWeeklyGoal(_ amount: Double) {
         settings.weeklyGoal = amount
         let context = persistence.mainContext
         if let profile = try? context.fetch(FetchDescriptor<DriverProfile>()).first {
             profile.weeklyGoal = amount
             profile.updatedAt = Date()
-            sync.enqueue(.profile, id: profile.id, operation: .update, in: context)
             try? context.save()
         }
         publishWidgetSnapshot()
     }
 
-    /// Settings follow the profile row after a pull or backup restore.
-    func adoptSyncedGoal() {
+    /// Settings follow the profile row after a backup restore.
+    func adoptRestoredGoal() {
         guard let profile = try? persistence.mainContext.fetch(FetchDescriptor<DriverProfile>()).first else {
             return
         }
         settings.weeklyGoal = profile.weeklyGoal
-    }
-
-    func registerPushToken(_ token: String) {
-        pushToken = token
-        Task { await sync.registerDevice(pushToken: token) }
     }
 
     /// Exactly one profile row per account; created lazily on first launch of that account.

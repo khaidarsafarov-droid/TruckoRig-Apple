@@ -2,12 +2,11 @@ import Foundation
 
 enum AuthProvider: String, Codable, CaseIterable {
     case apple
-    case email
     /// Signed-in-free mode: everything stays on the device.
     case local
 }
 
-/// The signed-in identity. Tokens live in the Keychain, not here.
+/// The signed-in identity.
 struct AuthSession: Codable, Equatable, Identifiable {
     var userId: String
     var provider: AuthProvider

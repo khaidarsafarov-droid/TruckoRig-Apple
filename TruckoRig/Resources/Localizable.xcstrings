@@ -392,57 +392,6 @@
         }
       }
     },
-    "auth.confirmPassword": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Repeat password"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Повторите пароль"
-          }
-        }
-      }
-    },
-    "auth.email": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continue with email"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Продолжить с email"
-          }
-        }
-      }
-    },
-    "auth.emailAddress": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Email"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Email"
-          }
-        }
-      }
-    },
     "auth.error.appleCredential": {
       "extractionState": "manual",
       "localizations": {
@@ -456,91 +405,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apple не вернул пригодные данные для входа"
-          }
-        }
-      }
-    },
-    "auth.error.backendRequired": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Email sign-in needs a backend URL. Add one in Settings, or use Apple or local mode."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Для входа по email нужен адрес сервера. Укажите его в настройках или используйте Apple либо локальный режим."
-          }
-        }
-      }
-    },
-    "auth.error.cancelled": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign-in was cancelled"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вход отменён"
-          }
-        }
-      }
-    },
-    "auth.error.email": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter a valid email address"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Введите корректный email"
-          }
-        }
-      }
-    },
-    "auth.error.password": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Password needs 8 characters, a letter and a digit"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Пароль: 8 символов, буква и цифра"
-          }
-        }
-      }
-    },
-    "auth.error.passwordMismatch": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passwords do not match"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Пароли не совпадают"
           }
         }
       }
@@ -575,91 +439,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Водитель"
-          }
-        }
-      }
-    },
-    "auth.mode": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mode"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Режим"
-          }
-        }
-      }
-    },
-    "auth.password": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Password"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Пароль"
-          }
-        }
-      }
-    },
-    "auth.password.rule": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "At least 8 characters, with a letter and a digit."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Минимум 8 символов, буква и цифра."
-          }
-        }
-      }
-    },
-    "auth.signIn": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign in"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вход"
-          }
-        }
-      }
-    },
-    "auth.signUp": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Create account"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Регистрация"
           }
         }
       }
@@ -2840,40 +2619,6 @@
         }
       }
     },
-    "media.error.missingFile": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The file is no longer on this phone"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Файла больше нет на телефоне"
-          }
-        }
-      }
-    },
-    "media.error.upload": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Storage refused the upload"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Хранилище отклонило загрузку"
-          }
-        }
-      }
-    },
     "paycheck.add": {
       "extractionState": "manual",
       "localizations": {
@@ -3227,23 +2972,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Вход через Apple"
-          }
-        }
-      }
-    },
-    "profile.provider.email": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signed in with email"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вход по email"
           }
         }
       }
@@ -3968,13 +3696,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Backups use the same format as cloud sync, so a file from one device restores on another."
+            "value": "A backup file from one phone restores on another."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Формат копии совпадает с облачной синхронизацией, файл с одного устройства подходит другому."
+            "value": "Файл копии с одного телефона подходит другому."
           }
         }
       }
@@ -4145,176 +3873,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Целевая"
-          }
-        }
-      }
-    },
-    "settings.sync": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cloud sync"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Синхронизация"
-          }
-        }
-      }
-    },
-    "settings.sync.backend": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Backend URL"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Адрес сервера"
-          }
-        }
-      }
-    },
-    "settings.sync.enabled": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sync with my backend"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Синхронизировать с сервером"
-          }
-        }
-      }
-    },
-    "settings.sync.invalidURL": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter a full URL, for example https://api.example.com"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Введите полный адрес, например https://api.example.com"
-          }
-        }
-      }
-    },
-    "settings.sync.lastError %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last attempt failed: %@"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Последняя попытка не удалась: %@"
-          }
-        }
-      }
-    },
-    "settings.sync.lastSynced": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last synced"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Последняя синхронизация"
-          }
-        }
-      }
-    },
-    "settings.sync.never": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Never"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Никогда"
-          }
-        }
-      }
-    },
-    "settings.sync.now": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sync now"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Синхронизировать сейчас"
-          }
-        }
-      }
-    },
-    "settings.sync.oldestChange": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oldest change"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Самое старое изменение"
-          }
-        }
-      }
-    },
-    "settings.sync.pendingChanges": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Waiting to sync"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ждут отправки"
           }
         }
       }
@@ -4502,23 +4060,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сохранение…"
-          }
-        }
-      }
-    },
-    "status.syncing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Syncing…"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Синхронизация…"
           }
         }
       }
@@ -4808,108 +4349,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Индекс"
-          }
-        }
-      }
-    },
-    "sync.error.invalidResponse": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The server sent something unexpected"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сервер вернул неожиданный ответ"
-          }
-        }
-      }
-    },
-    "sync.error.notConfigured": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cloud sync is not configured"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Синхронизация не настроена"
-          }
-        }
-      }
-    },
-    "sync.error.offline": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No connection to the server"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Нет связи с сервером"
-          }
-        }
-      }
-    },
-    "sync.error.server %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Server error %lld"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ошибка сервера %lld"
-          }
-        }
-      }
-    },
-    "sync.error.unauthorized": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your session expired — sign in again"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сессия истекла, войдите снова"
-          }
-        }
-      }
-    },
-    "sync.pending %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld changes waiting to sync"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld изменений ждут синхронизации"
           }
         }
       }

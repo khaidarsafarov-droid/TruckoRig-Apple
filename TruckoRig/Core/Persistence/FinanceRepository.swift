@@ -2,18 +2,14 @@ import Foundation
 import SwiftData
 
 /// Writes for paychecks, fuel and maintenance.
-///
-/// Same contract as `LoadRepository`: SwiftData first, outbox row in the same save, network later.
 @MainActor
 struct FinanceRepository {
 
     let context: ModelContext
-    let sync: SyncEngine
     let week: TruckingWeek
 
-    init(context: ModelContext, sync: SyncEngine, week: TruckingWeek = TruckingWeek()) {
+    init(context: ModelContext, week: TruckingWeek = TruckingWeek()) {
         self.context = context
-        self.sync = sync
         self.week = week
     }
 
@@ -24,7 +20,6 @@ struct FinanceRepository {
         let paycheck = Paycheck(amount: amount, date: date, company: company?.nonEmpty, notes: notes?.nonEmpty)
         paycheck.refreshWeek(week: week)
         context.insert(paycheck)
-        sync.enqueue(.paycheck, id: paycheck.id, operation: .create, in: context)
         try context.save()
         return paycheck
     }
@@ -36,14 +31,11 @@ struct FinanceRepository {
         paycheck.notes = notes?.nonEmpty
         paycheck.updatedAt = Date()
         paycheck.refreshWeek(week: week)
-        sync.enqueue(.paycheck, id: paycheck.id, operation: .update, in: context)
         try context.save()
     }
 
     func delete(_ paycheck: Paycheck) throws {
-        let id = paycheck.id
         context.delete(paycheck)
-        sync.enqueue(.paycheck, id: id, operation: .delete, in: context)
         try context.save()
     }
 
@@ -69,7 +61,6 @@ struct FinanceRepository {
             odometer: odometer
         )
         context.insert(fill)
-        sync.enqueue(.diesel, id: fill.id, operation: .create, in: context)
         try context.save()
         return fill
     }
@@ -92,14 +83,11 @@ struct FinanceRepository {
         fill.date = date
         fill.odometer = odometer
         fill.updatedAt = Date()
-        sync.enqueue(.diesel, id: fill.id, operation: .update, in: context)
         try context.save()
     }
 
     func delete(_ fill: Diesel) throws {
-        let id = fill.id
         context.delete(fill)
-        sync.enqueue(.diesel, id: id, operation: .delete, in: context)
         try context.save()
     }
 
@@ -121,7 +109,6 @@ struct FinanceRepository {
             notes: notes?.nonEmpty
         )
         context.insert(task)
-        sync.enqueue(.maintenance, id: task.id, operation: .create, in: context)
         try context.save()
         return task
     }
@@ -140,28 +127,23 @@ struct FinanceRepository {
         task.cost = cost
         task.notes = notes?.nonEmpty
         task.updatedAt = Date()
-        sync.enqueue(.maintenance, id: task.id, operation: .update, in: context)
         try context.save()
     }
 
     func setCompleted(_ task: MaintenanceTask, completed: Bool) throws {
         task.completedDate = completed ? Date() : nil
         task.updatedAt = Date()
-        sync.enqueue(.maintenance, id: task.id, operation: .update, in: context)
         try context.save()
     }
 
     func setArchived(_ task: MaintenanceTask, archived: Bool) throws {
         task.isArchived = archived
         task.updatedAt = Date()
-        sync.enqueue(.maintenance, id: task.id, operation: .update, in: context)
         try context.save()
     }
 
     func delete(_ task: MaintenanceTask) throws {
-        let id = task.id
         context.delete(task)
-        sync.enqueue(.maintenance, id: id, operation: .delete, in: context)
         try context.save()
     }
 }

@@ -76,11 +76,7 @@ struct CameraView: View {
         isSaving = true
         Task {
             let fix = await location.currentLocation()
-            let repository = MediaRepository(
-                context: modelContext,
-                sync: appState.sync,
-                store: MediaStore(scope: appState.persistence.scope)
-            )
+            let repository = appState.mediaRepository(in: modelContext)
             do {
                 try repository.savePhoto(
                     capturedImage,
