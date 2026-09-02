@@ -29,7 +29,7 @@ NAMESPACES = (
     "action.", "analytics.", "auth.", "camera.", "date.", "diesel.", "duration.", "error.",
     "format.", "gallery.", "goal.", "heatmap.", "journal.", "load.", "maintenance.", "map.",
     "media.", "paycheck.", "penalty.", "profile.", "relay.", "scanner.", "screen.", "settings.",
-    "stat.", "status.", "stop.", "sync.", "tab.", "welcome.", "widget.", "app.name",
+    "stat.", "status.", "stop.", "tab.", "widget.", "app.name",
 )
 
 STRING_LITERAL = re.compile(r'"((?:[^"\\]|\\.)*)"')

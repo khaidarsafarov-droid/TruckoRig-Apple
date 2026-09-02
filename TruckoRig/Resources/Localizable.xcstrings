@@ -375,57 +375,6 @@
         }
       }
     },
-    "auth.apple": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign in with Apple"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Войти через Apple"
-          }
-        }
-      }
-    },
-    "auth.error.appleCredential": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple did not return a usable credential"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple не вернул пригодные данные для входа"
-          }
-        }
-      }
-    },
-    "auth.error.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign-in failed"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не удалось войти"
-          }
-        }
-      }
-    },
     "auth.localDriver": {
       "extractionState": "manual",
       "localizations": {
@@ -439,23 +388,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Водитель"
-          }
-        }
-      }
-    },
-    "auth.signingIn": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signing in…"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выполняется вход…"
           }
         }
       }
@@ -2959,23 +2891,6 @@
         }
       }
     },
-    "profile.provider.apple": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signed in with Apple"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вход через Apple"
-          }
-        }
-      }
-    },
     "profile.provider.local": {
       "extractionState": "manual",
       "localizations": {
@@ -3006,74 +2921,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Записи"
-          }
-        }
-      }
-    },
-    "profile.signOut": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign out"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выйти"
-          }
-        }
-      }
-    },
-    "profile.signOut.confirm": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign out?"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выйти из аккаунта?"
-          }
-        }
-      }
-    },
-    "profile.signOut.erase": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign out and erase this device"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выйти и стереть данные"
-          }
-        }
-      }
-    },
-    "profile.signOut.message": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signing out closes this account's database. Erasing also deletes it from this phone."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выход закрывает базу этого аккаунта. Стирание также удалит её с телефона."
           }
         }
       }
@@ -4400,57 +4247,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Профиль"
-          }
-        }
-      }
-    },
-    "welcome.localMode": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continue without an account"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Продолжить без аккаунта"
-          }
-        }
-      }
-    },
-    "welcome.localMode.hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Everything stays on this phone. You can sign in later without losing anything."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Все данные останутся на телефоне. Войти можно позже, ничего не потеряв."
-          }
-        }
-      }
-    },
-    "welcome.tagline": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your loads, your miles, your money — offline first."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ваши рейсы, мили и деньги — работает без интернета."
           }
         }
       }

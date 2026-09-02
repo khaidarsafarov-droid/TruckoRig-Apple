@@ -5,13 +5,15 @@ import SwiftUI
 struct ProfileView: View {
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Query private var profiles: [DriverProfile]
 
     @State private var isEditing = false
-    @State private var isConfirmingSignOut = false
 
     private var profile: DriverProfile? { profiles.first }
+
+    private var displayName: String {
+        profile?.name?.nonEmpty ?? String(localized: "auth.localDriver")
+    }
 
     var body: some View {
         List {
@@ -54,9 +56,6 @@ struct ProfileView: View {
                 NavigationLink { SettingsView() } label: {
                     Label("screen.settings", systemImage: "gearshape")
                 }
-                Button(role: .destructive) { isConfirmingSignOut = true } label: {
-                    Label("profile.signOut", systemImage: "rectangle.portrait.and.arrow.right")
-                }
             }
             .listRowBackground(Color.forestCard)
         }
@@ -72,40 +71,26 @@ struct ProfileView: View {
         .sheet(isPresented: $isEditing) {
             ProfileEditorView(profile: profile)
         }
-        .confirmationDialog("profile.signOut.confirm", isPresented: $isConfirmingSignOut, titleVisibility: .visible) {
-            Button("profile.signOut", role: .destructive) { appState.signOut() }
-            Button("profile.signOut.erase", role: .destructive) { appState.signOut(eraseLocalData: true) }
-            Button("action.cancel", role: .cancel) {}
-        } message: {
-            Text("profile.signOut.message")
-        }
     }
 
     private var headerRow: some View {
         HStack(spacing: Spacing.standard) {
-            Text((profile?.name ?? appState.auth.session?.displayLabel ?? "").initials.nonEmpty ?? "TR")
+            Text(displayName.initials.nonEmpty ?? "TR")
                 .font(.appTitle)
                 .foregroundStyle(Color.forestOnPrimary)
                 .frame(width: 60, height: 60)
                 .background(Color.forestPrimary, in: Circle())
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(profile?.name?.nonEmpty ?? appState.auth.session?.displayLabel ?? String(localized: "auth.localDriver"))
+                Text(displayName)
                     .font(.appHeadline)
-                Text(providerLabel)
+                Text("profile.provider.local")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             }
             Spacer()
         }
         .accessibilityElement(children: .combine)
-    }
-
-    private var providerLabel: String {
-        switch appState.auth.session?.provider {
-        case .apple: return String(localized: "profile.provider.apple")
-        case .local, .none: return String(localized: "profile.provider.local")
-        }
     }
 }
 

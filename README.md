@@ -10,7 +10,7 @@
 | Язык | Swift 5.9+ |
 | UI | SwiftUI, iOS 17+ |
 | База | SwiftData (`@Model`, `@Query`, `ModelContext`) |
-| Auth | Sign in with Apple, локальный режим |
+| Данные | Только на телефоне, без логина |
 | Карты | MapKit |
 | OCR | Vision (`VNRecognizeTextRequest`, ru + en) |
 | Локализация | String Catalog (`.xcstrings`), RU + EN |
@@ -22,7 +22,7 @@ open TruckoRig.xcodeproj
 ```
 
 Проект собирается схемой `TruckoRig` (iOS 17+). Перед запуском на устройстве укажите свою
-`DEVELOPMENT_TEAM` и включите capabilities: Sign in with Apple, App Groups (`group.com.truckorig`).
+`DEVELOPMENT_TEAM` и включите App Groups (`group.com.truckorig`).
 
 Шрифт DM Sans не хранится в репозитории — см. [`TruckoRig/Resources/DM-Sans/README.md`](TruckoRig/Resources/DM-Sans/README.md).
 Без него приложение работает и выглядит так же, только системным шрифтом.
@@ -47,8 +47,7 @@ TruckoRig/
 ├── App/          TruckoRigApp, AppState (composition root), RootView
 ├── Core/
 │   ├── Models/         @Model-сущности + производные поля
-│   ├── Persistence/    контейнеры на аккаунт, репозитории, JSON-бэкап, мост к виджету
-│   ├── Auth/           AuthManager, AppleAuthHandler
+│   ├── Persistence/    локальный SwiftData, репозитории, JSON-бэкап, мост к виджету
 │   ├── Theme/          палитра Mindwell Forest, DM Sans, soft UI
 │   └── Utils/          даты, форматтеры, гео, OCR, локация, логи
 ├── Domain/       чистая логика: парсеры, калькуляторы, модели (без UI и БД)
@@ -71,9 +70,9 @@ Tests/            тесты доменного слоя (SwiftPM)
    `duplicateTripId`, UI показывает алерт. Relay пересылает один и тот же рейс десятки раз.
 3. **`parsedAt` неизменяем.** Ставится один раз при создании; при редактировании меняется только
    `updatedAt`. При восстановлении из бэкапа `parsedAt` тоже не переписывается.
-4. **Изоляция аккаунтов.** `AccountScopedContainer` создаёт отдельный файл базы
-   `TruckoRig_<userId>.store`; `PersistenceController.switchTo` полностью заменяет `ModelContainer`
-   при смене пользователя. Настройки в `UserDefaults` и медиа-папки тоже разделены по аккаунту.
+4. **Один локальный магазин.** База — `TruckoRig_local.store`. Логина нет: журнал открывается
+   сразу. Если на телефоне остался файл от старого Sign in with Apple, он один раз переезжает
+   в этот магазин вместе с фото.
 5. **Валидация парсера.** Рейс принимается, только если есть Trip ID, Total Rate > 0 и хотя бы
    один адрес PU или DEL. Иначе возвращается типизированная ошибка, и пользователь видит, чего
    именно не хватило.
@@ -82,8 +81,6 @@ Tests/            тесты доменного слоя (SwiftPM)
    равен нулю, а не «весь остаток за один день».
 7. **Виджет.** Обновляется сразу после сохранения/удаления рейса и после смены недельной цели
    через App Group `group.com.truckorig`.
-8. **Sign in with Apple** реализован рядом с локальным режимом, как требует App Store. Отдельного
-   сервера аккаунтов нет.
 
 ## Бэкап
 

@@ -27,7 +27,7 @@ enum MainTab: String, CaseIterable, Identifiable {
     }
 }
 
-/// Composition root: builds the object graph and keeps the open database in step with the account.
+/// Composition root: builds the object graph for the local store.
 ///
 /// Everything hangs off one instance placed in the SwiftUI environment, which is the whole of the
 /// app's dependency injection — no container framework, no hidden singletons.
@@ -37,49 +37,22 @@ final class AppState {
 
     let settings: AppSettings
     let persistence: PersistenceController
-    let auth: AuthManager
 
     var selectedTab: MainTab = .journal
 
     init() {
-        let restored = AuthSessionStore.load()
-        let scope = restored?.scope ?? .local
+        LocalStoreMigration.adoptPreviousAccountIfNeeded()
 
-        let settings = AppSettings(scope: scope)
-        let persistence = PersistenceController(scope: scope)
-        let auth = AuthManager()
+        let settings = AppSettings(scope: .local)
+        let persistence = PersistenceController(scope: .local)
 
         self.settings = settings
         self.persistence = persistence
-        self.auth = auth
     }
 
-    /// Whether the login screen should cover the app.
-    var needsAuthentication: Bool { auth.session == nil }
-
-    /// Re-points settings and the database at the account that is now signed in.
-    ///
-    /// Called whenever the session changes; the container swap is what guarantees one driver never
-    /// sees another's journal on a shared phone.
-    func applySessionScope() {
-        let scope = auth.session?.scope ?? .local
-        settings.rebind(to: scope)
-        persistence.switchTo(scope)
-    }
-
-    func bootstrap() async {
-        applySessionScope()
-        await auth.verifyAppleCredentialIfNeeded()
+    func bootstrap() {
         ensureProfileExists()
         publishWidgetSnapshot()
-    }
-
-    func signOut(eraseLocalData: Bool = false) {
-        auth.signOut()
-        persistence.signOut(eraseStore: eraseLocalData)
-        settings.rebind(to: .local)
-        selectedTab = .journal
-        WidgetBridge.clear()
     }
 
     /// Refreshes the home-screen widget from the current week.
@@ -141,13 +114,13 @@ final class AppState {
         settings.weeklyGoal = profile.weeklyGoal
     }
 
-    /// Exactly one profile row per account; created lazily on first launch of that account.
+    /// Exactly one profile row; created lazily on first launch.
     private func ensureProfileExists() {
         let context = persistence.mainContext
         let existing = try? context.fetch(FetchDescriptor<DriverProfile>())
         guard existing?.isEmpty ?? true else { return }
         let profile = DriverProfile(
-            name: auth.session?.displayName,
+            name: LocalStoreMigration.inheritedDisplayName,
             preferredLanguage: settings.language,
             weeklyGoal: settings.weeklyGoal
         )

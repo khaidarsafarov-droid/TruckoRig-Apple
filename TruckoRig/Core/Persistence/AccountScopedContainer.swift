@@ -3,7 +3,7 @@ import SwiftData
 
 /// Which account's database is open.
 enum AccountScope: Equatable, Hashable {
-    /// No account: the driver chose to keep everything on the phone.
+    /// The only store the app opens: everything stays on this phone.
     case local
     case user(String)
 
@@ -15,14 +15,7 @@ enum AccountScope: Equatable, Hashable {
         }
     }
 
-    var userId: String? {
-        switch self {
-        case .local: return nil
-        case .user(let id): return id
-        }
-    }
-
-    /// Keeps arbitrary provider identifiers (emails, Apple user IDs) out of file paths.
+    /// Keeps leftover Apple user IDs from older installs out of file paths.
     static func sanitize(_ raw: String) -> String {
         let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_"))
         let cleaned = String(raw.unicodeScalars.map { allowed.contains($0) ? Character($0) : "_" })
@@ -38,10 +31,7 @@ enum AccountScopedContainerError: Error {
     case storeDirectoryUnavailable
 }
 
-/// Builds one SwiftData container per account.
-///
-/// Accounts never share a store file. Signing out closes and (optionally) deletes the store, so a
-/// second driver on the same phone cannot see the first driver's journal.
+/// Builds the SwiftData container for the active store file.
 enum AccountScopedContainer {
 
     static let directoryName = "TruckoRig"

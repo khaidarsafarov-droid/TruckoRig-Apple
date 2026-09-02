@@ -1,10 +1,10 @@
 import Foundation
 import SwiftData
 
-/// Owns the currently open database and swaps it when the signed-in account changes.
+/// Owns the currently open database.
 ///
-/// The whole app reads through the container this hands out, so replacing it is what makes
-/// account isolation real: no view can hold a context for a database that is no longer current.
+/// The whole app reads through the container this hands out. The store is local-only: there is
+/// no account switch, and a previous Apple-scoped file is adopted once on upgrade.
 @Observable
 final class PersistenceController {
 
@@ -21,26 +21,6 @@ final class PersistenceController {
         let (container, failure) = Self.openContainer(for: scope)
         self.container = container
         self.storeFailure = failure
-    }
-
-    /// Opens the database for `scope`, discarding the previous one.
-    ///
-    /// No-op when the scope has not changed, so a token refresh does not tear down the UI.
-    func switchTo(_ scope: AccountScope) {
-        guard scope != self.scope else { return }
-        let (container, failure) = Self.openContainer(for: scope)
-        self.scope = scope
-        self.container = container
-        self.storeFailure = failure
-    }
-
-    /// Signs out. `eraseStore` deletes the local database — used on an explicit "forget this
-    /// account", not on a routine sign-out where the driver expects their data on next login.
-    func signOut(eraseStore: Bool) {
-        let previous = scope
-        switchTo(.local)
-        guard eraseStore, previous != .local else { return }
-        try? AccountScopedContainer.destroyStore(for: previous)
     }
 
     /// Falls back to an in-memory store rather than crashing: a driver mid-trip needs the app to

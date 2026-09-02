@@ -1,10 +1,10 @@
 import Foundation
 import Observation
 
-/// Driver preferences, stored in `UserDefaults` and scoped per account.
+/// Driver preferences, stored in `UserDefaults`.
 ///
-/// Keys are namespaced by account so two drivers sharing a phone do not inherit each other's goal
-/// or week start.
+/// Keys are namespaced by store so a one-time Apple→local migration can copy goal and week
+/// settings without colliding with a leftover empty local profile.
 @Observable
 final class AppSettings {
 
@@ -37,17 +37,6 @@ final class AppSettings {
 
     var truckingWeek: TruckingWeek {
         TruckingWeek(weekStart: weekStart)
-    }
-
-    /// Re-reads every value for a different account.
-    func rebind(to scope: AccountScope) {
-        guard scope != self.scope else { return }
-        self.scope = scope
-        weeklyGoal = Self.read(defaults, scope, .weeklyGoal, default: 0)
-        language = Self.readEnum(defaults, scope, .language, default: .system)
-        weekStart = Self.readEnum(defaults, scope, .weekStart, default: .sunday)
-        rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
-        rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
     }
 
     // MARK: - Storage

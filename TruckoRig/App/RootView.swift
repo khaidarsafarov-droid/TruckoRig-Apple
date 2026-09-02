@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Chooses between the login wall, the phone tab bar and the iPad sidebar.
+/// Chooses between the phone tab bar and the iPad sidebar.
 struct RootView: View {
 
     @Environment(AppState.self) private var appState
@@ -14,22 +14,6 @@ struct RootView: View {
                 MainTabView()
             }
         }
-        .fullScreenCover(isPresented: loginCover) {
-            WelcomeView()
-                .interactiveDismissDisabled()
-        }
-        .onChange(of: appState.auth.session) {
-            appState.applySessionScope()
-            appState.selectedTab = .journal
-        }
-    }
-
-    /// Login is required until a session exists; a swipe must not dismiss the cover.
-    private var loginCover: Binding<Bool> {
-        Binding(
-            get: { appState.needsAuthentication },
-            set: { _ in }
-        )
     }
 }
 
