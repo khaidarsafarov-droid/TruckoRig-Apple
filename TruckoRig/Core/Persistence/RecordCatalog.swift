@@ -12,6 +12,7 @@ final class RecordCatalog {
     private(set) var paychecks: [Paycheck] = []
     private(set) var diesel: [Diesel] = []
     private(set) var maintenance: [MaintenanceTask] = []
+    private(set) var maintenanceArchive: [MaintenanceArchiveEntry] = []
     private(set) var photos: [Photo] = []
     private(set) var scans: [Scan] = []
     private(set) var profile: DriverProfile?
@@ -23,6 +24,7 @@ final class RecordCatalog {
             paychecks = graph.paychecks
             diesel = graph.diesel
             maintenance = graph.maintenance
+            maintenanceArchive = graph.maintenanceArchive
             photos = graph.photos
             scans = graph.scans
             profile = graph.profile

@@ -15,6 +15,8 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
     /// Weekly gross ÷ miles. Zero when the week has no miles.
     public var rpm: Double
     public var dailyTargetNeeded: Double
+    /// Gross ÷ on-road days. Android `WidgetStats.goalActualDailyYield`.
+    public var actualDailyYield: Double
     public var daysRemaining: Int
     public var paceStatus: String
     public var weekLabel: String
@@ -29,6 +31,7 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
         progressPercent: Double,
         rpm: Double,
         dailyTargetNeeded: Double,
+        actualDailyYield: Double = 0,
         daysRemaining: Int,
         paceStatus: String,
         weekLabel: String,
@@ -41,6 +44,7 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
         self.progressPercent = progressPercent
         self.rpm = rpm
         self.dailyTargetNeeded = dailyTargetNeeded
+        self.actualDailyYield = actualDailyYield
         self.daysRemaining = daysRemaining
         self.paceStatus = paceStatus
         self.weekLabel = weekLabel
@@ -56,6 +60,7 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
         progressPercent: 89,
         rpm: 2.82,
         dailyTargetNeeded: 0,
+        actualDailyYield: 0,
         daysRemaining: 2,
         paceStatus: PaceStatus.onTrack.rawValue,
         weekLabel: "Oct 18 – Oct 24, 2025",
@@ -71,7 +76,7 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case target, gross, remaining, progressPercent, rpm
-        case dailyTargetNeeded, daysRemaining, paceStatus, weekLabel, weekRange, updatedAt
+        case dailyTargetNeeded, actualDailyYield, daysRemaining, paceStatus, weekLabel, weekRange, updatedAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -79,6 +84,7 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
         target = try container.decode(Double.self, forKey: .target)
         gross = try container.decode(Double.self, forKey: .gross)
         dailyTargetNeeded = try container.decodeIfPresent(Double.self, forKey: .dailyTargetNeeded) ?? 0
+        actualDailyYield = try container.decodeIfPresent(Double.self, forKey: .actualDailyYield) ?? 0
         daysRemaining = try container.decodeIfPresent(Int.self, forKey: .daysRemaining) ?? 0
         paceStatus = try container.decodeIfPresent(String.self, forKey: .paceStatus) ?? PaceStatus.behind.rawValue
         weekLabel = try container.decodeIfPresent(String.self, forKey: .weekLabel) ?? ""
@@ -103,6 +109,7 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
         try container.encode(progressPercent, forKey: .progressPercent)
         try container.encode(rpm, forKey: .rpm)
         try container.encode(dailyTargetNeeded, forKey: .dailyTargetNeeded)
+        try container.encode(actualDailyYield, forKey: .actualDailyYield)
         try container.encode(daysRemaining, forKey: .daysRemaining)
         try container.encode(paceStatus, forKey: .paceStatus)
         try container.encode(weekLabel, forKey: .weekLabel)
@@ -131,6 +138,7 @@ public enum WidgetSnapshotBuilder {
             progressPercent: progress.progressPercent,
             rpm: rpm,
             dailyTargetNeeded: progress.dailyTargetNeeded,
+            actualDailyYield: progress.actualDailyYield,
             daysRemaining: progress.daysRemainingInWeek,
             paceStatus: progress.paceStatus.rawValue,
             weekLabel: progress.weekLabel,

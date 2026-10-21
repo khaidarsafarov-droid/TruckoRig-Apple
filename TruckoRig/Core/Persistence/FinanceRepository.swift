@@ -100,60 +100,39 @@ struct FinanceRepository {
 
     // MARK: - Maintenance
 
-    @discardableResult
-    func addTask(
-        title: String,
-        dueDate: Date?,
-        dueOdometer: Int?,
-        cost: Double?,
-        notes: String?
-    ) throws -> MaintenanceTask {
-        let task = MaintenanceTask(
-            title: title,
-            dueDate: dueDate,
-            dueOdometer: dueOdometer,
-            cost: cost,
-            notes: notes?.nonEmpty
-        )
-        try database.save(task)
-        saved()
-        return task
-    }
-
-    func update(
-        _ task: MaintenanceTask,
-        title: String,
-        dueDate: Date?,
-        dueOdometer: Int?,
-        cost: Double?,
-        notes: String?
-    ) throws {
-        task.title = title
-        task.dueDate = dueDate
-        task.dueOdometer = dueOdometer
-        task.cost = cost
-        task.notes = notes?.nonEmpty
-        task.updatedAt = Date()
+    func addTask(_ task: MaintenanceTask) throws {
         try database.save(task)
         saved()
     }
 
-    func setCompleted(_ task: MaintenanceTask, completed: Bool) throws {
-        task.completedDate = completed ? Date() : nil
-        task.updatedAt = Date()
-        try database.save(task)
-        saved()
-    }
-
-    func setArchived(_ task: MaintenanceTask, archived: Bool) throws {
-        task.isArchived = archived
-        task.updatedAt = Date()
-        try database.save(task)
+    func complete(_ task: MaintenanceTask, now: Date = Date()) throws {
+        var copy = task
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
+        copy.isCompleted = true
+        copy.completedAt = millis
+        copy.updatedAt = millis
+        try database.save(copy)
         saved()
     }
 
     func delete(_ task: MaintenanceTask) throws {
         try database.delete(task)
+        saved()
+    }
+
+    func addArchive(_ entries: [MaintenanceArchiveEntry]) throws {
+        guard !entries.isEmpty else { return }
+        for entry in entries {
+            try database.save(entry)
+        }
+        saved()
+    }
+
+    func deleteVisit(ids: [String], store: MediaStore) throws {
+        let paths = try database.deleteArchives(ids: ids)
+        for path in paths {
+            store.deleteReceipt(relativePath: path)
+        }
         saved()
     }
 }

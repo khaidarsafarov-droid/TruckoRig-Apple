@@ -10,13 +10,14 @@ struct LegacyJournal {
     var paychecks: [Paycheck] = []
     var diesel: [Diesel] = []
     var maintenance: [MaintenanceTask] = []
+    var maintenanceArchive: [MaintenanceArchiveEntry] = []
     var photos: [Photo] = []
     var scans: [Scan] = []
     var profile: DriverProfile?
 
     var isEmpty: Bool {
         loads.isEmpty && paychecks.isEmpty && diesel.isEmpty && maintenance.isEmpty
-            && photos.isEmpty && scans.isEmpty && profile == nil
+            && maintenanceArchive.isEmpty && photos.isEmpty && scans.isEmpty && profile == nil
     }
 }
 
@@ -67,11 +68,18 @@ enum LegacySwiftDataReader {
 
         journal.paychecks = try rows(connection, tables: tables, candidates: ["ZPAYCHECK", "Paycheck"]).compactMap(makePaycheck)
         journal.diesel = try rows(connection, tables: tables, candidates: ["ZDIESEL", "Diesel"]).compactMap(makeDiesel)
-        journal.maintenance = try rows(
+        let maintenanceRows = try rows(
             connection,
             tables: tables,
             candidates: ["ZMAINTENANCETASK", "MaintenanceTask"]
-        ).compactMap(makeMaintenance)
+        )
+        for row in maintenanceRows {
+            guard let imported = makeMaintenance(row) else { continue }
+            journal.maintenance.append(imported.task)
+            if let archive = imported.archive {
+                journal.maintenanceArchive.append(archive)
+            }
+        }
         journal.profile = try rows(
             connection,
             tables: tables,
@@ -200,18 +208,28 @@ enum LegacySwiftDataReader {
         )
     }
 
-    private static func makeMaintenance(_ row: [String: SystemSQLite.Value]) -> MaintenanceTask? {
+    private static func makeMaintenance(
+        _ row: [String: SystemSQLite.Value]
+    ) -> MaintenanceLegacyImport.Imported? {
         guard let id = uuid(field(row, "id")) else { return nil }
-        return MaintenanceTask(
-            id: id,
-            title: text(field(row, "title")) ?? "",
-            dueDate: date(field(row, "dueDate")),
-            dueOdometer: int(field(row, "dueOdometer")),
-            completedDate: date(field(row, "completedDate")),
-            cost: double(field(row, "cost")),
-            notes: text(field(row, "notes")),
-            isArchived: bool(field(row, "isArchived")),
-            updatedAt: date(field(row, "updatedAt")) ?? Date(timeIntervalSinceReferenceDate: 0)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .current
+        let due = date(field(row, "dueDate"))
+        let completed = date(field(row, "completedDate"))
+        let updated = date(field(row, "updatedAt")) ?? Date(timeIntervalSinceReferenceDate: 0)
+        let fallback = MaintenanceMileage.isoDay(due ?? completed ?? updated, calendar: calendar)
+        return MaintenanceLegacyImport.convert(
+            MaintenanceLegacyImport.Stub(
+                id: id.uuidString,
+                title: text(field(row, "title")) ?? "",
+                dueDateISO: due.map { MaintenanceMileage.isoDay($0, calendar: calendar) },
+                dueOdometer: int(field(row, "dueOdometer")),
+                completedAtMillis: completed.map { Int64($0.timeIntervalSince1970 * 1000) },
+                cost: double(field(row, "cost")),
+                notes: text(field(row, "notes")),
+                updatedAtMillis: Int64(updated.timeIntervalSince1970 * 1000)
+            ),
+            fallbackStartDate: fallback
         )
     }
 

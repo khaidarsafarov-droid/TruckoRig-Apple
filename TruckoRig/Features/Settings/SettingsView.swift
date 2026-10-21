@@ -14,6 +14,32 @@ struct SettingsView: View {
 
     private var settings: AppSettings { appState.settings }
 
+    private var quietRange: String {
+        let start = String(format: "%02d:00", settings.quietStartHour)
+        let end = String(format: "%02d:00", settings.quietEndHour)
+        return String(localized: "settings.quiet.range \(start) \(end)")
+    }
+
+    private func quietHour(_ title: LocalizedStringKey, hour: Binding<Int>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(title)
+                Spacer()
+                Text(String(format: "%02d:00", hour.wrappedValue))
+                    .foregroundStyle(Color.forestPrimary)
+                    .monospacedDigit()
+            }
+            Slider(
+                value: Binding(
+                    get: { Double(hour.wrappedValue) },
+                    set: { hour.wrappedValue = Int($0.rounded()) }
+                ),
+                in: 0...23,
+                step: 1
+            )
+        }
+    }
+
     var body: some View {
         @Bindable var settings = settings
 
@@ -34,6 +60,37 @@ struct SettingsView: View {
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             }
+
+            Section {
+                Toggle("settings.notify.missing", isOn: $settings.notifyMissingWeek)
+                Text("settings.notify.missing.subtitle")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
+                Toggle("settings.notify.maintenance", isOn: $settings.notifyMaintenance)
+                Text("settings.notify.maintenance.subtitle")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
+                Toggle("settings.quiet.title", isOn: $settings.quietHoursEnabled)
+                Text("settings.quiet.desc")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
+                if settings.quietHoursEnabled {
+                    quietHour("settings.quiet.start", hour: $settings.quietStartHour)
+                    quietHour("settings.quiet.end", hour: $settings.quietEndHour)
+                    Text(quietRange)
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                } else {
+                    Text("settings.quiet.off")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
+            }
+            .onChange(of: settings.notifyMissingWeek) { appState.scheduleReminders() }
+            .onChange(of: settings.notifyMaintenance) { appState.scheduleReminders() }
+            .onChange(of: settings.quietHoursEnabled) { appState.scheduleReminders() }
+            .onChange(of: settings.quietStartHour) { appState.scheduleReminders() }
+            .onChange(of: settings.quietEndHour) { appState.scheduleReminders() }
 
             Section("settings.rpm") {
                 SoftNumberField(title: "settings.rpm.min", value: $settings.rpmMinProfit)

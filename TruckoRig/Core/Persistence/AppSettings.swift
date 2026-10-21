@@ -19,6 +19,14 @@ final class AppSettings {
         self.weekStart = Self.readEnum(defaults, scope, .weekStart, default: .sunday)
         self.rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
         self.rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
+        self.notifyMissingWeek = Self.read(defaults, scope, .notifyMissingWeek, default: true)
+        self.notifyMaintenance = Self.read(defaults, scope, .notifyMaintenance, default: true)
+        self.quietHoursEnabled = Self.read(defaults, scope, .quietHoursEnabled, default: false)
+        self.quietStartHour = Self.read(defaults, scope, .quietStartHour, default: 22)
+        self.quietEndHour = Self.read(defaults, scope, .quietEndHour, default: 7)
+        let lastRun = Self.read(defaults, scope, .smartNotificationLastRun, default: 0.0)
+        self.smartNotificationLastRun = lastRun > 0 ? Date(timeIntervalSince1970: lastRun) : nil
+        self.missingNotifiedWeek = Self.read(defaults, scope, .missingNotifiedWeek, default: "")
     }
 
     // MARK: - Values
@@ -28,6 +36,26 @@ final class AppSettings {
     var weekStart: WeekStartDay { didSet { write(.weekStart, weekStart.rawValue) } }
     var rpmMinProfit: Double { didSet { write(.rpmMinProfit, rpmMinProfit) } }
     var rpmTargetProfit: Double { didSet { write(.rpmTargetProfit, rpmTargetProfit) } }
+
+    /// Android `notifyMissingWeek`, default on.
+    var notifyMissingWeek: Bool { didSet { write(.notifyMissingWeek, notifyMissingWeek) } }
+    /// Android `notifyMaintenance`, default on.
+    var notifyMaintenance: Bool { didSet { write(.notifyMaintenance, notifyMaintenance) } }
+    var quietHoursEnabled: Bool { didSet { write(.quietHoursEnabled, quietHoursEnabled) } }
+    var quietStartHour: Int { didSet { write(.quietStartHour, min(23, max(0, quietStartHour))) } }
+    var quietEndHour: Int { didSet { write(.quietEndHour, min(23, max(0, quietEndHour))) } }
+    var smartNotificationLastRun: Date? {
+        didSet {
+            let key = Self.storageKey(scope, .smartNotificationLastRun)
+            if let smartNotificationLastRun {
+                defaults.set(smartNotificationLastRun.timeIntervalSince1970, forKey: key)
+            } else {
+                defaults.removeObject(forKey: key)
+            }
+        }
+    }
+    /// `year-Wweek` of the previous trucking week already handed to UserNotifications.
+    var missingNotifiedWeek: String { didSet { write(.missingNotifiedWeek, missingNotifiedWeek) } }
 
     // MARK: - Derived
 
@@ -47,6 +75,13 @@ final class AppSettings {
         case weekStart
         case rpmMinProfit
         case rpmTargetProfit
+        case notifyMissingWeek
+        case notifyMaintenance
+        case quietHoursEnabled
+        case quietStartHour
+        case quietEndHour
+        case smartNotificationLastRun
+        case missingNotifiedWeek
     }
 
     private static func storageKey(_ scope: AccountScope, _ key: Key) -> String {

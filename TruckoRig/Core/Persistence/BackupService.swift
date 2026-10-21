@@ -43,6 +43,9 @@ enum BackupService {
             for scan in removed.scans {
                 store.delete(fileName: scan.fileName, filePath: scan.filePath, kind: .scan)
             }
+            for path in removed.receiptPaths {
+                store.deleteReceipt(relativePath: path)
+            }
         }
     }
 }
