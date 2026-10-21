@@ -48,7 +48,7 @@ enum SystemSQLite {
         private let db: OpaquePointer
         private let api: API
 
-        fileprivate init(db: OpaquePointer, api: API) {
+        private init(db: OpaquePointer, api: API) {
             self.db = db
             self.api = api
         }
