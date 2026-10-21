@@ -16,8 +16,12 @@ struct WeeklyGoalWidgetView: View {
 
     let snapshot: WidgetGoalSnapshot?
     var probe: WidgetLayoutProbe?
+    /// Tests pass the size directly. WidgetKit's `widgetFamily` key path is read-only.
+    var familyOverride: WidgetFamily? = nil
 
-    @Environment(\.widgetFamily) private var family
+    @Environment(\.widgetFamily) private var environmentFamily
+
+    private var family: WidgetFamily { familyOverride ?? environmentFamily }
 
     private var data: WidgetGoalSnapshot { snapshot ?? .placeholder }
 

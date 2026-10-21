@@ -29,8 +29,7 @@ final class WidgetLayoutTests: XCTestCase {
     private func assertFits(family: WidgetFamily, size: CGSize, showsRemaining: Bool) async {
         let probe = WidgetLayoutProbe()
         let host = UIHostingController(
-            rootView: WeeklyGoalWidgetView(snapshot: .placeholder, probe: probe)
-                .environment(\.widgetFamily, family)
+            rootView: WeeklyGoalWidgetView(snapshot: .placeholder, probe: probe, familyOverride: family)
                 .environment(\.locale, Locale(identifier: "ru"))
                 .frame(width: size.width, height: size.height)
                 .ignoresSafeArea()
@@ -50,7 +49,7 @@ final class WidgetLayoutTests: XCTestCase {
         host.view.setNeedsLayout()
         host.view.layoutIfNeeded()
 
-        let bounds = host.view.convert(host.view.bounds, to: nil).insetBy(dx: -1, dy: -1)
+        let bounds = host.view.convert(host.view.bounds, to: nil as UIView?).insetBy(dx: -1, dy: -1)
         let ids = ["wg.gross", "wg.percent", "wg.bar", "wg.action.camera", "wg.action.scanner", "wg.action.diesel"]
         for id in ids {
             guard let frame = probe.frames[id] else {
