@@ -230,8 +230,8 @@ enum DriveJournalMapper {
             weekNumber: load.weekNumber,
             year: load.year,
             rawMessage: blankToNil(load.rawMessage),
-            parsedAt: date(millis: load.parsedAt) ?? date,
-            updatedAt: date(millis: load.updatedAt) ?? date,
+            parsedAt: instant(load.parsedAt) ?? date,
+            updatedAt: instant(load.updatedAt) ?? date,
             isDispute: load.isDispute,
             disputeCompleted: load.disputeCompleted,
             disputeResponseDate: load.disputeResponseDate.flatMap { noon($0) },
@@ -355,7 +355,7 @@ enum DriveJournalMapper {
         extra.sourceFilePath = paycheck.sourceFilePath
         extra.addedAt = paycheck.addedAt
         book.paycheckExtras[id.uuidString] = extra
-        let date = noon(paycheck.weekStartDate) ?? date(millis: paycheck.addedAt) ?? now
+        let date = noon(paycheck.weekStartDate) ?? instant(paycheck.addedAt) ?? now
         return Paycheck(
             id: id,
             amount: Double(paycheck.netAmountCents) / 100,
@@ -368,7 +368,7 @@ enum DriveJournalMapper {
             driverName: paycheck.driverName,
             rawText: blankToNil(paycheck.rawExtractedText),
             sourceFileName: paycheck.sourceFileName,
-            updatedAt: date(millis: paycheck.addedAt) ?? date
+            updatedAt: instant(paycheck.addedAt) ?? date
         )
     }
 
@@ -395,10 +395,11 @@ enum DriveJournalMapper {
         book.dieselUUIDByAndroid[String(androidID)] = fill.id.uuidString
         let price = thousandths(fill.pricePerGallon)
         let discount = fill.discountPricePerGallon.map(thousandths)
+        let ref = settings.truckingWeek.week(for: fill.date)
         return DriveDiesel(
             id: androidID,
-            weekNumber: fill.weekNumber,
-            year: fill.year,
+            weekNumber: ref.weekNumber,
+            year: ref.year,
             weekLabel: label,
             weekStartDate: start,
             weekEndDate: end,
@@ -429,7 +430,7 @@ enum DriveJournalMapper {
         extra.weekEndDate = fill.weekEndDate
         extra.addedAt = fill.addedAt
         book.dieselExtras[id.uuidString] = extra
-        let date = noon(fill.weekStartDate) ?? date(millis: fill.addedAt) ?? now
+        let date = noon(fill.weekStartDate) ?? instant(fill.addedAt) ?? now
         let price = fill.pricePerGallonThousandths.map { Double($0) / 1000 } ?? 0
         return Diesel(
             id: id,
@@ -444,7 +445,7 @@ enum DriveJournalMapper {
             rawText: blankToNil(fill.rawExtractedText),
             receiptFileName: extra.receiptFileName,
             sourceFileName: fill.sourceFileName,
-            updatedAt: date(millis: fill.addedAt) ?? date
+            updatedAt: instant(fill.addedAt) ?? date
         )
     }
 
@@ -674,7 +675,7 @@ enum DriveJournalMapper {
         Int64((date.timeIntervalSince1970 * 1000).rounded())
     }
 
-    private static func date(millis: Int64) -> Date? {
+    private static func instant(_ millis: Int64) -> Date? {
         guard millis > 0 else { return nil }
         return Date(timeIntervalSince1970: Double(millis) / 1000)
     }

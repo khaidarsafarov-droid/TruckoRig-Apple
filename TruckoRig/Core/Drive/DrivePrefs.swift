@@ -74,7 +74,7 @@ final class DriveBackupPrefs {
 
     var lastSyncErrorAt: Int64 {
         get { number(Self.lastErrorAtKey) }
-        set { defaults.set(NSNumber(value: newValue), forKey: Self.lastSyncErrorAtKey) }
+        set { defaults.set(NSNumber(value: newValue), forKey: Self.lastErrorAtKey) }
     }
 
     var isLinked: Bool { accountEmail != nil }
