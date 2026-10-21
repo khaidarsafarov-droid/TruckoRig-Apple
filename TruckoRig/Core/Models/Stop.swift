@@ -1,10 +1,10 @@
 import Foundation
-import SwiftData
+import Observation
 
 /// One pickup or delivery appointment on a load.
-@Model
-final class Stop {
-    @Attribute(.unique) var id: UUID
+@Observable
+final class Stop: Identifiable {
+    var id: UUID
     var type: StopType
     var stopNumber: Int
     /// Relay `PU#` code of the leg this stop belongs to.

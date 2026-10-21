@@ -21,9 +21,17 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_NAME = "TruckoRig"
 APP_DIR = "TruckoRig"
 WIDGET_DIR = "TruckoRigWidget"
+TESTS_DIR = "TruckoRigTests"
 
 APP_BUNDLE_ID = "com.truckorig"
 WIDGET_BUNDLE_ID = "com.truckorig.widget"
+TESTS_BUNDLE_ID = "com.truckorig.tests"
+
+# SQLCipher build of GRDB. The app target is the only one that links it: the widget never opens
+# the database, and the test bundle uses the app's copy through TEST_HOST.
+GRDB_REPOSITORY = "https://github.com/sqlcipher/GRDB.swift"
+GRDB_VERSION = "7.11.1"
+GRDB_PRODUCT = "GRDB"
 MARKETING_VERSION = "1.5.7"
 DEPLOYMENT_TARGET = "17.0"
 
@@ -40,7 +48,14 @@ WIDGET_SHARED_SOURCES = [
 ]
 
 # Files that live in the source tree but must not be copied into the bundle.
-NON_BUNDLE_FILES = {"Info.plist", "TruckoRig.entitlements", "TruckoRigWidget.entitlements"}
+NON_BUNDLE_FILES = {
+    "Info.plist",
+    "TruckoRig.entitlements",
+    "TruckoRigWidget.entitlements",
+    # Licenses stay in the repository and out of the app bundle.
+    "DMSans-OFL.txt",
+    "Roboto-LICENSE.txt",
+}
 
 FILE_TYPES = {
     ".swift": "sourcecode.swift",
@@ -106,10 +121,12 @@ def build() -> str:
     tree = Tree()
     tree.collect(APP_DIR)
     tree.collect(WIDGET_DIR)
+    tree.collect(TESTS_DIR)
 
     app_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(APP_DIR + os.sep)]
     widget_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(WIDGET_DIR + os.sep)]
     widget_sources += WIDGET_SHARED_SOURCES
+    test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(TESTS_DIR + os.sep)]
 
     app_resources = [
         p for p in tree.files
@@ -125,6 +142,13 @@ def build() -> str:
         and os.path.basename(p) not in NON_BUNDLE_FILES
     ]
     widget_resources.append(f"{APP_DIR}/Resources/Localizable.xcstrings")
+    font_directory = os.path.join(ROOT, APP_DIR, "Resources", "Fonts")
+    if os.path.isdir(font_directory):
+        widget_resources.extend(
+            os.path.join(APP_DIR, "Resources", "Fonts", name)
+            for name in sorted(os.listdir(font_directory))
+            if name.endswith(".ttf")
+        )
 
     lines: list[str] = []
     add = lines.append
@@ -141,12 +165,20 @@ def build() -> str:
     # PBXBuildFile
     add("")
     add("/* Begin PBXBuildFile section */")
-    for target, paths in (("app", app_sources + app_resources), ("widget", widget_sources + widget_resources)):
+    for target, paths in (
+        ("app", app_sources + app_resources),
+        ("widget", widget_sources + widget_resources),
+        ("tests", test_sources),
+    ):
         for path in paths:
             add(
                 f"\t\t{object_id(f'buildfile-{target}', path)} /* {os.path.basename(path)} */ = "
                 f"{{isa = PBXBuildFile; fileRef = {object_id('fileref', path)} /* {os.path.basename(path)} */; }};"
             )
+    add(
+        f"\t\t{object_id('buildfile-app', GRDB_PRODUCT)} /* {GRDB_PRODUCT} in Frameworks */ = "
+        f"{{isa = PBXBuildFile; productRef = {object_id('package-product', GRDB_PRODUCT)} /* {GRDB_PRODUCT} */; }};"
+    )
     appex = f"{PROJECT_NAME}Widget.appex"
     add(
         f"\t\t{object_id('buildfile-embed', appex)} /* {appex} in Embed Foundation Extensions */ = "
@@ -164,6 +196,13 @@ def build() -> str:
     add("\t\t\tproxyType = 1;")
     add(f"\t\t\tremoteGlobalIDString = {object_id('target', 'widget')};")
     add(f"\t\t\tremoteInfo = {PROJECT_NAME}Widget;")
+    add("\t\t};")
+    add(f"\t\t{object_id('proxy', 'tests')} /* PBXContainerItemProxy */ = {{")
+    add("\t\t\tisa = PBXContainerItemProxy;")
+    add(f"\t\t\tcontainerPortal = {object_id('project', PROJECT_NAME)} /* Project object */;")
+    add("\t\t\tproxyType = 1;")
+    add(f"\t\t\tremoteGlobalIDString = {object_id('target', 'app')};")
+    add(f"\t\t\tremoteInfo = {PROJECT_NAME};")
     add("\t\t};")
     add("/* End PBXContainerItemProxy section */")
 
@@ -203,16 +242,24 @@ def build() -> str:
         "explicitFileType = \"wrapper.app-extension\"; includeInIndex = 0; "
         f"path = \"{appex}\"; sourceTree = BUILT_PRODUCTS_DIR; }};"
     )
+    test_product = f"{PROJECT_NAME}Tests.xctest"
+    add(
+        f"\t\t{object_id('product', test_product)} /* {test_product} */ = {{isa = PBXFileReference; "
+        "explicitFileType = wrapper.cfbundle; includeInIndex = 0; "
+        f"path = \"{test_product}\"; sourceTree = BUILT_PRODUCTS_DIR; }};"
+    )
     add("/* End PBXFileReference section */")
 
     # PBXFrameworksBuildPhase (empty: Swift auto-links the system frameworks it imports)
     add("")
     add("/* Begin PBXFrameworksBuildPhase section */")
-    for target in ("app", "widget"):
+    for target in ("app", "widget", "tests"):
         add(f"\t\t{object_id('phase-frameworks', target)} /* Frameworks */ = {{")
         add("\t\t\tisa = PBXFrameworksBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
         add("\t\t\tfiles = (")
+        if target == "app":
+            add(f"\t\t\t\t{object_id('buildfile-app', GRDB_PRODUCT)} /* {GRDB_PRODUCT} in Frameworks */,")
         add("\t\t\t);")
         add("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
         add("\t\t};")
@@ -226,6 +273,7 @@ def build() -> str:
     add("\t\t\tchildren = (")
     add(f"\t\t\t\t{object_id('group', APP_DIR)} /* {APP_DIR} */,")
     add(f"\t\t\t\t{object_id('group', WIDGET_DIR)} /* {WIDGET_DIR} */,")
+    add(f"\t\t\t\t{object_id('group', TESTS_DIR)} /* {TESTS_DIR} */,")
     add(f"\t\t\t\t{object_id('group', 'Products')} /* Products */,")
     add("\t\t\t);")
     add("\t\t\tsourceTree = \"<group>\";")
@@ -236,6 +284,7 @@ def build() -> str:
     add("\t\t\tchildren = (")
     add(f"\t\t\t\t{object_id('product', app_product)} /* {app_product} */,")
     add(f"\t\t\t\t{object_id('product', appex)} /* {appex} */,")
+    add(f"\t\t\t\t{object_id('product', test_product)} /* {test_product} */,")
     add("\t\t\t);")
     add("\t\t\tname = Products;")
     add("\t\t\tsourceTree = \"<group>\";")
@@ -259,10 +308,11 @@ def build() -> str:
     add("")
     add("/* Begin PBXNativeTarget section */")
     targets = [
-        ("app", PROJECT_NAME, app_product, "com.apple.product-type.application", True),
-        ("widget", f"{PROJECT_NAME}Widget", appex, "com.apple.product-type.app-extension", False),
+        ("app", PROJECT_NAME, app_product, "com.apple.product-type.application"),
+        ("widget", f"{PROJECT_NAME}Widget", appex, "com.apple.product-type.app-extension"),
+        ("tests", f"{PROJECT_NAME}Tests", test_product, "com.apple.product-type.bundle.unit-test"),
     ]
-    for key, name, product, product_type, is_app in targets:
+    for key, name, product, product_type in targets:
         add(f"\t\t{object_id('target', key)} /* {name} */ = {{")
         add("\t\t\tisa = PBXNativeTarget;")
         add(f"\t\t\tbuildConfigurationList = {object_id('configlist', key)} /* Build configuration list */;")
@@ -270,16 +320,22 @@ def build() -> str:
         add(f"\t\t\t\t{object_id('phase-sources', key)} /* Sources */,")
         add(f"\t\t\t\t{object_id('phase-frameworks', key)} /* Frameworks */,")
         add(f"\t\t\t\t{object_id('phase-resources', key)} /* Resources */,")
-        if is_app:
+        if key == "app":
             add(f"\t\t\t\t{object_id('phase-embed', 'app')} /* Embed Foundation Extensions */,")
         add("\t\t\t);")
         add("\t\t\tbuildRules = (")
         add("\t\t\t);")
         add("\t\t\tdependencies = (")
-        if is_app:
+        if key == "app":
             add(f"\t\t\t\t{object_id('dependency', 'widget')} /* PBXTargetDependency */,")
+        if key == "tests":
+            add(f"\t\t\t\t{object_id('dependency', 'tests')} /* PBXTargetDependency */,")
         add("\t\t\t);")
         add(f"\t\t\tname = {name};")
+        if key == "app":
+            add("\t\t\tpackageProductDependencies = (")
+            add(f"\t\t\t\t{object_id('package-product', GRDB_PRODUCT)} /* {GRDB_PRODUCT} */,")
+            add("\t\t\t);")
         add(f"\t\t\tproductName = {name};")
         add(f"\t\t\tproductReference = {object_id('product', product)} /* {product} */;")
         add(f"\t\t\tproductType = \"{product_type}\";")
@@ -296,7 +352,7 @@ def build() -> str:
     add("\t\t\t\tLastSwiftUpdateCheck = 1600;")
     add("\t\t\t\tLastUpgradeCheck = 1600;")
     add("\t\t\t\tTargetAttributes = {")
-    for key, _, _, _, _ in targets:
+    for key, _, _, _ in targets:
         add(f"\t\t\t\t\t{object_id('target', key)} = {{")
         add("\t\t\t\t\t\tCreatedOnToolsVersion = 16.0;")
         add("\t\t\t\t\t};")
@@ -312,11 +368,14 @@ def build() -> str:
     add("\t\t\t\tBase,")
     add("\t\t\t);")
     add(f"\t\t\tmainGroup = {object_id('group', 'root')};")
+    add("\t\t\tpackageReferences = (")
+    add(f"\t\t\t\t{object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */,")
+    add("\t\t\t);")
     add(f"\t\t\tproductRefGroup = {object_id('group', 'Products')} /* Products */;")
     add("\t\t\tprojectDirPath = \"\";")
     add("\t\t\tprojectRoot = \"\";")
     add("\t\t\ttargets = (")
-    for key, name, _, _, _ in targets:
+    for key, name, _, _ in targets:
         add(f"\t\t\t\t{object_id('target', key)} /* {name} */,")
     add("\t\t\t);")
     add("\t\t};")
@@ -325,7 +384,7 @@ def build() -> str:
     # PBXResourcesBuildPhase
     add("")
     add("/* Begin PBXResourcesBuildPhase section */")
-    for key, paths in (("app", app_resources), ("widget", widget_resources)):
+    for key, paths in (("app", app_resources), ("widget", widget_resources), ("tests", [])):
         add(f"\t\t{object_id('phase-resources', key)} /* Resources */ = {{")
         add("\t\t\tisa = PBXResourcesBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
@@ -340,7 +399,7 @@ def build() -> str:
     # PBXSourcesBuildPhase
     add("")
     add("/* Begin PBXSourcesBuildPhase section */")
-    for key, paths in (("app", app_sources), ("widget", widget_sources)):
+    for key, paths in (("app", app_sources), ("widget", widget_sources), ("tests", test_sources)):
         add(f"\t\t{object_id('phase-sources', key)} /* Sources */ = {{")
         add("\t\t\tisa = PBXSourcesBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
@@ -360,6 +419,11 @@ def build() -> str:
     add(f"\t\t\ttarget = {object_id('target', 'widget')} /* {PROJECT_NAME}Widget */;")
     add(f"\t\t\ttargetProxy = {object_id('proxy', 'widget')} /* PBXContainerItemProxy */;")
     add("\t\t};")
+    add(f"\t\t{object_id('dependency', 'tests')} /* PBXTargetDependency */ = {{")
+    add("\t\t\tisa = PBXTargetDependency;")
+    add(f"\t\t\ttarget = {object_id('target', 'app')} /* {PROJECT_NAME} */;")
+    add(f"\t\t\ttargetProxy = {object_id('proxy', 'tests')} /* PBXContainerItemProxy */;")
+    add("\t\t};")
     add("/* End PBXTargetDependency section */")
 
     # XCBuildConfiguration
@@ -374,7 +438,7 @@ def build() -> str:
         add("\t\t\t};")
         add(f"\t\t\tname = {name};")
         add("\t\t};")
-    for key in ("app", "widget"):
+    for key in ("app", "widget", "tests"):
         for name, settings in target_configurations(key).items():
             add(f"\t\t{object_id(f'config-{key}', name)} /* {name} */ = {{")
             add("\t\t\tisa = XCBuildConfiguration;")
@@ -389,7 +453,12 @@ def build() -> str:
     # XCConfigurationList
     add("")
     add("/* Begin XCConfigurationList section */")
-    for key, role in (("project", "config-project"), ("app", "config-app"), ("widget", "config-widget")):
+    for key, role in (
+        ("project", "config-project"),
+        ("app", "config-app"),
+        ("widget", "config-widget"),
+        ("tests", "config-tests"),
+    ):
         add(f"\t\t{object_id('configlist', key)} /* Build configuration list */ = {{")
         add("\t\t\tisa = XCConfigurationList;")
         add("\t\t\tbuildConfigurations = (")
@@ -400,6 +469,27 @@ def build() -> str:
         add("\t\t\tdefaultConfigurationName = Release;")
         add("\t\t};")
     add("/* End XCConfigurationList section */")
+
+    add("")
+    add("/* Begin XCRemoteSwiftPackageReference section */")
+    add(f"\t\t{object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */ = {{")
+    add("\t\t\tisa = XCRemoteSwiftPackageReference;")
+    add(f"\t\t\trepositoryURL = \"{GRDB_REPOSITORY}\";")
+    add("\t\t\trequirement = {")
+    add("\t\t\t\tkind = exactVersion;")
+    add(f"\t\t\t\tversion = {GRDB_VERSION};")
+    add("\t\t\t};")
+    add("\t\t};")
+    add("/* End XCRemoteSwiftPackageReference section */")
+
+    add("")
+    add("/* Begin XCSwiftPackageProductDependency section */")
+    add(f"\t\t{object_id('package-product', GRDB_PRODUCT)} /* {GRDB_PRODUCT} */ = {{")
+    add("\t\t\tisa = XCSwiftPackageProductDependency;")
+    add(f"\t\t\tpackage = {object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */;")
+    add(f"\t\t\tproductName = {GRDB_PRODUCT};")
+    add("\t\t};")
+    add("/* End XCSwiftPackageProductDependency section */")
 
     add("\t};")
     add("}")
@@ -468,7 +558,7 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "SWIFT_EMIT_LOC_STRINGS": "YES",
             "TARGETED_DEVICE_FAMILY": '"1,2"',
         }
-    else:
+    elif key == "widget":
         settings = {
             "CODE_SIGN_ENTITLEMENTS": f"{WIDGET_DIR}/TruckoRigWidget.entitlements",
             "CODE_SIGN_STYLE": "Automatic",
@@ -485,6 +575,19 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "SKIP_INSTALL": "YES",
             "SWIFT_EMIT_LOC_STRINGS": "YES",
             "TARGETED_DEVICE_FAMILY": '"1,2"',
+        }
+    else:
+        settings = {
+            "BUNDLE_LOADER": '"$(TEST_HOST)"',
+            "CODE_SIGN_STYLE": "Automatic",
+            "CURRENT_PROJECT_VERSION": "1",
+            "GENERATE_INFOPLIST_FILE": "YES",
+            "LD_RUNPATH_SEARCH_PATHS": '"$(inherited) @executable_path/Frameworks @loader_path/Frameworks"',
+            "MARKETING_VERSION": MARKETING_VERSION,
+            "PRODUCT_BUNDLE_IDENTIFIER": TESTS_BUNDLE_ID,
+            "PRODUCT_NAME": '"$(TARGET_NAME)"',
+            "TARGETED_DEVICE_FAMILY": '"1,2"',
+            "TEST_HOST": '"$(BUILT_PRODUCTS_DIR)/TruckoRig.app/TruckoRig"',
         }
     return {"Debug": dict(settings), "Release": dict(settings)}
 
@@ -513,6 +616,10 @@ SCHEME_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            {test_reference}
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -570,9 +677,15 @@ def write_scheme(directory: str) -> str:
         name=PROJECT_NAME,
         project=PROJECT_NAME,
     )
+    test_reference = BUILDABLE_REFERENCE.format(
+        target_id=object_id("target", "tests"),
+        product=f"{PROJECT_NAME}Tests.xctest",
+        name=f"{PROJECT_NAME}Tests",
+        project=PROJECT_NAME,
+    )
     path = os.path.join(schemes, f"{PROJECT_NAME}.xcscheme")
     with open(path, "w", encoding="utf-8") as handle:
-        handle.write(SCHEME_TEMPLATE.format(reference=reference))
+        handle.write(SCHEME_TEMPLATE.format(reference=reference, test_reference=test_reference))
     return path
 
 

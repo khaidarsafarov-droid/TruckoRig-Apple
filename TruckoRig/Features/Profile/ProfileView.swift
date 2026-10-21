@@ -1,15 +1,13 @@
-import SwiftData
 import SwiftUI
 
 /// Driver and truck details, plus the way into every secondary screen.
 struct ProfileView: View {
 
     @Environment(AppState.self) private var appState
-    @Query private var profiles: [DriverProfile]
 
     @State private var isEditing = false
 
-    private var profile: DriverProfile? { profiles.first }
+    private var profile: DriverProfile? { appState.catalog.profile }
 
     private var displayName: String {
         profile?.name?.nonEmpty ?? String(localized: "auth.localDriver")
@@ -100,7 +98,6 @@ struct ProfileEditorView: View {
     let profile: DriverProfile?
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var name: String
@@ -148,8 +145,10 @@ struct ProfileEditorView: View {
     }
 
     private func save() {
-        let target = profile ?? DriverProfile()
-        if profile == nil { modelContext.insert(target) }
+        let target = profile ?? DriverProfile(
+            preferredLanguage: appState.settings.language,
+            weeklyGoal: appState.settings.weeklyGoal
+        )
 
         target.name = name.nonEmpty
         target.carrier = carrier.nonEmpty
@@ -158,9 +157,8 @@ struct ProfileEditorView: View {
         target.licensePlate = licensePlate.nonEmpty
         target.homeState = homeState.nonEmpty.map(USStates.normalize)
         target.weeklyGoal = appState.settings.weeklyGoal
-        target.updatedAt = Date()
 
-        try? modelContext.save()
+        appState.saveProfile(target)
         dismiss()
     }
 }

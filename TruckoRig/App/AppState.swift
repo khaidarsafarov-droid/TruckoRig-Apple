@@ -1,6 +1,5 @@
 import Foundation
 import Observation
-import SwiftData
 import SwiftUI
 
 enum MainTab: String, CaseIterable, Identifiable {
@@ -37,21 +36,38 @@ final class AppState {
 
     let settings: AppSettings
     let persistence: PersistenceController
+    let catalog: RecordCatalog
 
     var selectedTab: MainTab = .journal
 
-    init() {
-        LocalStoreMigration.adoptPreviousAccountIfNeeded()
+    /// StoreKit premium arrives in a later stage. The renewal line stays hidden until then.
+    var premiumIsActive: Bool { false }
 
+    /// Opens the encrypted journal on this phone and copies a leftover SwiftData file once.
+    convenience init() {
+        LocalStoreMigration.adoptPreviousAccountIfNeeded()
         let settings = AppSettings(scope: .local)
         let persistence = PersistenceController(scope: .local)
+        self.init(persistence: persistence, settings: settings)
+    }
 
-        self.settings = settings
+    /// Preview and test graph. Does not touch the Keychain or the SwiftData file.
+    init(persistence: PersistenceController, settings: AppSettings? = nil) {
+        self.settings = settings ?? AppSettings(scope: persistence.scope)
         self.persistence = persistence
+        let catalog = RecordCatalog()
+        catalog.reload(from: persistence.database)
+        self.catalog = catalog
     }
 
     func bootstrap() {
         ensureProfileExists()
+        reloadJournal()
+    }
+
+    /// Reloads the in-memory journal and refreshes the home-screen widget.
+    func reloadJournal() {
+        catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
     }
 
@@ -59,12 +75,7 @@ final class AppState {
     func publishWidgetSnapshot(now: Date = Date()) {
         let week = settings.truckingWeek
         let ref = week.currentWeek(now: now)
-        let weekNumber = ref.weekNumber
-        let year = ref.year
-        let descriptor = FetchDescriptor<Load>(
-            predicate: #Predicate { $0.weekNumber == weekNumber && $0.year == year }
-        )
-        guard let loads = try? persistence.mainContext.fetch(descriptor) else { return }
+        let loads = catalog.loads.filter { $0.weekNumber == ref.weekNumber && $0.year == ref.year }
         let progress = WeeklyGoalCalculator(week: week).calculate(
             target: settings.weeklyGoal,
             loads: loads.map(\.summary),
@@ -74,57 +85,65 @@ final class AppState {
         WidgetBridge.publish(progress)
     }
 
-    /// The only way views should obtain a load repository: writes also refresh the widget.
-    func loadRepository(in context: ModelContext) -> LoadRepository {
+    /// The only way views should obtain a load repository: writes also refresh the journal.
+    func loadRepository() -> LoadRepository {
         LoadRepository(
-            context: context,
+            database: persistence.database,
             week: settings.truckingWeek,
-            onDidSave: { [weak self] in self?.publishWidgetSnapshot() }
+            onDidSave: { [weak self] in self?.reloadJournal() }
         )
     }
 
-    func financeRepository(in context: ModelContext) -> FinanceRepository {
-        FinanceRepository(context: context, week: settings.truckingWeek)
+    func financeRepository() -> FinanceRepository {
+        FinanceRepository(
+            database: persistence.database,
+            week: settings.truckingWeek,
+            onDidSave: { [weak self] in self?.reloadJournal() }
+        )
     }
 
-    func mediaRepository(in context: ModelContext, store: MediaStore? = nil) -> MediaRepository {
+    func mediaRepository(store: MediaStore? = nil) -> MediaRepository {
         MediaRepository(
-            context: context,
-            store: store ?? MediaStore(scope: persistence.scope)
+            database: persistence.database,
+            store: store ?? MediaStore(scope: persistence.scope),
+            onDidSave: { [weak self] in self?.reloadJournal() }
         )
     }
 
     /// Writes the weekly gross target to settings and the profile row.
     func setWeeklyGoal(_ amount: Double) {
         settings.weeklyGoal = amount
-        let context = persistence.mainContext
-        if let profile = try? context.fetch(FetchDescriptor<DriverProfile>()).first {
+        if let profile = catalog.profile {
             profile.weeklyGoal = amount
             profile.updatedAt = Date()
-            try? context.save()
+            try? persistence.database.save(profile)
         }
-        publishWidgetSnapshot()
+        reloadJournal()
     }
 
     /// Settings follow the profile row after a backup restore.
     func adoptRestoredGoal() {
-        guard let profile = try? persistence.mainContext.fetch(FetchDescriptor<DriverProfile>()).first else {
-            return
+        catalog.reload(from: persistence.database)
+        if let profile = catalog.profile {
+            settings.weeklyGoal = profile.weeklyGoal
         }
-        settings.weeklyGoal = profile.weeklyGoal
+    }
+
+    func saveProfile(_ profile: DriverProfile) {
+        profile.updatedAt = Date()
+        try? persistence.database.save(profile)
+        reloadJournal()
     }
 
     /// Exactly one profile row; created lazily on first launch.
     private func ensureProfileExists() {
-        let context = persistence.mainContext
-        let existing = try? context.fetch(FetchDescriptor<DriverProfile>())
-        guard existing?.isEmpty ?? true else { return }
+        catalog.reload(from: persistence.database)
+        guard catalog.profile == nil else { return }
         let profile = DriverProfile(
             name: LocalStoreMigration.inheritedDisplayName,
             preferredLanguage: settings.language,
             weeklyGoal: settings.weeklyGoal
         )
-        context.insert(profile)
-        try? context.save()
+        try? persistence.database.save(profile)
     }
 }

@@ -1,12 +1,11 @@
-import SwiftData
 import SwiftUI
 
 /// Service items: due, done and archived.
 struct MaintenanceListView: View {
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \MaintenanceTask.dueDate) private var tasks: [MaintenanceTask]
+
+    private var tasks: [MaintenanceTask] { appState.catalog.maintenance }
 
     @State private var editing: MaintenanceTask?
     @State private var isAdding = false
@@ -140,7 +139,7 @@ struct MaintenanceListView: View {
     }
 
     private var repository: FinanceRepository {
-        FinanceRepository(context: modelContext, week: appState.settings.truckingWeek)
+        appState.financeRepository()
     }
 
     private func setCompleted(_ task: MaintenanceTask, completed: Bool) {
@@ -162,7 +161,6 @@ struct MaintenanceEditorView: View {
     let task: MaintenanceTask?
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var title: String
@@ -216,7 +214,7 @@ struct MaintenanceEditorView: View {
     }
 
     private func save() {
-        let repository = appState.financeRepository(in: modelContext)
+        let repository = appState.financeRepository()
         let odometer = Int(odometerText.filter(\.isNumber))
         do {
             if let task {

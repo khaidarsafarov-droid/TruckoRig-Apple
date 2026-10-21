@@ -1,5 +1,4 @@
 import Foundation
-import SwiftData
 
 /// Refiles every row into reporting weeks after the week-start preference changes.
 ///
@@ -15,22 +14,23 @@ enum WeekReindexer {
     }
 
     @discardableResult
-    static func reindex(in context: ModelContext, week: TruckingWeek) throws -> Report {
+    static func reindex(in database: AppDatabase, week: TruckingWeek) throws -> Report {
         var report = Report()
 
-        for load in try context.fetch(FetchDescriptor<Load>()) {
+        for load in try database.loads() {
             let before = WeekRef(weekNumber: load.weekNumber, year: load.year)
             load.refreshDerivedFields(week: week)
             if WeekRef(weekNumber: load.weekNumber, year: load.year) != before { report.loads += 1 }
+            try database.save(load)
         }
 
-        for paycheck in try context.fetch(FetchDescriptor<Paycheck>()) {
+        for paycheck in try database.fetchGraph().paychecks {
             let before = WeekRef(weekNumber: paycheck.weekNumber, year: paycheck.year)
             paycheck.refreshWeek(week: week)
             if WeekRef(weekNumber: paycheck.weekNumber, year: paycheck.year) != before { report.paychecks += 1 }
+            try database.save(paycheck)
         }
 
-        try context.save()
         return report
     }
 }

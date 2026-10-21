@@ -1,4 +1,3 @@
-import SwiftData
 import SwiftUI
 
 /// Full trip card: route, money, stops, penalties and attached media.
@@ -7,7 +6,6 @@ struct LoadDetailView: View {
     let load: Load
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var isEditing = false
@@ -245,7 +243,7 @@ struct LoadDetailView: View {
     }
 
     private func delete() {
-        let repository = appState.loadRepository(in: modelContext)
+        let repository = appState.loadRepository()
         do {
             try repository.delete(load)
             dismiss()

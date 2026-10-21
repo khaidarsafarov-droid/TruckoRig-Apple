@@ -1,5 +1,4 @@
 import Foundation
-import SwiftData
 
 /// Merges a backup snapshot into the local database.
 ///
@@ -19,25 +18,26 @@ enum SnapshotApplier {
     @discardableResult
     static func apply(
         _ snapshot: AccountSnapshot,
-        to context: ModelContext,
+        to database: AppDatabase,
         week: TruckingWeek = TruckingWeek()
     ) throws -> Report {
         var report = Report()
+        let graph = try database.fetchGraph()
 
         let localLoads = Dictionary(
-            try context.fetch(FetchDescriptor<Load>()).map { ($0.tripId, $0) },
+            graph.loads.map { ($0.tripId, $0) },
             uniquingKeysWith: { first, _ in first }
         )
         for remote in snapshot.loads {
             let key = TripID.normalize(remote.tripId)
             guard let local = localLoads[key] else {
                 guard !remote.isDeleted else { continue }
-                context.insert(makeLoad(remote, week: week))
+                try database.save(makeLoad(remote, week: week))
                 report.inserted += 1
                 continue
             }
             if remote.isDeleted {
-                context.delete(local)
+                try database.delete(local)
                 report.deleted += 1
                 continue
             }
@@ -45,20 +45,22 @@ enum SnapshotApplier {
                 report.skipped += 1
                 continue
             }
-            update(local, with: remote, in: context, week: week)
+            update(local, with: remote, week: week)
+            try database.save(local)
             report.updated += 1
         }
 
         try mergeSimple(
             remote: snapshot.paychecks,
-            local: try context.fetch(FetchDescriptor<Paycheck>()),
+            local: graph.paychecks,
             id: \.id,
             localId: \.id,
             remoteUpdatedAt: \.updatedAt,
             localUpdatedAt: \.updatedAt,
             isDeleted: \.isDeleted,
-            context: context,
             report: &report,
+            insert: { try database.save($0) },
+            delete: { try database.delete($0) },
             make: { dto in
                 Paycheck(
                     id: dto.id,
@@ -79,19 +81,21 @@ enum SnapshotApplier {
                 local.weekNumber = dto.weekNumber
                 local.year = dto.year
                 local.updatedAt = dto.updatedAt
+                try database.save(local)
             }
         )
 
         try mergeSimple(
             remote: snapshot.diesel,
-            local: try context.fetch(FetchDescriptor<Diesel>()),
+            local: graph.diesel,
             id: \.id,
             localId: \.id,
             remoteUpdatedAt: \.updatedAt,
             localUpdatedAt: \.updatedAt,
             isDeleted: \.isDeleted,
-            context: context,
             report: &report,
+            insert: { try database.save($0) },
+            delete: { try database.delete($0) },
             make: { dto in
                 Diesel(
                     id: dto.id,
@@ -114,19 +118,21 @@ enum SnapshotApplier {
                 local.date = dto.date
                 local.odometer = dto.odometer
                 local.updatedAt = dto.updatedAt
+                try database.save(local)
             }
         )
 
         try mergeSimple(
             remote: snapshot.maintenance,
-            local: try context.fetch(FetchDescriptor<MaintenanceTask>()),
+            local: graph.maintenance,
             id: \.id,
             localId: \.id,
             remoteUpdatedAt: \.updatedAt,
             localUpdatedAt: \.updatedAt,
             isDeleted: \.isDeleted,
-            context: context,
             report: &report,
+            insert: { try database.save($0) },
+            delete: { try database.delete($0) },
             make: { dto in
                 MaintenanceTask(
                     id: dto.id,
@@ -149,12 +155,12 @@ enum SnapshotApplier {
                 local.notes = dto.notes
                 local.isArchived = dto.isArchived
                 local.updatedAt = dto.updatedAt
+                try database.save(local)
             }
         )
 
         if let remoteProfile = snapshot.profile {
-            let local = try context.fetch(FetchDescriptor<DriverProfile>()).first
-            if let local, remoteProfile.updatedAt > local.updatedAt {
+            if let local = graph.profile, remoteProfile.updatedAt > local.updatedAt {
                 local.name = remoteProfile.name
                 local.carrier = remoteProfile.carrier
                 local.truckModel = remoteProfile.truckModel
@@ -163,9 +169,10 @@ enum SnapshotApplier {
                 local.homeState = remoteProfile.homeState
                 local.weeklyGoal = remoteProfile.weeklyGoal
                 local.updatedAt = remoteProfile.updatedAt
+                try database.save(local)
                 report.updated += 1
-            } else if local == nil {
-                context.insert(DriverProfile(
+            } else if graph.profile == nil {
+                try database.save(DriverProfile(
                     id: remoteProfile.id,
                     name: remoteProfile.name,
                     carrier: remoteProfile.carrier,
@@ -180,7 +187,6 @@ enum SnapshotApplier {
             }
         }
 
-        try context.save()
         return report
     }
 
@@ -239,8 +245,7 @@ enum SnapshotApplier {
         Penalty(id: dto.id, summary: dto.summary, amount: dto.amount, date: dto.date)
     }
 
-    @MainActor
-    private static func update(_ load: Load, with dto: LoadDTO, in context: ModelContext, week: TruckingWeek) {
+    private static func update(_ load: Load, with dto: LoadDTO, week: TruckingWeek) {
         load.date = dto.date
         load.totalRate = dto.totalRate
         load.totalMiles = dto.totalMiles
@@ -254,8 +259,6 @@ enum SnapshotApplier {
         load.updatedAt = dto.updatedAt
         // parsedAt is immutable: it records when the trip first entered the journal.
 
-        for stop in load.stops ?? [] { context.delete(stop) }
-        for penalty in load.penalties ?? [] { context.delete(penalty) }
         load.stops = dto.stops.map(makeStop)
         load.penalties = dto.penalties.map(makePenalty)
         load.refreshDerivedFields(week: week)
@@ -263,8 +266,7 @@ enum SnapshotApplier {
 
     // MARK: - Generic merge
 
-    @MainActor
-    private static func mergeSimple<DTO, Model: PersistentModel>(
+    private static func mergeSimple<DTO, Model>(
         remote: [DTO],
         local: [Model],
         id: KeyPath<DTO, UUID>,
@@ -272,21 +274,22 @@ enum SnapshotApplier {
         remoteUpdatedAt: KeyPath<DTO, Date>,
         localUpdatedAt: KeyPath<Model, Date>,
         isDeleted: KeyPath<DTO, Bool>,
-        context: ModelContext,
         report: inout Report,
+        insert: (Model) throws -> Void,
+        delete: (Model) throws -> Void,
         make: (DTO) -> Model,
-        update: (Model, DTO) -> Void
-    ) {
+        update: (Model, DTO) throws -> Void
+    ) throws {
         let index = Dictionary(local.map { ($0[keyPath: localId], $0) }, uniquingKeysWith: { first, _ in first })
         for dto in remote {
             guard let existing = index[dto[keyPath: id]] else {
                 guard !dto[keyPath: isDeleted] else { continue }
-                context.insert(make(dto))
+                try insert(make(dto))
                 report.inserted += 1
                 continue
             }
             if dto[keyPath: isDeleted] {
-                context.delete(existing)
+                try delete(existing)
                 report.deleted += 1
                 continue
             }
@@ -294,7 +297,7 @@ enum SnapshotApplier {
                 report.skipped += 1
                 continue
             }
-            update(existing, dto)
+            try update(existing, dto)
             report.updated += 1
         }
     }

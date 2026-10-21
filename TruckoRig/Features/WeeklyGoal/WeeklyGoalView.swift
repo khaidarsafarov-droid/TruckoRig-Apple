@@ -1,11 +1,11 @@
-import SwiftData
 import SwiftUI
 
 /// Goal tab: how the week is going and what it takes to close the gap.
 struct WeeklyGoalView: View {
 
     @Environment(AppState.self) private var appState
-    @Query(sort: \Load.date, order: .reverse) private var loads: [Load]
+
+    private var loads: [Load] { appState.catalog.loads }
     @State private var viewModel = WeeklyGoalViewModel()
 
     private var calendar: TruckingWeek { appState.settings.truckingWeek }

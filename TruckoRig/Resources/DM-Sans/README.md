@@ -1,21 +1,21 @@
-# DM Sans
+# Fonts
 
-The app's type scale is DM Sans. The font files are **not** committed here: DM Sans is under the
-SIL Open Font License and is better fetched than vendored into an app repository.
+DM Sans is the Latin face, matching Android. DM Sans has no Cyrillic glyphs, so Russian text on
+Android is drawn by Roboto. The same two families are committed here and registered with
+`UIAppFonts`:
 
-## Adding the font
+- `TruckoRig/Resources/Fonts/DMSans-Regular.ttf`
+- `TruckoRig/Resources/Fonts/DMSans-Medium.ttf`
+- `TruckoRig/Resources/Fonts/DMSans-SemiBold.ttf`
+- `TruckoRig/Resources/Fonts/DMSans-Bold.ttf`
+- `TruckoRig/Resources/Fonts/Roboto-Regular.ttf`
+- `TruckoRig/Resources/Fonts/Roboto-Medium.ttf`
+- `TruckoRig/Resources/Fonts/Roboto-Bold.ttf`
 
-1. Download DM Sans from [Google Fonts](https://fonts.google.com/specimen/DM+Sans).
-2. Copy these three files into this folder:
-   - `DMSans-Regular.ttf`
-   - `DMSans-Medium.ttf`
-   - `DMSans-Bold.ttf`
-3. Regenerate the project so the new files become target members:
-   `python3 Tools/generate_xcodeproj.py`
-4. `Info.plist` already lists all three under `UIAppFonts`.
+Licenses, committed next to the files:
 
-## If you skip this
+- DM Sans — SIL Open Font License 1.1 (`DMSans-OFL.txt`)
+- Roboto — Apache License 2.0 (`Roboto-LICENSE.txt`)
 
-Nothing breaks. `AppFont` checks whether each face is registered at runtime and falls back to the
-system font at the same size and weight, and Settings → About shows a note saying the fallback is
-in use. The layout is unchanged either way.
+Roboto has no semibold master. The semibold cascade uses Roboto Medium, the same way Android's
+extra-bold face aliases to bold. `AppFont` puts Roboto behind DM Sans, then the system font.

@@ -1,12 +1,12 @@
 import Foundation
-import SwiftData
+import Observation
 
 /// One trip in the driver's journal. The trip ID is the natural key: Relay reposts the same trip
 /// many times, and re-importing must update the row rather than create a second one.
-@Model
-final class Load {
-    @Attribute(.unique) var id: UUID
-    @Attribute(.unique) var tripId: String
+@Observable
+final class Load: Identifiable, Hashable {
+    var id: UUID
+    var tripId: String
 
     /// Day the load is filed under — the first pickup, anchored at local noon.
     var date: Date
@@ -42,10 +42,14 @@ final class Load {
     /// Cached PU→DEL duration in days, for rows fetched without their stops.
     var durationDays: Double
 
-    @Relationship(deleteRule: .cascade, inverse: \Stop.load) var stops: [Stop]?
-    @Relationship(deleteRule: .cascade, inverse: \Penalty.load) var penalties: [Penalty]?
-    @Relationship(deleteRule: .nullify, inverse: \Photo.load) var photos: [Photo]?
-    @Relationship(deleteRule: .nullify, inverse: \Scan.load) var scans: [Scan]?
+    var stops: [Stop]?
+    var penalties: [Penalty]?
+    var photos: [Photo]?
+    var scans: [Scan]?
+
+    static func == (lhs: Load, rhs: Load) -> Bool { lhs.id == rhs.id }
+
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     init(
         id: UUID = UUID(),

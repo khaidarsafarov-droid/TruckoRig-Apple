@@ -1,12 +1,12 @@
 import MapKit
-import SwiftData
 import SwiftUI
 
 /// Where the money comes from: one marker per state, sized by gross and coloured by rate per mile.
 struct StateHeatmapView: View {
 
     @Environment(AppState.self) private var appState
-    @Query(sort: \Load.date, order: .reverse) private var loads: [Load]
+
+    private var loads: [Load] { appState.catalog.loads }
 
     @State private var position: MapCameraPosition = .region(
         MKCoordinateRegion(

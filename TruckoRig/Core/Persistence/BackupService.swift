@@ -1,5 +1,4 @@
 import Foundation
-import SwiftData
 import UniformTypeIdentifiers
 
 /// JSON backup and restore.
@@ -10,8 +9,8 @@ enum BackupService {
     static let fileExtension = "truckorig.json"
 
     @MainActor
-    static func exportSnapshot(from context: ModelContext, scope: AccountScope) throws -> URL {
-        let snapshot = try SnapshotBuilder.build(from: context)
+    static func exportSnapshot(from database: AppDatabase, scope: AccountScope) throws -> URL {
+        let snapshot = try SnapshotBuilder.build(from: database)
         let data = try JSONEncoder.snapshot.encode(snapshot)
         let name = "TruckoRig_\(scope.storeKey)_\(DateUtils.isoDay(Date())).\(fileExtension)"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
@@ -25,12 +24,12 @@ enum BackupService {
     /// what a driver restoring after a phone swap expects.
     @MainActor
     @discardableResult
-    static func restore(from url: URL, into context: ModelContext, week: TruckingWeek) throws -> SnapshotApplier.Report {
+    static func restore(from url: URL, into database: AppDatabase, week: TruckingWeek) throws -> SnapshotApplier.Report {
         let needsScopedAccess = url.startAccessingSecurityScopedResource()
         defer { if needsScopedAccess { url.stopAccessingSecurityScopedResource() } }
 
         let data = try Data(contentsOf: url)
         let snapshot = try JSONDecoder.snapshot.decode(AccountSnapshot.self, from: data)
-        return try SnapshotApplier.apply(snapshot, to: context, week: week)
+        return try SnapshotApplier.apply(snapshot, to: database, week: week)
     }
 }

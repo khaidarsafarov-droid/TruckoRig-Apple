@@ -2,11 +2,16 @@ import SwiftUI
 
 /// Shared spacing and radii for the soft UI. Screens reference these instead of literals so the
 /// rhythm stays consistent when a screen is added later.
+/// Radii from Android `OneUiTokens`: chip 8, card 12, card-large and button 16.
 enum Spacing {
     static let tight: CGFloat = 8
     static let standard: CGFloat = 16
     static let section: CGFloat = 20
-    static let cardRadius: CGFloat = 16
+    static let chipRadius: CGFloat = 8
+    static let cardRadius: CGFloat = 12
+    static let cardLargeRadius: CGFloat = 16
+    static let buttonRadius: CGFloat = 16
+    /// Fields and compact controls use the card radius.
     static let controlRadius: CGFloat = 12
 }
 
@@ -65,7 +70,7 @@ struct SoftPrimaryButtonStyle: ButtonStyle {
             .background(
                 (isDestructive ? Color.forestError : Color.forestPrimary)
                     .opacity(isEnabled ? 1 : 0.4),
-                in: RoundedRectangle(cornerRadius: Spacing.controlRadius, style: .continuous)
+                in: RoundedRectangle(cornerRadius: Spacing.buttonRadius, style: .continuous)
             )
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
@@ -83,7 +88,7 @@ struct SoftSecondaryButtonStyle: ButtonStyle {
             .padding(.vertical, 14)
             .background(
                 Color.forestSurfaceMuted,
-                in: RoundedRectangle(cornerRadius: Spacing.controlRadius, style: .continuous)
+                in: RoundedRectangle(cornerRadius: Spacing.buttonRadius, style: .continuous)
             )
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)

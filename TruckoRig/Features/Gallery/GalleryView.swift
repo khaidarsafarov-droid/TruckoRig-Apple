@@ -1,4 +1,3 @@
-import SwiftData
 import SwiftUI
 import UIKit
 
@@ -8,9 +7,9 @@ struct GalleryView: View {
     var load: Load? = nil
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Photo.timestamp, order: .reverse) private var allPhotos: [Photo]
-    @Query(sort: \Scan.timestamp, order: .reverse) private var allScans: [Scan]
+
+    private var allPhotos: [Photo] { appState.catalog.photos }
+    private var allScans: [Scan] { appState.catalog.scans }
 
     @State private var section: MediaSection = .photos
     @State private var preview: GalleryItem?
@@ -100,7 +99,7 @@ struct GalleryView: View {
     }
 
     private func delete(_ item: GalleryItem) {
-        let repository = appState.mediaRepository(in: modelContext, store: store)
+        let repository = appState.mediaRepository(store: store)
         do {
             switch item.kind {
             case .photo:

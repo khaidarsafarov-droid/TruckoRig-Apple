@@ -1,4 +1,3 @@
-import SwiftData
 import SwiftUI
 import UIKit
 import VisionKit
@@ -9,7 +8,6 @@ struct ScannerView: View {
     var load: Load? = nil
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var pages: [UIImage] = []
@@ -96,7 +94,7 @@ struct ScannerView: View {
     private func save() {
         guard !pages.isEmpty else { return }
         isProcessing = true
-        let repository = appState.mediaRepository(in: modelContext)
+        let repository = appState.mediaRepository()
         do {
             // Each page becomes its own scan; the recognised text belongs to the page it came from.
             for (index, page) in pages.enumerated() {

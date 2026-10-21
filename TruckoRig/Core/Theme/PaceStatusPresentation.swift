@@ -4,11 +4,12 @@ import SwiftUI
 /// the goal screen and on the home screen.
 extension PaceStatus {
     var tint: Color {
+        // Android `SemanticPalette.pace`: met and ahead are success, on-track is warning,
+        // behind is danger.
         switch self {
-        case .goalMet: return .forestAccent
-        case .ahead: return .forestSuccess
-        case .onTrack: return .forestSecondary
-        case .behind: return .forestWarning
+        case .goalMet, .ahead: return .forestSuccess
+        case .onTrack: return .forestWarning
+        case .behind: return .forestError
         }
     }
 

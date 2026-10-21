@@ -24,17 +24,22 @@
 		F58E092E92A6BF4E747EBA6E /* Stop.swift */ = {isa = PBXBuildFile; fileRef = 37D55A7EEAEF2EDB8431BA56 /* Stop.swift */; };
 		512D6791792E4032E227341D /* AccountScopedContainer.swift */ = {isa = PBXBuildFile; fileRef = 4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */; };
 		696D4F7AFAA9FE8036E89F54 /* AccountSnapshot.swift */ = {isa = PBXBuildFile; fileRef = 231D79631C3AA436E4E1B0F4 /* AccountSnapshot.swift */; };
+		5874DDD389F3358E74105040 /* AppDatabase.swift */ = {isa = PBXBuildFile; fileRef = B9BA8ECB9F6D426DF392A6B0 /* AppDatabase.swift */; };
 		DC5A9C3F51722F79A9ABF61F /* AppSettings.swift */ = {isa = PBXBuildFile; fileRef = C331D207AC404EC483D2B448 /* AppSettings.swift */; };
 		296CA7111AAE65185672947A /* BackupService.swift */ = {isa = PBXBuildFile; fileRef = 01A0625B8DEB54A745750CB1 /* BackupService.swift */; };
+		58DDC40A531CF60131BA4C46 /* DatabasePassphraseStore.swift */ = {isa = PBXBuildFile; fileRef = F958A91A8B735A0D329AB8EB /* DatabasePassphraseStore.swift */; };
 		2E4F32EBEE69659155DD005D /* FinanceRepository.swift */ = {isa = PBXBuildFile; fileRef = DA651938A28AF1F8340C8FCD /* FinanceRepository.swift */; };
+		364BE74C26D16567E6493A64 /* LegacySwiftDataReader.swift */ = {isa = PBXBuildFile; fileRef = C83D4B64ACCDBFDBD7B6164E /* LegacySwiftDataReader.swift */; };
 		E4973FD474E07A048EC2A295 /* LoadRepository.swift */ = {isa = PBXBuildFile; fileRef = CE1EDF2A64BF3AE5627C7907 /* LoadRepository.swift */; };
 		07AF8C8D8BC82B96AF611F2D /* LocalStoreMigration.swift */ = {isa = PBXBuildFile; fileRef = 6A1597FC862A7F8BE899A739 /* LocalStoreMigration.swift */; };
 		60C1DE622E520FAF738C4D6C /* MediaRepository.swift */ = {isa = PBXBuildFile; fileRef = 56B4D02B93779AB712C818D7 /* MediaRepository.swift */; };
 		E3CCBDE66D09BB22BFB5D267 /* MediaStore.swift */ = {isa = PBXBuildFile; fileRef = 9F58F9A7527246BC39B3EA23 /* MediaStore.swift */; };
-		5AD30A43D90CBC066F77E7D8 /* ModelSchemas.swift */ = {isa = PBXBuildFile; fileRef = 2B165C3101C2447F0E7CEE6B /* ModelSchemas.swift */; };
 		A2D6FC4B2051F70B0BDAF3EC /* PersistenceController.swift */ = {isa = PBXBuildFile; fileRef = 792B6FEA550C39483FBFF3EB /* PersistenceController.swift */; };
+		4E77B1C157B1A68515F50A76 /* RecordCatalog.swift */ = {isa = PBXBuildFile; fileRef = AC23A18BB4C72E53B3F2AEAA /* RecordCatalog.swift */; };
 		B6FFCAECF7F29B5994A98369 /* SnapshotApplier.swift */ = {isa = PBXBuildFile; fileRef = EFC55B806337384E7B8FE39B /* SnapshotApplier.swift */; };
 		C99AD9FCF925627AFAE65C54 /* SnapshotBuilder.swift */ = {isa = PBXBuildFile; fileRef = 69B00BACCFD687258DFE2F63 /* SnapshotBuilder.swift */; };
+		571183AFE0BA3F250CE4F019 /* SwiftDataMigration.swift */ = {isa = PBXBuildFile; fileRef = 83810F5E72FF740124238434 /* SwiftDataMigration.swift */; };
+		4E657CC15645CAF0EE570312 /* SystemSQLite.swift */ = {isa = PBXBuildFile; fileRef = F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */; };
 		F1B2BB637FC0E34C47B8D28C /* WeekReindexer.swift */ = {isa = PBXBuildFile; fileRef = 97345C3015F38C2FED601B83 /* WeekReindexer.swift */; };
 		977D401F0F8FA8D7C9F8E27E /* WidgetBridge.swift */ = {isa = PBXBuildFile; fileRef = E30048804E0843EB21F639BF /* WidgetBridge.swift */; };
 		E9D2850B4A06FCA844BB3C7E /* Colors.swift */ = {isa = PBXBuildFile; fileRef = 05BED02069663E067A86E29A /* Colors.swift */; };
@@ -105,6 +110,13 @@
 		946A6773234047F83B13F72E /* SoftCard.swift */ = {isa = PBXBuildFile; fileRef = 9A0E18B200B7FA69FB005B28 /* SoftCard.swift */; };
 		7CFEE8CD71969E6F1E1D7400 /* SoftTextField.swift */ = {isa = PBXBuildFile; fileRef = E9A91E3DC8256945501586BD /* SoftTextField.swift */; };
 		D0C6607B983873E3DC978456 /* Localizable.xcstrings */ = {isa = PBXBuildFile; fileRef = 1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */; };
+		7D26503774452AD4DE57058E /* DMSans-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */; };
+		0521C1360E4B3452BF2B6805 /* DMSans-Medium.ttf */ = {isa = PBXBuildFile; fileRef = 026B0667ACA09C7D306CF27E /* DMSans-Medium.ttf */; };
+		ED7174AC2717ABA55D58B306 /* DMSans-Regular.ttf */ = {isa = PBXBuildFile; fileRef = 017F100A6A0E6976EA44AF57 /* DMSans-Regular.ttf */; };
+		37817B11D196BDD777269D19 /* DMSans-SemiBold.ttf */ = {isa = PBXBuildFile; fileRef = 4D15E702ACAD2662BD2788D4 /* DMSans-SemiBold.ttf */; };
+		EF99963BA7F62619A8F9652E /* Roboto-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 1FD1CD9C069F3DB1C83340F4 /* Roboto-Bold.ttf */; };
+		A6E5D49805906D7B7BB440BD /* Roboto-Medium.ttf */ = {isa = PBXBuildFile; fileRef = D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */; };
+		1FC37AFEA5D3361238CCE3B6 /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
 		80108301C356E1AFDA77AC91 /* Assets.xcassets */ = {isa = PBXBuildFile; fileRef = 25F3017AC1E5A8997BE4CC9E /* Assets.xcassets */; };
 		1AFD346263F287F83DE5C514 /* TruckoRigWidgetBundle.swift */ = {isa = PBXBuildFile; fileRef = 64E195444487F70935880DE1 /* TruckoRigWidgetBundle.swift */; };
 		AF2C0CD82B4242B21A1B98D5 /* WeeklyGoalWidget.swift */ = {isa = PBXBuildFile; fileRef = 5330DB8D8D1B053921AE4256 /* WeeklyGoalWidget.swift */; };
@@ -116,6 +128,15 @@
 		F1F19CEEDC02C02E3D379573 /* RPMBand.swift */ = {isa = PBXBuildFile; fileRef = 889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */; };
 		B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
 		20CED632B344F7FD0AC29D72 /* Localizable.xcstrings */ = {isa = PBXBuildFile; fileRef = 1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */; };
+		35C174882C15655AD79B9FF7 /* DMSans-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */; };
+		7590E569BD23EDF5E995EACD /* DMSans-Medium.ttf */ = {isa = PBXBuildFile; fileRef = 026B0667ACA09C7D306CF27E /* DMSans-Medium.ttf */; };
+		E5BD80F354C9CAB08309CF32 /* DMSans-Regular.ttf */ = {isa = PBXBuildFile; fileRef = 017F100A6A0E6976EA44AF57 /* DMSans-Regular.ttf */; };
+		BC9E51ADF39F416D0788576B /* DMSans-SemiBold.ttf */ = {isa = PBXBuildFile; fileRef = 4D15E702ACAD2662BD2788D4 /* DMSans-SemiBold.ttf */; };
+		0F55C0FB98E7C4263CEBD28C /* Roboto-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 1FD1CD9C069F3DB1C83340F4 /* Roboto-Bold.ttf */; };
+		48058AA0391FBA5D903BEDBE /* Roboto-Medium.ttf */ = {isa = PBXBuildFile; fileRef = D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */; };
+		C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
+		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
+		109E7A66906193EF84584997 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 1B12FA89457B475550D08A7A /* GRDB */; };
 		ADD14D21F915C76FF9FEE31E /* TruckoRigWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -126,6 +147,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 314DC4CF3D401B5A7CB470DF;
 			remoteInfo = TruckoRigWidget;
+		};
+		6605C10F6C8F6BC76033835A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D5B6ED0100CE3FBC6889956 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8C1A045E96B998B40533C7FF;
+			remoteInfo = TruckoRig;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -160,17 +188,22 @@
 		37D55A7EEAEF2EDB8431BA56 /* Stop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stop.swift"; sourceTree = "<group>"; };
 		4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountScopedContainer.swift"; sourceTree = "<group>"; };
 		231D79631C3AA436E4E1B0F4 /* AccountSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountSnapshot.swift"; sourceTree = "<group>"; };
+		B9BA8ECB9F6D426DF392A6B0 /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabase.swift"; sourceTree = "<group>"; };
 		C331D207AC404EC483D2B448 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettings.swift"; sourceTree = "<group>"; };
 		01A0625B8DEB54A745750CB1 /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupService.swift"; sourceTree = "<group>"; };
+		F958A91A8B735A0D329AB8EB /* DatabasePassphraseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DatabasePassphraseStore.swift"; sourceTree = "<group>"; };
 		DA651938A28AF1F8340C8FCD /* FinanceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FinanceRepository.swift"; sourceTree = "<group>"; };
+		C83D4B64ACCDBFDBD7B6164E /* LegacySwiftDataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LegacySwiftDataReader.swift"; sourceTree = "<group>"; };
 		CE1EDF2A64BF3AE5627C7907 /* LoadRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadRepository.swift"; sourceTree = "<group>"; };
 		6A1597FC862A7F8BE899A739 /* LocalStoreMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalStoreMigration.swift"; sourceTree = "<group>"; };
 		56B4D02B93779AB712C818D7 /* MediaRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaRepository.swift"; sourceTree = "<group>"; };
 		9F58F9A7527246BC39B3EA23 /* MediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaStore.swift"; sourceTree = "<group>"; };
-		2B165C3101C2447F0E7CEE6B /* ModelSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchemas.swift"; sourceTree = "<group>"; };
 		792B6FEA550C39483FBFF3EB /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistenceController.swift"; sourceTree = "<group>"; };
+		AC23A18BB4C72E53B3F2AEAA /* RecordCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RecordCatalog.swift"; sourceTree = "<group>"; };
 		EFC55B806337384E7B8FE39B /* SnapshotApplier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SnapshotApplier.swift"; sourceTree = "<group>"; };
 		69B00BACCFD687258DFE2F63 /* SnapshotBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SnapshotBuilder.swift"; sourceTree = "<group>"; };
+		83810F5E72FF740124238434 /* SwiftDataMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftDataMigration.swift"; sourceTree = "<group>"; };
+		F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemSQLite.swift"; sourceTree = "<group>"; };
 		97345C3015F38C2FED601B83 /* WeekReindexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekReindexer.swift"; sourceTree = "<group>"; };
 		E30048804E0843EB21F639BF /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetBridge.swift"; sourceTree = "<group>"; };
 		05BED02069663E067A86E29A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors.swift"; sourceTree = "<group>"; };
@@ -235,6 +268,15 @@
 		97B5DAA946E65BA5AF521C8C /* WeeklyGoalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalViewModel.swift"; sourceTree = "<group>"; };
 		25F3017AC1E5A8997BE4CC9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
 		749CAFB3AEC0260BCB4DD702 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "README.md"; sourceTree = "<group>"; };
+		18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSans-Bold.ttf"; sourceTree = "<group>"; };
+		026B0667ACA09C7D306CF27E /* DMSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSans-Medium.ttf"; sourceTree = "<group>"; };
+		B93A92AE76A4417BE8F251FA /* DMSans-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "DMSans-OFL.txt"; sourceTree = "<group>"; };
+		017F100A6A0E6976EA44AF57 /* DMSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSans-Regular.ttf"; sourceTree = "<group>"; };
+		4D15E702ACAD2662BD2788D4 /* DMSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSans-SemiBold.ttf"; sourceTree = "<group>"; };
+		1FD1CD9C069F3DB1C83340F4 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
+		C11ADC013B22D64D9519E860 /* Roboto-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Roboto-LICENSE.txt"; sourceTree = "<group>"; };
+		D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		532AF507B6EBE044E9E6ECDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
 		135A264B50C225848871ED7D /* TruckoRig.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRig.entitlements"; sourceTree = "<group>"; };
@@ -245,12 +287,14 @@
 		78E4700C12FAFE14A48EA814 /* SoftButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftButton.swift"; sourceTree = "<group>"; };
 		9A0E18B200B7FA69FB005B28 /* SoftCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftCard.swift"; sourceTree = "<group>"; };
 		E9A91E3DC8256945501586BD /* SoftTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftTextField.swift"; sourceTree = "<group>"; };
+		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
 		3D08B4495962CCBD862A7377 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		2B7BAA61007F68480C7DE32B /* TruckoRigWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRigWidget.entitlements"; sourceTree = "<group>"; };
 		64E195444487F70935880DE1 /* TruckoRigWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckoRigWidgetBundle.swift"; sourceTree = "<group>"; };
 		5330DB8D8D1B053921AE4256 /* WeeklyGoalWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalWidget.swift"; sourceTree = "<group>"; };
 		B3DA8B53248BA20805DF53E9 /* TruckoRig.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TruckoRig.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "TruckoRigWidget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E78E117CD68A4B0C02407F4 /* TruckoRigTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TruckoRigTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,10 +302,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				109E7A66906193EF84584997 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		34DF2F344897C639546F644A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFC4171EFBC1DE064AF54A4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -276,6 +328,7 @@
 			children = (
 				7BD173E8EB3E2895F7843687 /* TruckoRig */,
 				F52F77CC0D3228E216E3A6F4 /* TruckoRigWidget */,
+				D699D40C0DE22C80CB771F02 /* TruckoRigTests */,
 				AE7805B56D1DCAFAA071416F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -285,6 +338,7 @@
 			children = (
 				B3DA8B53248BA20805DF53E9 /* TruckoRig.app */,
 				DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */,
+				3E78E117CD68A4B0C02407F4 /* TruckoRigTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -346,17 +400,22 @@
 			children = (
 				4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */,
 				231D79631C3AA436E4E1B0F4 /* AccountSnapshot.swift */,
+				B9BA8ECB9F6D426DF392A6B0 /* AppDatabase.swift */,
 				C331D207AC404EC483D2B448 /* AppSettings.swift */,
 				01A0625B8DEB54A745750CB1 /* BackupService.swift */,
+				F958A91A8B735A0D329AB8EB /* DatabasePassphraseStore.swift */,
 				DA651938A28AF1F8340C8FCD /* FinanceRepository.swift */,
+				C83D4B64ACCDBFDBD7B6164E /* LegacySwiftDataReader.swift */,
 				CE1EDF2A64BF3AE5627C7907 /* LoadRepository.swift */,
 				6A1597FC862A7F8BE899A739 /* LocalStoreMigration.swift */,
 				56B4D02B93779AB712C818D7 /* MediaRepository.swift */,
 				9F58F9A7527246BC39B3EA23 /* MediaStore.swift */,
-				2B165C3101C2447F0E7CEE6B /* ModelSchemas.swift */,
 				792B6FEA550C39483FBFF3EB /* PersistenceController.swift */,
+				AC23A18BB4C72E53B3F2AEAA /* RecordCatalog.swift */,
 				EFC55B806337384E7B8FE39B /* SnapshotApplier.swift */,
 				69B00BACCFD687258DFE2F63 /* SnapshotBuilder.swift */,
+				83810F5E72FF740124238434 /* SwiftDataMigration.swift */,
+				F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */,
 				97345C3015F38C2FED601B83 /* WeekReindexer.swift */,
 				E30048804E0843EB21F639BF /* WidgetBridge.swift */,
 			);
@@ -600,6 +659,7 @@
 			children = (
 				25F3017AC1E5A8997BE4CC9E /* Assets.xcassets */,
 				B3F95451D5F06AFDF040781F /* DM-Sans */,
+				745272E958C4DF8C5ABE228D /* Fonts */,
 				532AF507B6EBE044E9E6ECDB /* Info.plist */,
 				1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */,
 				135A264B50C225848871ED7D /* TruckoRig.entitlements */,
@@ -613,6 +673,22 @@
 				749CAFB3AEC0260BCB4DD702 /* README.md */,
 			);
 			path = "DM-Sans";
+			sourceTree = "<group>";
+		};
+		745272E958C4DF8C5ABE228D /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */,
+				026B0667ACA09C7D306CF27E /* DMSans-Medium.ttf */,
+				B93A92AE76A4417BE8F251FA /* DMSans-OFL.txt */,
+				017F100A6A0E6976EA44AF57 /* DMSans-Regular.ttf */,
+				4D15E702ACAD2662BD2788D4 /* DMSans-SemiBold.ttf */,
+				1FD1CD9C069F3DB1C83340F4 /* Roboto-Bold.ttf */,
+				C11ADC013B22D64D9519E860 /* Roboto-LICENSE.txt */,
+				D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */,
+				BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */,
+			);
+			path = "Fonts";
 			sourceTree = "<group>";
 		};
 		DE724CF1504AA6A2F6D86458 /* Shared */ = {
@@ -635,6 +711,14 @@
 				E9A91E3DC8256945501586BD /* SoftTextField.swift */,
 			);
 			path = "Components";
+			sourceTree = "<group>";
+		};
+		D699D40C0DE22C80CB771F02 /* TruckoRigTests */ = {
+			isa = PBXGroup;
+			children = (
+				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
+			);
+			path = "TruckoRigTests";
 			sourceTree = "<group>";
 		};
 		F52F77CC0D3228E216E3A6F4 /* TruckoRigWidget */ = {
@@ -666,6 +750,9 @@
 				584C342C1866B10AB5FF7DA3 /* PBXTargetDependency */,
 			);
 			name = TruckoRig;
+			packageProductDependencies = (
+				1B12FA89457B475550D08A7A /* GRDB */,
+			);
 			productName = TruckoRig;
 			productReference = B3DA8B53248BA20805DF53E9 /* TruckoRig.app */;
 			productType = "com.apple.product-type.application";
@@ -687,6 +774,24 @@
 			productReference = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		2ADDEE89B29C55E11126D89F /* TruckoRigTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 75F93D94C80F25B7A6BCCDAE /* Build configuration list */;
+			buildPhases = (
+				0CAD9FB840F9865AF252195E /* Sources */,
+				CAFC4171EFBC1DE064AF54A4 /* Frameworks */,
+				10BBB1C715A6CCF80CAF44B3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				60356F681D31A06D546741DC /* PBXTargetDependency */,
+			);
+			name = TruckoRigTests;
+			productName = TruckoRigTests;
+			productReference = 3E78E117CD68A4B0C02407F4 /* TruckoRigTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -703,6 +808,9 @@
 					314DC4CF3D401B5A7CB470DF = {
 						CreatedOnToolsVersion = 16.0;
 					};
+					2ADDEE89B29C55E11126D89F = {
+						CreatedOnToolsVersion = 16.0;
+					};
 				};
 			};
 			buildConfigurationList = 9F6B1A7BCFF26D263B843F95 /* Build configuration list */;
@@ -715,12 +823,16 @@
 				Base,
 			);
 			mainGroup = CC5D242D023A9271190EA7C6;
+			packageReferences = (
+				9BB06B0C1407CCB03A073C2A /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+			);
 			productRefGroup = AE7805B56D1DCAFAA071416F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8C1A045E96B998B40533C7FF /* TruckoRig */,
 				314DC4CF3D401B5A7CB470DF /* TruckoRigWidget */,
+				2ADDEE89B29C55E11126D89F /* TruckoRigTests */,
 			);
 		};
 /* End PBXProject section */
@@ -731,6 +843,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0C6607B983873E3DC978456 /* Localizable.xcstrings */,
+				7D26503774452AD4DE57058E /* DMSans-Bold.ttf */,
+				0521C1360E4B3452BF2B6805 /* DMSans-Medium.ttf */,
+				ED7174AC2717ABA55D58B306 /* DMSans-Regular.ttf */,
+				37817B11D196BDD777269D19 /* DMSans-SemiBold.ttf */,
+				EF99963BA7F62619A8F9652E /* Roboto-Bold.ttf */,
+				A6E5D49805906D7B7BB440BD /* Roboto-Medium.ttf */,
+				1FC37AFEA5D3361238CCE3B6 /* Roboto-Regular.ttf */,
 				80108301C356E1AFDA77AC91 /* Assets.xcassets */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -740,6 +859,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				20CED632B344F7FD0AC29D72 /* Localizable.xcstrings */,
+				35C174882C15655AD79B9FF7 /* DMSans-Bold.ttf */,
+				7590E569BD23EDF5E995EACD /* DMSans-Medium.ttf */,
+				E5BD80F354C9CAB08309CF32 /* DMSans-Regular.ttf */,
+				BC9E51ADF39F416D0788576B /* DMSans-SemiBold.ttf */,
+				0F55C0FB98E7C4263CEBD28C /* Roboto-Bold.ttf */,
+				48058AA0391FBA5D903BEDBE /* Roboto-Medium.ttf */,
+				C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10BBB1C715A6CCF80CAF44B3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -766,17 +899,22 @@
 				F58E092E92A6BF4E747EBA6E /* Stop.swift */,
 				512D6791792E4032E227341D /* AccountScopedContainer.swift */,
 				696D4F7AFAA9FE8036E89F54 /* AccountSnapshot.swift */,
+				5874DDD389F3358E74105040 /* AppDatabase.swift */,
 				DC5A9C3F51722F79A9ABF61F /* AppSettings.swift */,
 				296CA7111AAE65185672947A /* BackupService.swift */,
+				58DDC40A531CF60131BA4C46 /* DatabasePassphraseStore.swift */,
 				2E4F32EBEE69659155DD005D /* FinanceRepository.swift */,
+				364BE74C26D16567E6493A64 /* LegacySwiftDataReader.swift */,
 				E4973FD474E07A048EC2A295 /* LoadRepository.swift */,
 				07AF8C8D8BC82B96AF611F2D /* LocalStoreMigration.swift */,
 				60C1DE622E520FAF738C4D6C /* MediaRepository.swift */,
 				E3CCBDE66D09BB22BFB5D267 /* MediaStore.swift */,
-				5AD30A43D90CBC066F77E7D8 /* ModelSchemas.swift */,
 				A2D6FC4B2051F70B0BDAF3EC /* PersistenceController.swift */,
+				4E77B1C157B1A68515F50A76 /* RecordCatalog.swift */,
 				B6FFCAECF7F29B5994A98369 /* SnapshotApplier.swift */,
 				C99AD9FCF925627AFAE65C54 /* SnapshotBuilder.swift */,
+				571183AFE0BA3F250CE4F019 /* SwiftDataMigration.swift */,
+				4E657CC15645CAF0EE570312 /* SystemSQLite.swift */,
 				F1B2BB637FC0E34C47B8D28C /* WeekReindexer.swift */,
 				977D401F0F8FA8D7C9F8E27E /* WidgetBridge.swift */,
 				E9D2850B4A06FCA844BB3C7E /* Colors.swift */,
@@ -865,6 +1003,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0CAD9FB840F9865AF252195E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -872,6 +1018,11 @@
 			isa = PBXTargetDependency;
 			target = 314DC4CF3D401B5A7CB470DF /* TruckoRigWidget */;
 			targetProxy = 82D3F98C29F6712177415044 /* PBXContainerItemProxy */;
+		};
+		60356F681D31A06D546741DC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8C1A045E96B998B40533C7FF /* TruckoRig */;
+			targetProxy = 6605C10F6C8F6BC76033835A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1011,6 +1162,38 @@
 			};
 			name = Release;
 		};
+		21B179F8F9DFCE51ACDF5546 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TruckoRig.app/TruckoRig";
+			};
+			name = Debug;
+		};
+		D51FFD02ED4B7183F937B969 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TruckoRig.app/TruckoRig";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1041,6 +1224,34 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		75F93D94C80F25B7A6BCCDAE /* Build configuration list */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21B179F8F9DFCE51ACDF5546 /* Debug */,
+				D51FFD02ED4B7183F937B969 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9BB06B0C1407CCB03A073C2A /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sqlcipher/GRDB.swift";
+			requirement = {
+				kind = exactVersion;
+				version = 7.11.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1B12FA89457B475550D08A7A /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9BB06B0C1407CCB03A073C2A /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 }

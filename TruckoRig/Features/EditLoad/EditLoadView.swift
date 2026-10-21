@@ -1,4 +1,3 @@
-import SwiftData
 import SwiftUI
 
 /// Sheet for editing an existing trip: fields, stops, penalties and the dispute state.
@@ -7,7 +6,6 @@ struct EditLoadView: View {
     let load: Load
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var draft: LoadDraft
@@ -140,7 +138,7 @@ struct EditLoadView: View {
     }
 
     private var repository: LoadRepository {
-        appState.loadRepository(in: modelContext)
+        appState.loadRepository()
     }
 
     private func save() {

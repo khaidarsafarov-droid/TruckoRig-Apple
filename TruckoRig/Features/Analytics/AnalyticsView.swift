@@ -1,12 +1,12 @@
 import Charts
-import SwiftData
 import SwiftUI
 
 /// Gross over time, best states and best lanes.
 struct AnalyticsView: View {
 
     @Environment(AppState.self) private var appState
-    @Query(sort: \Load.date, order: .reverse) private var loads: [Load]
+
+    private var loads: [Load] { appState.catalog.loads }
     @State private var viewModel = AnalyticsViewModel()
 
     private var calendar: TruckingWeek { appState.settings.truckingWeek }

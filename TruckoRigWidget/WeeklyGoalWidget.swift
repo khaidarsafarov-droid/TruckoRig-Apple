@@ -6,7 +6,7 @@ struct WeeklyGoalWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WidgetBridge.kind, provider: WeeklyGoalProvider()) { entry in
             WeeklyGoalWidgetView(snapshot: entry.snapshot)
-                .containerBackground(Color.forestBackground, for: .widget)
+                .containerBackground(for: .widget) { HeroGradient() }
         }
         .configurationDisplayName("widget.goal.title")
         .description("widget.goal.description")
@@ -73,14 +73,14 @@ struct WeeklyGoalWidgetView: View {
             Spacer(minLength: 0)
             Text(Formatters.money(snapshot?.gross ?? 0))
                 .font(.appNumber)
-                .foregroundStyle(Color.forestText)
+                .foregroundStyle(Color.heroText)
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)
             ProgressView(value: snapshot?.progressFraction ?? 0)
-                .tint(snapshot?.status.tint ?? .forestPrimary)
+                .tint(Color.brandGold)
             Text(subtitle)
                 .font(.appCaption)
-                .foregroundStyle(Color.forestTextSecondary)
+                .foregroundStyle(Color.heroTextMuted)
                 .lineLimit(1)
         }
     }
@@ -92,15 +92,16 @@ struct WeeklyGoalWidgetView: View {
                 if let snapshot, snapshot.target > 0 {
                     Text("goal.of \(Formatters.money(snapshot.target))")
                         .font(.appCaption)
-                        .foregroundStyle(Color.forestTextSecondary)
+                        .foregroundStyle(Color.heroTextMuted)
                     Label(snapshot.status.title, systemImage: snapshot.status.systemImage)
                         .font(.appCaptionMedium)
                         .foregroundStyle(snapshot.status.tint)
                     Text("goal.daysLeft")
                         .font(.appCaption)
-                        .foregroundStyle(Color.forestTextSecondary)
+                        .foregroundStyle(Color.heroTextMuted)
                     Text(String(snapshot.daysRemaining))
                         .font(.appNumber)
+                        .foregroundStyle(Color.heroText)
                 }
             }
             Spacer(minLength: 0)
@@ -110,7 +111,7 @@ struct WeeklyGoalWidgetView: View {
     private var header: some View {
         Text(snapshot?.weekLabel ?? String(localized: "widget.goal.title"))
             .font(.appCaption)
-            .foregroundStyle(Color.forestTextSecondary)
+            .foregroundStyle(Color.heroTextMuted)
             .lineLimit(1)
     }
 

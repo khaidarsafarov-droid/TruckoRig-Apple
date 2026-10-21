@@ -1,13 +1,19 @@
 import Foundation
-import SwiftData
 import UIKit
 
-/// Writes for photos and scans: file first, then the row.
+/// Writes for photos and scans: file first, then the encrypted row.
 @MainActor
 struct MediaRepository {
 
-    let context: ModelContext
+    let database: AppDatabase
     let store: MediaStore
+    let onDidSave: (() -> Void)?
+
+    init(database: AppDatabase, store: MediaStore, onDidSave: (() -> Void)? = nil) {
+        self.database = database
+        self.store = store
+        self.onDidSave = onDidSave
+    }
 
     @discardableResult
     func savePhoto(
@@ -25,8 +31,8 @@ struct MediaRepository {
             caption: caption
         )
         photo.load = load
-        context.insert(photo)
-        try context.save()
+        try database.save(photo)
+        onDidSave?()
         return photo
     }
 
@@ -40,30 +46,32 @@ struct MediaRepository {
         let fileName = try store.save(image, kind: .scan)
         let scan = Scan(fileName: fileName, ocrText: ocrText, title: title)
         scan.load = load
-        context.insert(scan)
-        try context.save()
+        try database.save(scan)
+        onDidSave?()
         return scan
     }
 
     func attach(_ photo: Photo, to load: Load?) throws {
         photo.load = load
-        try context.save()
+        try database.save(photo)
+        onDidSave?()
     }
 
     func attach(_ scan: Scan, to load: Load?) throws {
         scan.load = load
-        try context.save()
+        try database.save(scan)
+        onDidSave?()
     }
 
     func delete(_ photo: Photo) throws {
         store.delete(fileName: photo.fileName, kind: .photo)
-        context.delete(photo)
-        try context.save()
+        try database.delete(photo)
+        onDidSave?()
     }
 
     func delete(_ scan: Scan) throws {
         store.delete(fileName: scan.fileName, kind: .scan)
-        context.delete(scan)
-        try context.save()
+        try database.delete(scan)
+        onDidSave?()
     }
 }
