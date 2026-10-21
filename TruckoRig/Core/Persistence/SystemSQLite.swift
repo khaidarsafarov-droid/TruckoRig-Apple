@@ -48,7 +48,7 @@ enum SystemSQLite {
         private let db: OpaquePointer
         private let api: API
 
-        private init(db: OpaquePointer, api: API) {
+        fileprivate init(db: OpaquePointer, api: API) {
             self.db = db
             self.api = api
         }
@@ -141,7 +141,7 @@ enum SystemSQLite {
     private static let SQLITE_OPEN_READWRITE: Int32 = 0x0000_0002
     private static let SQLITE_OPEN_CREATE: Int32 = 0x0000_0004
 
-    private struct API {
+    fileprivate struct API {
         var open: @convention(c) (UnsafePointer<CChar>?, UnsafeMutablePointer<OpaquePointer?>?, Int32, UnsafePointer<CChar>?) -> Int32
         var close: @convention(c) (OpaquePointer?) -> Int32
         var prepare: @convention(c) (OpaquePointer?, UnsafePointer<CChar>?, Int32, UnsafeMutablePointer<OpaquePointer?>?, UnsafeMutablePointer<UnsafePointer<CChar>?>?) -> Int32
