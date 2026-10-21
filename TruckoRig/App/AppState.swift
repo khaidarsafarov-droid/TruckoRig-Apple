@@ -38,6 +38,7 @@ final class AppState {
     let persistence: PersistenceController
     let catalog: RecordCatalog
     let premium: PremiumController
+    let drive: DriveCoordinator
 
     var selectedTab: MainTab = .journal
 
@@ -68,12 +69,25 @@ final class AppState {
             PremiumCopy.locale(for: resolved?.language ?? .system)
         }
         self.premium = controller
+        let drive = DriveCoordinator(
+            database: persistence.database,
+            settings: resolved,
+            media: MediaStore(scope: persistence.scope)
+        )
+        self.drive = drive
+        DriveRuntime.coordinator = drive
+        self.drive.onJournalChanged = { [weak self] in
+            self?.reloadJournal()
+        }
     }
 
     func bootstrap() {
         ensureProfileExists()
+        drive.suppressSchedule = true
         reloadJournal()
+        drive.suppressSchedule = false
         premium.start()
+        drive.launch()
     }
 
     /// Reloads the in-memory journal and refreshes the home-screen widget.
@@ -81,6 +95,7 @@ final class AppState {
         catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
         scheduleReminders()
+        drive.noteLocalEdit()
     }
 
     /// Replaces pending smart reminders. Does not reload the journal.
@@ -103,6 +118,7 @@ final class AppState {
         }
         catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
+        drive.noteLocalEdit()
     }
 
     @ObservationIgnored private var reminderTask: Task<Void, Never>?

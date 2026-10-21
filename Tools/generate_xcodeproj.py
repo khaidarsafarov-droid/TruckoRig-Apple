@@ -32,6 +32,11 @@ TESTS_BUNDLE_ID = "com.truckorig.tests"
 GRDB_REPOSITORY = "https://github.com/sqlcipher/GRDB.swift"
 GRDB_VERSION = "7.11.1"
 GRDB_PRODUCT = "GRDB"
+# Google Sign-In 8.x is the last major that still builds with the project's Swift 5 tools.
+# Drive itself is REST via URLSession; this package is only the sign-in sheet.
+GOOGLE_REPOSITORY = "https://github.com/google/GoogleSignIn-iOS"
+GOOGLE_VERSION = "8.0.0"
+GOOGLE_PRODUCT = "GoogleSignIn"
 MARKETING_VERSION = "1.5.7"
 DEPLOYMENT_TARGET = "17.0"
 
@@ -185,6 +190,10 @@ def build() -> str:
         f"\t\t{object_id('buildfile-app', GRDB_PRODUCT)} /* {GRDB_PRODUCT} in Frameworks */ = "
         f"{{isa = PBXBuildFile; productRef = {object_id('package-product', GRDB_PRODUCT)} /* {GRDB_PRODUCT} */; }};"
     )
+    add(
+        f"\t\t{object_id('buildfile-app', GOOGLE_PRODUCT)} /* {GOOGLE_PRODUCT} in Frameworks */ = "
+        f"{{isa = PBXBuildFile; productRef = {object_id('package-product', GOOGLE_PRODUCT)} /* {GOOGLE_PRODUCT} */; }};"
+    )
     appex = f"{PROJECT_NAME}Widget.appex"
     add(
         f"\t\t{object_id('buildfile-embed', appex)} /* {appex} in Embed Foundation Extensions */ = "
@@ -266,6 +275,7 @@ def build() -> str:
         add("\t\t\tfiles = (")
         if target == "app":
             add(f"\t\t\t\t{object_id('buildfile-app', GRDB_PRODUCT)} /* {GRDB_PRODUCT} in Frameworks */,")
+            add(f"\t\t\t\t{object_id('buildfile-app', GOOGLE_PRODUCT)} /* {GOOGLE_PRODUCT} in Frameworks */,")
         add("\t\t\t);")
         add("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
         add("\t\t};")
@@ -341,6 +351,7 @@ def build() -> str:
         if key == "app":
             add("\t\t\tpackageProductDependencies = (")
             add(f"\t\t\t\t{object_id('package-product', GRDB_PRODUCT)} /* {GRDB_PRODUCT} */,")
+            add(f"\t\t\t\t{object_id('package-product', GOOGLE_PRODUCT)} /* {GOOGLE_PRODUCT} */,")
             add("\t\t\t);")
         add(f"\t\t\tproductName = {name};")
         add(f"\t\t\tproductReference = {object_id('product', product)} /* {product} */;")
@@ -377,6 +388,7 @@ def build() -> str:
     add(f"\t\t\tmainGroup = {object_id('group', 'root')};")
     add("\t\t\tpackageReferences = (")
     add(f"\t\t\t\t{object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */,")
+    add(f"\t\t\t\t{object_id('package', GOOGLE_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GoogleSignIn-iOS\" */,")
     add("\t\t\t);")
     add(f"\t\t\tproductRefGroup = {object_id('group', 'Products')} /* Products */;")
     add("\t\t\tprojectDirPath = \"\";")
@@ -487,6 +499,14 @@ def build() -> str:
     add(f"\t\t\t\tversion = {GRDB_VERSION};")
     add("\t\t\t};")
     add("\t\t};")
+    add(f"\t\t{object_id('package', GOOGLE_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GoogleSignIn-iOS\" */ = {{")
+    add("\t\t\tisa = XCRemoteSwiftPackageReference;")
+    add(f"\t\t\trepositoryURL = \"{GOOGLE_REPOSITORY}\";")
+    add("\t\t\trequirement = {")
+    add("\t\t\t\tkind = exactVersion;")
+    add(f"\t\t\t\tversion = {GOOGLE_VERSION};")
+    add("\t\t\t};")
+    add("\t\t};")
     add("/* End XCRemoteSwiftPackageReference section */")
 
     add("")
@@ -495,6 +515,11 @@ def build() -> str:
     add("\t\t\tisa = XCSwiftPackageProductDependency;")
     add(f"\t\t\tpackage = {object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */;")
     add(f"\t\t\tproductName = {GRDB_PRODUCT};")
+    add("\t\t};")
+    add(f"\t\t{object_id('package-product', GOOGLE_PRODUCT)} /* {GOOGLE_PRODUCT} */ = {{")
+    add("\t\t\tisa = XCSwiftPackageProductDependency;")
+    add(f"\t\t\tpackage = {object_id('package', GOOGLE_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GoogleSignIn-iOS\" */;")
+    add(f"\t\t\tproductName = {GOOGLE_PRODUCT};")
     add("\t\t};")
     add("/* End XCSwiftPackageProductDependency section */")
 

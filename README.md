@@ -38,9 +38,10 @@ open TruckoRig.xcodeproj
 swift test
 ```
 
-98 тестов: парсинг реальных сообщений Relay, определение года по истории чата, недельные границы
-на стыке лет, статусы темпа, дедуп Trip ID, CSV round-trip, напоминание за три дня до конца
-бесплатного месяца, снапшот виджета и deep link `truckorig://`.
+182 доменных теста: парсинг реальных сообщений Relay, определение года по истории чата, недельные
+границы на стыке лет, статусы темпа, дедуп Trip ID, CSV round-trip, напоминание за три дня до конца
+бесплатного месяца, снапшот виджета, deep link `truckorig://` и Google Drive (формат `.tlb`,
+повторная загрузка, выбор файла, условия автокопии).
 
 Шифрование, Keychain и одноразовый перенос из SwiftData проверяются целью `TruckoRigTests` на
 симуляторе iPhone. Это делает workflow `.github/workflows/macos.yml` (macOS 26, Xcode 26.6):
@@ -100,6 +101,16 @@ TruckoRigTests/   тесты шифрования и миграции (XCTest, �
 В Settings: экспорт и импорт JSON. Формат тот же, что раньше уходил в облачный снапшот, поэтому
 старые файлы `.truckorig.json` по-прежнему открываются. Конфликты — last-write-wins по `updatedAt`.
 
+Ниже в тех же Настройках — копия на Google Drive, файл `truckerload_backup_local_dev.tlb`
+в скрытой папке приложения (`drive.appdata`), как на Android. Чтобы включить вход:
+
+1. В Google Cloud Console (тот же проект, что у Android, либо любой с включённым Drive API) создайте OAuth-клиент типа **iOS**. Bundle ID: `com.truckorig`.
+2. Скопируйте client id (`….apps.googleusercontent.com`) в `TruckoRig/Resources/Info.plist`, ключ `GIDClientID`, вместо `REPLACE_WITH_IOS_OAUTH_CLIENT_ID.apps.googleusercontent.com`.
+3. URL scheme — перевёрнутый client id: `com.googleusercontent.apps.<префикс>`. Замените им заглушку `com.googleusercontent.apps.REPLACE_WITH_IOS_OAUTH_CLIENT_ID` в `CFBundleURLTypes`. Схему `truckorig` не удаляйте.
+4. Отдельный API key, `GoogleService-Info.plist` и SHA-1 для iOS не нужны. Android client id из исходников Android на iOS не подходит. Пока заглушка на месте, кнопка входа не вызывает Google.
+
+Автокопия: через 45 секунд после правки журнала и примерно раз в 12 часов при наличии сети (`BGTaskScheduler`, задача `com.truckorig.drive-sync`). Система сама выбирает минуту запуска.
+
 ## Осознанные отличия от Android-версии
 
 Это не упущения, а решения; если нужно иначе — поменять несложно.
@@ -114,9 +125,12 @@ TruckoRigTests/   тесты шифрования и миграции (XCTest, �
   неделя №1 — та, в которую попадает 1 января. Номера недель совпадают с Android для того же рейса.
 - **Без Tesseract.** Vision распознаёт русский и английский на устройстве; вторая OCR-библиотека
   добавила бы десятки мегабайт ради того же результата.
-- **Без Google Drive, без Ktor/Supabase.** Бэкап — JSON-файл через системный share sheet и
-  файловый импорт (iCloud Drive, Files, почта — на выбор водителя). Экспорт для бухгалтера и
-  список прочих расходов — CSV, а не книга Excel: отдельную библиотеку таблиц приложение не везёт.
+- **Google Drive — только `drive.appdata`.** Файл `truckerload_backup_local_dev.tlb` тот же, что
+  пишет Android для локального журнала: JSON без шифрования (шифруется база на телефоне), без
+  байтов фото, сканов и чеков. Вход — Google Sign-In, запись — Drive REST v3. Пока в `Info.plist`
+  стоит заглушка `GIDClientID`, раздел в Настройках выключен. Рядом остаётся прежний обмен
+  JSON-файлом через share sheet. Ktor и Supabase не используются. Экспорт для бухгалтера и
+  список прочих расходов — CSV, а не книга Excel.
 - **Без Telegram.** Бот и онбординг Telegram — отдельный этап. Первый запуск спрашивает имя и
   тип деятельности и остаётся на телефоне.
 - **Чеки.** Дизель, зарплата и ТО читают фото через Vision (ru + en) и те же разборщики текста,

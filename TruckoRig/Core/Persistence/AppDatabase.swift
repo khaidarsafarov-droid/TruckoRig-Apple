@@ -353,6 +353,90 @@ final class AppDatabase {
         }
     }
 
+    /// Full replace of loads, paychecks and diesel. Maintenance is replaced only for schema v2.
+    ///
+    /// Photos and scans linked to a load that is not in the backup are deleted. Unlinked media
+    /// stays. Receipt files are not deleted here; the caller removes the returned photo and scan files.
+    /// Loads are upserted rather than deleted first, so a kept load does not lose its photos.
+    func applyDriveJournal(_ plan: DriveJournalPlan) throws -> RemovedMedia {
+        try queue.write { db in
+            let kept = plan.loads.map(\.id.uuidString)
+            let removedPhotos = try Self.mediaRows(db, table: "photo", kept: kept).map(Self.photo(from:))
+            let removedScans = try Self.mediaRows(db, table: "scan", kept: kept).map(Self.scan(from:))
+            try Self.deleteMedia(db, table: "photo", kept: kept)
+            try Self.deleteMedia(db, table: "scan", kept: kept)
+
+            for load in plan.loads {
+                try db.execute(
+                    sql: "UPDATE load SET tripId = ? WHERE id = ?",
+                    arguments: ["__drive_\(load.id.uuidString)", load.id.uuidString]
+                )
+            }
+            if kept.isEmpty {
+                try db.execute(sql: "DELETE FROM load")
+            } else {
+                let marks = Array(repeating: "?", count: kept.count).joined(separator: ",")
+                try db.execute(
+                    sql: "DELETE FROM load WHERE id NOT IN (\(marks))",
+                    arguments: StatementArguments(kept.map { $0 as (any DatabaseValueConvertible)? })
+                )
+            }
+            for load in plan.loads {
+                try db.execute(
+                    sql: "DELETE FROM load WHERE tripId = ? AND id <> ?",
+                    arguments: [load.tripId, load.id.uuidString]
+                )
+            }
+            for load in plan.loads {
+                try Self.upsert(load, db)
+            }
+
+            try db.execute(sql: "DELETE FROM paycheck")
+            for paycheck in plan.paychecks {
+                try Self.upsert(db, paycheck)
+            }
+            try db.execute(sql: "DELETE FROM diesel")
+            for fill in plan.diesel {
+                try Self.upsert(db, fill)
+            }
+            if plan.replaceMaintenance {
+                try db.execute(sql: "DELETE FROM maintenance_task")
+                try db.execute(sql: "DELETE FROM maintenance_archive")
+                for task in plan.maintenanceTasks {
+                    try Self.upsert(db, task)
+                }
+                for entry in plan.maintenanceArchive {
+                    try Self.upsert(db, entry)
+                }
+            }
+            return RemovedMedia(photos: removedPhotos, scans: removedScans)
+        }
+    }
+
+    private static func mediaRows(_ db: Database, table: String, kept: [String]) throws -> [Row] {
+        if kept.isEmpty {
+            return try Row.fetchAll(db, sql: "SELECT * FROM \(table) WHERE loadId IS NOT NULL AND loadId != ''")
+        }
+        let marks = Array(repeating: "?", count: kept.count).joined(separator: ",")
+        return try Row.fetchAll(
+            db,
+            sql: "SELECT * FROM \(table) WHERE loadId IS NOT NULL AND loadId != '' AND loadId NOT IN (\(marks))",
+            arguments: StatementArguments(kept.map { $0 as (any DatabaseValueConvertible)? })
+        )
+    }
+
+    private static func deleteMedia(_ db: Database, table: String, kept: [String]) throws {
+        if kept.isEmpty {
+            try db.execute(sql: "DELETE FROM \(table) WHERE loadId IS NOT NULL AND loadId != ''")
+            return
+        }
+        let marks = Array(repeating: "?", count: kept.count).joined(separator: ",")
+        try db.execute(
+            sql: "DELETE FROM \(table) WHERE loadId IS NOT NULL AND loadId != '' AND loadId NOT IN (\(marks))",
+            arguments: StatementArguments(kept.map { $0 as (any DatabaseValueConvertible)? })
+        )
+    }
+
     func save(_ paycheck: Paycheck) throws {
         try queue.write { try Self.upsert($0, paycheck) }
     }
