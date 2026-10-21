@@ -460,7 +460,8 @@ final class DriveCoordinator {
         }
     }
 
-    static func plistClientID() -> String? {
+    /// Info.plist only. Nonisolated so the initializer default can read it off the main actor.
+    nonisolated static func plistClientID() -> String? {
         Bundle.main.object(forInfoDictionaryKey: "GIDClientID") as? String
     }
 
