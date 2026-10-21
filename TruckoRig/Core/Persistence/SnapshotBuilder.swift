@@ -14,7 +14,9 @@ enum SnapshotBuilder {
             diesel: graph.diesel.map(dto),
             maintenance: graph.maintenance.map(dto),
             profile: graph.profile.map(dto),
-            maintenanceArchive: graph.maintenanceArchive.map(dto)
+            maintenanceArchive: graph.maintenanceArchive.map(dto),
+            expenses: graph.expenses.map(dto),
+            perDiemOverrides: graph.perDiemOverrides.map { PerDiemOverrideDTO(isoDate: $0.isoDate, included: $0.included) }
         )
     }
 
@@ -78,7 +80,11 @@ enum SnapshotBuilder {
             notes: paycheck.notes,
             weekNumber: paycheck.weekNumber,
             year: paycheck.year,
-            updatedAt: paycheck.updatedAt
+            updatedAt: paycheck.updatedAt,
+            grossAmount: paycheck.grossAmount,
+            driverName: paycheck.driverName,
+            rawText: paycheck.rawText,
+            sourceFileName: paycheck.sourceFileName
         )
     }
 
@@ -92,7 +98,11 @@ enum SnapshotBuilder {
             state: diesel.state,
             date: diesel.date,
             odometer: diesel.odometer,
-            updatedAt: diesel.updatedAt
+            updatedAt: diesel.updatedAt,
+            discountPricePerGallon: diesel.discountPricePerGallon,
+            rawText: diesel.rawText,
+            receiptFileName: diesel.receiptFileName,
+            sourceFileName: diesel.sourceFileName
         )
     }
 
@@ -114,7 +124,19 @@ enum SnapshotBuilder {
             licensePlate: profile.licensePlate,
             homeState: profile.homeState,
             weeklyGoal: profile.weeklyGoal,
-            updatedAt: profile.updatedAt
+            updatedAt: profile.updatedAt,
+            role: profile.role
+        )
+    }
+
+    static func dto(_ expense: MiscExpense) -> MiscExpenseDTO {
+        MiscExpenseDTO(
+            id: expense.id,
+            amount: expense.amount,
+            expenseDescription: expense.expenseDescription,
+            date: expense.date,
+            receiptFileName: expense.receiptFileName,
+            updatedAt: expense.updatedAt
         )
     }
 }

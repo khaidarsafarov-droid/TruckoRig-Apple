@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Settlements received, newest first.
 struct PaycheckListView: View {
@@ -112,24 +113,51 @@ struct PaycheckEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var amount: Double
+    @State private var gross: Double
     @State private var date: Date
     @State private var company: String
+    @State private var driverName: String
     @State private var notes: String
+    @State private var rawText: String?
+    @State private var sourceFileName: String?
+    @State private var pendingImage: UIImage?
+    @State private var scanMessage: String?
+    @State private var isScanning = false
     @State private var errorMessage: String?
 
     init(paycheck: Paycheck?) {
         self.paycheck = paycheck
         _amount = State(initialValue: paycheck?.amount ?? 0)
+        _gross = State(initialValue: paycheck?.grossAmount ?? 0)
         _date = State(initialValue: paycheck?.date ?? Date())
         _company = State(initialValue: paycheck?.company ?? "")
+        _driverName = State(initialValue: paycheck?.driverName ?? "")
         _notes = State(initialValue: paycheck?.notes ?? "")
+        _rawText = State(initialValue: paycheck?.rawText)
+        _sourceFileName = State(initialValue: paycheck?.sourceFileName)
     }
 
     var body: some View {
         NavigationStack {
             Form {
+                Section("paycheck.file") {
+                    Text("paycheck.file.hint")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                    ReceiptCaptureButtons { image in
+                        Task { await recognize(image) }
+                    }
+                    if isScanning { ProgressView("paycheck.parsing") }
+                    if let scanMessage {
+                        Text(scanMessage)
+                            .font(.appCaption)
+                            .foregroundStyle(Color.forestTextSecondary)
+                    }
+                }
                 SoftNumberField(title: "paycheck.amount", value: $amount)
+                SoftNumberField(title: "paycheck.gross", value: $gross)
                 DatePicker("paycheck.date", selection: $date, displayedComponents: .date)
+                SoftTextField(title: "paycheck.driver", text: $driverName, autocapitalization: .words)
                 SoftTextField(title: "paycheck.company", text: $company)
                 SoftTextField(title: "paycheck.notes", text: $notes)
             }
@@ -138,7 +166,7 @@ struct PaycheckEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("action.save") { save() }
-                        .disabled(amount <= 0)
+                        .disabled(PaycheckSalaryFields.validate(netText: String(amount)) != nil)
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("action.cancel") { dismiss() }
@@ -154,16 +182,81 @@ struct PaycheckEditorView: View {
     }
 
     private func save() {
+        guard PaycheckSalaryFields.validate(netText: String(amount)) == nil else {
+            errorMessage = String(localized: "paycheck.error.net")
+            return
+        }
         let repository = appState.financeRepository()
+        let grossValue = gross > 0 ? gross : nil
         do {
             if let paycheck {
-                try repository.update(paycheck, amount: amount, date: date, company: company, notes: notes)
+                try repository.update(
+                    paycheck,
+                    amount: amount,
+                    date: date,
+                    company: company,
+                    notes: notes,
+                    grossAmount: grossValue,
+                    driverName: driverName,
+                    rawText: rawText,
+                    sourceFileName: sourceFileName
+                )
             } else {
-                try repository.addPaycheck(amount: amount, date: date, company: company, notes: notes)
+                try repository.addPaycheck(
+                    amount: amount,
+                    date: date,
+                    company: company,
+                    notes: notes,
+                    grossAmount: grossValue,
+                    driverName: driverName,
+                    rawText: rawText,
+                    sourceFileName: sourceFileName
+                )
             }
             dismiss()
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func recognize(_ image: UIImage) async {
+        isScanning = true
+        scanMessage = nil
+        pendingImage = image
+        let recognition = await OCRService.recognizeText(in: image)
+        isScanning = false
+        guard let text = recognition?.text, !text.isEmpty else {
+            scanMessage = String(localized: "paycheck.file.failed")
+            return
+        }
+        rawText = text
+        let name = "paycheck-\(UUID().uuidString.prefix(8)).jpg"
+        guard let parsed = PaycheckTextParser.parse(text, fileName: name) else {
+            scanMessage = String(localized: "paycheck.file.none")
+            return
+        }
+        amount = parsed.netAmount
+        if let grossAmount = parsed.grossAmount { gross = grossAmount }
+        if let driver = parsed.driverName { driverName = driver }
+        if let iso = parsed.weekEndDate ?? parsed.weekStartDate, let parsedDate = Self.date(fromISO: iso) {
+            date = parsedDate
+        }
+        sourceFileName = name
+        if let pendingImage {
+            sourceFileName = (try? MediaStore(scope: appState.persistence.scope).saveJPEG(pendingImage)) ?? name
+        }
+        scanMessage = parsed.confidence == "high"
+            ? String(localized: "paycheck.file.parsed")
+            : String(localized: "paycheck.file.mismatch")
+    }
+
+    private static func date(fromISO iso: String) -> Date? {
+        let pieces = iso.split(separator: "-").compactMap { Int($0) }
+        guard pieces.count == 3 else { return nil }
+        var components = DateComponents()
+        components.year = pieces[0]
+        components.month = pieces[1]
+        components.day = pieces[2]
+        return Calendar.current.date(from: components)
     }
 }

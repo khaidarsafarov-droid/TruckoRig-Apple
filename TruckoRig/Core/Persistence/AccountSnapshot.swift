@@ -13,6 +13,9 @@ struct AccountSnapshot: Equatable {
     var maintenance: [MaintenanceDTO]
     var profile: ProfileDTO?
     var maintenanceArchive: [MaintenanceArchiveDTO]
+    /// Absent on backups written before other expenses existed. Nil means "leave the phone's rows".
+    var expenses: [MiscExpenseDTO]?
+    var perDiemOverrides: [PerDiemOverrideDTO]?
 
     init(
         schemaVersion: Int = 2,
@@ -22,7 +25,9 @@ struct AccountSnapshot: Equatable {
         diesel: [DieselDTO],
         maintenance: [MaintenanceDTO],
         profile: ProfileDTO?,
-        maintenanceArchive: [MaintenanceArchiveDTO] = []
+        maintenanceArchive: [MaintenanceArchiveDTO] = [],
+        expenses: [MiscExpenseDTO]? = nil,
+        perDiemOverrides: [PerDiemOverrideDTO]? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.updatedAt = updatedAt
@@ -32,6 +37,8 @@ struct AccountSnapshot: Equatable {
         self.maintenance = maintenance
         self.profile = profile
         self.maintenanceArchive = maintenanceArchive
+        self.expenses = expenses
+        self.perDiemOverrides = perDiemOverrides
     }
 
     static func empty(now: Date = Date()) -> AccountSnapshot {
@@ -100,6 +107,10 @@ struct PaycheckDTO: Codable, Equatable {
     var year: Int
     var updatedAt: Date
     var isDeleted: Bool = false
+    var grossAmount: Double?
+    var driverName: String?
+    var rawText: String?
+    var sourceFileName: String?
 }
 
 struct DieselDTO: Codable, Equatable {
@@ -113,6 +124,10 @@ struct DieselDTO: Codable, Equatable {
     var odometer: Int?
     var updatedAt: Date
     var isDeleted: Bool = false
+    var discountPricePerGallon: Double?
+    var rawText: String?
+    var receiptFileName: String?
+    var sourceFileName: String?
 }
 
 /// Android `MaintenanceTask` fields. A stage-1 backup (no `reminderType`) is converted on decode.
@@ -215,11 +230,12 @@ struct ProfileDTO: Codable, Equatable {
     var homeState: String?
     var weeklyGoal: Double
     var updatedAt: Date
+    var role: String?
 }
 
 extension AccountSnapshot: Codable {
     private enum CodingKeys: String, CodingKey {
-        case schemaVersion, updatedAt, loads, paychecks, diesel, maintenance, profile, maintenanceArchive
+        case schemaVersion, updatedAt, loads, paychecks, diesel, maintenance, profile, maintenanceArchive, expenses, perDiemOverrides
     }
 
     init(from decoder: Decoder) throws {
@@ -232,6 +248,8 @@ extension AccountSnapshot: Codable {
         maintenance = try container.decode([MaintenanceDTO].self, forKey: .maintenance)
         profile = try container.decodeIfPresent(ProfileDTO.self, forKey: .profile)
         maintenanceArchive = try container.decodeIfPresent([MaintenanceArchiveDTO].self, forKey: .maintenanceArchive) ?? []
+        expenses = try container.decodeIfPresent([MiscExpenseDTO].self, forKey: .expenses)
+        perDiemOverrides = try container.decodeIfPresent([PerDiemOverrideDTO].self, forKey: .perDiemOverrides)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -244,6 +262,8 @@ extension AccountSnapshot: Codable {
         try container.encode(maintenance, forKey: .maintenance)
         try container.encodeIfPresent(profile, forKey: .profile)
         try container.encode(maintenanceArchive, forKey: .maintenanceArchive)
+        try container.encodeIfPresent(expenses, forKey: .expenses)
+        try container.encodeIfPresent(perDiemOverrides, forKey: .perDiemOverrides)
     }
 }
 
@@ -349,4 +369,20 @@ extension JSONDecoder {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
+}
+
+
+struct MiscExpenseDTO: Codable, Equatable {
+    var id: UUID
+    var amount: Double
+    var expenseDescription: String
+    var date: Date
+    var receiptFileName: String?
+    var updatedAt: Date
+    var isDeleted: Bool = false
+}
+
+struct PerDiemOverrideDTO: Codable, Equatable {
+    var isoDate: String
+    var included: Bool
 }

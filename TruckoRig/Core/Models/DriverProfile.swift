@@ -37,6 +37,8 @@ final class DriverProfile: Identifiable {
     var truckYear: Int?
     var licensePlate: String?
     var homeState: String?
+    /// `ownerOperator`, `hiredDriver` or `dispatcher`. Empty until onboarding picks one.
+    var role: String?
     var preferredLanguage: AppLanguage
     var weeklyGoal: Double
     var updatedAt: Date
@@ -49,6 +51,7 @@ final class DriverProfile: Identifiable {
         truckYear: Int? = nil,
         licensePlate: String? = nil,
         homeState: String? = nil,
+        role: String? = nil,
         preferredLanguage: AppLanguage = .system,
         weeklyGoal: Double = 0,
         updatedAt: Date = Date()
@@ -60,6 +63,7 @@ final class DriverProfile: Identifiable {
         self.truckYear = truckYear
         self.licensePlate = licensePlate
         self.homeState = homeState
+        self.role = role
         self.preferredLanguage = preferredLanguage
         self.weeklyGoal = weeklyGoal
         self.updatedAt = updatedAt

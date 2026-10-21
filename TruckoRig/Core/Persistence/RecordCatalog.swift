@@ -16,6 +16,8 @@ final class RecordCatalog {
     private(set) var photos: [Photo] = []
     private(set) var scans: [Scan] = []
     private(set) var profile: DriverProfile?
+    private(set) var expenses: [MiscExpense] = []
+    private(set) var perDiemOverrides: [PerDiemOverride] = []
 
     func reload(from database: AppDatabase) {
         do {
@@ -28,6 +30,8 @@ final class RecordCatalog {
             photos = graph.photos
             scans = graph.scans
             profile = graph.profile
+            expenses = graph.expenses
+            perDiemOverrides = graph.perDiemOverrides
         } catch {
             AppLog.persistence.error("Could not reload the journal: \(error.localizedDescription, privacy: .public)")
         }

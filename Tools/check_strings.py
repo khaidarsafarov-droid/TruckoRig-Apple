@@ -26,10 +26,10 @@ SOURCE_DIRS = ["TruckoRig", "TruckoRigWidget"]
 # Only these namespaces are localized keys; everything else in quotes is an SF Symbol, a bundle
 # identifier or plain data.
 NAMESPACES = (
-    "action.", "analytics.", "attach.", "auth.", "camera.", "date.", "diesel.", "duration.", "error.",
-    "format.", "gallery.", "goal.", "heatmap.", "home.", "journal.", "load.", "maintenance.", "map.",
-    "media.", "paycheck.", "penalty.", "premium.", "profile.", "relay.", "scanner.", "screen.",
-    "settings.", "stat.", "status.", "stop.", "tab.", "widget.", "app.name",
+    "about.", "action.", "analytics.", "attach.", "auth.", "camera.", "date.", "diesel.", "duration.", "error.",
+    "expense.", "format.", "gallery.", "goal.", "heatmap.", "home.", "improve.", "journal.", "load.", "maintenance.", "map.",
+    "media.", "onboard.", "paycheck.", "penalty.", "premium.", "privacy.", "profile.", "receipt.", "relay.", "scanner.", "screen.",
+    "settings.", "stat.", "status.", "stop.", "tab.", "tax.", "widget.", "app.name",
 )
 
 STRING_LITERAL = re.compile(r'"((?:[^"\\]|\\.)*)"')

@@ -8,7 +8,9 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if horizontalSizeClass == .regular {
+            if !appState.settings.onboardingComplete {
+                OnboardingView()
+            } else if horizontalSizeClass == .regular {
                 SidebarView()
             } else {
                 MainTabView()
@@ -121,7 +123,7 @@ struct SidebarView: View {
     @State private var selection: SidebarItem? = .journal
 
     enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
-        case journal, goal, analytics, paycheck, diesel, maintenance, map, gallery, profile, settings
+        case journal, goal, analytics, paycheck, diesel, expenses, tax, maintenance, map, gallery, profile, settings, privacy, about
 
         var id: Self { self }
 
@@ -132,11 +134,15 @@ struct SidebarView: View {
             case .analytics: return "screen.analytics"
             case .paycheck: return "screen.paycheck"
             case .diesel: return "screen.diesel"
+            case .expenses: return "screen.expenses"
+            case .tax: return "screen.tax"
             case .maintenance: return "screen.maintenance"
             case .map: return "screen.map"
             case .gallery: return "screen.gallery"
             case .profile: return "tab.profile"
             case .settings: return "screen.settings"
+            case .privacy: return "screen.privacy"
+            case .about: return "screen.about"
             }
         }
 
@@ -147,11 +153,15 @@ struct SidebarView: View {
             case .analytics: return "chart.bar"
             case .paycheck: return "dollarsign.circle"
             case .diesel: return "fuelpump"
+            case .expenses: return "receipt"
+            case .tax: return "percent"
             case .maintenance: return "wrench.and.screwdriver"
             case .map: return "map"
             case .gallery: return "photo.on.rectangle"
             case .profile: return "person.crop.circle"
             case .settings: return "gearshape"
+            case .privacy: return "lock"
+            case .about: return "info.circle"
             }
         }
     }
@@ -181,11 +191,15 @@ struct SidebarView: View {
         case .analytics: AnalyticsView(showsBackButton: false)
         case .paycheck: PaycheckListView()
         case .diesel: DieselListView()
+        case .expenses: MiscExpenseListView()
+        case .tax: TaxTrackerView()
         case .maintenance: MaintenanceListView()
         case .map: RouteMapView()
         case .gallery: GalleryView()
         case .profile: ProfileView()
         case .settings: SettingsView()
+        case .privacy: PrivacyView()
+        case .about: AboutView()
         }
     }
 }

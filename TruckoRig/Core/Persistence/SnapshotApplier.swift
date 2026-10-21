@@ -72,6 +72,10 @@ enum SnapshotApplier {
                     notes: dto.notes,
                     weekNumber: dto.weekNumber,
                     year: dto.year,
+                    grossAmount: dto.grossAmount,
+                    driverName: dto.driverName,
+                    rawText: dto.rawText,
+                    sourceFileName: dto.sourceFileName,
                     updatedAt: dto.updatedAt
                 )
             },
@@ -82,6 +86,10 @@ enum SnapshotApplier {
                 local.notes = dto.notes
                 local.weekNumber = dto.weekNumber
                 local.year = dto.year
+                local.grossAmount = dto.grossAmount
+                local.driverName = dto.driverName
+                local.rawText = dto.rawText
+                local.sourceFileName = dto.sourceFileName
                 local.updatedAt = dto.updatedAt
                 try database.save(local)
             }
@@ -108,6 +116,10 @@ enum SnapshotApplier {
                     state: dto.state,
                     date: dto.date,
                     odometer: dto.odometer,
+                    discountPricePerGallon: dto.discountPricePerGallon,
+                    rawText: dto.rawText,
+                    receiptFileName: dto.receiptFileName,
+                    sourceFileName: dto.sourceFileName,
                     updatedAt: dto.updatedAt
                 )
             },
@@ -119,6 +131,10 @@ enum SnapshotApplier {
                 local.state = dto.state
                 local.date = dto.date
                 local.odometer = dto.odometer
+                local.discountPricePerGallon = dto.discountPricePerGallon
+                local.rawText = dto.rawText
+                local.receiptFileName = dto.receiptFileName
+                local.sourceFileName = dto.sourceFileName
                 local.updatedAt = dto.updatedAt
                 try database.save(local)
             }
@@ -140,6 +156,7 @@ enum SnapshotApplier {
                 local.truckYear = remoteProfile.truckYear
                 local.licensePlate = remoteProfile.licensePlate
                 local.homeState = remoteProfile.homeState
+                local.role = remoteProfile.role
                 local.weeklyGoal = remoteProfile.weeklyGoal
                 local.updatedAt = remoteProfile.updatedAt
                 try database.save(local)
@@ -153,10 +170,50 @@ enum SnapshotApplier {
                     truckYear: remoteProfile.truckYear,
                     licensePlate: remoteProfile.licensePlate,
                     homeState: remoteProfile.homeState,
+                    role: remoteProfile.role,
                     weeklyGoal: remoteProfile.weeklyGoal,
                     updatedAt: remoteProfile.updatedAt
                 ))
                 report.inserted += 1
+            }
+        }
+
+        if let remoteExpenses = snapshot.expenses {
+            try mergeSimple(
+                remote: remoteExpenses,
+                local: graph.expenses,
+                id: \.id,
+                localId: \.id,
+                remoteUpdatedAt: \.updatedAt,
+                localUpdatedAt: \.updatedAt,
+                isDeleted: \.isDeleted,
+                report: &report,
+                insert: { try database.save($0) },
+                delete: { try database.delete($0) },
+                make: { dto in
+                    MiscExpense(
+                        id: dto.id,
+                        amount: dto.amount,
+                        expenseDescription: dto.expenseDescription,
+                        date: dto.date,
+                        receiptFileName: dto.receiptFileName,
+                        updatedAt: dto.updatedAt
+                    )
+                },
+                update: { local, dto in
+                    local.amount = dto.amount
+                    local.expenseDescription = dto.expenseDescription
+                    local.date = dto.date
+                    local.receiptFileName = dto.receiptFileName
+                    local.updatedAt = dto.updatedAt
+                    try database.save(local)
+                }
+            )
+        }
+
+        if let overrides = snapshot.perDiemOverrides {
+            for override in overrides {
+                try database.savePerDiemOverride(isoDate: override.isoDate, included: override.included)
             }
         }
 

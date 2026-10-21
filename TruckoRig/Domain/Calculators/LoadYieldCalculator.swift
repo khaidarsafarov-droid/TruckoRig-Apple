@@ -49,6 +49,49 @@ public enum LoadYieldCalculator {
         loads.reduce(0) { $0 + resolvedDurationDays(of: $1) }
     }
 
+    /// Calendar days a driver is on the road, through `through` inclusive.
+    ///
+    /// The window is the load's pickup through its own finish. When the next load is picked up
+    /// sooner, the earlier load ends on that pickup day. The same day is never returned twice.
+    /// Dates are `yyyy-MM-dd` in `calendar`'s time zone, matching Android `coveredDates`.
+    public static func coveredISODates(loads: [LoadSummary], through: Date, calendar input: Calendar) -> Set<String> {
+        let calendar = input
+        func startOfDay(_ date: Date) -> Date { calendar.startOfDay(for: date) }
+        func iso(_ date: Date) -> String {
+            let parts = calendar.dateComponents([.year, .month, .day], from: date)
+            return String(format: "%04d-%02d-%02d", parts.year ?? 0, parts.month ?? 0, parts.day ?? 0)
+        }
+
+        let ordered = loads.compactMap { load -> (LoadSummary, Date)? in
+            guard let pickup = load.firstPickupAt else { return nil }
+            return (load, startOfDay(pickup))
+        }.sorted { $0.1 < $1.1 }
+
+        let throughDay = startOfDay(through)
+        var covered = Set<String>()
+        for index in ordered.indices {
+            let (load, start) = ordered[index]
+            if start > throughDay { continue }
+            let ownFinish = startOfDay(load.actualFinishAt ?? load.lastDeliveryAt ?? start)
+            let nextPickup = index + 1 < ordered.count ? ordered[index + 1].1 : nil
+            let finish: Date
+            if let nextPickup, nextPickup > start, nextPickup < ownFinish {
+                finish = nextPickup
+            } else {
+                finish = ownFinish
+            }
+            let stop = min(finish, throughDay)
+            if stop < start { continue }
+            var cursor = start
+            while cursor <= stop {
+                covered.insert(iso(cursor))
+                guard let next = calendar.date(byAdding: .day, value: 1, to: cursor) else { break }
+                cursor = next
+            }
+        }
+        return covered
+    }
+
     /// Dollars per day for a single load.
     public static func pace(of load: LoadSummary) -> Double {
         let days = activeDurationDays(of: load)

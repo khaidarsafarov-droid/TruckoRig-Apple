@@ -27,6 +27,7 @@ final class AppSettings {
         let lastRun = Self.read(defaults, scope, .smartNotificationLastRun, default: 0.0)
         self.smartNotificationLastRun = lastRun > 0 ? Date(timeIntervalSince1970: lastRun) : nil
         self.missingNotifiedWeek = Self.read(defaults, scope, .missingNotifiedWeek, default: "")
+        self.onboardingComplete = Self.read(defaults, scope, .onboardingComplete, default: false)
     }
 
     // MARK: - Values
@@ -36,6 +37,7 @@ final class AppSettings {
     var weekStart: WeekStartDay { didSet { write(.weekStart, weekStart.rawValue) } }
     var rpmMinProfit: Double { didSet { write(.rpmMinProfit, rpmMinProfit) } }
     var rpmTargetProfit: Double { didSet { write(.rpmTargetProfit, rpmTargetProfit) } }
+    var onboardingComplete: Bool { didSet { write(.onboardingComplete, onboardingComplete) } }
 
     /// Android `notifyMissingWeek`, default on.
     var notifyMissingWeek: Bool { didSet { write(.notifyMissingWeek, notifyMissingWeek) } }
@@ -82,6 +84,7 @@ final class AppSettings {
         case quietEndHour
         case smartNotificationLastRun
         case missingNotifiedWeek
+        case onboardingComplete
     }
 
     private static func storageKey(_ scope: AccountScope, _ key: Key) -> String {
