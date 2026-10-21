@@ -28,8 +28,8 @@ SOURCE_DIRS = ["TruckoRig", "TruckoRigWidget"]
 NAMESPACES = (
     "action.", "analytics.", "auth.", "camera.", "date.", "diesel.", "duration.", "error.",
     "format.", "gallery.", "goal.", "heatmap.", "journal.", "load.", "maintenance.", "map.",
-    "media.", "paycheck.", "penalty.", "profile.", "relay.", "scanner.", "screen.", "settings.",
-    "stat.", "status.", "stop.", "tab.", "widget.", "app.name",
+    "media.", "paycheck.", "penalty.", "premium.", "profile.", "relay.", "scanner.", "screen.",
+    "settings.", "stat.", "status.", "stop.", "tab.", "widget.", "app.name",
 )
 
 STRING_LITERAL = re.compile(r'"((?:[^"\\]|\\.)*)"')
@@ -84,6 +84,13 @@ def main() -> int:
                 continue
             if argument_count(value) != argument_count(key):
                 problems.append(f"{key}: {language} has a different number of format specifiers")
+
+        if "es" in localizations:
+            spanish = localizations.get("es", {}).get("stringUnit", {}).get("value", "")
+            if not spanish.strip():
+                problems.append(f"{key}: missing or blank es")
+            elif argument_count(spanish) != argument_count(key):
+                problems.append(f"{key}: es has a different number of format specifiers")
 
         expected = used.get(base(key))
         if expected is not None and expected != argument_count(key):

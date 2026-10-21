@@ -14,6 +14,17 @@ struct RootView: View {
                 MainTabView()
             }
         }
+        .fullScreenCover(
+            isPresented: Binding(
+                get: { appState.premium.shouldShowFirstRun },
+                set: { presented in
+                    if !presented { appState.premium.declineFirstRun() }
+                }
+            )
+        ) {
+            PremiumFirstRunOffer()
+                .environment(appState)
+        }
     }
 }
 
