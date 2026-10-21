@@ -371,7 +371,7 @@ final class AppDatabase {
             for id in ids {
                 try db.execute(sql: "DELETE FROM maintenance_archive WHERE id = ?", arguments: [id])
             }
-            return paths.filter { path in
+            return try paths.filter { path in
                 guard !path.isEmpty else { return false }
                 let stillUsed = try Int.fetchOne(
                     db,
