@@ -1,5 +1,4 @@
 import MapKit
-import SwiftData
 import SwiftUI
 
 /// One pin on the route map.
@@ -20,7 +19,8 @@ struct RouteMapView: View {
     var load: Load? = nil
 
     @Environment(AppState.self) private var appState
-    @Query(sort: \Load.date, order: .reverse) private var loads: [Load]
+
+    private var loads: [Load] { appState.catalog.loads }
 
     @State private var pins: [RoutePin] = []
     @State private var position: MapCameraPosition = .automatic

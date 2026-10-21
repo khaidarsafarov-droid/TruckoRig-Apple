@@ -1,6 +1,5 @@
 import Foundation
 import Observation
-import SwiftData
 
 /// Backs both the paste-from-Relay flow and manual entry on the add screen.
 @MainActor

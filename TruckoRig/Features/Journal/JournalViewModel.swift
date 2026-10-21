@@ -18,8 +18,8 @@ struct JournalSection: Identifiable {
 
 /// Search, filtering and week grouping for the journal.
 ///
-/// Takes the `@Query` results from the view rather than fetching itself, so SwiftData still drives
-/// updates and this stays a pure transformation that can be reasoned about on its own.
+/// Takes the catalog from the view rather than fetching itself, so this stays a pure
+/// transformation that can be reasoned about on its own.
 @Observable
 final class JournalViewModel {
 

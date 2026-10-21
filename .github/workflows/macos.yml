@@ -1,0 +1,63 @@
+name: macOS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ios:
+    name: Build and test
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          set -euo pipefail
+          sudo xcode-select -s /Applications/Xcode_26.6.app
+          xcodebuild -version
+
+      - name: Choose an iPhone simulator
+        id: simulator
+        run: |
+          set -euo pipefail
+          xcrun simctl list devices available -j > /tmp/sims.json
+          python3 - <<'PY'
+          import json, os
+          data = json.load(open("/tmp/sims.json"))
+          phones = []
+          for runtime, entries in data.get("devices", {}).items():
+              if "iOS" not in runtime:
+                  continue
+              for device in entries:
+                  if not device.get("isAvailable", True):
+                      continue
+                  name = device.get("name", "")
+                  if not name.startswith("iPhone"):
+                      continue
+                  phones.append(device)
+          if not phones:
+              raise SystemExit("No available iPhone simulator")
+          phones.sort(key=lambda device: device["name"])
+          chosen = phones[-1]
+          print(f"Using {chosen['name']} ({chosen['udid']})")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+              handle.write(f"udid={chosen['udid']}\n")
+              handle.write(f"name={chosen['name']}\n")
+          PY
+
+      - name: Build the app and widget, then run unit tests
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -project TruckoRig.xcodeproj \
+            -scheme TruckoRig \
+            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}" \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=-
+          # No team, profile, archive, or publishing. The simulator Keychain then returns
+          # errSecMissingEntitlement; the passphrase test skips that read-back and still checks
+          # that the item is a 32-byte AfterFirstUnlockThisDeviceOnly secret.

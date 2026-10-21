@@ -1,4 +1,3 @@
-import SwiftData
 import SwiftUI
 import UIKit
 
@@ -8,7 +7,6 @@ struct CameraView: View {
     var load: Load? = nil
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var location = LocationProvider()
@@ -76,7 +74,7 @@ struct CameraView: View {
         isSaving = true
         Task {
             let fix = await location.currentLocation()
-            let repository = appState.mediaRepository(in: modelContext)
+            let repository = appState.mediaRepository()
             do {
                 try repository.savePhoto(
                     capturedImage,

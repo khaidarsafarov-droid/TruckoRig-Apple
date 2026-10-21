@@ -1,5 +1,4 @@
 import Foundation
-import SwiftData
 
 enum LoadRepositoryError: Error, LocalizedError, Equatable {
     case duplicateTripId(String)
@@ -17,38 +16,35 @@ enum LoadRepositoryError: Error, LocalizedError, Equatable {
 
 /// Every write path for loads.
 ///
-/// Local-first: the SwiftData write is saved, then the home-screen widget is refreshed.
-/// Nothing in the UI writes loads directly.
+/// The encrypted write is saved, then the home-screen widget is refreshed. Nothing in the UI
+/// writes loads directly.
 @MainActor
 struct LoadRepository {
 
-    let context: ModelContext
+    let database: AppDatabase
     let week: TruckingWeek
-    /// Called after a successful save so the home-screen widget can catch up.
+    /// Called after a successful save so the catalog and the home-screen widget can catch up.
     let onDidSave: (() -> Void)?
 
     init(
-        context: ModelContext,
+        database: AppDatabase,
         week: TruckingWeek = TruckingWeek(),
         onDidSave: (() -> Void)? = nil
     ) {
-        self.context = context
+        self.database = database
         self.week = week
         self.onDidSave = onDidSave
     }
 
-    private func persist() throws {
-        try context.save()
+    private func persist(_ load: Load) throws {
+        try database.save(load)
         onDidSave?()
     }
 
     // MARK: - Queries
 
     func load(tripId: String) throws -> Load? {
-        let normalized = TripID.normalize(tripId)
-        var descriptor = FetchDescriptor<Load>(predicate: #Predicate { $0.tripId == normalized })
-        descriptor.fetchLimit = 1
-        return try context.fetch(descriptor).first
+        try database.load(tripId: tripId)
     }
 
     func exists(tripId: String) -> Bool {
@@ -85,10 +81,9 @@ struct LoadRepository {
             actualFinishDate: draft.actualFinishDate
         )
         load.stops = draft.normalizedStops.map(Stop.init(draft:))
-        context.insert(load)
         load.refreshDerivedFields(week: week)
 
-        try persist()
+        try persist(load)
         return load
     }
 
@@ -135,7 +130,6 @@ struct LoadRepository {
         load.disputeResponseDate = draft.disputeResponseDate
         load.disputeAmount = draft.disputeAmount
 
-        for stop in load.stops ?? [] { context.delete(stop) }
         load.stops = draft.normalizedStops.map(Stop.init(draft:))
 
         // parsedAt stays untouched — it is when the trip entered the journal, not when it was
@@ -143,7 +137,7 @@ struct LoadRepository {
         load.touch()
         load.refreshDerivedFields(week: week)
 
-        try persist()
+        try persist(load)
     }
 
     func setDispute(_ load: Load, isDispute: Bool, completed: Bool, amount: Double?, responseDate: Date?) throws {
@@ -152,30 +146,30 @@ struct LoadRepository {
         load.disputeAmount = amount
         load.disputeResponseDate = responseDate
         load.touch()
-        try persist()
+        try persist(load)
     }
 
     func addPenalty(to load: Load, summary: String, amount: Double, date: Date) throws {
         let penalty = Penalty(summary: summary, amount: amount, date: date)
         penalty.load = load
-        context.insert(penalty)
+        load.penalties = (load.penalties ?? []) + [penalty]
         load.touch()
-        try persist()
+        try persist(load)
     }
 
     func remove(_ penalty: Penalty) throws {
         let load = penalty.load
-        context.delete(penalty)
         if let load {
+            load.penalties = (load.penalties ?? []).filter { $0.id != penalty.id }
             load.touch()
+            try persist(load)
         }
-        try persist()
     }
 
     // MARK: - Delete
 
     func delete(_ load: Load) throws {
-        context.delete(load)
-        try persist()
+        try database.delete(load)
+        onDidSave?()
     }
 }

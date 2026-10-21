@@ -1,4 +1,3 @@
-import SwiftData
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
@@ -7,7 +6,6 @@ import UniformTypeIdentifiers
 struct SettingsView: View {
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
 
     @State private var export: ExportedBackup?
     @State private var isImporting = false
@@ -58,6 +56,11 @@ struct SettingsView: View {
             Section("settings.about") {
                 LabeledContent("settings.about.version", value: Self.appVersion)
                 LabeledContent("settings.about.account", value: appState.persistence.scope.storeKey)
+                if appState.premiumIsActive {
+                    Text("settings.premium.renews")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
                 if !AppFont.isBundled {
                     Text("settings.about.fontFallback")
                         .font(.appCaption)
@@ -111,8 +114,8 @@ struct SettingsView: View {
     /// Week numbers are cached on every load, so switching the week start has to refile them.
     private func reindexWeeks() {
         do {
-            try WeekReindexer.reindex(in: modelContext, week: appState.settings.truckingWeek)
-            appState.publishWidgetSnapshot()
+            try WeekReindexer.reindex(in: appState.persistence.database, week: appState.settings.truckingWeek)
+            appState.reloadJournal()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -120,7 +123,7 @@ struct SettingsView: View {
 
     private func exportBackup() {
         do {
-            let url = try BackupService.exportSnapshot(from: modelContext, scope: appState.persistence.scope)
+            let url = try BackupService.exportSnapshot(from: appState.persistence.database, scope: appState.persistence.scope)
             export = ExportedBackup(url: url)
         } catch {
             errorMessage = error.localizedDescription
@@ -131,11 +134,11 @@ struct SettingsView: View {
         do {
             let report = try BackupService.restore(
                 from: url,
-                into: modelContext,
+                into: appState.persistence.database,
                 week: appState.settings.truckingWeek
             )
-        appState.adoptRestoredGoal()
-            appState.publishWidgetSnapshot()
+            appState.adoptRestoredGoal()
+            appState.reloadJournal()
             statusMessage = String(
                 localized: "settings.backup.report \(report.inserted) \(report.updated) \(report.skipped)"
             )

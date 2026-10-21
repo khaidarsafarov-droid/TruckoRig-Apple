@@ -1,39 +1,47 @@
 import Foundation
-import SwiftData
 
-/// Owns the currently open database.
+/// Owns the encrypted database for the local journal.
 ///
-/// The whole app reads through the container this hands out. The store is local-only: there is
-/// no account switch, and a previous Apple-scoped file is adopted once on upgrade.
+/// A previous Sign in with Apple file is adopted first (see `LocalStoreMigration`). A SwiftData
+/// file from the build before SQLCipher is then copied in. If the encrypted file cannot be
+/// opened, the UI still comes up on an empty in-memory database and Settings shows the failure.
 @Observable
 final class PersistenceController {
 
     private(set) var scope: AccountScope
-    private(set) var container: ModelContainer
-    /// Set when the on-disk store could not be opened and an in-memory fallback is in use.
+    let database: AppDatabase
+    /// Set when the on-disk store could not be opened or the SwiftData copy failed.
     private(set) var storeFailure: String?
-
-    @MainActor
-    var mainContext: ModelContext { container.mainContext }
 
     init(scope: AccountScope = .local) {
         self.scope = scope
-        let (container, failure) = Self.openContainer(for: scope)
-        self.container = container
-        self.storeFailure = failure
+        do {
+            let url = try AccountScopedContainer.databaseURL(for: scope)
+            let passphrase = try DatabasePassphraseStore(account: scope.storeKey).getOrCreate()
+            let database = try AppDatabase.open(at: url, passphrase: passphrase)
+            self.database = database
+            do {
+                _ = try SwiftDataMigration.run(
+                    legacyStoreURL: try AccountScopedContainer.storeURL(for: scope),
+                    database: database
+                )
+            } catch {
+                storeFailure = error.localizedDescription
+                AppLog.persistence.error("SwiftData import failed: \(error.localizedDescription, privacy: .public)")
+            }
+        } catch {
+            storeFailure = error.localizedDescription
+            AppLog.persistence.error("Encrypted store failed to open: \(error.localizedDescription, privacy: .public)")
+            guard let fallback = try? AppDatabase.ephemeral() else {
+                fatalError("SQLCipher could not open a store, even in memory: \(error)")
+            }
+            database = fallback
+        }
     }
 
-    /// Falls back to an in-memory store rather than crashing: a driver mid-trip needs the app to
-    /// open even if the store is corrupt, and the failure surfaces in Settings.
-    private static func openContainer(for scope: AccountScope) -> (ModelContainer, String?) {
-        do {
-            return (try AccountScopedContainer.make(for: scope), nil)
-        } catch {
-            let fallback = try? AccountScopedContainer.makeInMemory()
-            guard let fallback else {
-                fatalError("SwiftData could not open a store, even in memory: \(error)")
-            }
-            return (fallback, String(describing: error))
-        }
+    /// Preview / test store. Does not touch the Keychain or the SwiftData file.
+    init(database: AppDatabase, scope: AccountScope = .local) {
+        self.scope = scope
+        self.database = database
     }
 }

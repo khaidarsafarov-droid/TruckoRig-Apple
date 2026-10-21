@@ -4,6 +4,16 @@
 <dict>
 	<key>CFBundleDisplayName</key>
 	<string>TruckoRig Goal</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>DMSans-Regular.ttf</string>
+		<string>DMSans-Medium.ttf</string>
+		<string>DMSans-SemiBold.ttf</string>
+		<string>DMSans-Bold.ttf</string>
+		<string>Roboto-Regular.ttf</string>
+		<string>Roboto-Medium.ttf</string>
+		<string>Roboto-Bold.ttf</string>
+	</array>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>

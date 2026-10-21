@@ -1,10 +1,10 @@
 import Foundation
-import SwiftData
+import Observation
 
 /// One fuel purchase.
-@Model
-final class Diesel {
-    @Attribute(.unique) var id: UUID
+@Observable
+final class Diesel: Identifiable {
+    var id: UUID
     var gallons: Double
     var totalCost: Double
     var pricePerGallon: Double

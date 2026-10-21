@@ -1,12 +1,11 @@
-import SwiftData
 import SwiftUI
 
 /// Settlements received, newest first.
 struct PaycheckListView: View {
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Paycheck.date, order: .reverse) private var paychecks: [Paycheck]
+
+    private var paychecks: [Paycheck] { appState.catalog.paychecks }
 
     @State private var editing: Paycheck?
     @State private var isAdding = false
@@ -95,7 +94,7 @@ struct PaycheckListView: View {
     }
 
     private func delete(_ paycheck: Paycheck) {
-        let repository = appState.financeRepository(in: modelContext)
+        let repository = appState.financeRepository()
         do {
             try repository.delete(paycheck)
         } catch {
@@ -110,7 +109,6 @@ struct PaycheckEditorView: View {
     let paycheck: Paycheck?
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var amount: Double
@@ -156,7 +154,7 @@ struct PaycheckEditorView: View {
     }
 
     private func save() {
-        let repository = appState.financeRepository(in: modelContext)
+        let repository = appState.financeRepository()
         do {
             if let paycheck {
                 try repository.update(paycheck, amount: amount, date: date, company: company, notes: notes)

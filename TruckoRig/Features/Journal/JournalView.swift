@@ -1,12 +1,11 @@
-import SwiftData
 import SwiftUI
 
 /// Home screen: every trip, newest week first.
 struct JournalView: View {
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Load.date, order: .reverse) private var loads: [Load]
+
+    private var loads: [Load] { appState.catalog.loads }
 
     @State private var viewModel = JournalViewModel()
     @State private var isAddingLoad = false
@@ -144,7 +143,7 @@ struct JournalView: View {
     private func deletePending() {
         guard let load = viewModel.loadPendingDeletion else { return }
         viewModel.loadPendingDeletion = nil
-        let repository = appState.loadRepository(in: modelContext)
+        let repository = appState.loadRepository()
         do {
             try repository.delete(load)
         } catch {

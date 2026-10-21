@@ -1,11 +1,9 @@
-import SwiftData
 import SwiftUI
 
 /// Sheet for adding a trip, either by pasting Relay text or by typing it in.
 struct AddLoadView: View {
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var viewModel = AddLoadViewModel()
@@ -79,7 +77,7 @@ struct AddLoadView: View {
     }
 
     private func save() {
-        let repository = appState.loadRepository(in: modelContext)
+        let repository = appState.loadRepository()
         if viewModel.save(using: repository) {
             dismiss()
         }

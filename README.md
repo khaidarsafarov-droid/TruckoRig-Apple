@@ -9,7 +9,7 @@
 |---|---|
 | Язык | Swift 5.9+ |
 | UI | SwiftUI, iOS 17+ |
-| База | SwiftData (`@Model`, `@Query`, `ModelContext`) |
+| База | GRDB + SQLCipher, ключ в Keychain |
 | Данные | Только на телефоне, без логина |
 | Карты | MapKit |
 | OCR | Vision (`VNRecognizeTextRequest`, ru + en) |
@@ -24,13 +24,14 @@ open TruckoRig.xcodeproj
 Проект собирается схемой `TruckoRig` (iOS 17+). Перед запуском на устройстве укажите свою
 `DEVELOPMENT_TEAM` и включите App Groups (`group.com.truckorig`).
 
-Шрифт DM Sans не хранится в репозитории — см. [`TruckoRig/Resources/DM-Sans/README.md`](TruckoRig/Resources/DM-Sans/README.md).
-Без него приложение работает и выглядит так же, только системным шрифтом.
+Шрифты лежат в репозитории: DM Sans для латиницы и Roboto как запасной для кириллицы
+(у DM Sans нет кириллицы, и на Android русский текст рисуется Roboto). Лицензии — OFL и Apache,
+см. [`TruckoRig/Resources/DM-Sans/README.md`](TruckoRig/Resources/DM-Sans/README.md).
 
 ## Тесты доменного слоя
 
 Вся бизнес-логика (парсер Relay, недельная математика, калькуляторы цели и RPM) лежит в
-`TruckoRig/Domain` и не зависит ни от SwiftUI, ни от SwiftData. Поэтому её можно собрать и
+`TruckoRig/Domain` и не зависит ни от SwiftUI, ни от базы. Поэтому её можно собрать и
 прогнать без Xcode — хоть на Linux-раннере:
 
 ```bash
@@ -40,15 +41,20 @@ swift test
 76 теста: парсинг реальных сообщений Relay, определение года по истории чата, недельные границы
 на стыке лет, статусы темпа, дедуп Trip ID, CSV round-trip.
 
+Шифрование, Keychain и одноразовый перенос из SwiftData проверяются целью `TruckoRigTests` на
+симуляторе iPhone. Это делает workflow `.github/workflows/macos.yml` (macOS 26, Xcode 26.6):
+сборка приложения и виджета без подписи и `xcodebuild test`. Linux-workflow по-прежнему гоняет
+только доменные тесты.
+
 ## Структура
 
 ```
 TruckoRig/
 ├── App/          TruckoRigApp, AppState (composition root), RootView
 ├── Core/
-│   ├── Models/         @Model-сущности + производные поля
-│   ├── Persistence/    локальный SwiftData, репозитории, JSON-бэкап, мост к виджету
-│   ├── Theme/          палитра Mindwell Forest, DM Sans, soft UI
+│   ├── Models/         сущности журнала + производные поля
+│   ├── Persistence/    SQLCipher (GRDB), репозитории, JSON-бэкап, мост к виджету
+│   ├── Theme/          палитра Midnight & Gold, DM Sans + Roboto, soft UI
 │   └── Utils/          даты, форматтеры, гео, OCR, локация, логи
 ├── Domain/       чистая логика: парсеры, калькуляторы, модели (без UI и БД)
 ├── Features/     по экрану на папку, у каждого — @Observable ViewModel
@@ -57,22 +63,25 @@ TruckoRig/
 
 TruckoRigWidget/  виджет недельной цели
 Tools/            генератор и валидатор Xcode-проекта
-Tests/            тесты доменного слоя (SwiftPM)
+Tests/            тесты доменного слоя (SwiftPM, Linux)
+TruckoRigTests/   тесты шифрования и миграции (XCTest, симулятор)
 ```
 
 ## Ключевые инварианты
 
 Это то, что нельзя сломать при доработках — каждый пункт закрыт кодом и/или тестом.
 
-1. **Local-first.** Любая мутация сразу пишется в SwiftData. Всё идёт через
+1. **Local-first.** Любая мутация сразу пишется в зашифрованную базу. Всё идёт через
    `LoadRepository` / `FinanceRepository` / `MediaRepository`, напрямую из View в базу никто не пишет.
 2. **Дедуп по Trip ID.** `LoadRepository.create` отклоняет уже существующий `tripId` ошибкой
    `duplicateTripId`, UI показывает алерт. Relay пересылает один и тот же рейс десятки раз.
 3. **`parsedAt` неизменяем.** Ставится один раз при создании; при редактировании меняется только
    `updatedAt`. При восстановлении из бэкапа `parsedAt` тоже не переписывается.
-4. **Один локальный магазин.** База — `TruckoRig_local.store`. Логина нет: журнал открывается
-   сразу. Если на телефоне остался файл от старого Sign in with Apple, он один раз переезжает
-   в этот магазин вместе с фото.
+4. **Один локальный магазин.** База — `TruckoRig_local.sqlite` (SQLCipher, 256-битный пароль в
+   Keychain, `AfterFirstUnlockThisDeviceOnly`). Логина нет: журнал открывается сразу. Если на
+   телефоне остался файл от старого Sign in with Apple, он один раз переезжает в
+   `TruckoRig_local.store`, а тот один раз копируется в зашифрованную базу и переименовывается
+   в `.premigration`. Пароль с телефона не уезжает; перенос журнала — JSON-бэкап.
 5. **Валидация парсера.** Рейс принимается, только если есть Trip ID, Total Rate > 0 и хотя бы
    один адрес PU или DEL. Иначе возвращается типизированная ошибка, и пользователь видит, чего
    именно не хватило.

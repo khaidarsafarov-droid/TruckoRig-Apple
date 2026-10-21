@@ -33,8 +33,8 @@ struct WidgetGoalSnapshot: Codable, Equatable {
 
 /// Hands the widget its data through the shared App Group.
 ///
-/// The widget process cannot open the app's SwiftData store, and account-scoped stores make that
-/// worse, so the app publishes a tiny read-only snapshot instead. Nothing identifying goes in it.
+/// The widget does not open the encrypted journal. The app publishes a tiny read-only snapshot
+/// instead. Nothing identifying goes in it.
 enum WidgetBridge {
 
     static let appGroup = "group.com.truckorig"

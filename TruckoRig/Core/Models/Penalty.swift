@@ -1,10 +1,10 @@
 import Foundation
-import SwiftData
+import Observation
 
 /// A deduction against a load: late fee, lumper, damage claim.
-@Model
-final class Penalty {
-    @Attribute(.unique) var id: UUID
+@Observable
+final class Penalty: Identifiable {
+    var id: UUID
     var summary: String
     var amount: Double
     var date: Date

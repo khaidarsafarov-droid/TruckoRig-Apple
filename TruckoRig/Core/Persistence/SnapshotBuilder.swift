@@ -1,18 +1,18 @@
 import Foundation
-import SwiftData
 
 /// Reads the local database into a backup snapshot.
 enum SnapshotBuilder {
 
     @MainActor
-    static func build(from context: ModelContext, now: Date = Date()) throws -> AccountSnapshot {
-        AccountSnapshot(
+    static func build(from database: AppDatabase, now: Date = Date()) throws -> AccountSnapshot {
+        let graph = try database.fetchGraph()
+        return AccountSnapshot(
             updatedAt: now,
-            loads: try context.fetch(FetchDescriptor<Load>()).map(dto),
-            paychecks: try context.fetch(FetchDescriptor<Paycheck>()).map(dto),
-            diesel: try context.fetch(FetchDescriptor<Diesel>()).map(dto),
-            maintenance: try context.fetch(FetchDescriptor<MaintenanceTask>()).map(dto),
-            profile: try context.fetch(FetchDescriptor<DriverProfile>()).first.map(dto)
+            loads: graph.loads.map(dto),
+            paychecks: graph.paychecks.map(dto),
+            diesel: graph.diesel.map(dto),
+            maintenance: graph.maintenance.map(dto),
+            profile: graph.profile.map(dto)
         )
     }
 

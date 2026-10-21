@@ -92,8 +92,8 @@ def main() -> int:
         problems.append(f"{len(orphans)} unreferenced objects ({sorted(kinds)})")
 
     targets = [o for o in objects.values() if o.get("isa") == "PBXNativeTarget"]
-    if len(targets) != 2:
-        problems.append(f"expected 2 targets, found {len(targets)}")
+    if len(targets) != 3:
+        problems.append(f"expected 3 targets, found {len(targets)}")
     for target in targets:
         for required in ("buildConfigurationList", "productReference", "buildPhases"):
             if not target.get(required):

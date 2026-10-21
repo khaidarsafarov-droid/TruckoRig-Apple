@@ -3469,6 +3469,23 @@
         }
       }
     },
+    "settings.premium.renews": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "renews in the App Store"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "продление в App Store"
+          }
+        }
+      }
+    },
     "settings.about.version": {
       "extractionState": "manual",
       "localizations": {

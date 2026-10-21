@@ -1,17 +1,21 @@
 import Foundation
-import SwiftData
+import Observation
 
 /// A scanned document (BOL, rate confirmation, receipt) with its recognised text.
-@Model
-final class Scan {
-    @Attribute(.unique) var id: UUID
+@Observable
+final class Scan: Identifiable {
+    var id: UUID
     var fileName: String
     /// Text recognised by Vision. Never logged — scans routinely contain personal data.
     var ocrText: String?
     var title: String?
     var timestamp: Date
+    /// Persisted foreign key. `load` is filled in when the catalog is assembled.
+    var loadId: UUID?
 
-    var load: Load?
+    var load: Load? {
+        didSet { loadId = load?.id }
+    }
 
     init(
         id: UUID = UUID(),
@@ -27,5 +31,4 @@ final class Scan {
         self.timestamp = timestamp
     }
 
-    var loadId: UUID? { load?.id }
 }

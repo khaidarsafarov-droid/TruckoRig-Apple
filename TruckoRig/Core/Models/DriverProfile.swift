@@ -1,5 +1,5 @@
 import Foundation
-import SwiftData
+import Observation
 
 /// UI language. `.system` follows the device setting.
 enum AppLanguage: String, Codable, CaseIterable, Identifiable {
@@ -28,9 +28,9 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable {
 }
 
 /// The driver and their truck. Exactly one row per account.
-@Model
-final class DriverProfile {
-    @Attribute(.unique) var id: UUID
+@Observable
+final class DriverProfile: Identifiable {
+    var id: UUID
     var name: String?
     var carrier: String?
     var truckModel: String?

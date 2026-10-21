@@ -1,10 +1,10 @@
 import Foundation
-import SwiftData
+import Observation
 
 /// A settlement payment received from the carrier.
-@Model
-final class Paycheck {
-    @Attribute(.unique) var id: UUID
+@Observable
+final class Paycheck: Identifiable {
+    var id: UUID
     var amount: Double
     var date: Date
     var company: String?

@@ -9,7 +9,6 @@ struct TruckoRigApp: App {
         WindowGroup {
             RootView()
                 .environment(appState)
-                .modelContainer(appState.persistence.container)
                 .tint(.forestPrimary)
                 .environment(\.locale, resolvedLocale)
                 .task {

@@ -1,5 +1,4 @@
 import Foundation
-import SwiftData
 
 /// Which account's database is open.
 enum AccountScope: Equatable, Hashable {
@@ -31,7 +30,7 @@ enum AccountScopedContainerError: Error {
     case storeDirectoryUnavailable
 }
 
-/// Builds the SwiftData container for the active store file.
+/// Paths for the encrypted database and the SwiftData file it replaces.
 enum AccountScopedContainer {
 
     static let directoryName = "TruckoRig"
@@ -45,32 +44,17 @@ enum AccountScopedContainer {
         return directory
     }
 
+    /// Plaintext SwiftData file written by builds before SQLCipher (`TruckoRig_local.store`).
     static func storeURL(for scope: AccountScope) throws -> URL {
         try storeDirectory().appendingPathComponent("TruckoRig_\(scope.storeKey).store")
     }
 
-    static func make(for scope: AccountScope) throws -> ModelContainer {
-        let configuration = ModelConfiguration(
-            "TruckoRig_\(scope.storeKey)",
-            schema: TruckoRigSchema.schema,
-            url: try storeURL(for: scope),
-            allowsSave: true,
-            cloudKitDatabase: .none
-        )
-        return try ModelContainer(for: TruckoRigSchema.schema, configurations: configuration)
+    /// SQLCipher database (`TruckoRig_local.sqlite`).
+    static func databaseURL(for scope: AccountScope) throws -> URL {
+        try storeDirectory().appendingPathComponent("TruckoRig_\(scope.storeKey).sqlite")
     }
 
-    /// In-memory container for previews and tests.
-    static func makeInMemory() throws -> ModelContainer {
-        let configuration = ModelConfiguration(
-            schema: TruckoRigSchema.schema,
-            isStoredInMemoryOnly: true,
-            cloudKitDatabase: .none
-        )
-        return try ModelContainer(for: TruckoRigSchema.schema, configurations: configuration)
-    }
-
-    /// Deletes an account's store and its SQLite sidecar files.
+    /// Deletes a SwiftData store and its SQLite sidecar files. Does not touch the encrypted file.
     static func destroyStore(for scope: AccountScope) throws {
         let url = try storeURL(for: scope)
         let sidecars = ["", "-wal", "-shm"].map { suffix in

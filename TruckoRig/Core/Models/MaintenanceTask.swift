@@ -1,10 +1,10 @@
 import Foundation
-import SwiftData
+import Observation
 
 /// A service item: oil change, DOT inspection, tyre rotation.
-@Model
-final class MaintenanceTask {
-    @Attribute(.unique) var id: UUID
+@Observable
+final class MaintenanceTask: Identifiable {
+    var id: UUID
     var title: String
     var dueDate: Date?
     /// Odometer reading the service is due at, for mileage-based intervals.

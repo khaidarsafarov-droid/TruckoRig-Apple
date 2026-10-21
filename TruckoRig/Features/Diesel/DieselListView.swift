@@ -1,12 +1,11 @@
-import SwiftData
 import SwiftUI
 
 /// Fuel purchases with running cost and fuel economy.
 struct DieselListView: View {
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Diesel.date, order: .reverse) private var fills: [Diesel]
+
+    private var fills: [Diesel] { appState.catalog.diesel }
 
     @State private var editing: Diesel?
     @State private var isAdding = false
@@ -110,7 +109,7 @@ struct DieselListView: View {
     }
 
     private func delete(_ fill: Diesel) {
-        let repository = appState.financeRepository(in: modelContext)
+        let repository = appState.financeRepository()
         do {
             try repository.delete(fill)
         } catch {
@@ -125,7 +124,6 @@ struct DieselEditorView: View {
     let fill: Diesel?
 
     @Environment(AppState.self) private var appState
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @State private var gallons: Double
@@ -192,7 +190,7 @@ struct DieselEditorView: View {
     }
 
     private func save() {
-        let repository = appState.financeRepository(in: modelContext)
+        let repository = appState.financeRepository()
         let odometer = Int(odometerText.filter(\.isNumber))
         let normalizedState = state.trimmed.isEmpty ? nil : USStates.normalize(state)
         do {

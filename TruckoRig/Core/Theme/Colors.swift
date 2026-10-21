@@ -19,8 +19,8 @@ extension Color {
 
     /// Builds a colour that follows the interface style.
     ///
-    /// Dark mode is not a tint of the light palette — the forest greens have to lift off a dark
-    /// background instead of sinking into it — so each token names both variants explicitly.
+    /// Dark mode is a separate cabin palette, not a tint of the light one, so each token names
+    /// both variants. Values come from Android `SoftUiColors`, `BrandPalettes` and `SemanticColors`.
     static func adaptive(light: String, dark: String) -> Color {
         Color(uiColor: UIColor { traits in
             UIColor(Color(hex: traits.userInterfaceStyle == .dark ? dark : light))
@@ -28,23 +28,65 @@ extension Color {
     }
 }
 
-/// "Mindwell Forest" palette.
+/// Midnight & Gold.
+///
+/// Token names that start with `forest` are the Android names (`ForestPrimary` and friends).
+/// The greens are gone; the values are the indigo / gold cabin palette.
 extension Color {
-    static let forestPrimary = Color.adaptive(light: "2D5A3D", dark: "6FA97F")
-    static let forestSecondary = Color.adaptive(light: "4A7C59", dark: "5E9670")
-    static let forestAccent = Color.adaptive(light: "7FB069", dark: "8FC77A")
+    /// Light `#3F3D9E`. Dark primary buttons are champagne gold `#D6BC85`, not inverted indigo.
+    static let forestPrimary = Color.adaptive(light: "3F3D9E", dark: "D6BC85")
+    /// `OnContainer` — secondary indigo ink on the light canvas, lifted lilac in the dark cabin.
+    static let forestSecondary = Color.adaptive(light: "25265E", dark: "E2DFF5")
+    /// Same fill as `forestPrimary` (Android `ForestAccent` / `ForestAccentDark`).
+    static let forestAccent = Color.forestPrimary
 
-    static let forestBackground = Color.adaptive(light: "F5F7F5", dark: "12160F")
-    static let forestCard = Color.adaptive(light: "FFFFFF", dark: "1C2119")
-    static let forestSurfaceMuted = Color.adaptive(light: "EDF1ED", dark: "252B22")
+    /// Page canvas. Light `#F5F4F1`, dark `#0D0F1E`.
+    static let forestBackground = Color.adaptive(light: "F5F4F1", dark: "0D0F1E")
+    /// Card surface. Light `#FDFCFA`, dark `#161929`.
+    static let forestCard = Color.adaptive(light: "FDFCFA", dark: "161929")
+    /// Input and chip wash. Light sage `#EAE9F4`, dark `#262A4F`.
+    static let forestSurfaceMuted = Color.adaptive(light: "EAE9F4", dark: "262A4F")
 
-    static let forestText = Color.adaptive(light: "1A1A1A", dark: "F2F4F1")
-    static let forestTextSecondary = Color.adaptive(light: "6B7280", dark: "A0A99C")
-    static let forestSeparator = Color.adaptive(light: "E3E8E3", dark: "2E352B")
+    static let forestText = Color.adaptive(light: "16182B", dark: "EEEBE3")
+    static let forestTextSecondary = Color.adaptive(light: "585A6E", dark: "A7A6B4")
+    static let forestSeparator = Color.adaptive(light: "E6E2D8", dark: "262A3E")
 
-    static let forestSuccess = Color.adaptive(light: "22C55E", dark: "45D97C")
-    static let forestWarning = Color.adaptive(light: "EAB308", dark: "F2C333")
-    static let forestError = Color.adaptive(light: "EF4444", dark: "F87171")
+    static let forestSuccess = Color.adaptive(light: "3D6A55", dark: "8FBFA6")
+    static let forestWarning = Color.adaptive(light: "86542A", dark: "DDAE84")
+    static let forestError = Color.adaptive(light: "953C46", dark: "E39AA2")
 
-    static let forestOnPrimary = Color.adaptive(light: "FFFFFF", dark: "0E1210")
+    /// White on indigo. Espresso `#1D1708` on the dark-mode gold button so it clears AA.
+    static let forestOnPrimary = Color.adaptive(light: "FFFFFF", dark: "1D1708")
+
+    // MARK: Hero
+
+    /// Horizontal hero wash. Light `#1E2150` → `#0F1230`.
+    static let heroStart = Color.adaptive(light: "1E2150", dark: "1E2250")
+    static let heroEnd = Color.adaptive(light: "0F1230", dark: "111430")
+    static let heroText = Color.adaptive(light: "F7F2E6", dark: "F5EEDC")
+    static let heroTextMuted = Color.adaptive(light: "D9CFB4", dark: "CDBF9C")
+
+    // MARK: Gold
+
+    /// Gold that sits on the indigo hero. Light `#C8A867`, dark `#D6BC85`.
+    static let brandGold = Color.adaptive(light: "C8A867", dark: "D6BC85")
+    static let goldStart = Color.adaptive(light: "E4D2A1", dark: "E4D2A1")
+    static let goldEnd = Color.brandGold
+    /// Espresso text on a gold chip. Same in both themes (`goldOnGold`).
+    static let goldOnGold = Color(hex: "1D1708")
+
+    static let successContainer = Color.adaptive(light: "E5EDE8", dark: "1B2C25")
+    static let warningContainer = Color.adaptive(light: "F3EADD", dark: "33261C")
+    static let dangerContainer = Color.adaptive(light: "F4E4E4", dark: "382127")
+}
+
+/// Hero wash used by the week card, settings header and the widget.
+struct HeroGradient: View {
+    var body: some View {
+        LinearGradient(
+            colors: [Color.heroStart, Color.heroEnd],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    }
 }
