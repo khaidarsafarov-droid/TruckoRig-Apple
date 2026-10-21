@@ -7,11 +7,11 @@ enum SnapshotBuilder {
     static func build(from database: AppDatabase, now: Date = Date()) throws -> AccountSnapshot {
         let graph = try database.fetchGraph()
         return AccountSnapshot(
+            schemaVersion: 2,
             updatedAt: now,
             loads: graph.loads.map(dto),
             paychecks: graph.paychecks.map(dto),
             diesel: graph.diesel.map(dto),
-            schemaVersion: 2,
             maintenance: graph.maintenance.map(dto),
             profile: graph.profile.map(dto),
             maintenanceArchive: graph.maintenanceArchive.map(dto)
