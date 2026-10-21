@@ -60,7 +60,10 @@ struct PaywallView: View {
                             .foregroundStyle(Color.heroText)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(20)
-                            .background(HeroGradient(), in: RoundedRectangle(cornerRadius: Spacing.cardLargeRadius, style: .continuous))
+                            .background {
+                                HeroGradient()
+                                    .clipShape(RoundedRectangle(cornerRadius: Spacing.cardLargeRadius, style: .continuous))
+                            }
                         VStack(alignment: .leading, spacing: 12) {
                             Text("premium.body")
                                 .font(.appBody)

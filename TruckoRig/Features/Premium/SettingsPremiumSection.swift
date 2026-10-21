@@ -92,7 +92,10 @@ struct SettingsPremiumSection: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(HeroGradient(), in: RoundedRectangle(cornerRadius: Spacing.cardLargeRadius, style: .continuous))
+        .background {
+            HeroGradient()
+                .clipShape(RoundedRectangle(cornerRadius: Spacing.cardLargeRadius, style: .continuous))
+        }
         .sheet(isPresented: $showPaywall) {
             PremiumPaywallSheet(onClose: { showPaywall = false })
                 .environment(appState)
