@@ -136,7 +136,8 @@ struct SettingsView: View {
             let report = try BackupService.restore(
                 from: url,
                 into: appState.persistence.database,
-                week: appState.settings.truckingWeek
+                week: appState.settings.truckingWeek,
+                scope: appState.persistence.scope
             )
             appState.adoptRestoredGoal()
             appState.reloadJournal()

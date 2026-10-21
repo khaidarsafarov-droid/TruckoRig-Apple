@@ -245,7 +245,7 @@ struct LoadDetailView: View {
     private func delete() {
         let repository = appState.loadRepository()
         do {
-            try repository.delete(load)
+            try repository.delete(load, mediaStore: MediaStore(scope: appState.persistence.scope))
             dismiss()
         } catch {
             errorMessage = error.localizedDescription

@@ -19,7 +19,8 @@ enum SnapshotApplier {
     static func apply(
         _ snapshot: AccountSnapshot,
         to database: AppDatabase,
-        week: TruckingWeek = TruckingWeek()
+        week: TruckingWeek = TruckingWeek(),
+        onRemovedMedia: ((AppDatabase.RemovedMedia) -> Void)? = nil
     ) throws -> Report {
         var report = Report()
         let graph = try database.fetchGraph()
@@ -37,7 +38,8 @@ enum SnapshotApplier {
                 continue
             }
             if remote.isDeleted {
-                try database.delete(local)
+                let removed = try database.delete(local)
+                onRemovedMedia?(removed)
                 report.deleted += 1
                 continue
             }

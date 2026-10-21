@@ -168,8 +168,16 @@ struct LoadRepository {
 
     // MARK: - Delete
 
-    func delete(_ load: Load) throws {
-        try database.delete(load)
+    func delete(_ load: Load, mediaStore: MediaStore? = nil) throws {
+        let removed = try database.delete(load)
+        if let mediaStore {
+            for photo in removed.photos {
+                mediaStore.delete(fileName: photo.fileName, filePath: photo.filePath, kind: .photo)
+            }
+            for scan in removed.scans {
+                mediaStore.delete(fileName: scan.fileName, filePath: scan.filePath, kind: .scan)
+            }
+        }
         onDidSave?()
     }
 }

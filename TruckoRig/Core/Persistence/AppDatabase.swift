@@ -62,6 +62,21 @@ final class AppDatabase {
         migrator.registerMigration("v1") { db in
             try Self.createSchema(db)
         }
+        // Android PhotoEntity / ScanEntity columns that the first schema did not store.
+        migrator.registerMigration("v2-media-fields") { db in
+            try db.alter(table: "photo") { table in
+                table.add(column: "filePath", .text)
+                table.add(column: "city", .text).notNull().defaults(to: "")
+                table.add(column: "state", .text).notNull().defaults(to: "")
+                table.add(column: "zipCode", .text).notNull().defaults(to: "")
+            }
+            try db.alter(table: "scan") { table in
+                table.add(column: "filePath", .text)
+                table.add(column: "fileSizeBytes", .integer).notNull().defaults(to: 0)
+                table.add(column: "pageCount", .integer).notNull().defaults(to: 1)
+                table.add(column: "category", .text).notNull().defaults(to: "OTHER")
+            }
+        }
         try migrator.migrate(queue)
     }
 
@@ -226,9 +241,27 @@ final class AppDatabase {
         }
     }
 
-    func delete(_ load: Load) throws {
+    /// Deletes the load and its photo and scan rows. Files are removed by the caller.
+    ///
+    /// Android `deletePhotosForLoad` / `deleteScansForLoad` drop the rows and the files together.
+    /// Foreign keys would only null the link, which would leave the paperwork behind.
+    func delete(_ load: Load) throws -> RemovedMedia {
         try queue.write { db in
-            try db.execute(sql: "DELETE FROM load WHERE id = ?", arguments: [load.id.uuidString])
+            let loadId = load.id.uuidString
+            let photos = try Row.fetchAll(
+                db,
+                sql: "SELECT * FROM photo WHERE loadId = ?",
+                arguments: [loadId]
+            ).map(Self.photo(from:))
+            let scans = try Row.fetchAll(
+                db,
+                sql: "SELECT * FROM scan WHERE loadId = ?",
+                arguments: [loadId]
+            ).map(Self.scan(from:))
+            try db.execute(sql: "DELETE FROM photo WHERE loadId = ?", arguments: [loadId])
+            try db.execute(sql: "DELETE FROM scan WHERE loadId = ?", arguments: [loadId])
+            try db.execute(sql: "DELETE FROM load WHERE id = ?", arguments: [loadId])
+            return RemovedMedia(photos: photos, scans: scans)
         }
     }
 
@@ -331,6 +364,11 @@ final class AppDatabase {
     }
 
     // MARK: - Graph
+
+    struct RemovedMedia {
+        var photos: [Photo]
+        var scans: [Scan]
+    }
 
     struct StoredGraph {
         var loads: [Load]
@@ -505,27 +543,35 @@ final class AppDatabase {
 
     private static func upsert(_ db: Database, _ photo: Photo) throws {
         try execute(db, """
-        INSERT INTO photo (id, loadId, fileName, latitude, longitude, timestamp, caption)
-        VALUES (\(marks(7)))
+        INSERT INTO photo (
+            id, loadId, fileName, filePath, latitude, longitude, city, state, zipCode, timestamp, caption
+        ) VALUES (\(marks(11)))
         ON CONFLICT(id) DO UPDATE SET
-            loadId = excluded.loadId, fileName = excluded.fileName, latitude = excluded.latitude,
-            longitude = excluded.longitude, timestamp = excluded.timestamp, caption = excluded.caption
+            loadId = excluded.loadId, fileName = excluded.fileName, filePath = excluded.filePath,
+            latitude = excluded.latitude, longitude = excluded.longitude,
+            city = excluded.city, state = excluded.state, zipCode = excluded.zipCode,
+            timestamp = excluded.timestamp, caption = excluded.caption
         """, [
-            photo.id.uuidString, (photo.loadId ?? photo.load?.id)?.uuidString, photo.fileName,
-            photo.latitude, photo.longitude, photo.timestamp.timeIntervalSince1970, photo.caption,
+            photo.id.uuidString, (photo.loadId ?? photo.load?.id)?.uuidString, photo.fileName, photo.filePath,
+            photo.latitude, photo.longitude, photo.city, photo.state, photo.zipCode,
+            photo.timestamp.timeIntervalSince1970, photo.caption,
         ])
     }
 
     private static func upsert(_ db: Database, _ scan: Scan) throws {
         try execute(db, """
-        INSERT INTO scan (id, loadId, fileName, ocrText, title, timestamp)
-        VALUES (\(marks(6)))
+        INSERT INTO scan (
+            id, loadId, fileName, filePath, ocrText, title, timestamp, fileSizeBytes, pageCount, category
+        ) VALUES (\(marks(10)))
         ON CONFLICT(id) DO UPDATE SET
-            loadId = excluded.loadId, fileName = excluded.fileName, ocrText = excluded.ocrText,
-            title = excluded.title, timestamp = excluded.timestamp
+            loadId = excluded.loadId, fileName = excluded.fileName, filePath = excluded.filePath,
+            ocrText = excluded.ocrText, title = excluded.title, timestamp = excluded.timestamp,
+            fileSizeBytes = excluded.fileSizeBytes, pageCount = excluded.pageCount,
+            category = excluded.category
         """, [
-            scan.id.uuidString, (scan.loadId ?? scan.load?.id)?.uuidString, scan.fileName, scan.ocrText,
-            scan.title, scan.timestamp.timeIntervalSince1970,
+            scan.id.uuidString, (scan.loadId ?? scan.load?.id)?.uuidString, scan.fileName, scan.filePath,
+            scan.ocrText, scan.title, scan.timestamp.timeIntervalSince1970, scan.fileSizeBytes,
+            scan.pageCount, scan.category,
         ])
     }
 
@@ -658,8 +704,12 @@ final class AppDatabase {
         let photo = Photo(
             id: uuid(row, "id") ?? UUID(),
             fileName: string(row, "fileName") ?? "",
+            filePath: string(row, "filePath"),
             latitude: double(row, "latitude"),
             longitude: double(row, "longitude"),
+            city: string(row, "city") ?? "",
+            state: string(row, "state") ?? "",
+            zipCode: string(row, "zipCode") ?? "",
             timestamp: date(row, "timestamp") ?? Date(timeIntervalSince1970: 0),
             caption: string(row, "caption")
         )
@@ -671,9 +721,13 @@ final class AppDatabase {
         let scan = Scan(
             id: uuid(row, "id") ?? UUID(),
             fileName: string(row, "fileName") ?? "",
+            filePath: string(row, "filePath"),
             ocrText: string(row, "ocrText"),
             title: string(row, "title"),
-            timestamp: date(row, "timestamp") ?? Date(timeIntervalSince1970: 0)
+            timestamp: date(row, "timestamp") ?? Date(timeIntervalSince1970: 0),
+            fileSizeBytes: int64(row, "fileSizeBytes") ?? 0,
+            pageCount: int(row, "pageCount") ?? 1,
+            category: string(row, "category") ?? ScanDocumentCategory.other.rawValue
         )
         scan.loadId = uuid(row, "loadId")
         return scan
@@ -698,6 +752,7 @@ final class AppDatabase {
     private static func string(_ row: Row, _ column: String) -> String? { row[column] }
     private static func double(_ row: Row, _ column: String) -> Double? { row[column] }
     private static func int(_ row: Row, _ column: String) -> Int? { row[column] }
+    private static func int64(_ row: Row, _ column: String) -> Int64? { row[column] }
 
     private static func uuid(_ row: Row, _ column: String) -> UUID? {
         string(row, column).flatMap(UUID.init(uuidString:))
