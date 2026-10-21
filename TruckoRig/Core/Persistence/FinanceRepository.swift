@@ -21,19 +21,51 @@ struct FinanceRepository {
     // MARK: - Paychecks
 
     @discardableResult
-    func addPaycheck(amount: Double, date: Date, company: String?, notes: String?) throws -> Paycheck {
-        let paycheck = Paycheck(amount: amount, date: date, company: company?.nonEmpty, notes: notes?.nonEmpty)
+    func addPaycheck(
+        amount: Double,
+        date: Date,
+        company: String?,
+        notes: String?,
+        grossAmount: Double? = nil,
+        driverName: String? = nil,
+        rawText: String? = nil,
+        sourceFileName: String? = nil
+    ) throws -> Paycheck {
+        let paycheck = Paycheck(
+            amount: amount,
+            date: date,
+            company: company?.nonEmpty,
+            notes: notes?.nonEmpty,
+            grossAmount: grossAmount,
+            driverName: driverName?.nonEmpty,
+            rawText: rawText,
+            sourceFileName: sourceFileName
+        )
         paycheck.refreshWeek(week: week)
         try database.save(paycheck)
         saved()
         return paycheck
     }
 
-    func update(_ paycheck: Paycheck, amount: Double, date: Date, company: String?, notes: String?) throws {
+    func update(
+        _ paycheck: Paycheck,
+        amount: Double,
+        date: Date,
+        company: String?,
+        notes: String?,
+        grossAmount: Double? = nil,
+        driverName: String? = nil,
+        rawText: String? = nil,
+        sourceFileName: String? = nil
+    ) throws {
         paycheck.amount = amount
         paycheck.date = date
         paycheck.company = company?.nonEmpty
         paycheck.notes = notes?.nonEmpty
+        paycheck.grossAmount = grossAmount
+        paycheck.driverName = driverName?.nonEmpty
+        paycheck.rawText = rawText
+        paycheck.sourceFileName = sourceFileName
         paycheck.updatedAt = Date()
         paycheck.refreshWeek(week: week)
         try database.save(paycheck)
@@ -55,7 +87,11 @@ struct FinanceRepository {
         location: String?,
         state: String?,
         date: Date,
-        odometer: Int?
+        odometer: Int?,
+        discountPricePerGallon: Double? = nil,
+        rawText: String? = nil,
+        receiptFileName: String? = nil,
+        sourceFileName: String? = nil
     ) throws -> Diesel {
         let fill = Diesel(
             gallons: gallons,
@@ -64,7 +100,11 @@ struct FinanceRepository {
             location: location?.nonEmpty,
             state: state?.nonEmpty,
             date: date,
-            odometer: odometer
+            odometer: odometer,
+            discountPricePerGallon: discountPricePerGallon,
+            rawText: rawText,
+            receiptFileName: receiptFileName,
+            sourceFileName: sourceFileName
         )
         try database.save(fill)
         saved()
@@ -79,7 +119,11 @@ struct FinanceRepository {
         location: String?,
         state: String?,
         date: Date,
-        odometer: Int?
+        odometer: Int?,
+        discountPricePerGallon: Double? = nil,
+        rawText: String? = nil,
+        receiptFileName: String? = nil,
+        sourceFileName: String? = nil
     ) throws {
         fill.gallons = gallons
         fill.totalCost = totalCost
@@ -88,6 +132,10 @@ struct FinanceRepository {
         fill.state = state?.nonEmpty
         fill.date = date
         fill.odometer = odometer
+        fill.discountPricePerGallon = discountPricePerGallon
+        fill.rawText = rawText
+        fill.receiptFileName = receiptFileName
+        fill.sourceFileName = sourceFileName
         fill.updatedAt = Date()
         try database.save(fill)
         saved()
@@ -112,6 +160,47 @@ struct FinanceRepository {
         copy.completedAt = millis
         copy.updatedAt = millis
         try database.save(copy)
+        saved()
+    }
+
+    @discardableResult
+    func addExpense(amount: Double, description: String, date: Date, receiptFileName: String?) throws -> MiscExpense {
+        let expense = MiscExpense(
+            amount: amount,
+            expenseDescription: description.trimmingCharacters(in: .whitespacesAndNewlines),
+            date: date,
+            receiptFileName: receiptFileName
+        )
+        try database.save(expense)
+        saved()
+        return expense
+    }
+
+    func update(_ expense: MiscExpense, amount: Double, description: String, date: Date, receiptFileName: String?) throws {
+        expense.amount = amount
+        expense.expenseDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
+        expense.date = date
+        expense.receiptFileName = receiptFileName
+        expense.updatedAt = Date()
+        try database.save(expense)
+        saved()
+    }
+
+    func delete(_ expense: MiscExpense) throws {
+        try database.delete(expense)
+        saved()
+    }
+
+    /// Applies one calendar tap the way Android does: auto days flip off, manual days come back off.
+    func togglePerDiem(isoDate: String, autoDates: Set<String>, effectiveDates: Set<String>) throws {
+        switch PerDiemDayOverrides.mutationForToggle(isoDate: isoDate, autoDates: autoDates, effectiveDates: effectiveDates) {
+        case .upsertIncluded:
+            try database.savePerDiemOverride(isoDate: isoDate, included: true)
+        case .upsertExcluded:
+            try database.savePerDiemOverride(isoDate: isoDate, included: false)
+        case .delete:
+            try database.deletePerDiemOverride(isoDate: isoDate)
+        }
         saved()
     }
 

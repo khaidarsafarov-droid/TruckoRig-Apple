@@ -11,6 +11,10 @@ enum HomeDestination: Hashable {
     case gallery
     case settings
     case profile
+    case tax
+    case expenses
+    case about
+    case privacy
 }
 
 /// Home screen: week card, then every trip, newest week first.
@@ -207,6 +211,10 @@ struct JournalView: View {
         case .gallery: GalleryView()
         case .settings: SettingsView()
         case .profile: ProfileView()
+        case .tax: TaxTrackerView()
+        case .expenses: MiscExpenseListView()
+        case .about: AboutView()
+        case .privacy: PrivacyView()
         }
     }
 
@@ -268,6 +276,8 @@ private struct JournalMenuSheet: View {
                 menuRow(.goal, "tab.goal", "target")
                 menuRow(.paycheck, "screen.paycheck", "dollarsign.circle")
                 menuRow(.diesel, "screen.diesel", "fuelpump")
+                menuRow(.expenses, "screen.expenses", "receipt")
+                menuRow(.tax, "screen.tax", "percent")
                 menuRow(.maintenance, "screen.maintenance", "wrench.and.screwdriver")
                 menuRow(.map, "screen.map", "map")
                 menuRow(.gallery, "screen.gallery", "photo.on.rectangle")

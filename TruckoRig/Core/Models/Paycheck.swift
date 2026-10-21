@@ -11,6 +11,11 @@ final class Paycheck: Identifiable {
     var notes: String?
     var weekNumber: Int
     var year: Int
+    /// Settlement gross when the statement prints one. `amount` is the net the driver takes home.
+    var grossAmount: Double?
+    var driverName: String?
+    var rawText: String?
+    var sourceFileName: String?
     var updatedAt: Date
 
     init(
@@ -21,6 +26,10 @@ final class Paycheck: Identifiable {
         notes: String? = nil,
         weekNumber: Int = 0,
         year: Int = 0,
+        grossAmount: Double? = nil,
+        driverName: String? = nil,
+        rawText: String? = nil,
+        sourceFileName: String? = nil,
         updatedAt: Date = Date()
     ) {
         self.id = id
@@ -30,6 +39,10 @@ final class Paycheck: Identifiable {
         self.notes = notes
         self.weekNumber = weekNumber
         self.year = year
+        self.grossAmount = grossAmount
+        self.driverName = driverName
+        self.rawText = rawText
+        self.sourceFileName = sourceFileName
         self.updatedAt = updatedAt
     }
 

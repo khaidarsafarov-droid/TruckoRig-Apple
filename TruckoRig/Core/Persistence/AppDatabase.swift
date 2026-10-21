@@ -105,6 +105,35 @@ final class AppDatabase {
             }
             try Self.copyStubMaintenance(db)
         }
+        migrator.registerMigration("v4_receipts_tax_expenses") { db in
+            try db.alter(table: "diesel") { table in
+                table.add(column: "discountPricePerGallon", .double)
+                table.add(column: "rawText", .text)
+                table.add(column: "receiptFileName", .text)
+                table.add(column: "sourceFileName", .text)
+            }
+            try db.alter(table: "paycheck") { table in
+                table.add(column: "grossAmount", .double)
+                table.add(column: "driverName", .text)
+                table.add(column: "rawText", .text)
+                table.add(column: "sourceFileName", .text)
+            }
+            try db.alter(table: "profile") { table in
+                table.add(column: "role", .text)
+            }
+            try db.create(table: "misc_expense") { table in
+                table.primaryKey("id", .text)
+                table.column("amount", .double).notNull()
+                table.column("expenseDescription", .text).notNull()
+                table.column("date", .double).notNull()
+                table.column("receiptFileName", .text)
+                table.column("updatedAt", .double).notNull()
+            }
+            try db.create(table: "per_diem_override") { table in
+                table.primaryKey("isoDate", .text)
+                table.column("included", .integer).notNull()
+            }
+        }
         try migrator.migrate(queue)
     }
 
@@ -407,6 +436,34 @@ final class AppDatabase {
         try queue.write { try Self.upsert($0, profile) }
     }
 
+    func save(_ expense: MiscExpense) throws {
+        try queue.write { try Self.upsert($0, expense) }
+    }
+
+    func delete(_ expense: MiscExpense) throws {
+        try queue.write { db in
+            try db.execute(sql: "DELETE FROM misc_expense WHERE id = ?", arguments: [expense.id.uuidString])
+        }
+    }
+
+    func savePerDiemOverride(isoDate: String, included: Bool) throws {
+        try queue.write { db in
+            try db.execute(
+                sql: """
+                INSERT INTO per_diem_override (isoDate, included) VALUES (?, ?)
+                ON CONFLICT(isoDate) DO UPDATE SET included = excluded.included
+                """,
+                arguments: [isoDate, included ? 1 : 0]
+            )
+        }
+    }
+
+    func deletePerDiemOverride(isoDate: String) throws {
+        try queue.write { db in
+            try db.execute(sql: "DELETE FROM per_diem_override WHERE isoDate = ?", arguments: [isoDate])
+        }
+    }
+
     func markLegacyImportDone() throws {
         try queue.write { db in
             try Self.markLegacyImportDone(db)
@@ -471,6 +528,8 @@ final class AppDatabase {
         var photos: [Photo]
         var scans: [Scan]
         var profile: DriverProfile?
+        var expenses: [MiscExpense]
+        var perDiemOverrides: [PerDiemOverride]
     }
 
     private static func fetchGraph(_ db: Database) throws -> StoredGraph {
@@ -517,6 +576,8 @@ final class AppDatabase {
             sql: "SELECT * FROM maintenance_archive ORDER BY serviceDate DESC, createdAt DESC"
         ).map(maintenanceArchive(from:))
         let profile = try Row.fetchOne(db, sql: "SELECT * FROM profile LIMIT 1").map(profile(from:))
+        let expenses = try Row.fetchAll(db, sql: "SELECT * FROM misc_expense ORDER BY date DESC").map(expense(from:))
+        let overrides = try Row.fetchAll(db, sql: "SELECT * FROM per_diem_override ORDER BY isoDate ASC").map(override(from:))
         return StoredGraph(
             loads: loads,
             paychecks: paychecks,
@@ -525,7 +586,9 @@ final class AppDatabase {
             maintenanceArchive: archive,
             photos: photos,
             scans: scans,
-            profile: profile
+            profile: profile,
+            expenses: expenses,
+            perDiemOverrides: overrides
         )
     }
 
@@ -596,30 +659,40 @@ final class AppDatabase {
 
     private static func upsert(_ db: Database, _ paycheck: Paycheck) throws {
         try execute(db, """
-        INSERT INTO paycheck (id, amount, date, company, notes, weekNumber, year, updatedAt)
-        VALUES (\(marks(8)))
+        INSERT INTO paycheck (
+            id, amount, date, company, notes, weekNumber, year, updatedAt,
+            grossAmount, driverName, rawText, sourceFileName
+        )
+        VALUES (\(marks(12)))
         ON CONFLICT(id) DO UPDATE SET
             amount = excluded.amount, date = excluded.date, company = excluded.company,
             notes = excluded.notes, weekNumber = excluded.weekNumber, year = excluded.year,
-            updatedAt = excluded.updatedAt
+            updatedAt = excluded.updatedAt, grossAmount = excluded.grossAmount,
+            driverName = excluded.driverName, rawText = excluded.rawText,
+            sourceFileName = excluded.sourceFileName
         """, [
             paycheck.id.uuidString, paycheck.amount, paycheck.date.timeIntervalSince1970, paycheck.company,
             paycheck.notes, paycheck.weekNumber, paycheck.year, paycheck.updatedAt.timeIntervalSince1970,
+            paycheck.grossAmount, paycheck.driverName, paycheck.rawText, paycheck.sourceFileName,
         ])
     }
 
     private static func upsert(_ db: Database, _ fill: Diesel) throws {
         try execute(db, """
         INSERT INTO diesel (
-            id, gallons, totalCost, pricePerGallon, location, state, date, odometer, updatedAt
-        ) VALUES (\(marks(9)))
+            id, gallons, totalCost, pricePerGallon, location, state, date, odometer, updatedAt,
+            discountPricePerGallon, rawText, receiptFileName, sourceFileName
+        ) VALUES (\(marks(13)))
         ON CONFLICT(id) DO UPDATE SET
             gallons = excluded.gallons, totalCost = excluded.totalCost, pricePerGallon = excluded.pricePerGallon,
             location = excluded.location, state = excluded.state, date = excluded.date,
-            odometer = excluded.odometer, updatedAt = excluded.updatedAt
+            odometer = excluded.odometer, updatedAt = excluded.updatedAt,
+            discountPricePerGallon = excluded.discountPricePerGallon, rawText = excluded.rawText,
+            receiptFileName = excluded.receiptFileName, sourceFileName = excluded.sourceFileName
         """, [
             fill.id.uuidString, fill.gallons, fill.totalCost, fill.pricePerGallon, fill.location, fill.state,
             fill.date.timeIntervalSince1970, fill.odometer, fill.updatedAt.timeIntervalSince1970,
+            fill.discountPricePerGallon, fill.rawText, fill.receiptFileName, fill.sourceFileName,
         ])
     }
 
@@ -694,17 +767,30 @@ final class AppDatabase {
         try execute(db, """
         INSERT INTO profile (
             id, name, carrier, truckModel, truckYear, licensePlate, homeState, preferredLanguage,
-            weeklyGoal, updatedAt
-        ) VALUES (\(marks(10)))
+            weeklyGoal, updatedAt, role
+        ) VALUES (\(marks(11)))
         ON CONFLICT(id) DO UPDATE SET
             name = excluded.name, carrier = excluded.carrier, truckModel = excluded.truckModel,
             truckYear = excluded.truckYear, licensePlate = excluded.licensePlate, homeState = excluded.homeState,
             preferredLanguage = excluded.preferredLanguage, weeklyGoal = excluded.weeklyGoal,
-            updatedAt = excluded.updatedAt
+            updatedAt = excluded.updatedAt, role = excluded.role
         """, [
             profile.id.uuidString, profile.name, profile.carrier, profile.truckModel, profile.truckYear,
             profile.licensePlate, profile.homeState, profile.preferredLanguage.rawValue, profile.weeklyGoal,
-            profile.updatedAt.timeIntervalSince1970,
+            profile.updatedAt.timeIntervalSince1970, profile.role,
+        ])
+    }
+
+    private static func upsert(_ db: Database, _ expense: MiscExpense) throws {
+        try execute(db, """
+        INSERT INTO misc_expense (id, amount, expenseDescription, date, receiptFileName, updatedAt)
+        VALUES (\(marks(6)))
+        ON CONFLICT(id) DO UPDATE SET
+            amount = excluded.amount, expenseDescription = excluded.expenseDescription,
+            date = excluded.date, receiptFileName = excluded.receiptFileName, updatedAt = excluded.updatedAt
+        """, [
+            expense.id.uuidString, expense.amount, expense.expenseDescription,
+            expense.date.timeIntervalSince1970, expense.receiptFileName, expense.updatedAt.timeIntervalSince1970,
         ])
     }
 
@@ -783,6 +869,10 @@ final class AppDatabase {
             notes: string(row, "notes"),
             weekNumber: int(row, "weekNumber") ?? 0,
             year: int(row, "year") ?? 0,
+            grossAmount: double(row, "grossAmount"),
+            driverName: string(row, "driverName"),
+            rawText: string(row, "rawText"),
+            sourceFileName: string(row, "sourceFileName"),
             updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)
         )
     }
@@ -797,6 +887,10 @@ final class AppDatabase {
             state: string(row, "state"),
             date: date(row, "date") ?? Date(timeIntervalSince1970: 0),
             odometer: int(row, "odometer"),
+            discountPricePerGallon: double(row, "discountPricePerGallon"),
+            rawText: string(row, "rawText"),
+            receiptFileName: string(row, "receiptFileName"),
+            sourceFileName: string(row, "sourceFileName"),
             updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)
         )
     }
@@ -875,10 +969,26 @@ final class AppDatabase {
             truckYear: int(row, "truckYear"),
             licensePlate: string(row, "licensePlate"),
             homeState: string(row, "homeState"),
+            role: string(row, "role"),
             preferredLanguage: AppLanguage(rawValue: rawLanguage) ?? .system,
             weeklyGoal: double(row, "weeklyGoal") ?? 0,
             updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)
         )
+    }
+
+    private static func expense(from row: Row) -> MiscExpense {
+        MiscExpense(
+            id: uuid(row, "id") ?? UUID(),
+            amount: double(row, "amount") ?? 0,
+            expenseDescription: string(row, "expenseDescription") ?? "",
+            date: date(row, "date") ?? Date(timeIntervalSince1970: 0),
+            receiptFileName: string(row, "receiptFileName"),
+            updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)
+        )
+    }
+
+    private static func override(from row: Row) -> PerDiemOverride {
+        PerDiemOverride(isoDate: string(row, "isoDate") ?? "", included: bool(row, "included"))
     }
 
     private static func string(_ row: Row, _ column: String) -> String? { row[column] }

@@ -107,6 +107,14 @@ struct MediaStore {
 
     static let receiptsDirectoryName = "receipts"
 
+    /// JPEG of a diesel, paycheck, or parking receipt. Returns `receipts/<file>`.
+    func saveJPEG(_ image: UIImage, quality: CGFloat = 0.8) throws -> String {
+        guard let data = image.jpegData(compressionQuality: quality) else {
+            throw MediaStoreError.encodingFailed
+        }
+        return try writeReceipt(data: data, fileName: "receipt_\(UUID().uuidString).jpg")
+    }
+
     /// Copies receipt bytes with no load watermark. Returns `receipts/<file>`.
     func writeReceipt(data: Data, fileName: String) throws -> String {
         guard !data.isEmpty else { throw MediaStoreError.encodingFailed }
