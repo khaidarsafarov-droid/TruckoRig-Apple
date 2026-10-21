@@ -268,7 +268,7 @@ struct TaxTrackerView: View {
             let prefix = String(format: "%04d", year)
             rows += appState.catalog.maintenanceArchive.filter { $0.serviceDate.hasPrefix(prefix) }.map { entry in
                 let name = entry.serviceName.isEmpty ? entry.description : entry.serviceName
-                AccountantExport.Row(
+                return AccountantExport.Row(
                     section: "maintenance",
                     cells: [name, Formatters.moneyPrecise(entry.amount.dollars), entry.description, entry.serviceDate]
                 )
