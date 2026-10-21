@@ -128,21 +128,11 @@ struct JournalView: View {
         .sheet(item: $cameraLoad) { load in
             NavigationStack {
                 CameraView(load: load)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("action.cancel") { cameraLoad = nil }
-                        }
-                    }
             }
         }
         .sheet(item: $scannerLoad) { load in
             NavigationStack {
                 ScannerView(load: load)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("action.cancel") { scannerLoad = nil }
-                        }
-                    }
             }
         }
         .confirmationDialog(
@@ -247,7 +237,7 @@ struct JournalView: View {
         viewModel.loadPendingDeletion = nil
         let repository = appState.loadRepository()
         do {
-            try repository.delete(load)
+            try repository.delete(load, mediaStore: MediaStore(scope: appState.persistence.scope))
         } catch {
             viewModel.errorMessage = error.localizedDescription
         }

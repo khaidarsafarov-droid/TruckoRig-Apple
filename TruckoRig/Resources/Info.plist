@@ -31,13 +31,11 @@
 	</dict>
 
 	<key>NSCameraUsageDescription</key>
-	<string>TruckoRig uses the camera to photograph paperwork and scan documents for your loads.</string>
+	<string>TruckoRig использует камеру, чтобы сфотографировать документы рейса и отсканировать бумаги.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>TruckoRig can pick an existing photo of paperwork when the camera is not available, for example on a simulator.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>TruckoRig can save load photos to your photo library.</string>
+	<string>TruckoRig может взять фото документа из галереи, если камера недоступна, и добавить страницы в сканер.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>TruckoRig tags load photos with where they were taken, so you can prove where paperwork was signed.</string>
+	<string>TruckoRig записывает место съёмки на фото рейса, чтобы было видно, где подписаны документы.</string>
 
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>

@@ -16,36 +16,45 @@ struct MediaRepository {
     }
 
     @discardableResult
-    func savePhoto(
-        _ image: UIImage,
-        attachedTo load: Load?,
-        latitude: Double?,
-        longitude: Double?,
-        caption: String? = nil
-    ) throws -> Photo {
-        let fileName = try store.save(image, kind: .photo)
+    func savePhoto(fields: StoredPhotoFields, jpeg: Data, load: Load?) throws -> Photo {
+        _ = try store.write(jpeg, fileName: fields.fileName, kind: .photo)
         let photo = Photo(
-            fileName: fileName,
-            latitude: latitude,
-            longitude: longitude,
-            caption: caption
+            fileName: fields.fileName,
+            filePath: fields.filePath,
+            latitude: fields.latitude,
+            longitude: fields.longitude,
+            city: fields.city,
+            state: fields.state,
+            zipCode: fields.zipCode,
+            timestamp: MediaClock.date(fromEpochMillis: fields.timestampMillis)
         )
-        photo.load = load
+        if let load {
+            photo.load = load
+        } else if let loadId = fields.loadId {
+            photo.loadId = UUID(uuidString: loadId)
+        }
         try database.save(photo)
         onDidSave?()
         return photo
     }
 
     @discardableResult
-    func saveScan(
-        _ image: UIImage,
-        attachedTo load: Load?,
-        ocrText: String?,
-        title: String?
-    ) throws -> Scan {
-        let fileName = try store.save(image, kind: .scan)
-        let scan = Scan(fileName: fileName, ocrText: ocrText, title: title)
-        scan.load = load
+    func saveScan(fields: StoredScanFields, pdf: Data, load: Load?) throws -> Scan {
+        _ = try store.write(pdf, fileName: fields.fileName, kind: .scan)
+        let scan = Scan(
+            fileName: fields.fileName,
+            filePath: fields.filePath,
+            ocrText: fields.ocrText,
+            timestamp: MediaClock.date(fromEpochMillis: fields.timestampMillis),
+            fileSizeBytes: fields.fileSizeBytes,
+            pageCount: fields.pageCount,
+            category: fields.category
+        )
+        if let load {
+            scan.load = load
+        } else if let loadId = fields.loadId {
+            scan.loadId = UUID(uuidString: loadId)
+        }
         try database.save(scan)
         onDidSave?()
         return scan
@@ -53,25 +62,53 @@ struct MediaRepository {
 
     func attach(_ photo: Photo, to load: Load?) throws {
         photo.load = load
+        if load == nil { photo.loadId = nil }
         try database.save(photo)
         onDidSave?()
     }
 
+    /// Linking a scan to a load files it as `LOAD`, matching `ScanRepository.linkScanToLoad`.
     func attach(_ scan: Scan, to load: Load?) throws {
         scan.load = load
+        if load == nil {
+            scan.loadId = nil
+        } else {
+            scan.documentCategory = .load
+        }
+        try database.save(scan)
+        onDidSave?()
+    }
+
+    func updateCategory(_ scan: Scan, category: ScanDocumentCategory) throws {
+        scan.documentCategory = category
         try database.save(scan)
         onDidSave?()
     }
 
     func delete(_ photo: Photo) throws {
-        store.delete(fileName: photo.fileName, kind: .photo)
+        store.delete(fileName: photo.fileName, filePath: photo.filePath, kind: .photo)
         try database.delete(photo)
         onDidSave?()
     }
 
     func delete(_ scan: Scan) throws {
-        store.delete(fileName: scan.fileName, kind: .scan)
+        store.delete(fileName: scan.fileName, filePath: scan.filePath, kind: .scan)
         try database.delete(scan)
         onDidSave?()
+    }
+
+    func deleteFiles(_ media: AppDatabase.RemovedMedia) {
+        for photo in media.photos {
+            store.delete(fileName: photo.fileName, filePath: photo.filePath, kind: .photo)
+        }
+        for scan in media.scans {
+            store.delete(fileName: scan.fileName, filePath: scan.filePath, kind: .scan)
+        }
+    }
+
+    func cleanupOrphanScans(known: [Scan]) -> Int {
+        let paths = Set(known.compactMap(\.filePath).filter { !$0.isEmpty })
+        let names = Set(known.map(\.fileName))
+        return store.cleanupOrphanScans(knownRelativePaths: paths.union(names))
     }
 }

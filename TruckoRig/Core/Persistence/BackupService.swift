@@ -24,12 +24,25 @@ enum BackupService {
     /// what a driver restoring after a phone swap expects.
     @MainActor
     @discardableResult
-    static func restore(from url: URL, into database: AppDatabase, week: TruckingWeek) throws -> SnapshotApplier.Report {
+    static func restore(
+        from url: URL,
+        into database: AppDatabase,
+        week: TruckingWeek,
+        scope: AccountScope
+    ) throws -> SnapshotApplier.Report {
         let needsScopedAccess = url.startAccessingSecurityScopedResource()
         defer { if needsScopedAccess { url.stopAccessingSecurityScopedResource() } }
 
         let data = try Data(contentsOf: url)
         let snapshot = try JSONDecoder.snapshot.decode(AccountSnapshot.self, from: data)
-        return try SnapshotApplier.apply(snapshot, to: database, week: week)
+        let store = MediaStore(scope: scope)
+        return try SnapshotApplier.apply(snapshot, to: database, week: week) { removed in
+            for photo in removed.photos {
+                store.delete(fileName: photo.fileName, filePath: photo.filePath, kind: .photo)
+            }
+            for scan in removed.scans {
+                store.delete(fileName: scan.fileName, filePath: scan.filePath, kind: .scan)
+            }
+        }
     }
 }

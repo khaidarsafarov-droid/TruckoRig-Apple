@@ -13,6 +13,25 @@ extension Load {
         (penalties ?? []).reduce(0) { $0 + $1.amount }
     }
 
+    /// `yyyy-MM-dd` of the finish date, the string Android puts in attachment file names.
+    func attachmentDateISO(timeZone: TimeZone = .current) -> String {
+        MediaClock.format(effectiveFinishDate, pattern: "yyyy-MM-dd", timeZone: timeZone)
+    }
+
+    func attachCandidate(timeZone: TimeZone = .current) -> AttachLoadCandidate {
+        AttachLoadCandidate(
+            id: id.uuidString,
+            tripId: tripId,
+            date: attachmentDateISO(timeZone: timeZone),
+            parsedAt: parsedAt,
+            pointA: pointA ?? "",
+            pointB: pointB ?? "",
+            route: route,
+            weekNumber: weekNumber,
+            year: year
+        )
+    }
+
     var route: String {
         let from = pointA ?? ""
         let to = pointB ?? ""

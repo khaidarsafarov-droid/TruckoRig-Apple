@@ -62,19 +62,15 @@ enum WidgetPresentation: String, Identifiable {
 private struct WidgetPresentationCover: View {
     let route: WidgetPresentation
 
-    @Environment(AppState.self) private var appState
-
     var body: some View {
         switch route {
         case .camera:
             NavigationStack {
-                CameraView()
-                    .toolbar { cancel }
+                AttachLoadPickView(mode: .camera)
             }
         case .scanner:
             NavigationStack {
-                ScannerView()
-                    .toolbar { cancel }
+                AttachLoadPickView(mode: .scanner)
             }
         case .addDiesel:
             DieselEditorView(fill: nil)
@@ -82,12 +78,6 @@ private struct WidgetPresentationCover: View {
             AddLoadView()
         case .analytics:
             AnalyticsView()
-        }
-    }
-
-    private var cancel: some ToolbarContent {
-        ToolbarItem(placement: .cancellationAction) {
-            Button("action.cancel") { appState.pendingPresentation = nil }
         }
     }
 }
