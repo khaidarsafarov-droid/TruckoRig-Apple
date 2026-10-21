@@ -13,7 +13,7 @@
 | Данные | Только на телефоне, без логина |
 | Карты | MapKit |
 | OCR | Vision (`VNRecognizeTextRequest`, ru + en) |
-| Локализация | String Catalog (`.xcstrings`), RU + EN |
+| Локализация | String Catalog (`.xcstrings`), RU + EN, и ES для Premium |
 
 ## Как открыть
 
@@ -38,8 +38,9 @@ open TruckoRig.xcodeproj
 swift test
 ```
 
-76 теста: парсинг реальных сообщений Relay, определение года по истории чата, недельные границы
-на стыке лет, статусы темпа, дедуп Trip ID, CSV round-trip.
+86 тестов: парсинг реальных сообщений Relay, определение года по истории чата, недельные границы
+на стыке лет, статусы темпа, дедуп Trip ID, CSV round-trip и напоминание за три дня до конца
+бесплатного месяца.
 
 Шифрование, Keychain и одноразовый перенос из SwiftData проверяются целью `TruckoRigTests` на
 симуляторе iPhone. Это делает workflow `.github/workflows/macos.yml` (macOS 26, Xcode 26.6):
@@ -129,8 +130,13 @@ python3 Tools/check_strings.py        # ключи в коде против ка
 
 ## Локализация
 
-Все строки — в `TruckoRig/Resources/Localizable.xcstrings` (RU + EN). Ключи в коде
-литеральные, а `Tools/check_strings.py` в CI сверяет каталог с кодом: пропущенный перевод,
-осиротевший ключ или несовпадение числа `%@`/`%lld` между языками валят проверку. Доменный слой
-локализации не знает: ошибки — типизированные значения, а их текст живёт в
+Все строки — в `TruckoRig/Resources/Localizable.xcstrings` (RU + EN; у Premium есть ещё ES).
+Ключи в коде литеральные, а `Tools/check_strings.py` в CI сверяет каталог с кодом: пропущенный
+перевод, осиротевший ключ или несовпадение числа `%@`/`%lld` между языками валят проверку.
+Доменный слой локализации не знает: ошибки — типизированные значения, а их текст живёт в
 `Shared/Components/DomainMessages.swift`.
+
+Локальная подписка для отладки — `TruckoRig/Resources/Premium.storekit` (продукт
+`premium_monthly_subscription`, вводный месяц бесплатно, затем $2.99). Схема `TruckoRig`
+подхватывает этот файл. Кадры 06 и 07 для App Store лежат в `store/app-store/` и
+собираются `python3 Tools/render_app_store_screenshots.py`.

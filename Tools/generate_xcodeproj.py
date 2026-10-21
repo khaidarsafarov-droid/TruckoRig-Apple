@@ -55,6 +55,8 @@ NON_BUNDLE_FILES = {
     # Licenses stay in the repository and out of the app bundle.
     "DMSans-OFL.txt",
     "Roboto-LICENSE.txt",
+    # StoreKit configuration is selected by the scheme. It is not an app resource.
+    "Premium.storekit",
 }
 
 FILE_TYPES = {
@@ -67,6 +69,7 @@ FILE_TYPES = {
     ".json": "text.json",
     ".ttf": "file",
     ".otf": "file",
+    ".storekit": "text.json",
 }
 
 
@@ -364,6 +367,7 @@ def build() -> str:
     add("\t\t\thasScannedForEncodings = 0;")
     add("\t\t\tknownRegions = (")
     add("\t\t\t\ten,")
+    add("\t\t\t\tes,")
     add("\t\t\t\tru,")
     add("\t\t\t\tBase,")
     add("\t\t\t);")
@@ -636,6 +640,9 @@ SCHEME_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
          runnableDebuggingMode = "0">
          {reference}
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../../TruckoRig/Resources/Premium.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

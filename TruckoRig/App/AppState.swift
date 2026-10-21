@@ -37,32 +37,40 @@ final class AppState {
     let settings: AppSettings
     let persistence: PersistenceController
     let catalog: RecordCatalog
+    let premium: PremiumController
 
     var selectedTab: MainTab = .journal
 
-    /// StoreKit premium arrives in a later stage. The renewal line stays hidden until then.
-    var premiumIsActive: Bool { false }
+    /// Active App Store subscription, including the free month. StoreKit is the only source.
+    var premiumIsActive: Bool { premium.isActive }
 
     /// Opens the encrypted journal on this phone and copies a leftover SwiftData file once.
     convenience init() {
         LocalStoreMigration.adoptPreviousAccountIfNeeded()
         let settings = AppSettings(scope: .local)
         let persistence = PersistenceController(scope: .local)
-        self.init(persistence: persistence, settings: settings)
+        self.init(persistence: persistence, settings: settings, premium: PremiumController())
     }
 
-    /// Preview and test graph. Does not touch the Keychain or the SwiftData file.
-    init(persistence: PersistenceController, settings: AppSettings? = nil) {
-        self.settings = settings ?? AppSettings(scope: persistence.scope)
+    /// Preview and test graph. Does not touch the Keychain, the SwiftData file, or StoreKit.
+    init(persistence: PersistenceController, settings: AppSettings? = nil, premium: PremiumController? = nil) {
+        let resolved = settings ?? AppSettings(scope: persistence.scope)
+        self.settings = resolved
         self.persistence = persistence
         let catalog = RecordCatalog()
         catalog.reload(from: persistence.database)
         self.catalog = catalog
+        let controller = premium ?? PremiumController(inactiveStore: nil)
+        controller.localeProvider = { [weak resolved] in
+            PremiumCopy.locale(for: resolved?.language ?? .system)
+        }
+        self.premium = controller
     }
 
     func bootstrap() {
         ensureProfileExists()
         reloadJournal()
+        premium.start()
     }
 
     /// Reloads the in-memory journal and refreshes the home-screen widget.

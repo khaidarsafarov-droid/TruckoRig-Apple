@@ -25,6 +25,8 @@ jobs:
         run: python3 Tools/validate_pbxproj.py
       - name: Validate the string catalog
         run: python3 Tools/check_strings.py
+      - name: Check App Store screenshot frames
+        run: python3 Tools/render_app_store_screenshots.py --check
       - name: Check the generator output is committed
         run: |
           python3 Tools/generate_xcodeproj.py

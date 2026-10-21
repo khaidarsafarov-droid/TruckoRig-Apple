@@ -53,14 +53,15 @@ struct SettingsView: View {
                     .foregroundStyle(Color.forestTextSecondary)
             }
 
+            Section {
+                SettingsPremiumSection()
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowBackground(Color.clear)
+            }
+
             Section("settings.about") {
                 LabeledContent("settings.about.version", value: Self.appVersion)
                 LabeledContent("settings.about.account", value: appState.persistence.scope.storeKey)
-                if appState.premiumIsActive {
-                    Text("settings.premium.renews")
-                        .font(.appCaption)
-                        .foregroundStyle(Color.forestTextSecondary)
-                }
                 if !AppFont.isBundled {
                     Text("settings.about.fontFallback")
                         .font(.appCaption)

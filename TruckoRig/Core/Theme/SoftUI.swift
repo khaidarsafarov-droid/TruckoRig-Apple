@@ -77,6 +77,26 @@ struct SoftPrimaryButtonStyle: ButtonStyle {
     }
 }
 
+/// Champagne gold primary action. Espresso label so the text stays readable on the gold.
+struct GoldButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.appBodyMedium)
+            .foregroundStyle(Color.goldOnGold)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(
+                LinearGradient(colors: [Color.goldStart, Color.goldEnd], startPoint: .leading, endPoint: .trailing)
+                    .opacity(isEnabled ? 1 : 0.4),
+                in: RoundedRectangle(cornerRadius: Spacing.buttonRadius, style: .continuous)
+            )
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+    }
+}
+
 struct SoftSecondaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
 
