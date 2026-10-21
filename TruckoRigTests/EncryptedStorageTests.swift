@@ -47,17 +47,28 @@ final class EncryptedStorageTests: XCTestCase {
     }
 
     func testPassphraseIs32BytesStableAndStaysOnThisDevice() throws {
+        let generated = try DatabasePassphraseStore.randomBytes()
+        XCTAssertEqual(generated.count, 32)
+        XCTAssertEqual(
+            DatabasePassphraseStore.accessibility as String,
+            kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly as String
+        )
+
         let account = "test-\(UUID().uuidString)"
         keychainAccounts.append(account)
         let store = DatabasePassphraseStore(account: account)
 
-        let created = try store.getOrCreate()
+        let created: Data
+        do {
+            created = try store.getOrCreate()
+        } catch DatabasePassphraseError.keychainFailed(let status) where status == errSecMissingEntitlement {
+            // An unsigned simulator process has no keychain-access-groups entitlement.
+            // The workflow does not sign. The accessibility constant above is what `write` stores.
+            throw XCTSkip("Keychain refused the unsigned simulator (\(status)).")
+        }
         XCTAssertEqual(created.count, DatabasePassphraseStore.byteCount)
         let again = try store.getOrCreate()
         XCTAssertEqual(created, again)
-
-        let generated = try DatabasePassphraseStore.randomBytes()
-        XCTAssertEqual(generated.count, 32)
         XCTAssertNotEqual(generated, created)
 
         let query: [String: Any] = [

@@ -58,3 +58,6 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=-
+          # No team, profile, archive, or publishing. The simulator Keychain then returns
+          # errSecMissingEntitlement; the passphrase test skips that read-back and still checks
+          # that the item is a 32-byte AfterFirstUnlockThisDeviceOnly secret.

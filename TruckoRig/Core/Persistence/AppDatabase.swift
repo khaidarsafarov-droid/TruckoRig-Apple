@@ -45,8 +45,12 @@ final class AppDatabase {
         return config
     }
 
+    /// Folds the write-ahead log into the encrypted file.
+    ///
+    /// This cannot run inside a transaction: SQLite returns `SQLITE_LOCKED` for
+    /// `wal_checkpoint` while one is open, and `DatabaseQueue.write` opens one.
     func checkpoint() throws {
-        try queue.write { db in
+        try queue.inDatabase { db in
             try db.execute(sql: "PRAGMA wal_checkpoint(TRUNCATE)")
         }
     }
