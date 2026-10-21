@@ -4,10 +4,10 @@ import UserNotifications
 /// Hands Android's 24-hour reminder plan to `UNUserNotificationCenter`.
 ///
 /// There is no WorkManager on iOS. The first evaluation anchors `lastRun` and schedules a
-/// notification for 24 hours later when that hour is outside quiet hours. A fire time inside
-/// quiet hours is not scheduled. Once the period has elapsed and the app is open outside quiet
-/// hours, the notification is posted immediately. `notifiedAt` and the missing-week key are
-/// recorded when the request is accepted by the system, so a closed app still delivers it once.
+/// notification for 24 hours later. A fire time inside quiet hours moves to the exclusive end
+/// of that window, including a window that crosses midnight. `start == end` quiets every hour
+/// and is not scheduled. `notifiedAt` and the missing-week key are recorded when the request is
+/// accepted by the system, so a closed app still delivers it once.
 @MainActor
 enum MaintenanceReminderCenter {
 

@@ -1,7 +1,7 @@
 import Foundation
 
 /// Port of Android `QuietHours`. A window that wraps midnight (22 → 7) is quiet overnight.
-/// `start == end` quiets the whole day.
+/// `endHour` is exclusive. `start == end` quiets the whole day, so that window has no end.
 public enum QuietHours {
     public static func isActive(nowHour: Int, startHour: Int, endHour: Int, enabled: Bool) -> Bool {
         if !enabled { return false }
@@ -11,6 +11,40 @@ public enum QuietHours {
         if start == end { return true }
         if start < end { return now >= start && now < end }
         return now >= start || now < end
+    }
+
+    /// Moves `fireAt` to the first minute the quiet window has ended.
+    ///
+    /// Android `SmartNotificationWorker` returns without posting while `QuietHours.isActive` is
+    /// true. iOS has no 24-hour worker to retry that run, so a fire time inside the window is
+    /// delivered at `endHour:00` instead of being dropped. An overnight window (start after end)
+    /// lands on the next morning when the fire hour is still on the evening side of midnight.
+    /// A same-day window lands later that day. A time outside the window, including the exclusive
+    /// end hour, is unchanged. `start == end` never leaves the window, so the result is `nil`.
+    public static func adjustedFireDate(
+        _ fireAt: Date,
+        startHour: Int,
+        endHour: Int,
+        enabled: Bool,
+        calendar: Calendar
+    ) -> Date? {
+        let start = min(23, max(0, startHour))
+        let end = min(23, max(0, endHour))
+        let hour = calendar.component(.hour, from: fireAt)
+        guard isActive(nowHour: hour, startHour: start, endHour: end, enabled: enabled) else {
+            return fireAt
+        }
+        guard start != end else { return nil }
+        var parts = calendar.dateComponents([.year, .month, .day], from: fireAt)
+        parts.hour = end
+        parts.minute = 0
+        parts.second = 0
+        parts.nanosecond = 0
+        guard var endDate = calendar.date(from: parts) else { return fireAt }
+        if endDate <= fireAt {
+            endDate = calendar.date(byAdding: .day, value: 1, to: endDate) ?? endDate
+        }
+        return endDate
     }
 }
 
@@ -95,11 +129,10 @@ public struct PendingLocalNotification: Equatable, Sendable {
 
 /// What the app should hand to `UNUserNotificationCenter` after one evaluation.
 ///
-/// Android runs `SmartNotificationWorker` about 24 hours after it was scheduled, and a run that
-/// lands in quiet hours posts nothing. iOS has no equivalent background worker, so a run whose
-/// fire time is outside quiet hours is scheduled with UserNotifications for that instant. A fire
-/// time inside quiet hours is not scheduled; the next time the app evaluates outside quiet hours,
-/// after the period has elapsed, it posts immediately.
+/// Android runs `SmartNotificationWorker` about 24 hours after it was scheduled. iOS has no
+/// equivalent background worker, so the next fire time is handed to UserNotifications. A fire
+/// time inside quiet hours moves to the exclusive end of that window (`QuietHours.adjustedFireDate`)
+/// instead of being dropped. `start == end` quiets every hour and is not scheduled.
 public struct SmartNotificationDecision: Equatable, Sendable {
     public var notifications: [PendingLocalNotification]
     public var markNotifiedIDs: [String]
@@ -175,15 +208,14 @@ public enum SmartNotificationEngine {
         let anchor = request.lastRunAt ?? request.now
         let next = anchor.addingTimeInterval(period)
         let dueNow = request.lastRunAt != nil && request.now.addingTimeInterval(0.5) >= next
-        let fireAt = dueNow ? request.now : next
-        let hour = request.calendar.component(.hour, from: fireAt)
-        let quiet = QuietHours.isActive(
-            nowHour: hour,
+        let rawFireAt = dueNow ? request.now : next
+        guard let fireAt = QuietHours.adjustedFireDate(
+            rawFireAt,
             startHour: request.quietStartHour,
             endHour: request.quietEndHour,
-            enabled: request.quietEnabled
-        )
-        if quiet {
+            enabled: request.quietEnabled,
+            calendar: request.calendar
+        ) else {
             return SmartNotificationDecision(
                 notifications: [],
                 markNotifiedIDs: [],

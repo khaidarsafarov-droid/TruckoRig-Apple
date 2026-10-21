@@ -321,10 +321,66 @@ final class SmartNotificationTests: XCTestCase {
         quiet.quietEnabled = true
         quiet.quietStartHour = 14
         quiet.quietEndHour = 18
-        let suppressed = SmartNotificationEngine.evaluate(quiet)
-        XCTAssertTrue(suppressed.notifications.isEmpty)
-        XCTAssertTrue(suppressed.suppressedByQuietHours)
-        XCTAssertFalse(suppressed.recordMissingWeek)
+        let shifted = SmartNotificationEngine.evaluate(quiet)
+        XCTAssertEqual(shifted.notifications.map(\.fireAt), Array(repeating: makeDate(2026, 7, 29, 18, 0), count: 3))
+        XCTAssertFalse(shifted.suppressedByQuietHours)
+        XCTAssertTrue(shifted.recordMissingWeek)
+        XCTAssertEqual(shifted.markNotifiedIDs, ["oil"])
+    }
+
+    func testQuietFireInsideSameDayWindowMovesToEndHour() {
+        let fire = makeDate(2026, 7, 28, 14, 40)
+        let adjusted = QuietHours.adjustedFireDate(fire, startHour: 13, endHour: 17, enabled: true, calendar: calendar)
+        XCTAssertEqual(adjusted, makeDate(2026, 7, 28, 17, 0))
+    }
+
+    func testQuietFireCrossingMidnightMovesToNextMorning() {
+        let evening = makeDate(2026, 7, 28, 23, 30)
+        XCTAssertEqual(
+            QuietHours.adjustedFireDate(evening, startHour: 22, endHour: 7, enabled: true, calendar: calendar),
+            makeDate(2026, 7, 29, 7, 0)
+        )
+        let afterMidnight = makeDate(2026, 7, 29, 2, 15)
+        XCTAssertEqual(
+            QuietHours.adjustedFireDate(afterMidnight, startHour: 22, endHour: 7, enabled: true, calendar: calendar),
+            makeDate(2026, 7, 29, 7, 0)
+        )
+        let atStart = makeDate(2026, 7, 28, 22, 0)
+        XCTAssertEqual(
+            QuietHours.adjustedFireDate(atStart, startHour: 22, endHour: 7, enabled: true, calendar: calendar),
+            makeDate(2026, 7, 29, 7, 0)
+        )
+    }
+
+    func testQuietFireOutsideWindowStaysPut() {
+        let midday = makeDate(2026, 7, 28, 12, 0)
+        XCTAssertEqual(
+            QuietHours.adjustedFireDate(midday, startHour: 22, endHour: 7, enabled: true, calendar: calendar),
+            midday
+        )
+        let beforeStart = makeDate(2026, 7, 28, 21, 0)
+        XCTAssertEqual(
+            QuietHours.adjustedFireDate(beforeStart, startHour: 22, endHour: 7, enabled: true, calendar: calendar),
+            beforeStart
+        )
+        let atEnd = makeDate(2026, 7, 29, 7, 0)
+        XCTAssertEqual(
+            QuietHours.adjustedFireDate(atEnd, startHour: 22, endHour: 7, enabled: true, calendar: calendar),
+            atEnd
+        )
+        let sameDayEnd = makeDate(2026, 7, 28, 17, 0)
+        XCTAssertEqual(
+            QuietHours.adjustedFireDate(sameDayEnd, startHour: 13, endHour: 17, enabled: true, calendar: calendar),
+            sameDayEnd
+        )
+        let disabled = makeDate(2026, 7, 28, 23, 0)
+        XCTAssertEqual(
+            QuietHours.adjustedFireDate(disabled, startHour: 22, endHour: 7, enabled: false, calendar: calendar),
+            disabled
+        )
+        XCTAssertNil(
+            QuietHours.adjustedFireDate(disabled, startHour: 8, endHour: 8, enabled: true, calendar: calendar)
+        )
     }
 
     func testDueRunPostsNowAndASecondRunDoesNotRepeatARecordedWeek() {
