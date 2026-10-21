@@ -12,6 +12,9 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
     public var lastDeliveryAt: Date?
     /// Driver override for when the load actually ended.
     public var actualFinishAt: Date?
+    /// Filing date (`load.date`). Used as the pickup day when stops are not hydrated,
+    /// matching Android `getPickUpDate`'s fallback.
+    public var filedOn: Date?
     /// Persisted duration, used when stops are not hydrated.
     public var storedDurationDays: Double
     public var penaltiesTotal: Double
@@ -31,6 +34,7 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
         firstPickupAt: Date? = nil,
         lastDeliveryAt: Date? = nil,
         actualFinishAt: Date? = nil,
+        filedOn: Date? = nil,
         storedDurationDays: Double = 0,
         penaltiesTotal: Double = 0,
         isDispute: Bool = false,
@@ -47,6 +51,7 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
         self.firstPickupAt = firstPickupAt
         self.lastDeliveryAt = lastDeliveryAt
         self.actualFinishAt = actualFinishAt
+        self.filedOn = filedOn
         self.storedDurationDays = storedDurationDays
         self.penaltiesTotal = penaltiesTotal
         self.isDispute = isDispute

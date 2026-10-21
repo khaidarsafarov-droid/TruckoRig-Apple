@@ -80,7 +80,32 @@ final class AppState {
     func reloadJournal() {
         catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
+        scheduleReminders()
     }
+
+    /// Replaces pending smart reminders. Does not reload the journal.
+    func scheduleReminders() {
+        reminderTask?.cancel()
+        reminderTask = Task { [weak self] in
+            guard let self else { return }
+            await MaintenanceReminderCenter.sync(self)
+        }
+    }
+
+    /// Records that a maintenance alert was handed to the system. Skips another reminder pass.
+    func markMaintenanceNotified(ids: [String], now: Date = Date()) {
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
+        for id in ids {
+            guard var task = catalog.maintenance.first(where: { $0.id == id }) else { continue }
+            task.notifiedAt = millis
+            task.updatedAt = millis
+            try? persistence.database.save(task)
+        }
+        catalog.reload(from: persistence.database)
+        publishWidgetSnapshot()
+    }
+
+    @ObservationIgnored private var reminderTask: Task<Void, Never>?
 
     /// Refreshes the home-screen widget from the current week.
     ///

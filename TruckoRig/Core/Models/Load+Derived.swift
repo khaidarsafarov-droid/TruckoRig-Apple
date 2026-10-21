@@ -55,6 +55,7 @@ extension Load {
             firstPickupAt: firstPickupAt,
             lastDeliveryAt: lastDeliveryAt,
             actualFinishAt: actualFinishDate,
+            filedOn: date,
             storedDurationDays: durationDays,
             penaltiesTotal: penaltiesTotal,
             isDispute: isDispute,

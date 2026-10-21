@@ -105,6 +105,36 @@ struct MediaStore {
         return UIImage(cgImage: cgImage)
     }
 
+    static let receiptsDirectoryName = "receipts"
+
+    /// Copies receipt bytes with no load watermark. Returns `receipts/<file>`.
+    func writeReceipt(data: Data, fileName: String) throws -> String {
+        guard !data.isEmpty else { throw MediaStoreError.encodingFailed }
+        let directory = root.appendingPathComponent(Self.receiptsDirectoryName, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try data.write(to: directory.appendingPathComponent(fileName), options: .atomic)
+        return "\(Self.receiptsDirectoryName)/\(fileName)"
+    }
+
+    func receiptFile(relativePath: String) -> URL? {
+        guard !relativePath.isEmpty else { return nil }
+        let url = relativePath.hasPrefix("/")
+            ? URL(fileURLWithPath: relativePath)
+            : root.appendingPathComponent(relativePath)
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        return url
+    }
+
+    func receiptImage(relativePath: String) -> UIImage? {
+        guard let url = receiptFile(relativePath: relativePath) else { return nil }
+        return UIImage(contentsOfFile: url.path)
+    }
+
+    func deleteReceipt(relativePath: String) {
+        guard let url = receiptFile(relativePath: relativePath) else { return }
+        try? FileManager.default.removeItem(at: url)
+    }
+
     func delete(fileName: String, filePath: String? = nil, kind: Kind) {
         if let url = existingFile(fileName: fileName, filePath: filePath, kind: kind) {
             try? FileManager.default.removeItem(at: url)

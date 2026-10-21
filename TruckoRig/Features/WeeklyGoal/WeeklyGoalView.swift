@@ -23,6 +23,7 @@ struct WeeklyGoalView: View {
                 weekSwitcher
                 ringCard(progress)
                 paceCard(progress)
+                dayPlanCard(progress)
                 breakdownCard(progress)
             }
             .padding(Spacing.standard)
@@ -32,13 +33,18 @@ struct WeeklyGoalView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("goal.edit") {
-                    viewModel.goalInput = appState.settings.weeklyGoal
+                    viewModel.goalDraft = WeeklyGoalInput.format(appState.settings.weeklyGoal)
+                    viewModel.goalError = nil
                     viewModel.isEditingGoal = true
                 }
             }
         }
         .sheet(isPresented: $model.isEditingGoal) {
-            GoalEditorView(goal: $model.goalInput) { newGoal in
+            GoalEditorView(
+                draft: $model.goalDraft,
+                errorKey: $model.goalError,
+                suggestions: suggestedGoals
+            ) { newGoal in
                 appState.setWeeklyGoal(newGoal)
             }
         }
@@ -138,6 +144,125 @@ struct WeeklyGoalView: View {
         }
     }
 
+    private func dayPlanCard(_ progress: WeeklyGoalProgress) -> some View {
+        let rows = dayPlan(for: progress)
+        return SoftCard {
+            HStack {
+                Text("goal.day.plan")
+                    .font(.appHeadline)
+                    .foregroundStyle(Color.forestText)
+                Spacer()
+                Text(String(localized: "goal.days.left.chip \(progress.daysRemainingInWeek)"))
+                    .font(.appCaptionMedium)
+                    .foregroundStyle(Color.forestPrimary)
+            }
+            ForEach(rows, id: \.date) { row in
+                dayPlanRow(row, needed: progress.dailyTargetNeeded)
+            }
+        }
+    }
+
+    private func dayPlanRow(_ row: DayPlanRow, needed: Double) -> some View {
+        let future = row.status == .future
+        let today = row.status == .today
+        let amount = future ? USMoneyFormat.currency(needed) : USMoneyFormat.currency(row.gross.dollars)
+        let caption = future
+            ? String(localized: "goal.day.needed")
+            : String(localized: "goal.day.fact \(row.planPercent)")
+        return HStack(spacing: 12) {
+            dayMark(row)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(dayName(row.date))
+                    .font(.appCallout)
+                    .foregroundStyle(Color.forestText)
+                Text(today ? String(localized: "goal.day.today \(dayDate(row.date))") : dayDate(row.date))
+                    .font(.appCaption)
+                    .foregroundStyle(today ? Color.forestPrimary : Color.forestTextSecondary)
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(amount)
+                    .font(.appHeadline)
+                    .foregroundStyle(Color.forestText)
+                Text(caption)
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func dayMark(_ row: DayPlanRow) -> some View {
+        let label: String
+        switch row.status {
+        case .today: label = String(localized: "goal.day.today.cd")
+        case .pastMet: label = String(localized: "goal.day.met.cd")
+        case .pastMissed: label = String(localized: "goal.day.missed.cd")
+        case .future: label = String(localized: "goal.day.future.cd")
+        }
+        return Image(systemName: markSymbol(row.status))
+            .foregroundStyle(row.status == .pastMissed ? Color.forestError : Color.forestPrimary)
+            .frame(width: 28, height: 28)
+            .accessibilityLabel(label)
+    }
+
+    private func markSymbol(_ status: DayPlanRow.Status) -> String {
+        switch status {
+        case .pastMet: return "checkmark.circle.fill"
+        case .pastMissed: return "xmark.circle"
+        case .today: return "circle.circle"
+        case .future: return "circle"
+        }
+    }
+
+    private func dayPlan(for progress: WeeklyGoalProgress) -> [DayPlanRow] {
+        let calendar = appState.settings.truckingWeek
+        let ref = WeekRef(weekNumber: progress.weekNumber, year: progress.year)
+        guard let start = calendar.startDate(of: ref), let end = calendar.endDate(of: ref) else { return [] }
+        let endExclusive = calendar.calendar.date(byAdding: .day, value: 1, to: end) ?? end
+        var buckets: [Int: Int64] = [:]
+        for load in loads {
+            guard load.date >= start, load.date < endExclusive else { continue }
+            let weekday = calendar.calendar.component(.weekday, from: load.date)
+            let sqlite = (weekday - 1 + 7) % 7
+            buckets[sqlite, default: 0] += MoneyCents.fromDollars(load.totalRate).cents
+        }
+        return WeeklyDayPlan.rows(
+            weekStart: start,
+            today: Date(),
+            grossCentsBySqliteWeekday: buckets,
+            dailyNeeded: MoneyCents.fromDollars(progress.dailyTargetNeeded),
+            calendar: calendar.calendar
+        )
+    }
+
+    private var suggestedGoals: [Double] {
+        let calendar = appState.settings.truckingWeek
+        let previous = calendar.previousWeek()
+        let gross = loads
+            .filter { $0.weekNumber == previous.weekNumber && $0.year == previous.year }
+            .reduce(0) { $0 + $1.totalRate }
+        return SuggestedWeeklyGoals.amounts(closedWeekGross: gross)
+    }
+
+    private func dayName(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.calendar = appState.settings.truckingWeek.calendar
+        formatter.timeZone = appState.settings.truckingWeek.calendar.timeZone
+        formatter.dateFormat = "EEEE"
+        return formatter.string(from: date)
+    }
+
+    private func dayDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.calendar = appState.settings.truckingWeek.calendar
+        formatter.timeZone = appState.settings.truckingWeek.calendar.timeZone
+        formatter.dateFormat = "d MMM"
+        return formatter.string(from: date).replacingOccurrences(of: ".", with: "").lowercased()
+    }
+
     private func breakdownCard(_ progress: WeeklyGoalProgress) -> some View {
         SoftCard {
             SectionHeader(title: "goal.week")
@@ -192,9 +317,11 @@ struct GoalProgressRing: View {
     }
 }
 
-/// Sheet for setting the weekly gross target.
+/// Sheet for setting the weekly gross target, including Android's suggestion chips.
 struct GoalEditorView: View {
-    @Binding var goal: Double
+    @Binding var draft: String
+    @Binding var errorKey: String?
+    var suggestions: [Double]
     let onSave: (Double) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -202,25 +329,57 @@ struct GoalEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
-                SoftNumberField(title: "goal.target", value: $goal)
+                SoftTextField(title: "goal.target", text: $draft, keyboard: .decimalPad)
                 Text("goal.target.hint")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
+                if !suggestions.isEmpty {
+                    Text("goal.pick")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                    HStack {
+                        ForEach(suggestions.prefix(3), id: \.self) { amount in
+                            Button(SuggestedWeeklyGoals.chip(amount)) {
+                                draft = WeeklyGoalInput.format(amount)
+                                errorKey = nil
+                            }
+                            .buttonStyle(.softSecondary)
+                        }
+                    }
+                }
+                if errorKey != nil {
+                    Text("goal.error.amount")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestError)
+                }
             }
             .navigationTitle("goal.edit")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("action.save") {
-                        onSave(max(0, goal))
-                        dismiss()
-                    }
+                    Button("action.save") { save() }
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("action.cancel") { dismiss() }
                 }
             }
+            .onChange(of: draft) { _, newValue in
+                let sanitized = WeeklyGoalInput.sanitize(newValue)
+                if sanitized != newValue {
+                    draft = sanitized
+                }
+                errorKey = nil
+            }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
+    }
+
+    private func save() {
+        guard let amount = WeeklyGoalInput.parseGoalAmount(draft) else {
+            errorKey = "goal.error.amount"
+            return
+        }
+        onSave(amount)
+        dismiss()
     }
 }

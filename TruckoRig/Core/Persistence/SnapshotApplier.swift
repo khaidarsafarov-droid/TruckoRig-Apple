@@ -124,41 +124,12 @@ enum SnapshotApplier {
             }
         )
 
-        try mergeSimple(
-            remote: snapshot.maintenance,
-            local: graph.maintenance,
-            id: \.id,
-            localId: \.id,
-            remoteUpdatedAt: \.updatedAt,
-            localUpdatedAt: \.updatedAt,
-            isDeleted: \.isDeleted,
+        try mergeMaintenance(
+            snapshot,
+            graph: graph,
+            database: database,
             report: &report,
-            insert: { try database.save($0) },
-            delete: { try database.delete($0) },
-            make: { dto in
-                MaintenanceTask(
-                    id: dto.id,
-                    title: dto.title,
-                    dueDate: dto.dueDate,
-                    dueOdometer: dto.dueOdometer,
-                    completedDate: dto.completedDate,
-                    cost: dto.cost,
-                    notes: dto.notes,
-                    isArchived: dto.isArchived,
-                    updatedAt: dto.updatedAt
-                )
-            },
-            update: { local, dto in
-                local.title = dto.title
-                local.dueDate = dto.dueDate
-                local.dueOdometer = dto.dueOdometer
-                local.completedDate = dto.completedDate
-                local.cost = dto.cost
-                local.notes = dto.notes
-                local.isArchived = dto.isArchived
-                local.updatedAt = dto.updatedAt
-                try database.save(local)
-            }
+            onRemovedMedia: onRemovedMedia
         )
 
         if let remoteProfile = snapshot.profile {
@@ -190,6 +161,61 @@ enum SnapshotApplier {
         }
 
         return report
+    }
+
+    /// Tasks compare `updatedAt` millis. A stage-1 cost or note becomes one archive line on insert.
+    private static func mergeMaintenance(
+        _ snapshot: AccountSnapshot,
+        graph: AppDatabase.StoredGraph,
+        database: AppDatabase,
+        report: inout Report,
+        onRemovedMedia: ((AppDatabase.RemovedMedia) -> Void)?
+    ) throws {
+        let tasks = Dictionary(graph.maintenance.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        for dto in snapshot.maintenance {
+            if let existing = tasks[dto.id] {
+                if dto.isDeleted {
+                    try database.delete(existing)
+                    report.deleted += 1
+                    continue
+                }
+                guard dto.updatedAt > existing.updatedAt else {
+                    report.skipped += 1
+                    continue
+                }
+                try database.save(dto.makeTask())
+                report.updated += 1
+            } else if !dto.isDeleted {
+                try database.save(dto.makeTask())
+                if let archive = dto.legacyArchive {
+                    try database.save(archive.makeEntry())
+                }
+                report.inserted += 1
+            }
+        }
+
+        let archive = Dictionary(graph.maintenanceArchive.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        for dto in snapshot.maintenanceArchive {
+            if let existing = archive[dto.id] {
+                if dto.isDeleted {
+                    let paths = try database.deleteArchives(ids: [existing.id])
+                    if !paths.isEmpty {
+                        onRemovedMedia?(AppDatabase.RemovedMedia(photos: [], scans: [], receiptPaths: paths))
+                    }
+                    report.deleted += 1
+                    continue
+                }
+                guard dto.createdAt > existing.createdAt else {
+                    report.skipped += 1
+                    continue
+                }
+                try database.save(dto.makeEntry())
+                report.updated += 1
+            } else if !dto.isDeleted {
+                try database.save(dto.makeEntry())
+                report.inserted += 1
+            }
+        }
     }
 
     // MARK: - Loads

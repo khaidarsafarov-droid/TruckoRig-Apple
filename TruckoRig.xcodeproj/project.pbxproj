@@ -19,12 +19,12 @@
 		455764767707D2CD8B0DD051 /* Load+Derived.swift */ = {isa = PBXBuildFile; fileRef = 9542B50E1EFD05351A98E487 /* Load+Derived.swift */; };
 		6C9EC042C1B663153AB93DD7 /* Load+Draft.swift */ = {isa = PBXBuildFile; fileRef = 44EBD7CB526739C08D38CE85 /* Load+Draft.swift */; };
 		EDF489F272A3E75DA719A3EB /* Load.swift */ = {isa = PBXBuildFile; fileRef = 5745DCC5C428C8B566C2FEFA /* Load.swift */; };
-		5FD50AFF201B09F5676A2080 /* MaintenanceTask.swift */ = {isa = PBXBuildFile; fileRef = 01CAA8FE05FA3C5FA0580787 /* MaintenanceTask.swift */; };
 		BBCF56B7557C72A07742BDF7 /* Paycheck.swift */ = {isa = PBXBuildFile; fileRef = 109231C03923EA598EBD3571 /* Paycheck.swift */; };
 		9C89BE4CF18B6D7484CCD301 /* Penalty.swift */ = {isa = PBXBuildFile; fileRef = 6F07A4172F24C1C37A6603BF /* Penalty.swift */; };
 		36107F6D84E24D8F457E88F2 /* Photo.swift */ = {isa = PBXBuildFile; fileRef = 58A888E0ED9328C63568EB39 /* Photo.swift */; };
 		1654D96F28037987D0458F80 /* Scan.swift */ = {isa = PBXBuildFile; fileRef = B904A08B51E6EA1DE2D02909 /* Scan.swift */; };
 		F58E092E92A6BF4E747EBA6E /* Stop.swift */ = {isa = PBXBuildFile; fileRef = 37D55A7EEAEF2EDB8431BA56 /* Stop.swift */; };
+		876D32D16C300C963E91750E /* MaintenanceReminderCenter.swift */ = {isa = PBXBuildFile; fileRef = 849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */; };
 		512D6791792E4032E227341D /* AccountScopedContainer.swift */ = {isa = PBXBuildFile; fileRef = 4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */; };
 		696D4F7AFAA9FE8036E89F54 /* AccountSnapshot.swift */ = {isa = PBXBuildFile; fileRef = 231D79631C3AA436E4E1B0F4 /* AccountSnapshot.swift */; };
 		5874DDD389F3358E74105040 /* AppDatabase.swift */ = {isa = PBXBuildFile; fileRef = B9BA8ECB9F6D426DF392A6B0 /* AppDatabase.swift */; };
@@ -62,12 +62,17 @@
 		CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */ = {isa = PBXBuildFile; fileRef = 2875D2376898F097057DD656 /* AnalyticsCalculator.swift */; };
 		A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */ = {isa = PBXBuildFile; fileRef = 9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */; };
 		B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */ = {isa = PBXBuildFile; fileRef = 6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */; };
+		FBB26F7A7CEBA02D76DCC57B /* OnRoadCalendar.swift */ = {isa = PBXBuildFile; fileRef = C9586AD73DA70791A70A65EE /* OnRoadCalendar.swift */; };
 		E35E372B80EE11DC8A2B3F50 /* PeriodFinance.swift */ = {isa = PBXBuildFile; fileRef = AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */; };
 		0A7356272CBC8BF2537671E2 /* RPMCalculator.swift */ = {isa = PBXBuildFile; fileRef = 9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */; };
 		F92A9B93B1F2569FB6D14527 /* TruckingWeek.swift */ = {isa = PBXBuildFile; fileRef = 67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */; };
 		FC7DF8FB308D1DD6AFF99907 /* WeekLabelFormatter.swift */ = {isa = PBXBuildFile; fileRef = AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */; };
+		9779399E22BD6F05A0D727DE /* WeeklyDayPlan.swift */ = {isa = PBXBuildFile; fileRef = E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */; };
 		ED81EE88286EEE65242D4AB8 /* WeeklyGoalCalculator.swift */ = {isa = PBXBuildFile; fileRef = F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */; };
 		77FA4A07E4FA5335C741E657 /* WidgetDeepLink.swift */ = {isa = PBXBuildFile; fileRef = 3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */; };
+		82D6344895F51FD4C3B77CFA /* MaintenanceDrafts.swift */ = {isa = PBXBuildFile; fileRef = 39E5094B7BFEEC47FAD0FD11 /* MaintenanceDrafts.swift */; };
+		262C265EFD1DC3509C54223C /* MaintenanceMileage.swift */ = {isa = PBXBuildFile; fileRef = 800504AC56F6EABFD67BE63B /* MaintenanceMileage.swift */; };
+		B5C98623FAD9EA8EAB92E92E /* MaintenanceModels.swift */ = {isa = PBXBuildFile; fileRef = 0875DD2F7E84D2E8599FF469 /* MaintenanceModels.swift */; };
 		7905649839F895CA5FB1EBC6 /* AttachLoadSelection.swift */ = {isa = PBXBuildFile; fileRef = F9068F57C9B52A0353C02FA1 /* AttachLoadSelection.swift */; };
 		05AC122F199C624E85435698 /* AttachmentNaming.swift */ = {isa = PBXBuildFile; fileRef = EDBAB01A84FE71C7B9C0E62B /* AttachmentNaming.swift */; };
 		AF015024646A8CC760134E5C /* LocationStamp.swift */ = {isa = PBXBuildFile; fileRef = 15E24B28256ECBFB48D63139 /* LocationStamp.swift */; };
@@ -85,16 +90,20 @@
 		394955B721A75F786D36202F /* USStates.swift */ = {isa = PBXBuildFile; fileRef = 2A6E7DBCA866340C9F2A6C0C /* USStates.swift */; };
 		3C5066B1955F354C41E32FFF /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
 		2B622C76080980852957735F /* WidgetGoalSnapshot.swift */ = {isa = PBXBuildFile; fileRef = EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */; };
+		A8C2A8577BDC4BDA7AA7022C /* MoneyCents.swift */ = {isa = PBXBuildFile; fileRef = 52D8E9B550BD5E2EF23FDB29 /* MoneyCents.swift */; };
+		318CE7356EDF251CE6E5B537 /* SmartNotifications.swift */ = {isa = PBXBuildFile; fileRef = D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */; };
 		750F30C12B791B73B6DC0324 /* AddressParser.swift */ = {isa = PBXBuildFile; fileRef = 182585A026C2B15E60AC4276 /* AddressParser.swift */; };
 		72169DFBA3460A7BBBA71BDF /* AmazonRelayParser.swift */ = {isa = PBXBuildFile; fileRef = 752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */; };
 		AEA065BA0C226C76AF27282C /* CSVExportParser.swift */ = {isa = PBXBuildFile; fileRef = 002DEF18EE84F28AFD0D3969 /* CSVExportParser.swift */; };
 		EA65E4DD09272FE88ACD4E55 /* ChatHistoryDates.swift */ = {isa = PBXBuildFile; fileRef = AEAF784A101838AFD38F9A8F /* ChatHistoryDates.swift */; };
+		75090F70D3CD2E2AAFBC93FA /* DecimalInput.swift */ = {isa = PBXBuildFile; fileRef = 0C75965133619EDFD8CDC9C8 /* DecimalInput.swift */; };
 		C847EC90E302FE861D39555A /* LoadMessageParser+Stops.swift */ = {isa = PBXBuildFile; fileRef = 3E85FFBBC720C322DADCAF64 /* LoadMessageParser+Stops.swift */; };
 		68CA7F22083534B474DDF67C /* LoadMessageParser.swift */ = {isa = PBXBuildFile; fileRef = 027730AD621A8AB3D50A37C0 /* LoadMessageParser.swift */; };
 		14685DC48AFDF9D02908F990 /* MessageClassifier.swift */ = {isa = PBXBuildFile; fileRef = 9743A44A081DA5F426F9FCE9 /* MessageClassifier.swift */; };
 		8D01BA589CA93312D4887B69 /* NumberParsing.swift */ = {isa = PBXBuildFile; fileRef = AD2D6FB5F03F03A2E7A62F31 /* NumberParsing.swift */; };
 		D2F9D018169293C7032C3BFF /* RegexKit.swift */ = {isa = PBXBuildFile; fileRef = 0ADD02F61E9B8EF4716DBC15 /* RegexKit.swift */; };
 		10B10827BAABA3B7220A50B5 /* RelayTimeParser.swift */ = {isa = PBXBuildFile; fileRef = 75634311652C2593A2EA7443 /* RelayTimeParser.swift */; };
+		5800120E2EC80FA8299A6F75 /* ServiceReceiptParser.swift */ = {isa = PBXBuildFile; fileRef = A23569DC2D44504D3FD20C85 /* ServiceReceiptParser.swift */; };
 		C4A49E6481471C7C872569D9 /* StyledTextNormalizer.swift */ = {isa = PBXBuildFile; fileRef = 019AB75FD2BE7966DE0494B9 /* StyledTextNormalizer.swift */; };
 		E812A5D08CD02C98B4A55AD4 /* PremiumPolicy.swift */ = {isa = PBXBuildFile; fileRef = B623A1A76B97E0EEABA3595D /* PremiumPolicy.swift */; };
 		CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */ = {isa = PBXBuildFile; fileRef = 2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */; };
@@ -116,6 +125,7 @@
 		1072A860C7F70F223C7F30AB /* JournalViewModel.swift */ = {isa = PBXBuildFile; fileRef = C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */; };
 		0102AD36EA83617733301F90 /* LoadRowView.swift */ = {isa = PBXBuildFile; fileRef = D717AEF67461754094A98129 /* LoadRowView.swift */; };
 		1374C865E85F31496DDF26D7 /* LoadDetailView.swift */ = {isa = PBXBuildFile; fileRef = DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */; };
+		ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */ = {isa = PBXBuildFile; fileRef = A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */; };
 		90DA2D7AF8C3725CD8BD9AB1 /* MaintenanceListView.swift */ = {isa = PBXBuildFile; fileRef = BC5B7C245920F2DFC117552A /* MaintenanceListView.swift */; };
 		C0D7E59ED5DE31187826E4A4 /* RouteMapView.swift */ = {isa = PBXBuildFile; fileRef = 5873C6D76FE321A0AE0B4A36 /* RouteMapView.swift */; };
 		DB5C36383D4813E8A902D76B /* StateHeatmapView.swift */ = {isa = PBXBuildFile; fileRef = 1552DA0AD24254908A9D6A04 /* StateHeatmapView.swift */; };
@@ -217,12 +227,12 @@
 		9542B50E1EFD05351A98E487 /* Load+Derived.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Load+Derived.swift"; sourceTree = "<group>"; };
 		44EBD7CB526739C08D38CE85 /* Load+Draft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Load+Draft.swift"; sourceTree = "<group>"; };
 		5745DCC5C428C8B566C2FEFA /* Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Load.swift"; sourceTree = "<group>"; };
-		01CAA8FE05FA3C5FA0580787 /* MaintenanceTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceTask.swift"; sourceTree = "<group>"; };
 		109231C03923EA598EBD3571 /* Paycheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Paycheck.swift"; sourceTree = "<group>"; };
 		6F07A4172F24C1C37A6603BF /* Penalty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Penalty.swift"; sourceTree = "<group>"; };
 		58A888E0ED9328C63568EB39 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo.swift"; sourceTree = "<group>"; };
 		B904A08B51E6EA1DE2D02909 /* Scan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scan.swift"; sourceTree = "<group>"; };
 		37D55A7EEAEF2EDB8431BA56 /* Stop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stop.swift"; sourceTree = "<group>"; };
+		849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceReminderCenter.swift"; sourceTree = "<group>"; };
 		4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountScopedContainer.swift"; sourceTree = "<group>"; };
 		231D79631C3AA436E4E1B0F4 /* AccountSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountSnapshot.swift"; sourceTree = "<group>"; };
 		B9BA8ECB9F6D426DF392A6B0 /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabase.swift"; sourceTree = "<group>"; };
@@ -260,12 +270,17 @@
 		2875D2376898F097057DD656 /* AnalyticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCalculator.swift"; sourceTree = "<group>"; };
 		9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoalMoneyMath.swift"; sourceTree = "<group>"; };
 		6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadYieldCalculator.swift"; sourceTree = "<group>"; };
+		C9586AD73DA70791A70A65EE /* OnRoadCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OnRoadCalendar.swift"; sourceTree = "<group>"; };
 		AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodFinance.swift"; sourceTree = "<group>"; };
 		9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RPMCalculator.swift"; sourceTree = "<group>"; };
 		67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckingWeek.swift"; sourceTree = "<group>"; };
 		AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekLabelFormatter.swift"; sourceTree = "<group>"; };
+		E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyDayPlan.swift"; sourceTree = "<group>"; };
 		F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalCalculator.swift"; sourceTree = "<group>"; };
 		3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetDeepLink.swift"; sourceTree = "<group>"; };
+		39E5094B7BFEEC47FAD0FD11 /* MaintenanceDrafts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceDrafts.swift"; sourceTree = "<group>"; };
+		800504AC56F6EABFD67BE63B /* MaintenanceMileage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceMileage.swift"; sourceTree = "<group>"; };
+		0875DD2F7E84D2E8599FF469 /* MaintenanceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceModels.swift"; sourceTree = "<group>"; };
 		F9068F57C9B52A0353C02FA1 /* AttachLoadSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttachLoadSelection.swift"; sourceTree = "<group>"; };
 		EDBAB01A84FE71C7B9C0E62B /* AttachmentNaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttachmentNaming.swift"; sourceTree = "<group>"; };
 		15E24B28256ECBFB48D63139 /* LocationStamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationStamp.swift"; sourceTree = "<group>"; };
@@ -283,16 +298,20 @@
 		2A6E7DBCA866340C9F2A6C0C /* USStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "USStates.swift"; sourceTree = "<group>"; };
 		FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalProgress.swift"; sourceTree = "<group>"; };
 		EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetGoalSnapshot.swift"; sourceTree = "<group>"; };
+		52D8E9B550BD5E2EF23FDB29 /* MoneyCents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoneyCents.swift"; sourceTree = "<group>"; };
+		D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmartNotifications.swift"; sourceTree = "<group>"; };
 		182585A026C2B15E60AC4276 /* AddressParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressParser.swift"; sourceTree = "<group>"; };
 		752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AmazonRelayParser.swift"; sourceTree = "<group>"; };
 		002DEF18EE84F28AFD0D3969 /* CSVExportParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CSVExportParser.swift"; sourceTree = "<group>"; };
 		AEAF784A101838AFD38F9A8F /* ChatHistoryDates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatHistoryDates.swift"; sourceTree = "<group>"; };
+		0C75965133619EDFD8CDC9C8 /* DecimalInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DecimalInput.swift"; sourceTree = "<group>"; };
 		3E85FFBBC720C322DADCAF64 /* LoadMessageParser+Stops.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadMessageParser+Stops.swift"; sourceTree = "<group>"; };
 		027730AD621A8AB3D50A37C0 /* LoadMessageParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadMessageParser.swift"; sourceTree = "<group>"; };
 		9743A44A081DA5F426F9FCE9 /* MessageClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessageClassifier.swift"; sourceTree = "<group>"; };
 		AD2D6FB5F03F03A2E7A62F31 /* NumberParsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberParsing.swift"; sourceTree = "<group>"; };
 		0ADD02F61E9B8EF4716DBC15 /* RegexKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RegexKit.swift"; sourceTree = "<group>"; };
 		75634311652C2593A2EA7443 /* RelayTimeParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RelayTimeParser.swift"; sourceTree = "<group>"; };
+		A23569DC2D44504D3FD20C85 /* ServiceReceiptParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServiceReceiptParser.swift"; sourceTree = "<group>"; };
 		019AB75FD2BE7966DE0494B9 /* StyledTextNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StyledTextNormalizer.swift"; sourceTree = "<group>"; };
 		B623A1A76B97E0EEABA3595D /* PremiumPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumPolicy.swift"; sourceTree = "<group>"; };
 		2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderPolicy.swift"; sourceTree = "<group>"; };
@@ -314,6 +333,7 @@
 		C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalViewModel.swift"; sourceTree = "<group>"; };
 		D717AEF67461754094A98129 /* LoadRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadRowView.swift"; sourceTree = "<group>"; };
 		DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDetailView.swift"; sourceTree = "<group>"; };
+		A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceEditors.swift"; sourceTree = "<group>"; };
 		BC5B7C245920F2DFC117552A /* MaintenanceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceListView.swift"; sourceTree = "<group>"; };
 		5873C6D76FE321A0AE0B4A36 /* RouteMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RouteMapView.swift"; sourceTree = "<group>"; };
 		1552DA0AD24254908A9D6A04 /* StateHeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StateHeatmapView.swift"; sourceTree = "<group>"; };
@@ -437,6 +457,7 @@
 			children = (
 				7B46438A6EE8560A29A047FC /* Media */,
 				FEFCE8C6556E50EF09698C6E /* Models */,
+				7286F81711A383D0B6A2BF46 /* Notifications */,
 				BA28C1F0921BD05A06E4B466 /* Persistence */,
 				0455CEDCF317049FA1260C21 /* Premium */,
 				164F4DC553BA843520C790A9 /* Theme */,
@@ -463,7 +484,6 @@
 				9542B50E1EFD05351A98E487 /* Load+Derived.swift */,
 				44EBD7CB526739C08D38CE85 /* Load+Draft.swift */,
 				5745DCC5C428C8B566C2FEFA /* Load.swift */,
-				01CAA8FE05FA3C5FA0580787 /* MaintenanceTask.swift */,
 				109231C03923EA598EBD3571 /* Paycheck.swift */,
 				6F07A4172F24C1C37A6603BF /* Penalty.swift */,
 				58A888E0ED9328C63568EB39 /* Photo.swift */,
@@ -471,6 +491,14 @@
 				37D55A7EEAEF2EDB8431BA56 /* Stop.swift */,
 			);
 			path = "Models";
+			sourceTree = "<group>";
+		};
+		7286F81711A383D0B6A2BF46 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */,
+			);
+			path = "Notifications";
 			sourceTree = "<group>";
 		};
 		BA28C1F0921BD05A06E4B466 /* Persistence */ = {
@@ -540,8 +568,11 @@
 			children = (
 				86339DB7995642FDF6BCE161 /* Calculators */,
 				28213617981289BC4EE70056 /* DeepLink */,
+				7BADDB4AA54C07708ADE5D05 /* Maintenance */,
 				4E989472DC1835293771EC03 /* Media */,
 				E9AFEDA3544FB266955C1976 /* Models */,
+				42904B510FE1177696359109 /* Money */,
+				9CC53B5E694E7834C93D7E32 /* Notifications */,
 				CAFE8EED3C3F427590492A24 /* Parsers */,
 				D1F7A1FD11835D852F9F8DEE /* Premium */,
 			);
@@ -554,10 +585,12 @@
 				2875D2376898F097057DD656 /* AnalyticsCalculator.swift */,
 				9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */,
 				6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */,
+				C9586AD73DA70791A70A65EE /* OnRoadCalendar.swift */,
 				AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */,
 				9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */,
 				67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */,
 				AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */,
+				E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */,
 				F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */,
 			);
 			path = "Calculators";
@@ -569,6 +602,16 @@
 				3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */,
 			);
 			path = "DeepLink";
+			sourceTree = "<group>";
+		};
+		7BADDB4AA54C07708ADE5D05 /* Maintenance */ = {
+			isa = PBXGroup;
+			children = (
+				39E5094B7BFEEC47FAD0FD11 /* MaintenanceDrafts.swift */,
+				800504AC56F6EABFD67BE63B /* MaintenanceMileage.swift */,
+				0875DD2F7E84D2E8599FF469 /* MaintenanceModels.swift */,
+			);
+			path = "Maintenance";
 			sourceTree = "<group>";
 		};
 		4E989472DC1835293771EC03 /* Media */ = {
@@ -602,6 +645,22 @@
 			path = "Models";
 			sourceTree = "<group>";
 		};
+		42904B510FE1177696359109 /* Money */ = {
+			isa = PBXGroup;
+			children = (
+				52D8E9B550BD5E2EF23FDB29 /* MoneyCents.swift */,
+			);
+			path = "Money";
+			sourceTree = "<group>";
+		};
+		9CC53B5E694E7834C93D7E32 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */,
+			);
+			path = "Notifications";
+			sourceTree = "<group>";
+		};
 		CAFE8EED3C3F427590492A24 /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
@@ -609,12 +668,14 @@
 				752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */,
 				002DEF18EE84F28AFD0D3969 /* CSVExportParser.swift */,
 				AEAF784A101838AFD38F9A8F /* ChatHistoryDates.swift */,
+				0C75965133619EDFD8CDC9C8 /* DecimalInput.swift */,
 				3E85FFBBC720C322DADCAF64 /* LoadMessageParser+Stops.swift */,
 				027730AD621A8AB3D50A37C0 /* LoadMessageParser.swift */,
 				9743A44A081DA5F426F9FCE9 /* MessageClassifier.swift */,
 				AD2D6FB5F03F03A2E7A62F31 /* NumberParsing.swift */,
 				0ADD02F61E9B8EF4716DBC15 /* RegexKit.swift */,
 				75634311652C2593A2EA7443 /* RelayTimeParser.swift */,
+				A23569DC2D44504D3FD20C85 /* ServiceReceiptParser.swift */,
 				019AB75FD2BE7966DE0494B9 /* StyledTextNormalizer.swift */,
 			);
 			path = "Parsers";
@@ -730,6 +791,7 @@
 		4B5F86F0F712AB90D19ECDA4 /* Maintenance */ = {
 			isa = PBXGroup;
 			children = (
+				A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */,
 				BC5B7C245920F2DFC117552A /* MaintenanceListView.swift */,
 			);
 			path = "Maintenance";
@@ -1049,12 +1111,12 @@
 				455764767707D2CD8B0DD051 /* Load+Derived.swift */,
 				6C9EC042C1B663153AB93DD7 /* Load+Draft.swift */,
 				EDF489F272A3E75DA719A3EB /* Load.swift */,
-				5FD50AFF201B09F5676A2080 /* MaintenanceTask.swift */,
 				BBCF56B7557C72A07742BDF7 /* Paycheck.swift */,
 				9C89BE4CF18B6D7484CCD301 /* Penalty.swift */,
 				36107F6D84E24D8F457E88F2 /* Photo.swift */,
 				1654D96F28037987D0458F80 /* Scan.swift */,
 				F58E092E92A6BF4E747EBA6E /* Stop.swift */,
+				876D32D16C300C963E91750E /* MaintenanceReminderCenter.swift */,
 				512D6791792E4032E227341D /* AccountScopedContainer.swift */,
 				696D4F7AFAA9FE8036E89F54 /* AccountSnapshot.swift */,
 				5874DDD389F3358E74105040 /* AppDatabase.swift */,
@@ -1092,12 +1154,17 @@
 				CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */,
 				A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */,
 				B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */,
+				FBB26F7A7CEBA02D76DCC57B /* OnRoadCalendar.swift */,
 				E35E372B80EE11DC8A2B3F50 /* PeriodFinance.swift */,
 				0A7356272CBC8BF2537671E2 /* RPMCalculator.swift */,
 				F92A9B93B1F2569FB6D14527 /* TruckingWeek.swift */,
 				FC7DF8FB308D1DD6AFF99907 /* WeekLabelFormatter.swift */,
+				9779399E22BD6F05A0D727DE /* WeeklyDayPlan.swift */,
 				ED81EE88286EEE65242D4AB8 /* WeeklyGoalCalculator.swift */,
 				77FA4A07E4FA5335C741E657 /* WidgetDeepLink.swift */,
+				82D6344895F51FD4C3B77CFA /* MaintenanceDrafts.swift */,
+				262C265EFD1DC3509C54223C /* MaintenanceMileage.swift */,
+				B5C98623FAD9EA8EAB92E92E /* MaintenanceModels.swift */,
 				7905649839F895CA5FB1EBC6 /* AttachLoadSelection.swift */,
 				05AC122F199C624E85435698 /* AttachmentNaming.swift */,
 				AF015024646A8CC760134E5C /* LocationStamp.swift */,
@@ -1115,16 +1182,20 @@
 				394955B721A75F786D36202F /* USStates.swift */,
 				3C5066B1955F354C41E32FFF /* WeeklyGoalProgress.swift */,
 				2B622C76080980852957735F /* WidgetGoalSnapshot.swift */,
+				A8C2A8577BDC4BDA7AA7022C /* MoneyCents.swift */,
+				318CE7356EDF251CE6E5B537 /* SmartNotifications.swift */,
 				750F30C12B791B73B6DC0324 /* AddressParser.swift */,
 				72169DFBA3460A7BBBA71BDF /* AmazonRelayParser.swift */,
 				AEA065BA0C226C76AF27282C /* CSVExportParser.swift */,
 				EA65E4DD09272FE88ACD4E55 /* ChatHistoryDates.swift */,
+				75090F70D3CD2E2AAFBC93FA /* DecimalInput.swift */,
 				C847EC90E302FE861D39555A /* LoadMessageParser+Stops.swift */,
 				68CA7F22083534B474DDF67C /* LoadMessageParser.swift */,
 				14685DC48AFDF9D02908F990 /* MessageClassifier.swift */,
 				8D01BA589CA93312D4887B69 /* NumberParsing.swift */,
 				D2F9D018169293C7032C3BFF /* RegexKit.swift */,
 				10B10827BAABA3B7220A50B5 /* RelayTimeParser.swift */,
+				5800120E2EC80FA8299A6F75 /* ServiceReceiptParser.swift */,
 				C4A49E6481471C7C872569D9 /* StyledTextNormalizer.swift */,
 				E812A5D08CD02C98B4A55AD4 /* PremiumPolicy.swift */,
 				CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */,
@@ -1146,6 +1217,7 @@
 				1072A860C7F70F223C7F30AB /* JournalViewModel.swift */,
 				0102AD36EA83617733301F90 /* LoadRowView.swift */,
 				1374C865E85F31496DDF26D7 /* LoadDetailView.swift */,
+				ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */,
 				90DA2D7AF8C3725CD8BD9AB1 /* MaintenanceListView.swift */,
 				C0D7E59ED5DE31187826E4A4 /* RouteMapView.swift */,
 				DB5C36383D4813E8A902D76B /* StateHeatmapView.swift */,

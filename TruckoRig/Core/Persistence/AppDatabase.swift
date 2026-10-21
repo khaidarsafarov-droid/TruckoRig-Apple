@@ -77,7 +77,66 @@ final class AppDatabase {
                 table.add(column: "category", .text).notNull().defaults(to: "OTHER")
             }
         }
+        // Android maintenance_tasks / maintenance_archive. The stage-1 stub table is copied once.
+        migrator.registerMigration("v3-maintenance") { db in
+            try db.create(table: "maintenance_task") { table in
+                table.primaryKey("id", .text)
+                table.column("title", .text).notNull()
+                table.column("startDate", .text).notNull()
+                table.column("reminderType", .text).notNull()
+                table.column("intervalMiles", .double)
+                table.column("odometerAtStart", .double)
+                table.column("dueDate", .text)
+                table.column("isCompleted", .integer).notNull()
+                table.column("completedAt", .integer)
+                table.column("notifiedAt", .integer)
+                table.column("createdAt", .integer).notNull()
+                table.column("updatedAt", .integer).notNull()
+            }
+            try db.create(table: "maintenance_archive") { table in
+                table.primaryKey("id", .text)
+                table.column("serviceName", .text).notNull().defaults(to: "")
+                table.column("serviceDate", .text).notNull()
+                table.column("description", .text).notNull()
+                table.column("amountCents", .integer).notNull()
+                table.column("photoPath", .text)
+                table.column("ocrText", .text)
+                table.column("createdAt", .integer).notNull()
+            }
+            try Self.copyStubMaintenance(db)
+        }
         try migrator.migrate(queue)
+    }
+
+    /// Maps the pre-stage-5 `maintenance` rows into the Android task and archive tables.
+    private static func copyStubMaintenance(_ db: Database) throws {
+        let rows = try Row.fetchAll(db, sql: "SELECT * FROM maintenance")
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .current
+        for row in rows {
+            guard let id = string(row, "id") else { continue }
+            let updated = date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)
+            let due = date(row, "dueDate")
+            let completed = date(row, "completedDate")
+            let fallback = MaintenanceMileage.isoDay(due ?? completed ?? updated, calendar: calendar)
+            let imported = MaintenanceLegacyImport.convert(
+                MaintenanceLegacyImport.Stub(
+                    id: id,
+                    title: string(row, "title") ?? "",
+                    dueDateISO: due.map { MaintenanceMileage.isoDay($0, calendar: calendar) },
+                    dueOdometer: int(row, "dueOdometer"),
+                    completedAtMillis: completed.map { Int64($0.timeIntervalSince1970 * 1000) },
+                    cost: double(row, "cost"),
+                    notes: string(row, "notes"),
+                    updatedAtMillis: Int64(updated.timeIntervalSince1970 * 1000)
+                ),
+                fallbackStartDate: fallback
+            )
+            try upsert(db, imported.task)
+            if let archive = imported.archive {
+                try upsert(db, archive)
+            }
+        }
     }
 
     private static func createSchema(_ db: Database) throws {
@@ -291,7 +350,36 @@ final class AppDatabase {
 
     func delete(_ task: MaintenanceTask) throws {
         try queue.write { db in
-            try db.execute(sql: "DELETE FROM maintenance WHERE id = ?", arguments: [task.id.uuidString])
+            try db.execute(sql: "DELETE FROM maintenance_task WHERE id = ?", arguments: [task.id])
+        }
+    }
+
+    func save(_ entry: MaintenanceArchiveEntry) throws {
+        try queue.write { try Self.upsert($0, entry) }
+    }
+
+    /// Deletes archive rows and returns receipt paths that no remaining row still uses.
+    func deleteArchives(ids: [String]) throws -> [String] {
+        try queue.write { db in
+            let paths = try ids.compactMap { id -> String? in
+                try String.fetchOne(
+                    db,
+                    sql: "SELECT photoPath FROM maintenance_archive WHERE id = ?",
+                    arguments: [id]
+                )
+            }
+            for id in ids {
+                try db.execute(sql: "DELETE FROM maintenance_archive WHERE id = ?", arguments: [id])
+            }
+            return try paths.filter { path in
+                guard !path.isEmpty else { return false }
+                let stillUsed = try Int.fetchOne(
+                    db,
+                    sql: "SELECT COUNT(*) FROM maintenance_archive WHERE photoPath = ?",
+                    arguments: [path]
+                ) ?? 0
+                return stillUsed == 0
+            }
         }
     }
 
@@ -340,6 +428,9 @@ final class AppDatabase {
             for task in journal.maintenance {
                 try Self.upsert(db, task)
             }
+            for entry in journal.maintenanceArchive {
+                try Self.upsert(db, entry)
+            }
             for photo in journal.photos {
                 try Self.upsert(db, photo)
             }
@@ -368,6 +459,7 @@ final class AppDatabase {
     struct RemovedMedia {
         var photos: [Photo]
         var scans: [Scan]
+        var receiptPaths: [String] = []
     }
 
     struct StoredGraph {
@@ -375,6 +467,7 @@ final class AppDatabase {
         var paychecks: [Paycheck]
         var diesel: [Diesel]
         var maintenance: [MaintenanceTask]
+        var maintenanceArchive: [MaintenanceArchiveEntry]
         var photos: [Photo]
         var scans: [Scan]
         var profile: DriverProfile?
@@ -417,14 +510,19 @@ final class AppDatabase {
         let diesel = try Row.fetchAll(db, sql: "SELECT * FROM diesel ORDER BY date DESC").map(diesel(from:))
         let maintenance = try Row.fetchAll(
             db,
-            sql: "SELECT * FROM maintenance ORDER BY dueDate IS NULL, dueDate ASC"
-        ).map(maintenance(from:))
+            sql: "SELECT * FROM maintenance_task ORDER BY createdAt ASC"
+        ).map(maintenanceTask(from:))
+        let archive = try Row.fetchAll(
+            db,
+            sql: "SELECT * FROM maintenance_archive ORDER BY serviceDate DESC, createdAt DESC"
+        ).map(maintenanceArchive(from:))
         let profile = try Row.fetchOne(db, sql: "SELECT * FROM profile LIMIT 1").map(profile(from:))
         return StoredGraph(
             loads: loads,
             paychecks: paychecks,
             diesel: diesel,
             maintenance: maintenance,
+            maintenanceArchive: archive,
             photos: photos,
             scans: scans,
             profile: profile
@@ -527,17 +625,34 @@ final class AppDatabase {
 
     private static func upsert(_ db: Database, _ task: MaintenanceTask) throws {
         try execute(db, """
-        INSERT INTO maintenance (
-            id, title, dueDate, dueOdometer, completedDate, cost, notes, isArchived, updatedAt
-        ) VALUES (\(marks(9)))
+        INSERT INTO maintenance_task (
+            id, title, startDate, reminderType, intervalMiles, odometerAtStart, dueDate,
+            isCompleted, completedAt, notifiedAt, createdAt, updatedAt
+        ) VALUES (\(marks(12)))
         ON CONFLICT(id) DO UPDATE SET
-            title = excluded.title, dueDate = excluded.dueDate, dueOdometer = excluded.dueOdometer,
-            completedDate = excluded.completedDate, cost = excluded.cost, notes = excluded.notes,
-            isArchived = excluded.isArchived, updatedAt = excluded.updatedAt
+            title = excluded.title, startDate = excluded.startDate, reminderType = excluded.reminderType,
+            intervalMiles = excluded.intervalMiles, odometerAtStart = excluded.odometerAtStart,
+            dueDate = excluded.dueDate, isCompleted = excluded.isCompleted, completedAt = excluded.completedAt,
+            notifiedAt = excluded.notifiedAt, createdAt = excluded.createdAt, updatedAt = excluded.updatedAt
         """, [
-            task.id.uuidString, task.title, task.dueDate?.timeIntervalSince1970, task.dueOdometer,
-            task.completedDate?.timeIntervalSince1970, task.cost, task.notes, task.isArchived ? 1 : 0,
-            task.updatedAt.timeIntervalSince1970,
+            task.id, task.title, task.startDate, task.reminderType.rawValue, task.intervalMiles,
+            task.odometerAtStart, task.dueDate, task.isCompleted ? 1 : 0, task.completedAt,
+            task.notifiedAt, task.createdAt, task.updatedAt,
+        ])
+    }
+
+    private static func upsert(_ db: Database, _ entry: MaintenanceArchiveEntry) throws {
+        try execute(db, """
+        INSERT INTO maintenance_archive (
+            id, serviceName, serviceDate, description, amountCents, photoPath, ocrText, createdAt
+        ) VALUES (\(marks(8)))
+        ON CONFLICT(id) DO UPDATE SET
+            serviceName = excluded.serviceName, serviceDate = excluded.serviceDate,
+            description = excluded.description, amountCents = excluded.amountCents,
+            photoPath = excluded.photoPath, ocrText = excluded.ocrText, createdAt = excluded.createdAt
+        """, [
+            entry.id, entry.serviceName, entry.serviceDate, entry.description, entry.amount.cents,
+            entry.photoPath, entry.ocrText, entry.createdAt,
         ])
     }
 
@@ -686,17 +801,34 @@ final class AppDatabase {
         )
     }
 
-    private static func maintenance(from row: Row) -> MaintenanceTask {
-        MaintenanceTask(
-            id: uuid(row, "id") ?? UUID(),
+    private static func maintenanceTask(from row: Row) -> MaintenanceTask {
+        let rawType = string(row, "reminderType") ?? MaintenanceReminderType.miles.rawValue
+        return MaintenanceTask(
+            id: string(row, "id") ?? UUID().uuidString,
             title: string(row, "title") ?? "",
-            dueDate: date(row, "dueDate"),
-            dueOdometer: int(row, "dueOdometer"),
-            completedDate: date(row, "completedDate"),
-            cost: double(row, "cost"),
-            notes: string(row, "notes"),
-            isArchived: bool(row, "isArchived"),
-            updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)
+            startDate: string(row, "startDate") ?? "",
+            reminderType: MaintenanceReminderType(rawValue: rawType) ?? .miles,
+            intervalMiles: double(row, "intervalMiles"),
+            odometerAtStart: double(row, "odometerAtStart"),
+            dueDate: string(row, "dueDate"),
+            isCompleted: bool(row, "isCompleted"),
+            completedAt: int64(row, "completedAt"),
+            notifiedAt: int64(row, "notifiedAt"),
+            createdAt: int64(row, "createdAt") ?? 0,
+            updatedAt: int64(row, "updatedAt") ?? 0
+        )
+    }
+
+    private static func maintenanceArchive(from row: Row) -> MaintenanceArchiveEntry {
+        MaintenanceArchiveEntry(
+            id: string(row, "id") ?? UUID().uuidString,
+            serviceName: string(row, "serviceName") ?? "",
+            serviceDate: string(row, "serviceDate") ?? "",
+            description: string(row, "description") ?? "",
+            amount: MoneyCents(cents: int64(row, "amountCents") ?? 0),
+            photoPath: string(row, "photoPath"),
+            ocrText: string(row, "ocrText"),
+            createdAt: int64(row, "createdAt") ?? 0
         )
     }
 

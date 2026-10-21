@@ -9,7 +9,8 @@ final class WeeklyGoalViewModel {
     /// on Saturday instead of pinning to a stale week.
     private var selectedWeek: WeekRef?
     var isEditingGoal = false
-    var goalInput: Double = 0
+    var goalDraft = ""
+    var goalError: String?
 
     func week(in calendar: TruckingWeek, now: Date = Date()) -> WeekRef {
         selectedWeek ?? calendar.currentWeek(now: now)

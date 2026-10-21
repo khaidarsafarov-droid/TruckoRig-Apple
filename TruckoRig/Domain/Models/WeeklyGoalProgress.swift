@@ -18,7 +18,7 @@ public struct WeeklyGoalProgress: Equatable, Sendable {
     /// Calendar days from the week start through today, used for the ring marker.
     public var daysActiveCalendar: Int
     public var daysRemainingInWeek: Int
-    /// Sum of per-load PU→DEL durations, in fractional days.
+    /// Unique on-road calendar days, matching Android `onRoadDays`.
     public var totalActiveDays: Double
     /// Gross divided by days actually spent in transit.
     public var actualDailyYield: Double

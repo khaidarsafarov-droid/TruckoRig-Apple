@@ -7,12 +7,14 @@ enum SnapshotBuilder {
     static func build(from database: AppDatabase, now: Date = Date()) throws -> AccountSnapshot {
         let graph = try database.fetchGraph()
         return AccountSnapshot(
+            schemaVersion: 2,
             updatedAt: now,
             loads: graph.loads.map(dto),
             paychecks: graph.paychecks.map(dto),
             diesel: graph.diesel.map(dto),
             maintenance: graph.maintenance.map(dto),
-            profile: graph.profile.map(dto)
+            profile: graph.profile.map(dto),
+            maintenanceArchive: graph.maintenanceArchive.map(dto)
         )
     }
 
@@ -95,17 +97,11 @@ enum SnapshotBuilder {
     }
 
     static func dto(_ task: MaintenanceTask) -> MaintenanceDTO {
-        MaintenanceDTO(
-            id: task.id,
-            title: task.title,
-            dueDate: task.dueDate,
-            dueOdometer: task.dueOdometer,
-            completedDate: task.completedDate,
-            cost: task.cost,
-            notes: task.notes,
-            isArchived: task.isArchived,
-            updatedAt: task.updatedAt
-        )
+        MaintenanceDTO(task: task)
+    }
+
+    static func dto(_ entry: MaintenanceArchiveEntry) -> MaintenanceArchiveDTO {
+        MaintenanceArchiveDTO(entry: entry)
     }
 
     static func dto(_ profile: DriverProfile) -> ProfileDTO {
