@@ -27,7 +27,7 @@ SOURCE_DIRS = ["TruckoRig", "TruckoRigWidget"]
 # identifier or plain data.
 NAMESPACES = (
     "action.", "analytics.", "auth.", "camera.", "date.", "diesel.", "duration.", "error.",
-    "format.", "gallery.", "goal.", "heatmap.", "journal.", "load.", "maintenance.", "map.",
+    "format.", "gallery.", "goal.", "heatmap.", "home.", "journal.", "load.", "maintenance.", "map.",
     "media.", "paycheck.", "penalty.", "premium.", "profile.", "relay.", "scanner.", "screen.",
     "settings.", "stat.", "status.", "stop.", "tab.", "widget.", "app.name",
 )

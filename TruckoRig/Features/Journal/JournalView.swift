@@ -1,6 +1,19 @@
 import SwiftUI
 
-/// Home screen: every trip, newest week first.
+/// Where the home menu pushes.
+enum HomeDestination: Hashable {
+    case analytics
+    case goal
+    case paycheck
+    case diesel
+    case maintenance
+    case map
+    case gallery
+    case settings
+    case profile
+}
+
+/// Home screen: week card, then every trip, newest week first.
 struct JournalView: View {
 
     @Environment(AppState.self) private var appState
@@ -9,26 +22,58 @@ struct JournalView: View {
 
     @State private var viewModel = JournalViewModel()
     @State private var isAddingLoad = false
+    @State private var isSearching = false
+    @State private var showMenu = false
+    @State private var destination: HomeDestination?
+    @State private var cameraLoad: Load?
+    @State private var scannerLoad: Load?
 
     private var sections: [JournalSection] {
         viewModel.sections(from: loads, week: appState.settings.truckingWeek)
+    }
+
+    private var currentWeek: WeekRef {
+        appState.settings.truckingWeek.currentWeek()
     }
 
     var body: some View {
         @Bindable var model = viewModel
 
         List {
-            if !loads.isEmpty {
-                summaryHeader
+            Section {
+                JournalHomeHeader(
+                    name: appState.catalog.profile?.name ?? "",
+                    onMenu: { showMenu = true },
+                    onSearch: { isSearching = true },
+                    onProfile: { destination = .profile }
+                )
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 4, trailing: 12))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+
+                if !loads.isEmpty {
+                    weekHero
+                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                }
             }
 
             ForEach(sections) { section in
                 Section {
                     ForEach(section.loads) { load in
                         NavigationLink(value: load) {
-                            LoadRowView(load: load, thresholds: appState.settings.rpmThresholds)
+                            JournalLoadCard(
+                                load: load,
+                                thresholds: appState.settings.rpmThresholds,
+                                onCamera: { cameraLoad = load },
+                                onScan: { scannerLoad = load }
+                            )
                         }
-                        .listRowBackground(Color.forestCard)
+                        .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
                                 viewModel.loadPendingDeletion = load
@@ -38,7 +83,9 @@ struct JournalView: View {
                         }
                     }
                 } header: {
-                    WeekHeaderView(section: section)
+                    if section.week != currentWeek {
+                        WeekHeaderView(section: section)
+                    }
                 }
             }
 
@@ -48,30 +95,55 @@ struct JournalView: View {
                 noResultsState
             }
         }
-        .listStyle(.insetGrouped)
+        .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .forestBackground()
-        .navigationTitle("tab.journal")
+        .navigationTitle("")
+        .toolbar(isSearching ? .visible : .hidden, for: .navigationBar)
         .navigationDestination(for: Load.self) { load in
             LoadDetailView(load: load)
         }
-        .searchable(text: $model.searchText, prompt: Text("journal.search.prompt"))
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                filterMenu
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
+        .navigationDestination(item: $destination) { dest in
+            destinationView(dest)
+        }
+        .searchable(text: $model.searchText, isPresented: $isSearching, prompt: Text("journal.search.prompt"))
+        .sheet(isPresented: $showMenu) {
+            JournalMenuSheet(
+                filter: $model.filter,
+                onAdd: {
+                    showMenu = false
                     isAddingLoad = true
-                } label: {
-                    Label("journal.addLoad", systemImage: "plus")
+                },
+                onSelect: { dest in
+                    showMenu = false
+                    destination = dest
                 }
-                .accessibilityLabel("journal.addLoad")
-            }
+            )
+            .environment(appState)
         }
         .sheet(isPresented: $isAddingLoad) {
             AddLoadView()
                 .presentationDetents([.large])
+        }
+        .sheet(item: $cameraLoad) { load in
+            NavigationStack {
+                CameraView(load: load)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("action.cancel") { cameraLoad = nil }
+                        }
+                    }
+            }
+        }
+        .sheet(item: $scannerLoad) { load in
+            NavigationStack {
+                ScannerView(load: load)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("action.cancel") { scannerLoad = nil }
+                        }
+                    }
+            }
         }
         .confirmationDialog(
             "journal.delete.confirm",
@@ -91,32 +163,60 @@ struct JournalView: View {
         )
     }
 
-    private var summaryHeader: some View {
-        let totals = viewModel.visibleTotals(from: loads)
-        return Section {
-            HStack {
-                StatTile(title: "stat.gross", value: Formatters.money(totals.totalRate))
-                StatTile(title: "stat.miles", value: Formatters.miles(totals.totalMiles))
-                StatTile(
-                    title: "stat.rpm",
-                    value: Formatters.ratePerMile(totals.ratePerMile),
-                    tint: RPMCalculator.band(for: totals.ratePerMile, thresholds: appState.settings.rpmThresholds).tint
-                )
-            }
-        }
-        .listRowBackground(Color.forestCard)
+    private var weekHero: some View {
+        let week = appState.settings.truckingWeek
+        let ref = currentWeek
+        let weekLoads = loads.filter { $0.weekNumber == ref.weekNumber && $0.year == ref.year }
+        let progress = WeeklyGoalCalculator(week: week, locale: .current).calculate(
+            target: appState.settings.weeklyGoal,
+            loads: weekLoads.map(\.summary),
+            for: ref
+        )
+        let caption: String = {
+            guard let start = week.startDate(of: ref), let end = week.endDate(of: ref) else { return progress.weekLabel }
+            return SplitWeekRange.homeCaption(start: start, end: end, calendar: week.calendar, locale: .current)
+        }()
+        let rpm = progress.totalMiles > 0 ? USMoneyFormat.rpmPerMile(progress.currentGross / progress.totalMiles) : "—"
+        return HomeWeekHeroCard(
+            weekNumber: ref.weekNumber,
+            rangeCaption: caption,
+            gross: progress.currentGross,
+            goal: progress.targetAmount,
+            percent: progress.progressPercent,
+            rpmText: rpm,
+            milesText: USMoneyFormat.number(progress.totalMiles),
+            loadCount: progress.loadsCount,
+            dayLabels: narrowDays(week: week, ref: ref),
+            elapsedDays: week.daysElapsed(),
+            onOpenGoal: { destination = .goal }
+        )
     }
 
-    private var filterMenu: some View {
-        @Bindable var model = viewModel
-        return Menu {
-            Picker("journal.filter", selection: $model.filter) {
-                ForEach(JournalViewModel.Filter.allCases) { filter in
-                    Text(filter.title).tag(filter)
-                }
-            }
-        } label: {
-            Label("journal.filter", systemImage: viewModel.filter == .all ? "line.3.horizontal.decrease" : "line.3.horizontal.decrease.circle.fill")
+    private func narrowDays(week: TruckingWeek, ref: WeekRef) -> [String] {
+        guard let start = week.startDate(of: ref) else { return [] }
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.calendar = week.calendar
+        formatter.timeZone = week.calendar.timeZone
+        formatter.dateFormat = "EEEEE"
+        return (0..<7).compactMap { offset in
+            guard let day = week.calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
+            return formatter.string(from: day)
+        }
+    }
+
+    @ViewBuilder
+    private func destinationView(_ destination: HomeDestination) -> some View {
+        switch destination {
+        case .analytics: AnalyticsView()
+        case .goal: WeeklyGoalView()
+        case .paycheck: PaycheckListView()
+        case .diesel: DieselListView()
+        case .maintenance: MaintenanceListView()
+        case .map: RouteMapView()
+        case .gallery: GalleryView()
+        case .settings: SettingsView()
+        case .profile: ProfileView()
         }
     }
 
@@ -129,6 +229,7 @@ struct JournalView: View {
             action: { isAddingLoad = true }
         )
         .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
 
     private var noResultsState: some View {
@@ -138,6 +239,7 @@ struct JournalView: View {
             message: "journal.noResults.message"
         )
         .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
 
     private func deletePending() {
@@ -148,6 +250,54 @@ struct JournalView: View {
             try repository.delete(load)
         } catch {
             viewModel.errorMessage = error.localizedDescription
+        }
+    }
+}
+
+private struct JournalMenuSheet: View {
+    @Binding var filter: JournalViewModel.Filter
+    var onAdd: () -> Void
+    var onSelect: (HomeDestination) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Picker("journal.filter", selection: $filter) {
+                    ForEach(JournalViewModel.Filter.allCases) { item in
+                        Text(item.title).tag(item)
+                    }
+                }
+
+                Button(action: onAdd) {
+                    Label("journal.addLoad", systemImage: "plus")
+                }
+
+                menuRow(.analytics, "screen.analytics", "chart.bar")
+                menuRow(.goal, "tab.goal", "target")
+                menuRow(.paycheck, "screen.paycheck", "dollarsign.circle")
+                menuRow(.diesel, "screen.diesel", "fuelpump")
+                menuRow(.maintenance, "screen.maintenance", "wrench.and.screwdriver")
+                menuRow(.map, "screen.map", "map")
+                menuRow(.gallery, "screen.gallery", "photo.on.rectangle")
+                menuRow(.settings, "screen.settings", "gearshape")
+                menuRow(.profile, "tab.profile", "person.crop.circle")
+            }
+            .navigationTitle("app.name")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("action.cancel") { dismiss() }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    private func menuRow(_ destination: HomeDestination, _ title: LocalizedStringKey, _ symbol: String) -> some View {
+        Button { onSelect(destination) } label: {
+            Label(title, systemImage: symbol)
         }
     }
 }

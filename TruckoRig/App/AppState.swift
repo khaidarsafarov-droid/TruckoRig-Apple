@@ -41,6 +41,9 @@ final class AppState {
 
     var selectedTab: MainTab = .journal
 
+    /// Screen a widget deep link asked to open. Cleared when the cover dismisses.
+    var pendingPresentation: WidgetPresentation?
+
     /// Active App Store subscription, including the free month. StoreKit is the only source.
     var premiumIsActive: Bool { premium.isActive }
 
@@ -80,17 +83,63 @@ final class AppState {
     }
 
     /// Refreshes the home-screen widget from the current week.
+    ///
+    /// The SQLCipher key stays in this process. Only the finished numbers are written to the App Group.
     func publishWidgetSnapshot(now: Date = Date()) {
         let week = settings.truckingWeek
         let ref = week.currentWeek(now: now)
         let loads = catalog.loads.filter { $0.weekNumber == ref.weekNumber && $0.year == ref.year }
-        let progress = WeeklyGoalCalculator(week: week).calculate(
+        let progress = WeeklyGoalCalculator(week: week, locale: snapshotLocale).calculate(
             target: settings.weeklyGoal,
             loads: loads.map(\.summary),
             for: ref,
             now: now
         )
-        WidgetBridge.publish(progress)
+        guard let start = week.startDate(of: ref), let end = week.endDate(of: ref) else { return }
+        let snapshot = WidgetSnapshotBuilder.make(
+            progress: progress,
+            weekStart: start,
+            weekEnd: end,
+            calendar: week.calendar,
+            locale: snapshotLocale,
+            now: now
+        )
+        WidgetBridge.publish(snapshot)
+    }
+
+    /// Widget and home-screen links. Unknown `truckorig://` paths open the journal.
+    func open(_ url: URL) {
+        guard let route = WidgetDeepLink.route(from: url) else { return }
+        switch route {
+        case .home:
+            selectedTab = .journal
+            pendingPresentation = nil
+        case .weeklyGoal:
+            selectedTab = .goal
+            pendingPresentation = nil
+        case .analytics:
+            selectedTab = .journal
+            pendingPresentation = .analytics
+        case .camera:
+            selectedTab = .journal
+            pendingPresentation = .camera
+        case .scanner:
+            selectedTab = .journal
+            pendingPresentation = .scanner
+        case .addDiesel:
+            selectedTab = .journal
+            pendingPresentation = .addDiesel
+        case .addLoad:
+            selectedTab = .journal
+            pendingPresentation = .addLoad
+        }
+    }
+
+    private var snapshotLocale: Locale {
+        if let identifier = settings.language.localeIdentifier {
+            return Locale(identifier: identifier)
+        }
+        return .current
     }
 
     /// The only way views should obtain a load repository: writes also refresh the journal.

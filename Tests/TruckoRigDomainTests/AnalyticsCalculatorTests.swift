@@ -98,6 +98,31 @@ final class AnalyticsCalculatorTests: XCTestCase {
         XCTAssertEqual(mpg, 6.3, accuracy: 0.05)
     }
 
+    func testDailyDistributionUsesEnglishLabelsFromWeekStart() {
+        let loads = [
+            load(rate: 100, miles: 10, on: makeDate(2025, 8, 3)),
+            load(rate: 2500, miles: 800, on: makeDate(2025, 8, 4)),
+        ]
+
+        let days = AnalyticsCalculator.dailyDistribution(loads: loads, calendar: calendar)
+
+        XCTAssertEqual(days.map(\.label), ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"])
+        XCTAssertEqual(days[0].gross, 100, accuracy: 0.001)
+        XCTAssertEqual(days[1].gross, 2500, accuracy: 0.001)
+        XCTAssertEqual(days[2].gross, 0, accuracy: 0.001)
+    }
+
+    func testTopRoutesPreferCityLabels() {
+        var lane = load(rate: 2500, miles: 850, on: makeDate(2025, 8, 4))
+        lane.originLabel = "Garner, NC"
+        lane.destinationLabel = "Dallas, TX"
+
+        let routes = AnalyticsCalculator.topRoutes(loads: [lane])
+
+        XCTAssertEqual(routes.first?.label, "Garner, NC → Dallas, TX")
+        XCTAssertEqual(routes.first?.ratePerMile ?? 0, 2.94, accuracy: 0.001)
+    }
+
     func testMilesPerGallonNeedsTwoReadings() {
         XCTAssertEqual(AnalyticsCalculator.milesPerGallon(odometers: [(100_000, 70)]), 0, accuracy: 0.001)
         XCTAssertEqual(AnalyticsCalculator.milesPerGallon(odometers: []), 0, accuracy: 0.001)

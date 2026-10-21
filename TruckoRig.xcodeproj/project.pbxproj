@@ -59,11 +59,14 @@
 		CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */ = {isa = PBXBuildFile; fileRef = 2875D2376898F097057DD656 /* AnalyticsCalculator.swift */; };
 		A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */ = {isa = PBXBuildFile; fileRef = 9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */; };
 		B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */ = {isa = PBXBuildFile; fileRef = 6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */; };
+		E35E372B80EE11DC8A2B3F50 /* PeriodFinance.swift */ = {isa = PBXBuildFile; fileRef = AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */; };
 		0A7356272CBC8BF2537671E2 /* RPMCalculator.swift */ = {isa = PBXBuildFile; fileRef = 9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */; };
 		F92A9B93B1F2569FB6D14527 /* TruckingWeek.swift */ = {isa = PBXBuildFile; fileRef = 67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */; };
 		FC7DF8FB308D1DD6AFF99907 /* WeekLabelFormatter.swift */ = {isa = PBXBuildFile; fileRef = AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */; };
 		ED81EE88286EEE65242D4AB8 /* WeeklyGoalCalculator.swift */ = {isa = PBXBuildFile; fileRef = F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */; };
+		77FA4A07E4FA5335C741E657 /* WidgetDeepLink.swift */ = {isa = PBXBuildFile; fileRef = 3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */; };
 		10F1283FDF7EE4D9013A29CE /* LoadDraft.swift */ = {isa = PBXBuildFile; fileRef = 30B94C7FDC74DC5A2A2CFE7D /* LoadDraft.swift */; };
+		2C7BC1D892E1747B205686D8 /* LoadSourceTag.swift */ = {isa = PBXBuildFile; fileRef = 9520FDF943FC41E820312901 /* LoadSourceTag.swift */; };
 		D0E45A298FC58BE5CA083A6B /* LoadSummary.swift */ = {isa = PBXBuildFile; fileRef = 053D099DE9105A4A9727FB26 /* LoadSummary.swift */; };
 		32D0D1E6A83193C67D46DD25 /* ParsedLoad.swift */ = {isa = PBXBuildFile; fileRef = A692320A0BAA5D107F76BACB /* ParsedLoad.swift */; };
 		C3231021C9E54A687A5B681C /* RPMBand.swift */ = {isa = PBXBuildFile; fileRef = 889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */; };
@@ -72,6 +75,7 @@
 		B274EC2B15E1E099B71F490F /* TripID.swift */ = {isa = PBXBuildFile; fileRef = B57841BC97544FDC98FCAFC5 /* TripID.swift */; };
 		394955B721A75F786D36202F /* USStates.swift */ = {isa = PBXBuildFile; fileRef = 2A6E7DBCA866340C9F2A6C0C /* USStates.swift */; };
 		3C5066B1955F354C41E32FFF /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
+		2B622C76080980852957735F /* WidgetGoalSnapshot.swift */ = {isa = PBXBuildFile; fileRef = EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */; };
 		750F30C12B791B73B6DC0324 /* AddressParser.swift */ = {isa = PBXBuildFile; fileRef = 182585A026C2B15E60AC4276 /* AddressParser.swift */; };
 		72169DFBA3460A7BBBA71BDF /* AmazonRelayParser.swift */ = {isa = PBXBuildFile; fileRef = 752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */; };
 		AEA065BA0C226C76AF27282C /* CSVExportParser.swift */ = {isa = PBXBuildFile; fileRef = 002DEF18EE84F28AFD0D3969 /* CSVExportParser.swift */; };
@@ -95,6 +99,7 @@
 		56DB352F717E2E09929CA791 /* DieselListView.swift */ = {isa = PBXBuildFile; fileRef = 625D1A69ED784DF7D793921A /* DieselListView.swift */; };
 		8E86BFD10D7C81E7301E8A95 /* EditLoadView.swift */ = {isa = PBXBuildFile; fileRef = 8A5377D6FCE1123C3B6A120C /* EditLoadView.swift */; };
 		5908A52DC9B6BA2639CB60A7 /* GalleryView.swift */ = {isa = PBXBuildFile; fileRef = 616261D554818A6FF5F0FA41 /* GalleryView.swift */; };
+		3AA006D26660199C7075BF0A /* JournalChrome.swift */ = {isa = PBXBuildFile; fileRef = 9E28253701629A526101F1B3 /* JournalChrome.swift */; };
 		723E3ABDFD57587A3ABA0FE6 /* JournalView.swift */ = {isa = PBXBuildFile; fileRef = 4F73830F4A051B167E884420 /* JournalView.swift */; };
 		1072A860C7F70F223C7F30AB /* JournalViewModel.swift */ = {isa = PBXBuildFile; fileRef = C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */; };
 		0102AD36EA83617733301F90 /* LoadRowView.swift */ = {isa = PBXBuildFile; fileRef = D717AEF67461754094A98129 /* LoadRowView.swift */; };
@@ -111,6 +116,7 @@
 		C1AFBE27692193C5FEF14A69 /* SettingsView.swift */ = {isa = PBXBuildFile; fileRef = B569DDAA030C4217F07077AF /* SettingsView.swift */; };
 		A6928436493C45AAF99A2C86 /* WeeklyGoalView.swift */ = {isa = PBXBuildFile; fileRef = 46C8B2AA6DFB2A4E36FB5CC5 /* WeeklyGoalView.swift */; };
 		0CF3069F3E4D30BC255B0EDC /* WeeklyGoalViewModel.swift */ = {isa = PBXBuildFile; fileRef = 97B5DAA946E65BA5AF521C8C /* WeeklyGoalViewModel.swift */; };
+		50837DBC0CE305ED0C2549CE /* WeeklyGoalWidgetView.swift */ = {isa = PBXBuildFile; fileRef = 524C870A8264FB24502BC989 /* WeeklyGoalWidgetView.swift */; };
 		A5E8BA31A303BF2C083338F2 /* Bindings.swift */ = {isa = PBXBuildFile; fileRef = 810ABF68C96DF0850D97653E /* Bindings.swift */; };
 		A7684195C62FF2176A91D321 /* DomainMessages.swift */ = {isa = PBXBuildFile; fileRef = D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */; };
 		FA9CFDDEFD0021546674E465 /* LoadingOverlay.swift */ = {isa = PBXBuildFile; fileRef = B7B65CBC5155685614404CE2 /* LoadingOverlay.swift */; };
@@ -134,8 +140,11 @@
 		B09A11DCCAA65343309DB25D /* Fonts.swift */ = {isa = PBXBuildFile; fileRef = BC00B1ADC48FDBA1CE40DB3B /* Fonts.swift */; };
 		FCC2DC6ECDE27BF5317B50A1 /* PaceStatusPresentation.swift */ = {isa = PBXBuildFile; fileRef = 39A32B96B4DB8F339496A559 /* PaceStatusPresentation.swift */; };
 		1055F1E229C6F4E59AC89121 /* StringUtils.swift */ = {isa = PBXBuildFile; fileRef = C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */; };
+		598FE9C7AB2A3D99CAC606D3 /* WidgetDeepLink.swift */ = {isa = PBXBuildFile; fileRef = 3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */; };
 		F1F19CEEDC02C02E3D379573 /* RPMBand.swift */ = {isa = PBXBuildFile; fileRef = 889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */; };
 		B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
+		5D875C6DBAA11918AC1FFA99 /* WidgetGoalSnapshot.swift */ = {isa = PBXBuildFile; fileRef = EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */; };
+		6AE33D0C5FDC3718A2913E73 /* WeeklyGoalWidgetView.swift */ = {isa = PBXBuildFile; fileRef = 524C870A8264FB24502BC989 /* WeeklyGoalWidgetView.swift */; };
 		20CED632B344F7FD0AC29D72 /* Localizable.xcstrings */ = {isa = PBXBuildFile; fileRef = 1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */; };
 		35C174882C15655AD79B9FF7 /* DMSans-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */; };
 		7590E569BD23EDF5E995EACD /* DMSans-Medium.ttf */ = {isa = PBXBuildFile; fileRef = 026B0667ACA09C7D306CF27E /* DMSans-Medium.ttf */; };
@@ -147,6 +156,7 @@
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
 		2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = 7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */; };
 		43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */ = {isa = PBXBuildFile; fileRef = F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */; };
+		8C92BA158F040C1659892D89 /* WidgetLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */; };
 		109E7A66906193EF84584997 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 1B12FA89457B475550D08A7A /* GRDB */; };
 		ADD14D21F915C76FF9FEE31E /* TruckoRigWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -234,11 +244,14 @@
 		2875D2376898F097057DD656 /* AnalyticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCalculator.swift"; sourceTree = "<group>"; };
 		9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoalMoneyMath.swift"; sourceTree = "<group>"; };
 		6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadYieldCalculator.swift"; sourceTree = "<group>"; };
+		AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodFinance.swift"; sourceTree = "<group>"; };
 		9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RPMCalculator.swift"; sourceTree = "<group>"; };
 		67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckingWeek.swift"; sourceTree = "<group>"; };
 		AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekLabelFormatter.swift"; sourceTree = "<group>"; };
 		F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalCalculator.swift"; sourceTree = "<group>"; };
+		3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetDeepLink.swift"; sourceTree = "<group>"; };
 		30B94C7FDC74DC5A2A2CFE7D /* LoadDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDraft.swift"; sourceTree = "<group>"; };
+		9520FDF943FC41E820312901 /* LoadSourceTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadSourceTag.swift"; sourceTree = "<group>"; };
 		053D099DE9105A4A9727FB26 /* LoadSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadSummary.swift"; sourceTree = "<group>"; };
 		A692320A0BAA5D107F76BACB /* ParsedLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ParsedLoad.swift"; sourceTree = "<group>"; };
 		889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RPMBand.swift"; sourceTree = "<group>"; };
@@ -247,6 +260,7 @@
 		B57841BC97544FDC98FCAFC5 /* TripID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TripID.swift"; sourceTree = "<group>"; };
 		2A6E7DBCA866340C9F2A6C0C /* USStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "USStates.swift"; sourceTree = "<group>"; };
 		FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalProgress.swift"; sourceTree = "<group>"; };
+		EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetGoalSnapshot.swift"; sourceTree = "<group>"; };
 		182585A026C2B15E60AC4276 /* AddressParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressParser.swift"; sourceTree = "<group>"; };
 		752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AmazonRelayParser.swift"; sourceTree = "<group>"; };
 		002DEF18EE84F28AFD0D3969 /* CSVExportParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CSVExportParser.swift"; sourceTree = "<group>"; };
@@ -270,6 +284,7 @@
 		625D1A69ED784DF7D793921A /* DieselListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DieselListView.swift"; sourceTree = "<group>"; };
 		8A5377D6FCE1123C3B6A120C /* EditLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditLoadView.swift"; sourceTree = "<group>"; };
 		616261D554818A6FF5F0FA41 /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GalleryView.swift"; sourceTree = "<group>"; };
+		9E28253701629A526101F1B3 /* JournalChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalChrome.swift"; sourceTree = "<group>"; };
 		4F73830F4A051B167E884420 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalView.swift"; sourceTree = "<group>"; };
 		C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalViewModel.swift"; sourceTree = "<group>"; };
 		D717AEF67461754094A98129 /* LoadRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadRowView.swift"; sourceTree = "<group>"; };
@@ -286,6 +301,7 @@
 		B569DDAA030C4217F07077AF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsView.swift"; sourceTree = "<group>"; };
 		46C8B2AA6DFB2A4E36FB5CC5 /* WeeklyGoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalView.swift"; sourceTree = "<group>"; };
 		97B5DAA946E65BA5AF521C8C /* WeeklyGoalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalViewModel.swift"; sourceTree = "<group>"; };
+		524C870A8264FB24502BC989 /* WeeklyGoalWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalWidgetView.swift"; sourceTree = "<group>"; };
 		25F3017AC1E5A8997BE4CC9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
 		749CAFB3AEC0260BCB4DD702 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "README.md"; sourceTree = "<group>"; };
 		18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSans-Bold.ttf"; sourceTree = "<group>"; };
@@ -311,6 +327,7 @@
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
 		7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallLayoutTests.swift"; sourceTree = "<group>"; };
 		F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderControllerTests.swift"; sourceTree = "<group>"; };
+		C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetLayoutTests.swift"; sourceTree = "<group>"; };
 		3D08B4495962CCBD862A7377 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		2B7BAA61007F68480C7DE32B /* TruckoRigWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRigWidget.entitlements"; sourceTree = "<group>"; };
 		64E195444487F70935880DE1 /* TruckoRigWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckoRigWidgetBundle.swift"; sourceTree = "<group>"; };
@@ -485,6 +502,7 @@
 			isa = PBXGroup;
 			children = (
 				86339DB7995642FDF6BCE161 /* Calculators */,
+				28213617981289BC4EE70056 /* DeepLink */,
 				E9AFEDA3544FB266955C1976 /* Models */,
 				CAFE8EED3C3F427590492A24 /* Parsers */,
 				D1F7A1FD11835D852F9F8DEE /* Premium */,
@@ -498,6 +516,7 @@
 				2875D2376898F097057DD656 /* AnalyticsCalculator.swift */,
 				9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */,
 				6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */,
+				AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */,
 				9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */,
 				67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */,
 				AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */,
@@ -506,10 +525,19 @@
 			path = "Calculators";
 			sourceTree = "<group>";
 		};
+		28213617981289BC4EE70056 /* DeepLink */ = {
+			isa = PBXGroup;
+			children = (
+				3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */,
+			);
+			path = "DeepLink";
+			sourceTree = "<group>";
+		};
 		E9AFEDA3544FB266955C1976 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				30B94C7FDC74DC5A2A2CFE7D /* LoadDraft.swift */,
+				9520FDF943FC41E820312901 /* LoadSourceTag.swift */,
 				053D099DE9105A4A9727FB26 /* LoadSummary.swift */,
 				A692320A0BAA5D107F76BACB /* ParsedLoad.swift */,
 				889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */,
@@ -518,6 +546,7 @@
 				B57841BC97544FDC98FCAFC5 /* TripID.swift */,
 				2A6E7DBCA866340C9F2A6C0C /* USStates.swift */,
 				FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */,
+				EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */,
 			);
 			path = "Models";
 			sourceTree = "<group>";
@@ -568,6 +597,7 @@
 				0EB81F22256FB307ED161F23 /* Scanner */,
 				6BDE0CF79E8A192A3E6B8639 /* Settings */,
 				7334E852395B18F68E9CF412 /* WeeklyGoal */,
+				6FCE891CD0CF492A42C2E13A /* Widget */,
 			);
 			path = "Features";
 			sourceTree = "<group>";
@@ -627,6 +657,7 @@
 		18F5A7C422BD9BEDCC5A07BE /* Journal */ = {
 			isa = PBXGroup;
 			children = (
+				9E28253701629A526101F1B3 /* JournalChrome.swift */,
 				4F73830F4A051B167E884420 /* JournalView.swift */,
 				C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */,
 				D717AEF67461754094A98129 /* LoadRowView.swift */,
@@ -710,6 +741,14 @@
 			path = "WeeklyGoal";
 			sourceTree = "<group>";
 		};
+		6FCE891CD0CF492A42C2E13A /* Widget */ = {
+			isa = PBXGroup;
+			children = (
+				524C870A8264FB24502BC989 /* WeeklyGoalWidgetView.swift */,
+			);
+			path = "Widget";
+			sourceTree = "<group>";
+		};
 		1F9A4924C01BA82F5CAF4C7D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -776,6 +815,7 @@
 				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
 				7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */,
 				F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */,
+				C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */,
 			);
 			path = "TruckoRigTests";
 			sourceTree = "<group>";
@@ -994,11 +1034,14 @@
 				CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */,
 				A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */,
 				B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */,
+				E35E372B80EE11DC8A2B3F50 /* PeriodFinance.swift */,
 				0A7356272CBC8BF2537671E2 /* RPMCalculator.swift */,
 				F92A9B93B1F2569FB6D14527 /* TruckingWeek.swift */,
 				FC7DF8FB308D1DD6AFF99907 /* WeekLabelFormatter.swift */,
 				ED81EE88286EEE65242D4AB8 /* WeeklyGoalCalculator.swift */,
+				77FA4A07E4FA5335C741E657 /* WidgetDeepLink.swift */,
 				10F1283FDF7EE4D9013A29CE /* LoadDraft.swift */,
+				2C7BC1D892E1747B205686D8 /* LoadSourceTag.swift */,
 				D0E45A298FC58BE5CA083A6B /* LoadSummary.swift */,
 				32D0D1E6A83193C67D46DD25 /* ParsedLoad.swift */,
 				C3231021C9E54A687A5B681C /* RPMBand.swift */,
@@ -1007,6 +1050,7 @@
 				B274EC2B15E1E099B71F490F /* TripID.swift */,
 				394955B721A75F786D36202F /* USStates.swift */,
 				3C5066B1955F354C41E32FFF /* WeeklyGoalProgress.swift */,
+				2B622C76080980852957735F /* WidgetGoalSnapshot.swift */,
 				750F30C12B791B73B6DC0324 /* AddressParser.swift */,
 				72169DFBA3460A7BBBA71BDF /* AmazonRelayParser.swift */,
 				AEA065BA0C226C76AF27282C /* CSVExportParser.swift */,
@@ -1030,6 +1074,7 @@
 				56DB352F717E2E09929CA791 /* DieselListView.swift */,
 				8E86BFD10D7C81E7301E8A95 /* EditLoadView.swift */,
 				5908A52DC9B6BA2639CB60A7 /* GalleryView.swift */,
+				3AA006D26660199C7075BF0A /* JournalChrome.swift */,
 				723E3ABDFD57587A3ABA0FE6 /* JournalView.swift */,
 				1072A860C7F70F223C7F30AB /* JournalViewModel.swift */,
 				0102AD36EA83617733301F90 /* LoadRowView.swift */,
@@ -1046,6 +1091,7 @@
 				C1AFBE27692193C5FEF14A69 /* SettingsView.swift */,
 				A6928436493C45AAF99A2C86 /* WeeklyGoalView.swift */,
 				0CF3069F3E4D30BC255B0EDC /* WeeklyGoalViewModel.swift */,
+				50837DBC0CE305ED0C2549CE /* WeeklyGoalWidgetView.swift */,
 				A5E8BA31A303BF2C083338F2 /* Bindings.swift */,
 				A7684195C62FF2176A91D321 /* DomainMessages.swift */,
 				FA9CFDDEFD0021546674E465 /* LoadingOverlay.swift */,
@@ -1067,8 +1113,11 @@
 				B09A11DCCAA65343309DB25D /* Fonts.swift */,
 				FCC2DC6ECDE27BF5317B50A1 /* PaceStatusPresentation.swift */,
 				1055F1E229C6F4E59AC89121 /* StringUtils.swift */,
+				598FE9C7AB2A3D99CAC606D3 /* WidgetDeepLink.swift */,
 				F1F19CEEDC02C02E3D379573 /* RPMBand.swift */,
 				B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */,
+				5D875C6DBAA11918AC1FFA99 /* WidgetGoalSnapshot.swift */,
+				6AE33D0C5FDC3718A2913E73 /* WeeklyGoalWidgetView.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1079,6 +1128,7 @@
 				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
 				2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */,
 				43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */,
+				8C92BA158F040C1659892D89 /* WidgetLayoutTests.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1200,7 +1250,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TruckoRigWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig Goal";
+				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.5.7;
@@ -1221,7 +1271,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TruckoRigWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig Goal";
+				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MARKETING_VERSION = 1.5.7;

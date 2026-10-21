@@ -43,8 +43,11 @@ WIDGET_SHARED_SOURCES = [
     "TruckoRig/Core/Theme/Fonts.swift",
     "TruckoRig/Core/Theme/PaceStatusPresentation.swift",
     "TruckoRig/Core/Utils/StringUtils.swift",
+    "TruckoRig/Domain/DeepLink/WidgetDeepLink.swift",
     "TruckoRig/Domain/Models/RPMBand.swift",
     "TruckoRig/Domain/Models/WeeklyGoalProgress.swift",
+    "TruckoRig/Domain/Models/WidgetGoalSnapshot.swift",
+    "TruckoRig/Features/Widget/WeeklyGoalWidgetView.swift",
 ]
 
 # Files that live in the source tree but must not be copied into the bundle.
@@ -570,7 +573,7 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "ENABLE_PREVIEWS": "YES",
             "GENERATE_INFOPLIST_FILE": "YES",
             "INFOPLIST_FILE": f"{WIDGET_DIR}/Info.plist",
-            "INFOPLIST_KEY_CFBundleDisplayName": '"TruckoRig Goal"',
+            "INFOPLIST_KEY_CFBundleDisplayName": '"TruckoRig"',
             "INFOPLIST_KEY_NSHumanReadableCopyright": '""',
             "LD_RUNPATH_SEARCH_PATHS": '"$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"',
             "MARKETING_VERSION": MARKETING_VERSION,
