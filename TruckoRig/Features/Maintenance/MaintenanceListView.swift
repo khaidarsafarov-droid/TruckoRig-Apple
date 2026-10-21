@@ -340,7 +340,7 @@ struct MaintenanceListView: View {
         }
         Task {
             let recognition = await OCRService.recognizeText(in: saved)
-            let parsed = ServiceReceiptParser.parse(recognition?.text ?? "")
+            let parsed = ServiceReceiptParser.parse(recognition?.text ?? "", defaultDate: todayISO)
             archiveSeed = MaintenanceArchiveDraft(
                 serviceName: parsed.serviceName ?? "",
                 serviceDate: parsed.date ?? todayISO,
@@ -397,6 +397,6 @@ private func dateStatus(_ item: MaintenanceProgress) -> String {
     return String(localized: "maintenance.days.left \(days)")
 }
 
-private func linesTotal(_ amount: Double) -> String {
+func linesTotal(_ amount: Double) -> String {
     String(localized: "maintenance.lines.total \(USMoneyFormat.number(amount, fractionDigits: 2))")
 }
