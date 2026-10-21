@@ -1,159 +1,293 @@
 import Charts
 import SwiftUI
 
-/// Gross over time, best states and best lanes.
+/// «Мои цифры»: paycheck and diesel side by side, then routes, weekdays and the weekly line.
 struct AnalyticsView: View {
 
-    @Environment(AppState.self) private var appState
+    var showsBackButton: Bool = true
 
-    private var loads: [Load] { appState.catalog.loads }
+    @Environment(AppState.self) private var appState
+    @Environment(\.dismiss) private var dismiss
+
     @State private var viewModel = AnalyticsViewModel()
 
-    private var calendar: TruckingWeek { appState.settings.truckingWeek }
+    private var page: AnalyticsPage {
+        viewModel.page(
+            loads: appState.catalog.loads,
+            paychecks: appState.catalog.paychecks,
+            diesel: appState.catalog.diesel,
+            calendar: appState.settings.truckingWeek
+        )
+    }
 
     var body: some View {
-        @Bindable var model = viewModel
-
         ScrollView {
-            LazyVStack(spacing: Spacing.section) {
-                Picker("analytics.range", selection: $model.range) {
-                    ForEach(AnalyticsViewModel.Range.allCases) { range in
-                        Text(range.title).tag(range)
-                    }
-                }
-                .pickerStyle(.segmented)
-
-                totalsCard
-                grossChartCard
-                statesCard
+            VStack(alignment: .leading, spacing: 16) {
+                header
+                financeCard
                 routesCard
+                dailyCard
+                weeklyCard
             }
-            .padding(Spacing.standard)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 24)
         }
         .forestBackground()
-        .navigationTitle("screen.analytics")
+        .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
     }
 
-    private var totalsCard: some View {
-        let totals = viewModel.totals(from: loads, calendar: calendar)
-        return SoftCard {
-            HStack {
-                StatTile(title: "stat.gross", value: Formatters.money(totals.totalRate))
-                StatTile(title: "stat.miles", value: Formatters.miles(totals.totalMiles))
-                StatTile(
-                    title: "stat.rpm",
-                    value: Formatters.ratePerMile(totals.ratePerMile),
-                    tint: RPMCalculator.band(for: totals.ratePerMile, thresholds: appState.settings.rpmThresholds).tint
-                )
-                StatTile(title: "stat.loads", value: "\(totals.loadCount)")
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .center, spacing: 8) {
+                if showsBackButton {
+                    Button { dismiss() } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(Color.heroText)
+                            .frame(width: 36, height: 36)
+                    }
+                    .accessibilityLabel("action.back")
+                }
+                Text("screen.analytics")
+                    .font(.appLargeTitle)
+                    .foregroundStyle(Color.heroText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
+            Text("analytics.subtitle")
+                .font(.appCallout)
+                .foregroundStyle(Color.heroTextMuted)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(HeroGradient())
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .padding(.top, 8)
     }
 
-    private var grossChartCard: some View {
-        let series = viewModel.weeklySeries(from: loads, calendar: calendar)
-        return SoftCard {
-            SectionHeader(title: "analytics.grossByWeek")
-            if series.allSatisfy({ $0.gross == 0 }) {
-                Text("analytics.empty")
+    private var financeCard: some View {
+        let finance = page.finance
+        return card {
+            Text("analytics.finance.title")
+                .font(.appHeadline)
+                .foregroundStyle(Color.forestText)
+            if !finance.hasData {
+                Text("analytics.finance.empty")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             } else {
-                Chart {
-                    ForEach(series) { point in
-                        BarMark(
-                            x: .value(String(localized: "analytics.axis.week"), "W\(point.week.weekNumber)"),
-                            y: .value(String(localized: "stat.gross"), point.gross)
-                        )
-                        .foregroundStyle(Color.forestPrimary)
-                        .cornerRadius(4)
-                    }
-                    if appState.settings.weeklyGoal > 0 {
-                        RuleMark(y: .value(String(localized: "goal.target"), appState.settings.weeklyGoal))
-                            .foregroundStyle(Color.forestAccent)
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                    }
-                }
-                .chartYAxis {
-                    AxisMarks { value in
-                        AxisGridLine()
-                        AxisValueLabel {
-                            if let amount = value.as(Double.self) {
-                                Text(Formatters.money(amount))
-                            }
-                        }
-                    }
-                }
-                .frame(height: 200)
-                .accessibilityLabel("analytics.grossByWeek")
-            }
-        }
-    }
-
-    private var statesCard: some View {
-        let states = viewModel.stateRevenue(from: loads, calendar: calendar).prefix(8)
-        return SoftCard {
-            SectionHeader(title: "analytics.byState")
-            if states.isEmpty {
-                Text("analytics.empty")
-                    .font(.appCaption)
-                    .foregroundStyle(Color.forestTextSecondary)
-            } else {
-                Chart(Array(states)) { entry in
-                    BarMark(
-                        x: .value(String(localized: "stat.gross"), entry.gross),
-                        y: .value(String(localized: "analytics.axis.state"), entry.state)
+                HStack(alignment: .top, spacing: 12) {
+                    financeHeadline(
+                        USMoneyFormat.currency(finance.paycheckTotal),
+                        "analytics.finance.paycheck",
+                        Color.widgetIndigo
                     )
-                    .foregroundStyle(RPMCalculator.band(for: entry.ratePerMile, thresholds: appState.settings.rpmThresholds).tint)
-                    .cornerRadius(4)
+                    financeHeadline(
+                        USMoneyFormat.currency(finance.dieselTotal),
+                        "analytics.finance.diesel",
+                        Color.forestError
+                    )
                 }
-                .chartXAxis {
-                    AxisMarks { value in
-                        AxisGridLine()
-                        AxisValueLabel {
-                            if let amount = value.as(Double.self) {
-                                Text(Formatters.money(amount))
-                            }
-                        }
+                if finance.dieselGallons > 0 {
+                    HStack(alignment: .top, spacing: 12) {
+                        financeStat(
+                            USMoneyFormat.number(finance.dieselGallons),
+                            "analytics.finance.gallons"
+                        )
+                        financeStat(
+                            finance.avgPricePerGallon.map { USMoneyFormat.rpm($0) } ?? "—",
+                            "analytics.finance.price"
+                        )
                     }
                 }
-                .frame(height: CGFloat(states.count) * 28 + 20)
-
-                NavigationLink {
-                    StateHeatmapView()
-                } label: {
-                    Label("analytics.openHeatmap", systemImage: "map")
-                        .font(.appCaptionMedium)
+                if finance.dieselSavings > 0 {
+                    Text(String(localized: "analytics.finance.savings \(USMoneyFormat.currency(finance.dieselSavings))"))
+                        .font(.appBody)
+                        .foregroundStyle(Color.forestSuccess)
                 }
             }
         }
     }
 
     private var routesCard: some View {
-        let routes = viewModel.topRoutes(from: loads, calendar: calendar)
-        return SoftCard {
-            SectionHeader(title: "analytics.topRoutes")
-            if routes.isEmpty {
+        card {
+            Text("analytics.topRoutes")
+                .font(.appHeadline)
+                .foregroundStyle(Color.forestText)
+            if page.routes.isEmpty {
                 Text("analytics.empty")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             } else {
-                ForEach(routes) { route in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(route.label)
-                                .font(.appBody)
-                            Text("analytics.route.detail \(route.loadCount) \(Formatters.ratePerMile(route.ratePerMile))")
-                                .font(.appCaption)
-                                .foregroundStyle(Color.forestTextSecondary)
-                        }
-                        Spacer()
-                        Text(Formatters.money(route.gross))
-                            .font(.appCaptionMedium)
+                ForEach(page.routes) { route in
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(route.label)
+                            .font(.appBodyMedium)
+                            .foregroundStyle(Color.forestText)
+                            .lineLimit(2)
+                        Text(routeDetail(route))
+                            .font(.appCaption)
+                            .foregroundStyle(Color.forestTextSecondary)
                     }
-                    .accessibilityElement(children: .combine)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 6)
                 }
             }
         }
+    }
+
+    private var dailyCard: some View {
+        let maxGross = page.daily.map(\.gross).max() ?? 0
+        return card {
+            Text("analytics.daily")
+                .font(.appHeadline)
+                .foregroundStyle(Color.forestText)
+            if maxGross <= 0 {
+                Text("analytics.empty")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
+            } else {
+                ForEach(page.daily) { day in
+                    HStack(spacing: 8) {
+                        Text(day.label)
+                            .font(.appCaptionMedium)
+                            .foregroundStyle(Color.forestTextSecondary)
+                            .frame(width: 32, alignment: .leading)
+                        GeometryReader { geo in
+                            let fraction = maxGross > 0 ? day.gross / maxGross : 0
+                            ZStack(alignment: .leading) {
+                                Capsule().fill(Color.forestSurfaceMuted)
+                                if day.gross > 0 {
+                                    Capsule()
+                                        .fill(
+                                            LinearGradient(
+                                                colors: [Color.widgetIndigo, Color.widgetIndigo.opacity(0.45)],
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
+                                        )
+                                        .frame(width: max(8, geo.size.width * fraction))
+                                }
+                            }
+                        }
+                        .frame(height: 18)
+                        Text(USMoneyFormat.currency(day.gross))
+                            .font(.appCaption)
+                            .foregroundStyle(Color.forestText)
+                            .frame(width: 72, alignment: .trailing)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
+                }
+            }
+        }
+    }
+
+    private var weeklyCard: some View {
+        let weeks = page.weeks
+        return card {
+            Text("analytics.grossByWeek")
+                .font(.appHeadline)
+                .foregroundStyle(Color.forestText)
+            if weeks.allSatisfy({ $0.gross == 0 }) {
+                Text("analytics.empty")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
+            } else {
+                Chart(Array(weeks.enumerated()), id: \.offset) { item in
+                    let point = item.element
+                    AreaMark(
+                        x: .value("week", item.offset),
+                        y: .value("gross", point.gross)
+                    )
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [Color.widgetIndigo.opacity(0.28), Color.widgetIndigo.opacity(0.02)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    LineMark(
+                        x: .value("week", item.offset),
+                        y: .value("gross", point.gross)
+                    )
+                    .foregroundStyle(Color.widgetIndigo)
+                    .lineStyle(StrokeStyle(lineWidth: 2))
+                    PointMark(
+                        x: .value("week", item.offset),
+                        y: .value("gross", point.gross)
+                    )
+                    .foregroundStyle(Color.widgetIndigo)
+                    .symbolSize(24)
+                }
+                .chartXAxis {
+                    AxisMarks(values: Array(weeks.indices)) { value in
+                        AxisValueLabel {
+                            if let index = value.as(Int.self), weeks.indices.contains(index) {
+                                Text("W\(weeks[index].week.weekNumber)")
+                                    .font(.appCaption)
+                            }
+                        }
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading) { value in
+                        AxisGridLine()
+                        AxisValueLabel {
+                            if let amount = value.as(Double.self) {
+                                Text(USMoneyFormat.currency(amount))
+                                    .font(.appCaption)
+                            }
+                        }
+                    }
+                }
+                .frame(height: 220)
+                .accessibilityLabel("analytics.grossByWeek")
+            }
+        }
+    }
+
+    private func routeDetail(_ route: RouteStat) -> String {
+        let gross = USMoneyFormat.currency(route.gross)
+        let miles = USMoneyFormat.miles(route.miles)
+        let rpm = route.miles > 0 ? USMoneyFormat.rpmPerMile(route.ratePerMile) : "—"
+        return "\(gross) · \(miles) · \(rpm)"
+    }
+
+    private func financeHeadline(_ value: String, _ title: LocalizedStringKey, _ color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value)
+                .font(.appNumberLarge)
+                .foregroundStyle(color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+            Text(title)
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func financeStat(_ value: String, _ title: LocalizedStringKey) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value)
+                .font(.appHeadline)
+                .foregroundStyle(Color.forestText)
+            Text(title)
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func card<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            content()
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.forestCard, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }

@@ -41,5 +41,17 @@
 
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.truckorig</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>truckorig</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

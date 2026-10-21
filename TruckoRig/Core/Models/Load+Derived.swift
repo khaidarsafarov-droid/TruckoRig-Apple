@@ -41,7 +41,9 @@ extension Load {
             isDispute: isDispute,
             disputeCompleted: disputeCompleted,
             originState: pickups.first?.state ?? "",
-            destinationState: deliveries.last?.state ?? ""
+            destinationState: deliveries.last?.state ?? "",
+            originLabel: pointA ?? pickups.first?.cityState ?? "",
+            destinationLabel: pointB ?? deliveries.last?.cityState ?? ""
         )
     }
 

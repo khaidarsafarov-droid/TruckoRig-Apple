@@ -19,6 +19,9 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
     public var disputeCompleted: Bool
     public var originState: String
     public var destinationState: String
+    /// `"City, ST"` when the journal has it. Empty falls back to the state code.
+    public var originLabel: String
+    public var destinationLabel: String
 
     public init(
         id: UUID = UUID(),
@@ -33,7 +36,9 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
         isDispute: Bool = false,
         disputeCompleted: Bool = false,
         originState: String = "",
-        destinationState: String = ""
+        destinationState: String = "",
+        originLabel: String = "",
+        destinationLabel: String = ""
     ) {
         self.id = id
         self.tripId = tripId
@@ -48,7 +53,12 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
         self.disputeCompleted = disputeCompleted
         self.originState = originState
         self.destinationState = destinationState
+        self.originLabel = originLabel
+        self.destinationLabel = destinationLabel
     }
+
+    /// Date the analytics charts file the load under.
+    public var chartDate: Date? { firstPickupAt ?? lastDeliveryAt ?? actualFinishAt }
 
     public var isActiveDispute: Bool { isDispute && !disputeCompleted }
     /// Gross after penalties, never negative.

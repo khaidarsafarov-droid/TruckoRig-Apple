@@ -25,6 +25,70 @@ struct RootView: View {
             PremiumFirstRunOffer()
                 .environment(appState)
         }
+        .onOpenURL { url in
+            appState.open(url)
+        }
+        .onChange(of: appState.settings.language) { _, _ in
+            appState.publishWidgetSnapshot()
+        }
+        .onChange(of: appState.settings.weekStart) { _, _ in
+            appState.publishWidgetSnapshot()
+        }
+        .fullScreenCover(item: presentation) { route in
+            WidgetPresentationCover(route: route)
+                .environment(appState)
+        }
+    }
+
+    private var presentation: Binding<WidgetPresentation?> {
+        Binding(
+            get: { appState.pendingPresentation },
+            set: { appState.pendingPresentation = $0 }
+        )
+    }
+}
+
+/// What a `truckorig://` link presents on top of the tabs.
+enum WidgetPresentation: String, Identifiable {
+    case camera
+    case scanner
+    case addDiesel
+    case addLoad
+    case analytics
+
+    var id: String { rawValue }
+}
+
+private struct WidgetPresentationCover: View {
+    let route: WidgetPresentation
+
+    @Environment(AppState.self) private var appState
+
+    var body: some View {
+        switch route {
+        case .camera:
+            NavigationStack {
+                CameraView()
+                    .toolbar { cancel }
+            }
+        case .scanner:
+            NavigationStack {
+                ScannerView()
+                    .toolbar { cancel }
+            }
+        case .addDiesel:
+            DieselEditorView(fill: nil)
+        case .addLoad:
+            AddLoadView()
+        case .analytics:
+            AnalyticsView()
+        }
+    }
+
+    private var cancel: some ToolbarContent {
+        ToolbarItem(placement: .cancellationAction) {
+            Button("action.cancel") { appState.pendingPresentation = nil }
+        }
     }
 }
 
@@ -124,7 +188,7 @@ struct SidebarView: View {
         switch item {
         case .journal: JournalView()
         case .goal: WeeklyGoalView()
-        case .analytics: AnalyticsView()
+        case .analytics: AnalyticsView(showsBackButton: false)
         case .paycheck: PaycheckListView()
         case .diesel: DieselListView()
         case .maintenance: MaintenanceListView()

@@ -23,6 +23,16 @@ public struct StateRevenue: Identifiable, Equatable, Sendable {
     public var ratePerMile: Double { RPMCalculator.ratePerMile(rate: gross, miles: miles) }
 }
 
+/// One weekday column on the "which days pay more" chart.
+public struct WeekdayGross: Identifiable, Equatable, Sendable {
+    public let weekday: Int
+    public let label: String
+    public let gross: Double
+    public let loadCount: Int
+
+    public var id: Int { weekday }
+}
+
 /// A lane the driver runs repeatedly.
 public struct RouteStat: Identifiable, Equatable, Sendable {
     public let origin: String
@@ -93,12 +103,14 @@ public enum AnalyticsCalculator {
     }
 
     /// Most-run lanes, highest gross first.
+    ///
+    /// City labels win over bare state codes, matching Android `RouteDisplayHelper`.
     public static func topRoutes(loads: [LoadSummary], limit: Int = 10) -> [RouteStat] {
         var buckets: [String: (origin: String, destination: String, gross: Double, miles: Double, count: Int)] = [:]
         for load in loads {
-            let origin = load.originState
-            let destination = load.destinationState
-            guard !origin.isEmpty || !destination.isEmpty else { continue }
+            let origin = load.originLabel.isEmpty ? load.originState : load.originLabel
+            let destination = load.destinationLabel.isEmpty ? load.destinationState : load.destinationLabel
+            guard !origin.isEmpty, !destination.isEmpty else { continue }
             let key = "\(origin)→\(destination)"
             var bucket = buckets[key] ?? (origin, destination, 0, 0, 0)
             bucket.gross += load.totalRate
@@ -119,6 +131,36 @@ public enum AnalyticsCalculator {
             .sorted { ($0.gross, $0.loadCount) > ($1.gross, $1.loadCount) }
             .prefix(limit)
             .map { $0 }
+    }
+
+    /// English weekday abbreviations, Sunday = index 0. Android hard-codes the same labels.
+    public static let weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+    /// Gross by weekday for the reporting week, rotated to the configured week start.
+    public static func dailyDistribution(
+        loads: [LoadSummary],
+        calendar: TruckingWeek = TruckingWeek()
+    ) -> [WeekdayGross] {
+        var gross = Array(repeating: 0.0, count: 7)
+        var counts = Array(repeating: 0, count: 7)
+        for load in loads {
+            guard let date = load.chartDate else { continue }
+            let weekday = calendar.calendar.component(.weekday, from: date)
+            let index = weekday - 1
+            guard index >= 0, index < 7 else { continue }
+            gross[index] += load.totalRate
+            counts[index] += 1
+        }
+        let start = calendar.weekStart.calendarWeekday - 1
+        return (0..<7).map { offset in
+            let index = (start + offset) % 7
+            return WeekdayGross(
+                weekday: index + 1,
+                label: weekdayLabels[index],
+                gross: GoalMoneyMath.roundMoney(gross[index]),
+                loadCount: counts[index]
+            )
+        }
     }
 
     /// Miles per gallon between consecutive full fill-ups.

@@ -42,11 +42,11 @@ struct WeeklyGoalView: View {
                 appState.setWeeklyGoal(newGoal)
             }
         }
-        // The widget cannot read the account's database, so publish the current week whenever
-        // this screen recomputes it.
+        // The widget reads a precomputed snapshot, not the encrypted journal. Republish the
+        // current week when this screen recomputes it.
         .task(id: progress) {
             if viewModel.isCurrentWeek(in: calendar) {
-                WidgetBridge.publish(progress)
+                appState.publishWidgetSnapshot()
             }
         }
     }

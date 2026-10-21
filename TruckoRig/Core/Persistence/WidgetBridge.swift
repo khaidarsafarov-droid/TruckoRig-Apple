@@ -1,40 +1,13 @@
 import Foundation
 import WidgetKit
 
-/// The few numbers the home-screen widget needs.
-struct WidgetGoalSnapshot: Codable, Equatable {
-    var target: Double
-    var gross: Double
-    var dailyTargetNeeded: Double
-    var daysRemaining: Int
-    var paceStatus: String
-    var weekLabel: String
-    var updatedAt: Date
-
-    static let placeholder = WidgetGoalSnapshot(
-        target: 6000,
-        gross: 3820,
-        dailyTargetNeeded: 545,
-        daysRemaining: 4,
-        paceStatus: PaceStatus.onTrack.rawValue,
-        weekLabel: "Aug 3 – Aug 9",
-        updatedAt: Date()
-    )
-
-    var progressFraction: Double {
-        guard target > 0 else { return 0 }
-        return min(1, max(0, gross / target))
-    }
-
-    var status: PaceStatus {
-        PaceStatus(rawValue: paceStatus) ?? .behind
-    }
-}
-
 /// Hands the widget its data through the shared App Group.
 ///
-/// The widget does not open the encrypted journal. The app publishes a tiny read-only snapshot
-/// instead. Nothing identifying goes in it.
+/// The widget does not open the encrypted journal and never sees the SQLCipher key. The app
+/// publishes a tiny read-only snapshot after `WeeklyGoalCalculator` has already run inside the
+/// process that holds the key. Nothing identifying goes in the file. `WidgetCenter` reloads the
+/// timeline as soon as the file changes, so a saved load shows up without waiting for the
+/// hourly fallback.
 enum WidgetBridge {
 
     static let appGroup = "group.com.truckorig"
@@ -59,19 +32,6 @@ enum WidgetBridge {
         FileManager.default
             .containerURL(forSecurityApplicationGroupIdentifier: appGroup)?
             .appendingPathComponent(fileName)
-    }
-
-    static func publish(_ progress: WeeklyGoalProgress) {
-        let snapshot = WidgetGoalSnapshot(
-            target: progress.targetAmount,
-            gross: progress.currentGross,
-            dailyTargetNeeded: progress.dailyTargetNeeded,
-            daysRemaining: progress.daysRemainingInWeek,
-            paceStatus: progress.paceStatus.rawValue,
-            weekLabel: progress.weekLabel,
-            updatedAt: Date()
-        )
-        publish(snapshot)
     }
 
     static func publish(_ snapshot: WidgetGoalSnapshot) {
