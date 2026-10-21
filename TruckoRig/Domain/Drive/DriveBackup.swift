@@ -559,7 +559,10 @@ public enum DriveBackupCodec {
             diesel: try array(root["diesel"], encode: diesel),
             maintenanceTasks: try array(root["maintenanceTasks"], encode: task),
             maintenanceArchive: try array(root["maintenanceArchive"], encode: archive),
-            appSettings: root["appSettings"].map { settings($0) }
+            appSettings: root["appSettings"].flatMap { value -> DriveAppSettings? in
+                if value is NSNull { return nil }
+                return settings(value)
+            }
         )
     }
 
