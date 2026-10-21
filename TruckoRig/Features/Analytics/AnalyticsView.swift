@@ -62,7 +62,8 @@ struct AnalyticsView: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(HeroGradient(), in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .background(HeroGradient())
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .padding(.top, 8)
     }
 
