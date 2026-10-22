@@ -47,6 +47,9 @@ jobs:
               handle.write(f"name={chosen['name']}\n")
           PY
 
+      - name: Show the software keyboard in UI tests
+        run: defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
+
       - name: Build the app and widget, then run unit tests
         run: |
           set -euo pipefail

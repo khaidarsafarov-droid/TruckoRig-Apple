@@ -10,7 +10,7 @@ struct JournalHomeHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 4) {
-                headerButton("line.3.horizontal", label: "home.cd.menu", action: onMenu)
+                headerButton("line.3.horizontal", label: "home.cd.menu", identifier: "uitest.menu", action: onMenu)
                 Spacer()
                 headerButton("magnifyingglass", label: "home.cd.search", action: onSearch)
                 Button(action: onProfile) {
@@ -63,7 +63,12 @@ struct JournalHomeHeader: View {
         }
     }
 
-    private func headerButton(_ symbol: String, label: LocalizedStringKey, action: @escaping () -> Void) -> some View {
+    private func headerButton(
+        _ symbol: String,
+        label: LocalizedStringKey,
+        identifier: String? = nil,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 18, weight: .medium))
@@ -71,6 +76,7 @@ struct JournalHomeHeader: View {
                 .frame(width: 40, height: 40)
         }
         .accessibilityLabel(label)
+        .modifier(ActionIdentifier(identifier: identifier))
     }
 }
 

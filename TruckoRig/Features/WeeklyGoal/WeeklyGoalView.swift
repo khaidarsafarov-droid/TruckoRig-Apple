@@ -325,11 +325,18 @@ struct GoalEditorView: View {
     let onSave: (Double) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @State private var detent: PresentationDetent = .medium
+    @FocusState private var focus: String?
+
+    private var focusBinding: Binding<String?> {
+        Binding(get: { focus }, set: { focus = $0 })
+    }
 
     var body: some View {
         NavigationStack {
-            Form {
+            FocusedForm(focus: $focus) {
                 SoftTextField(title: "goal.target", text: $draft, keyboard: .decimalPad)
+                    .keyboardFocus(KeyboardField.goalTarget, in: focusBinding)
                 Text("goal.target.hint")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
@@ -370,8 +377,11 @@ struct GoalEditorView: View {
                 }
                 errorKey = nil
             }
+            .onChange(of: focus) { _, newValue in
+                detent = KeyboardSheetDetent.resolved(resting: .medium, fieldFocused: newValue != nil)
+            }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.medium, .large], selection: $detent)
     }
 
     private func save() {

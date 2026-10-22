@@ -11,6 +11,7 @@
 		41DA95A7C29163C7C1E90A2A /* AppState.swift */ = {isa = PBXBuildFile; fileRef = D54B22793ECC643C70585249 /* AppState.swift */; };
 		EBF90D2D9284729C26F6619A /* RootView.swift */ = {isa = PBXBuildFile; fileRef = CFB51C6271E4645F7DB9D6D1 /* RootView.swift */; };
 		CAA4B3CE3C304ACBFEC5F216 /* TruckoRigApp.swift */ = {isa = PBXBuildFile; fileRef = 2E4E5C1D387990139022C762 /* TruckoRigApp.swift */; };
+		02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */ = {isa = PBXBuildFile; fileRef = A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */; };
 		FD9F81E5D5763FEEE3A5F383 /* DriveBackground.swift */ = {isa = PBXBuildFile; fileRef = 9AACFAA3CDDE266C2C0149E0 /* DriveBackground.swift */; };
 		7983E91DFA17D662FA4357B8 /* DriveCoordinator.swift */ = {isa = PBXBuildFile; fileRef = 98258AA396E2FC0B13531BB9 /* DriveCoordinator.swift */; };
 		8E57CD692CCDAB1D26050228 /* DriveIdentity.swift */ = {isa = PBXBuildFile; fileRef = B225602993F712F52973DDAB /* DriveIdentity.swift */; };
@@ -184,6 +185,7 @@
 		50837DBC0CE305ED0C2549CE /* WeeklyGoalWidgetView.swift */ = {isa = PBXBuildFile; fileRef = 524C870A8264FB24502BC989 /* WeeklyGoalWidgetView.swift */; };
 		A5E8BA31A303BF2C083338F2 /* Bindings.swift */ = {isa = PBXBuildFile; fileRef = 810ABF68C96DF0850D97653E /* Bindings.swift */; };
 		A7684195C62FF2176A91D321 /* DomainMessages.swift */ = {isa = PBXBuildFile; fileRef = D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */; };
+		A9B894AA84B9A8078F5989B0 /* KeyboardAvoidance.swift */ = {isa = PBXBuildFile; fileRef = 3DB1BD398F08E7A51783904A /* KeyboardAvoidance.swift */; };
 		FA9CFDDEFD0021546674E465 /* LoadingOverlay.swift */ = {isa = PBXBuildFile; fileRef = B7B65CBC5155685614404CE2 /* LoadingOverlay.swift */; };
 		F3D1CCDDD150AB05CD0738A8 /* PreviewSupport.swift */ = {isa = PBXBuildFile; fileRef = 2D704C5570DCA9C3B84AC5A3 /* PreviewSupport.swift */; };
 		EE55DC74002387E6380A8B3A /* ReceiptCapture.swift */ = {isa = PBXBuildFile; fileRef = A6D3D3B4F138B59E2479753E /* ReceiptCapture.swift */; };
@@ -221,11 +223,13 @@
 		C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
 		EFA8982952F3E770254384B5 /* DriveRestoreTests.swift */ = {isa = PBXBuildFile; fileRef = EB4050B0531CB944C1EEFDE9 /* DriveRestoreTests.swift */; };
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
+		1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */ = {isa = PBXBuildFile; fileRef = 95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */; };
 		A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */ = {isa = PBXBuildFile; fileRef = CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */; };
 		2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = 7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */; };
 		73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */ = {isa = PBXBuildFile; fileRef = 275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */; };
 		43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */ = {isa = PBXBuildFile; fileRef = F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */; };
 		8C92BA158F040C1659892D89 /* WidgetLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */; };
+		B0CBF53E11D3FEA8B2A90041 /* AddLoadNotesUITests.swift */ = {isa = PBXBuildFile; fileRef = 47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */; };
 		109E7A66906193EF84584997 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 1B12FA89457B475550D08A7A /* GRDB */; };
 		02EA9075F77D717628BCC520 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C46C885EC8E7B841ADD4A002 /* GoogleSignIn */; };
 		ADD14D21F915C76FF9FEE31E /* TruckoRigWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -240,6 +244,13 @@
 			remoteInfo = TruckoRigWidget;
 		};
 		6605C10F6C8F6BC76033835A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D5B6ED0100CE3FBC6889956 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8C1A045E96B998B40533C7FF;
+			remoteInfo = TruckoRig;
+		};
+		9FD36D7B4F29AF24B7EF9770 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D5B6ED0100CE3FBC6889956 /* Project object */;
 			proxyType = 1;
@@ -266,6 +277,7 @@
 		D54B22793ECC643C70585249 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppState.swift"; sourceTree = "<group>"; };
 		CFB51C6271E4645F7DB9D6D1 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
 		2E4E5C1D387990139022C762 /* TruckoRigApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckoRigApp.swift"; sourceTree = "<group>"; };
+		A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestLaunch.swift"; sourceTree = "<group>"; };
 		9AACFAA3CDDE266C2C0149E0 /* DriveBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveBackground.swift"; sourceTree = "<group>"; };
 		98258AA396E2FC0B13531BB9 /* DriveCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveCoordinator.swift"; sourceTree = "<group>"; };
 		B225602993F712F52973DDAB /* DriveIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveIdentity.swift"; sourceTree = "<group>"; };
@@ -454,6 +466,7 @@
 		135A264B50C225848871ED7D /* TruckoRig.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRig.entitlements"; sourceTree = "<group>"; };
 		810ABF68C96DF0850D97653E /* Bindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bindings.swift"; sourceTree = "<group>"; };
 		D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DomainMessages.swift"; sourceTree = "<group>"; };
+		3DB1BD398F08E7A51783904A /* KeyboardAvoidance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidance.swift"; sourceTree = "<group>"; };
 		B7B65CBC5155685614404CE2 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadingOverlay.swift"; sourceTree = "<group>"; };
 		2D704C5570DCA9C3B84AC5A3 /* PreviewSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PreviewSupport.swift"; sourceTree = "<group>"; };
 		A6D3D3B4F138B59E2479753E /* ReceiptCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReceiptCapture.swift"; sourceTree = "<group>"; };
@@ -462,11 +475,13 @@
 		E9A91E3DC8256945501586BD /* SoftTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftTextField.swift"; sourceTree = "<group>"; };
 		EB4050B0531CB944C1EEFDE9 /* DriveRestoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveRestoreTests.swift"; sourceTree = "<group>"; };
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
+		95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidanceTests.swift"; sourceTree = "<group>"; };
 		CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaRecordTests.swift"; sourceTree = "<group>"; };
 		7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallLayoutTests.swift"; sourceTree = "<group>"; };
 		275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramTokenStoreTests.swift"; sourceTree = "<group>"; };
 		F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderControllerTests.swift"; sourceTree = "<group>"; };
 		C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetLayoutTests.swift"; sourceTree = "<group>"; };
+		47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddLoadNotesUITests.swift"; sourceTree = "<group>"; };
 		3D08B4495962CCBD862A7377 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		2B7BAA61007F68480C7DE32B /* TruckoRigWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRigWidget.entitlements"; sourceTree = "<group>"; };
 		64E195444487F70935880DE1 /* TruckoRigWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckoRigWidgetBundle.swift"; sourceTree = "<group>"; };
@@ -474,6 +489,7 @@
 		B3DA8B53248BA20805DF53E9 /* TruckoRig.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TruckoRig.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "TruckoRigWidget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E78E117CD68A4B0C02407F4 /* TruckoRigTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TruckoRigTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1829AC6AFE2DACF82419BC7 /* TruckoRigUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TruckoRigUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -500,6 +516,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D9F7B78D54C6F1B34E7E88DB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -509,6 +532,7 @@
 				7BD173E8EB3E2895F7843687 /* TruckoRig */,
 				F52F77CC0D3228E216E3A6F4 /* TruckoRigWidget */,
 				D699D40C0DE22C80CB771F02 /* TruckoRigTests */,
+				23876982F4FAC5BD0024AE63 /* TruckoRigUITests */,
 				AE7805B56D1DCAFAA071416F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -519,6 +543,7 @@
 				B3DA8B53248BA20805DF53E9 /* TruckoRig.app */,
 				DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */,
 				3E78E117CD68A4B0C02407F4 /* TruckoRigTests.xctest */,
+				C1829AC6AFE2DACF82419BC7 /* TruckoRigUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -542,6 +567,7 @@
 				D54B22793ECC643C70585249 /* AppState.swift */,
 				CFB51C6271E4645F7DB9D6D1 /* RootView.swift */,
 				2E4E5C1D387990139022C762 /* TruckoRigApp.swift */,
+				A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */,
 			);
 			path = "App";
 			sourceTree = "<group>";
@@ -1181,6 +1207,7 @@
 			children = (
 				810ABF68C96DF0850D97653E /* Bindings.swift */,
 				D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */,
+				3DB1BD398F08E7A51783904A /* KeyboardAvoidance.swift */,
 				B7B65CBC5155685614404CE2 /* LoadingOverlay.swift */,
 				2D704C5570DCA9C3B84AC5A3 /* PreviewSupport.swift */,
 				A6D3D3B4F138B59E2479753E /* ReceiptCapture.swift */,
@@ -1196,6 +1223,7 @@
 			children = (
 				EB4050B0531CB944C1EEFDE9 /* DriveRestoreTests.swift */,
 				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
+				95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */,
 				CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */,
 				7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */,
 				275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */,
@@ -1203,6 +1231,14 @@
 				C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */,
 			);
 			path = "TruckoRigTests";
+			sourceTree = "<group>";
+		};
+		23876982F4FAC5BD0024AE63 /* TruckoRigUITests */ = {
+			isa = PBXGroup;
+			children = (
+				47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */,
+			);
+			path = "TruckoRigUITests";
 			sourceTree = "<group>";
 		};
 		F52F77CC0D3228E216E3A6F4 /* TruckoRigWidget */ = {
@@ -1277,6 +1313,24 @@
 			productReference = 3E78E117CD68A4B0C02407F4 /* TruckoRigTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		129964AA630C5970DF325D9E /* TruckoRigUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 62327BCCA6FDECEDD2429449 /* Build configuration list */;
+			buildPhases = (
+				50B91F50B99B69CDD2854771 /* Sources */,
+				D9F7B78D54C6F1B34E7E88DB /* Frameworks */,
+				24852332B241A4AA576C9B8C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7D07B4D387E9B10B5F7B1E2F /* PBXTargetDependency */,
+			);
+			name = TruckoRigUITests;
+			productName = TruckoRigUITests;
+			productReference = C1829AC6AFE2DACF82419BC7 /* TruckoRigUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1294,6 +1348,9 @@
 						CreatedOnToolsVersion = 16.0;
 					};
 					2ADDEE89B29C55E11126D89F = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					129964AA630C5970DF325D9E = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
@@ -1320,6 +1377,7 @@
 				8C1A045E96B998B40533C7FF /* TruckoRig */,
 				314DC4CF3D401B5A7CB470DF /* TruckoRigWidget */,
 				2ADDEE89B29C55E11126D89F /* TruckoRigTests */,
+				129964AA630C5970DF325D9E /* TruckoRigUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1363,6 +1421,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		24852332B241A4AA576C9B8C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1373,6 +1438,7 @@
 				41DA95A7C29163C7C1E90A2A /* AppState.swift */,
 				EBF90D2D9284729C26F6619A /* RootView.swift */,
 				CAA4B3CE3C304ACBFEC5F216 /* TruckoRigApp.swift */,
+				02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */,
 				FD9F81E5D5763FEEE3A5F383 /* DriveBackground.swift */,
 				7983E91DFA17D662FA4357B8 /* DriveCoordinator.swift */,
 				8E57CD692CCDAB1D26050228 /* DriveIdentity.swift */,
@@ -1546,6 +1612,7 @@
 				50837DBC0CE305ED0C2549CE /* WeeklyGoalWidgetView.swift */,
 				A5E8BA31A303BF2C083338F2 /* Bindings.swift */,
 				A7684195C62FF2176A91D321 /* DomainMessages.swift */,
+				A9B894AA84B9A8078F5989B0 /* KeyboardAvoidance.swift */,
 				FA9CFDDEFD0021546674E465 /* LoadingOverlay.swift */,
 				F3D1CCDDD150AB05CD0738A8 /* PreviewSupport.swift */,
 				EE55DC74002387E6380A8B3A /* ReceiptCapture.swift */,
@@ -1580,11 +1647,20 @@
 			files = (
 				EFA8982952F3E770254384B5 /* DriveRestoreTests.swift */,
 				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
+				1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */,
 				A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */,
 				2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */,
 				73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */,
 				43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */,
 				8C92BA158F040C1659892D89 /* WidgetLayoutTests.swift */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50B91F50B99B69CDD2854771 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0CBF53E11D3FEA8B2A90041 /* AddLoadNotesUITests.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1600,6 +1676,11 @@
 			isa = PBXTargetDependency;
 			target = 8C1A045E96B998B40533C7FF /* TruckoRig */;
 			targetProxy = 6605C10F6C8F6BC76033835A /* PBXContainerItemProxy */;
+		};
+		7D07B4D387E9B10B5F7B1E2F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8C1A045E96B998B40533C7FF /* TruckoRig */;
+			targetProxy = 9FD36D7B4F29AF24B7EF9770 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1771,6 +1852,34 @@
 			};
 			name = Release;
 		};
+		30040E5A9253E3504C585F9E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TruckoRig;
+			};
+			name = Debug;
+		};
+		3FC42F4C5A371EBBE0E26807 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TruckoRig;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1806,6 +1915,15 @@
 			buildConfigurations = (
 				21B179F8F9DFCE51ACDF5546 /* Debug */,
 				D51FFD02ED4B7183F937B969 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		62327BCCA6FDECEDD2429449 /* Build configuration list */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30040E5A9253E3504C585F9E /* Debug */,
+				3FC42F4C5A371EBBE0E26807 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

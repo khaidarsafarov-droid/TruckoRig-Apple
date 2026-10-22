@@ -28,6 +28,9 @@ final class AppSettings {
         self.smartNotificationLastRun = lastRun > 0 ? Date(timeIntervalSince1970: lastRun) : nil
         self.missingNotifiedWeek = Self.read(defaults, scope, .missingNotifiedWeek, default: "")
         self.onboardingComplete = Self.read(defaults, scope, .onboardingComplete, default: false)
+        if UITestLaunch.isEnabled {
+            self.onboardingComplete = true
+        }
     }
 
     // MARK: - Values

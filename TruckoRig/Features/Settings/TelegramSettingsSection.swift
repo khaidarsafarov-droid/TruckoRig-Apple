@@ -89,9 +89,15 @@ struct TelegramTokenSheet: View {
     @State private var token = ""
     @State private var revealed = false
     @State private var errorMessage: String?
+    @FocusState private var focus: String?
+
+    private var focusBinding: Binding<String?> {
+        Binding(get: { focus }, set: { focus = $0 })
+    }
 
     var body: some View {
         NavigationStack {
+            KeyboardAvoidingScroll(focus: $focus) {
             VStack(alignment: .leading, spacing: Spacing.standard) {
                 Text("settings.telegram.dialogHint")
                     .font(.appCaption)
@@ -103,6 +109,7 @@ struct TelegramTokenSheet: View {
                     isSecure: !revealed,
                     autocapitalization: .never
                 )
+                .keyboardFocus(KeyboardField.telegramToken, in: focusBinding)
                 Button(revealed ? "settings.telegram.hide" : "settings.telegram.show") {
                     revealed.toggle()
                 }
@@ -117,6 +124,8 @@ struct TelegramTokenSheet: View {
                 Spacer()
             }
             .padding(Spacing.section)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .forestBackground()
             .navigationTitle("settings.telegram.dialogTitle")
