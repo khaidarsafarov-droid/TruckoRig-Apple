@@ -9,6 +9,7 @@ enum KeyboardField {
     static let paycheckNotes = "paycheck.notes"
     static let givenName = "onboard.givenName"
     static let familyName = "onboard.familyName"
+    static let telegramToken = "settings.telegram.tokenLabel"
     static let goalTarget = "goal.target"
     static let penaltySummary = "penalty.summary"
     static let penaltyAmount = "penalty.amount"

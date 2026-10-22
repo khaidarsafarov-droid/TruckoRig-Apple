@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// How the journal is meant to be used. Telegram and Google Drive are later stages, so they are not listed.
+/// How the journal is meant to be used. The numbered sections follow the Android guide.
 struct AboutView: View {
 
     private var version: String {
@@ -31,6 +31,7 @@ struct AboutView: View {
             guide("about.docs.title", "about.docs.body")
             guide("about.maintenance.title", "about.maintenance.body")
             guide("about.widget.title", "about.widget.body")
+            guide("about.telegram.title", "about.telegram.body")
             guide("about.backup.title", "about.backup.body")
             guide("about.settings.title", "about.settings.body")
         }

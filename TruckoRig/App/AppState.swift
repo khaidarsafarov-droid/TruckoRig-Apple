@@ -39,6 +39,7 @@ final class AppState {
     let catalog: RecordCatalog
     let premium: PremiumController
     let drive: DriveCoordinator
+    let telegram: TelegramCoordinator
 
     var selectedTab: MainTab = .journal
 
@@ -74,9 +75,20 @@ final class AppState {
             settings: resolved,
             media: MediaStore(scope: persistence.scope)
         )
+        let telegram = TelegramCoordinator(
+            database: persistence.database,
+            settings: resolved,
+            scope: persistence.scope
+        )
         self.drive = drive
+        self.telegram = telegram
         DriveRuntime.coordinator = drive
-        self.drive.onJournalChanged = { [weak self] in
+        TelegramRuntime.coordinator = telegram
+        drive.onJournalChanged = { [weak self] in
+            self?.reloadJournal()
+        }
+        telegram.isPremium = { [weak controller] in controller?.isActive ?? false }
+        telegram.onJournalChanged = { [weak self] in
             self?.reloadJournal()
         }
     }
@@ -88,6 +100,8 @@ final class AppState {
         drive.suppressSchedule = false
         premium.start()
         drive.launch()
+        telegram.launch()
+        TelegramBackgroundRegistrar.submit()
     }
 
     /// Reloads the in-memory journal and refreshes the home-screen widget.

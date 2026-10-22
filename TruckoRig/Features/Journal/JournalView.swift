@@ -31,6 +31,7 @@ struct JournalView: View {
     @State private var destination: HomeDestination?
     @State private var cameraLoad: Load?
     @State private var scannerLoad: Load?
+    @State private var syncNotice: String?
 
     private var sections: [JournalSection] {
         viewModel.sections(from: loads, week: appState.settings.truckingWeek)
@@ -102,6 +103,24 @@ struct JournalView: View {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .forestBackground()
+        .refreshable {
+            syncNotice = await appState.telegram.pullToRefresh()
+        }
+        .overlay(alignment: .bottom) {
+            if let syncNotice {
+                Text(syncNotice)
+                    .font(.appCaptionMedium)
+                    .foregroundStyle(Color.heroText)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Color.forestPrimary, in: Capsule())
+                    .padding(.bottom, 12)
+                    .task(id: syncNotice) {
+                        try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        self.syncNotice = nil
+                    }
+            }
+        }
         .navigationTitle("")
         .toolbar(isSearching ? .visible : .hidden, for: .navigationBar)
         .navigationDestination(for: Load.self) { load in

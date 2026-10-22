@@ -103,7 +103,7 @@ struct SettingsPremiumSection: View {
     }
 }
 
-private struct PremiumPaywallSheet: View {
+struct PremiumPaywallSheet: View {
     @Environment(AppState.self) private var appState
     var onClose: () -> Void
 
