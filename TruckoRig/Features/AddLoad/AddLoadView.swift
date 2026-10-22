@@ -8,48 +8,57 @@ struct AddLoadView: View {
 
     @State private var viewModel = AddLoadViewModel()
     @State private var editingStop: StopEditTarget?
+    @State private var relayFocused = false
 
     var body: some View {
         @Bindable var model = viewModel
 
         NavigationStack {
-            Form {
-                Section {
-                    RelayTextInputView(
-                        text: $model.relayText,
-                        parseMessage: viewModel.parseMessage,
-                        errorMessage: viewModel.errorMessage,
-                        onParse: { viewModel.parseRelayText() },
-                        onClear: { viewModel.clearRelayText() }
-                    )
-                }
-
-                LoadFormFields(draft: $model.draft)
-
-                StopsSection(
-                    stops: $model.draft.stops,
-                    onEdit: { editingStop = StopEditTarget(index: $0) },
-                    onAdd: { viewModel.addStop($0) },
-                    onDelete: {
-                        editingStop = nil
-                        viewModel.removeStops(at: $0)
-                    },
-                    onMove: {
-                        editingStop = nil
-                        viewModel.moveStops(from: $0, to: $1)
-                    }
-                )
-
-                if !viewModel.draft.isValid, !viewModel.draft.tripId.isEmpty {
+            ScrollViewReader { proxy in
+                Form {
                     Section {
-                        ForEach(viewModel.draft.validationErrors, id: \.self) { error in
-                            Label(error.localizedMessage, systemImage: "exclamationmark.circle")
-                                .font(.appCaption)
-                                .foregroundStyle(Color.forestError)
+                        RelayTextInputView(
+                            text: $model.relayText,
+                            parseMessage: viewModel.parseMessage,
+                            errorMessage: viewModel.errorMessage,
+                            onParse: { viewModel.parseRelayText() },
+                            onClear: { viewModel.clearRelayText() },
+                            onFocusChange: { relayFocused = $0 }
+                        )
+                    }
+
+                    LoadFormFields(draft: $model.draft)
+
+                    StopsSection(
+                        stops: $model.draft.stops,
+                        onEdit: { editingStop = StopEditTarget(index: $0) },
+                        onAdd: { viewModel.addStop($0) },
+                        onDelete: {
+                            editingStop = nil
+                            viewModel.removeStops(at: $0)
+                        },
+                        onMove: {
+                            editingStop = nil
+                            viewModel.moveStops(from: $0, to: $1)
+                        }
+                    )
+
+                    if !viewModel.draft.isValid, !viewModel.draft.tripId.isEmpty {
+                        Section {
+                            ForEach(viewModel.draft.validationErrors, id: \.self) { error in
+                                Label(error.localizedMessage, systemImage: "exclamationmark.circle")
+                                    .font(.appCaption)
+                                    .foregroundStyle(Color.forestError)
+                            }
                         }
                     }
                 }
+                .onChange(of: relayFocused) { _, focused in
+                    guard focused else { return }
+                    KeyboardAvoidance.scroll(proxy, to: KeyboardField.relayPaste, anchor: .center)
+                }
             }
+            .keyboardDone()
             .navigationTitle("journal.addLoad")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -124,6 +133,7 @@ struct StopsSection: View {
                     StopRowView(stop: stops[index])
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("uitest.stopRow")
             }
             .onDelete(perform: onDelete)
             .onMove(perform: onMove)
@@ -132,12 +142,16 @@ struct StopsSection: View {
                 Button { onAdd(.pickup) } label: {
                     Label("stop.addPickup", systemImage: "plus.circle")
                 }
+                .buttonStyle(.borderless)
+                .accessibilityIdentifier("uitest.addPickup")
                 Spacer()
                 Button { onAdd(.delivery) } label: {
                     Label("stop.addDelivery", systemImage: "plus.circle")
                 }
+                .buttonStyle(.borderless)
             }
             .font(.appCaptionMedium)
+            .accessibilityElement(children: .contain)
         }
     }
 }

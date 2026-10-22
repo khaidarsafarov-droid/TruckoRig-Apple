@@ -8,6 +8,11 @@ struct StopEditorView: View {
 
     @State private var hasSchedule: Bool
     @State private var scheduledTime: Date
+    @FocusState private var focus: StopField?
+
+    private enum StopField: Hashable {
+        case facility, city, state, zip, note
+    }
 
     init(stop: Binding<StopDraft>) {
         _stop = stop
@@ -17,7 +22,7 @@ struct StopEditorView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
+            FocusedForm(focus: $focus) {
                 Section {
                     Picker("stop.type", selection: $stop.type) {
                         Text("stop.type.pickup").tag(StopType.pickup)
@@ -29,11 +34,19 @@ struct StopEditorView: View {
                 Section("stop.location") {
                     TextField("stop.facility", text: facilityBinding)
                         .textInputAutocapitalization(.characters)
+                        .focused($focus, equals: .facility)
+                        .id(StopField.facility)
                     TextField("stop.city", text: $stop.city)
+                        .focused($focus, equals: .city)
+                        .id(StopField.city)
                     TextField("stop.state", text: stateBinding)
                         .textInputAutocapitalization(.characters)
+                        .focused($focus, equals: .state)
+                        .id(StopField.state)
                     TextField("stop.zip", text: $stop.zip)
                         .keyboardType(.numbersAndPunctuation)
+                        .focused($focus, equals: .zip)
+                        .id(StopField.zip)
                 }
 
                 Section("stop.schedule") {
@@ -46,6 +59,9 @@ struct StopEditorView: View {
                 Section("stop.notes") {
                     TextField("stop.note", text: noteBinding, axis: .vertical)
                         .lineLimit(1...4)
+                        .focused($focus, equals: .note)
+                        .id(StopField.note)
+                        .accessibilityIdentifier(KeyboardField.stopNote)
                 }
             }
             .navigationTitle(stop.type == .pickup ? "stop.type.pickup" : "stop.type.delivery")

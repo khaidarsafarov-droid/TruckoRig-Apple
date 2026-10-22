@@ -114,6 +114,8 @@ enum MaintenanceReminderCenter {
     }
 
     private static func authorized(_ center: UNUserNotificationCenter) async -> Bool {
+        // Unit-test and UI-test launches must not be covered by the notification prompt.
+        if UITestLaunch.suppressesSystemPrompts { return false }
         let settings = await center.notificationSettings()
         switch settings.authorizationStatus {
         case .authorized, .provisional, .ephemeral:

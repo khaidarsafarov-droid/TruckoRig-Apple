@@ -8,6 +8,7 @@ struct RelayTextInputView: View {
     var errorMessage: String?
     let onParse: () -> Void
     let onClear: () -> Void
+    var onFocusChange: (Bool) -> Void = { _ in }
 
     @FocusState private var isFocused: Bool
 
@@ -35,7 +36,12 @@ struct RelayTextInputView: View {
                         .strokeBorder(isFocused ? Color.forestPrimary : .clear, lineWidth: 1.5)
                 )
                 .focused($isFocused)
+                .id(KeyboardField.relayPaste)
                 .accessibilityLabel("relay.paste.title")
+                .accessibilityIdentifier(KeyboardField.relayPaste)
+                .onChange(of: isFocused) { _, focused in
+                    onFocusChange(focused)
+                }
 
             if let errorMessage {
                 Label(errorMessage, systemImage: "exclamationmark.triangle")

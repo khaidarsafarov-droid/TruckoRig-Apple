@@ -176,12 +176,21 @@ struct PenaltyEditorView: View {
     @State private var summary = ""
     @State private var amount: Double = 0
     @State private var date = Date()
+    @State private var detent: PresentationDetent = .medium
+    @FocusState private var focus: String?
+
+    private var focusBinding: Binding<String?> {
+        Binding(get: { focus }, set: { focus = $0 })
+    }
 
     var body: some View {
         NavigationStack {
-            Form {
+            FocusedForm(focus: $focus) {
                 TextField("penalty.summary", text: $summary)
+                    .focused($focus, equals: KeyboardField.penaltySummary)
+                    .id(KeyboardField.penaltySummary)
                 SoftNumberField(title: "penalty.amount", value: $amount)
+                    .keyboardFocus(KeyboardField.penaltyAmount, in: focusBinding)
                 DatePicker("penalty.date", selection: $date, displayedComponents: .date)
             }
             .navigationTitle("load.penalties.add")
@@ -199,6 +208,9 @@ struct PenaltyEditorView: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large], selection: $detent)
+        .onChange(of: focus) { _, newValue in
+            detent = KeyboardSheetDetent.resolved(resting: .medium, fieldFocused: newValue != nil)
+        }
     }
 }

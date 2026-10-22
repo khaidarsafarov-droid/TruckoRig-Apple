@@ -124,6 +124,11 @@ struct PaycheckEditorView: View {
     @State private var scanMessage: String?
     @State private var isScanning = false
     @State private var errorMessage: String?
+    @FocusState private var focus: String?
+
+    private var focusBinding: Binding<String?> {
+        Binding(get: { focus }, set: { focus = $0 })
+    }
 
     init(paycheck: Paycheck?) {
         self.paycheck = paycheck
@@ -139,7 +144,7 @@ struct PaycheckEditorView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
+            FocusedForm(focus: $focus) {
                 Section("paycheck.file") {
                     Text("paycheck.file.hint")
                         .font(.appCaption)
@@ -160,6 +165,7 @@ struct PaycheckEditorView: View {
                 SoftTextField(title: "paycheck.driver", text: $driverName, autocapitalization: .words)
                 SoftTextField(title: "paycheck.company", text: $company)
                 SoftTextField(title: "paycheck.notes", text: $notes)
+                    .keyboardFocus(KeyboardField.paycheckNotes, in: focusBinding)
             }
             .navigationTitle(paycheck == nil ? "paycheck.add" : "paycheck.edit")
             .navigationBarTitleDisplayMode(.inline)

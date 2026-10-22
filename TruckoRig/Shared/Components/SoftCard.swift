@@ -69,6 +69,7 @@ struct EmptyStateView: View {
     let message: LocalizedStringKey
     var actionTitle: LocalizedStringKey?
     var action: (() -> Void)?
+    var actionIdentifier: String?
 
     var body: some View {
         VStack(spacing: Spacing.standard) {
@@ -86,10 +87,24 @@ struct EmptyStateView: View {
                 Button(actionTitle, action: action)
                     .buttonStyle(.softPrimary)
                     .padding(.horizontal, 40)
+                    .modifier(ActionIdentifier(identifier: actionIdentifier))
             }
         }
         .padding(Spacing.section)
         .frame(maxWidth: .infinity)
+    }
+}
+
+/// Sets an accessibility identifier only when the caller has one. An empty identifier would hide the control from tests that look it up by label.
+struct ActionIdentifier: ViewModifier {
+    var identifier: String?
+
+    func body(content: Content) -> some View {
+        if let identifier {
+            content.accessibilityIdentifier(identifier)
+        } else {
+            content
+        }
     }
 }
 

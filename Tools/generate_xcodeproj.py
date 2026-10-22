@@ -22,10 +22,12 @@ PROJECT_NAME = "TruckoRig"
 APP_DIR = "TruckoRig"
 WIDGET_DIR = "TruckoRigWidget"
 TESTS_DIR = "TruckoRigTests"
+UITESTS_DIR = "TruckoRigUITests"
 
 APP_BUNDLE_ID = "com.truckorig"
 WIDGET_BUNDLE_ID = "com.truckorig.widget"
 TESTS_BUNDLE_ID = "com.truckorig.tests"
+UITESTS_BUNDLE_ID = "com.truckorig.uitests"
 
 # SQLCipher build of GRDB. The app target is the only one that links it: the widget never opens
 # the database, and the test bundle uses the app's copy through TEST_HOST.
@@ -133,11 +135,13 @@ def build() -> str:
     tree.collect(APP_DIR)
     tree.collect(WIDGET_DIR)
     tree.collect(TESTS_DIR)
+    tree.collect(UITESTS_DIR)
 
     app_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(APP_DIR + os.sep)]
     widget_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(WIDGET_DIR + os.sep)]
     widget_sources += WIDGET_SHARED_SOURCES
     test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(TESTS_DIR + os.sep)]
+    ui_test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(UITESTS_DIR + os.sep)]
 
     app_resources = [
         p for p in tree.files
@@ -180,6 +184,7 @@ def build() -> str:
         ("app", app_sources + app_resources),
         ("widget", widget_sources + widget_resources),
         ("tests", test_sources),
+        ("uitests", ui_test_sources),
     ):
         for path in paths:
             add(
@@ -213,6 +218,13 @@ def build() -> str:
     add(f"\t\t\tremoteInfo = {PROJECT_NAME}Widget;")
     add("\t\t};")
     add(f"\t\t{object_id('proxy', 'tests')} /* PBXContainerItemProxy */ = {{")
+    add("\t\t\tisa = PBXContainerItemProxy;")
+    add(f"\t\t\tcontainerPortal = {object_id('project', PROJECT_NAME)} /* Project object */;")
+    add("\t\t\tproxyType = 1;")
+    add(f"\t\t\tremoteGlobalIDString = {object_id('target', 'app')};")
+    add(f"\t\t\tremoteInfo = {PROJECT_NAME};")
+    add("\t\t};")
+    add(f"\t\t{object_id('proxy', 'uitests')} /* PBXContainerItemProxy */ = {{")
     add("\t\t\tisa = PBXContainerItemProxy;")
     add(f"\t\t\tcontainerPortal = {object_id('project', PROJECT_NAME)} /* Project object */;")
     add("\t\t\tproxyType = 1;")
@@ -263,12 +275,18 @@ def build() -> str:
         "explicitFileType = wrapper.cfbundle; includeInIndex = 0; "
         f"path = \"{test_product}\"; sourceTree = BUILT_PRODUCTS_DIR; }};"
     )
+    ui_test_product = f"{PROJECT_NAME}UITests.xctest"
+    add(
+        f"\t\t{object_id('product', ui_test_product)} /* {ui_test_product} */ = {{isa = PBXFileReference; "
+        "explicitFileType = wrapper.cfbundle; includeInIndex = 0; "
+        f"path = \"{ui_test_product}\"; sourceTree = BUILT_PRODUCTS_DIR; }};"
+    )
     add("/* End PBXFileReference section */")
 
     # PBXFrameworksBuildPhase (empty: Swift auto-links the system frameworks it imports)
     add("")
     add("/* Begin PBXFrameworksBuildPhase section */")
-    for target in ("app", "widget", "tests"):
+    for target in ("app", "widget", "tests", "uitests"):
         add(f"\t\t{object_id('phase-frameworks', target)} /* Frameworks */ = {{")
         add("\t\t\tisa = PBXFrameworksBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
@@ -290,6 +308,7 @@ def build() -> str:
     add(f"\t\t\t\t{object_id('group', APP_DIR)} /* {APP_DIR} */,")
     add(f"\t\t\t\t{object_id('group', WIDGET_DIR)} /* {WIDGET_DIR} */,")
     add(f"\t\t\t\t{object_id('group', TESTS_DIR)} /* {TESTS_DIR} */,")
+    add(f"\t\t\t\t{object_id('group', UITESTS_DIR)} /* {UITESTS_DIR} */,")
     add(f"\t\t\t\t{object_id('group', 'Products')} /* Products */,")
     add("\t\t\t);")
     add("\t\t\tsourceTree = \"<group>\";")
@@ -301,6 +320,7 @@ def build() -> str:
     add(f"\t\t\t\t{object_id('product', app_product)} /* {app_product} */,")
     add(f"\t\t\t\t{object_id('product', appex)} /* {appex} */,")
     add(f"\t\t\t\t{object_id('product', test_product)} /* {test_product} */,")
+    add(f"\t\t\t\t{object_id('product', ui_test_product)} /* {ui_test_product} */,")
     add("\t\t\t);")
     add("\t\t\tname = Products;")
     add("\t\t\tsourceTree = \"<group>\";")
@@ -327,6 +347,7 @@ def build() -> str:
         ("app", PROJECT_NAME, app_product, "com.apple.product-type.application"),
         ("widget", f"{PROJECT_NAME}Widget", appex, "com.apple.product-type.app-extension"),
         ("tests", f"{PROJECT_NAME}Tests", test_product, "com.apple.product-type.bundle.unit-test"),
+        ("uitests", f"{PROJECT_NAME}UITests", ui_test_product, "com.apple.product-type.bundle.ui-testing"),
     ]
     for key, name, product, product_type in targets:
         add(f"\t\t{object_id('target', key)} /* {name} */ = {{")
@@ -346,6 +367,8 @@ def build() -> str:
             add(f"\t\t\t\t{object_id('dependency', 'widget')} /* PBXTargetDependency */,")
         if key == "tests":
             add(f"\t\t\t\t{object_id('dependency', 'tests')} /* PBXTargetDependency */,")
+        if key == "uitests":
+            add(f"\t\t\t\t{object_id('dependency', 'uitests')} /* PBXTargetDependency */,")
         add("\t\t\t);")
         add(f"\t\t\tname = {name};")
         if key == "app":
@@ -403,7 +426,7 @@ def build() -> str:
     # PBXResourcesBuildPhase
     add("")
     add("/* Begin PBXResourcesBuildPhase section */")
-    for key, paths in (("app", app_resources), ("widget", widget_resources), ("tests", [])):
+    for key, paths in (("app", app_resources), ("widget", widget_resources), ("tests", []), ("uitests", [])):
         add(f"\t\t{object_id('phase-resources', key)} /* Resources */ = {{")
         add("\t\t\tisa = PBXResourcesBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
@@ -418,7 +441,7 @@ def build() -> str:
     # PBXSourcesBuildPhase
     add("")
     add("/* Begin PBXSourcesBuildPhase section */")
-    for key, paths in (("app", app_sources), ("widget", widget_sources), ("tests", test_sources)):
+    for key, paths in (("app", app_sources), ("widget", widget_sources), ("tests", test_sources), ("uitests", ui_test_sources)):
         add(f"\t\t{object_id('phase-sources', key)} /* Sources */ = {{")
         add("\t\t\tisa = PBXSourcesBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
@@ -443,6 +466,11 @@ def build() -> str:
     add(f"\t\t\ttarget = {object_id('target', 'app')} /* {PROJECT_NAME} */;")
     add(f"\t\t\ttargetProxy = {object_id('proxy', 'tests')} /* PBXContainerItemProxy */;")
     add("\t\t};")
+    add(f"\t\t{object_id('dependency', 'uitests')} /* PBXTargetDependency */ = {{")
+    add("\t\t\tisa = PBXTargetDependency;")
+    add(f"\t\t\ttarget = {object_id('target', 'app')} /* {PROJECT_NAME} */;")
+    add(f"\t\t\ttargetProxy = {object_id('proxy', 'uitests')} /* PBXContainerItemProxy */;")
+    add("\t\t};")
     add("/* End PBXTargetDependency section */")
 
     # XCBuildConfiguration
@@ -457,7 +485,7 @@ def build() -> str:
         add("\t\t\t};")
         add(f"\t\t\tname = {name};")
         add("\t\t};")
-    for key in ("app", "widget", "tests"):
+    for key in ("app", "widget", "tests", "uitests"):
         for name, settings in target_configurations(key).items():
             add(f"\t\t{object_id(f'config-{key}', name)} /* {name} */ = {{")
             add("\t\t\tisa = XCBuildConfiguration;")
@@ -477,6 +505,7 @@ def build() -> str:
         ("app", "config-app"),
         ("widget", "config-widget"),
         ("tests", "config-tests"),
+        ("uitests", "config-uitests"),
     ):
         add(f"\t\t{object_id('configlist', key)} /* Build configuration list */ = {{")
         add("\t\t\tisa = XCConfigurationList;")
@@ -590,6 +619,17 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "SWIFT_EMIT_LOC_STRINGS": "YES",
             "TARGETED_DEVICE_FAMILY": '"1,2"',
         }
+    elif key == "uitests":
+        settings = {
+            "CODE_SIGN_STYLE": "Automatic",
+            "CURRENT_PROJECT_VERSION": "1",
+            "GENERATE_INFOPLIST_FILE": "YES",
+            "MARKETING_VERSION": MARKETING_VERSION,
+            "PRODUCT_BUNDLE_IDENTIFIER": UITESTS_BUNDLE_ID,
+            "PRODUCT_NAME": '"$(TARGET_NAME)"',
+            "TARGETED_DEVICE_FAMILY": '"1,2"',
+            "TEST_TARGET_NAME": PROJECT_NAME,
+        }
     elif key == "widget":
         settings = {
             "CODE_SIGN_ENTITLEMENTS": f"{WIDGET_DIR}/TruckoRigWidget.entitlements",
@@ -648,10 +688,7 @@ SCHEME_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            {test_reference}
-         </TestableReference>
+{testables}
       </Testables>
    </TestAction>
    <LaunchAction
@@ -712,15 +749,27 @@ def write_scheme(directory: str) -> str:
         name=PROJECT_NAME,
         project=PROJECT_NAME,
     )
-    test_reference = BUILDABLE_REFERENCE.format(
-        target_id=object_id("target", "tests"),
-        product=f"{PROJECT_NAME}Tests.xctest",
-        name=f"{PROJECT_NAME}Tests",
-        project=PROJECT_NAME,
-    )
+    def testable(key: str, product: str, name: str) -> str:
+        block = BUILDABLE_REFERENCE.format(
+            target_id=object_id("target", key),
+            product=product,
+            name=name,
+            project=PROJECT_NAME,
+        )
+        return (
+            "         <TestableReference\n"
+            "            skipped = \"NO\">\n"
+            f"            {block}\n"
+            "         </TestableReference>"
+        )
+
+    testables = "\n".join([
+        testable("tests", f"{PROJECT_NAME}Tests.xctest", f"{PROJECT_NAME}Tests"),
+        testable("uitests", f"{PROJECT_NAME}UITests.xctest", f"{PROJECT_NAME}UITests"),
+    ])
     path = os.path.join(schemes, f"{PROJECT_NAME}.xcscheme")
     with open(path, "w", encoding="utf-8") as handle:
-        handle.write(SCHEME_TEMPLATE.format(reference=reference, test_reference=test_reference))
+        handle.write(SCHEME_TEMPLATE.format(reference=reference, testables=testables))
     return path
 
 
