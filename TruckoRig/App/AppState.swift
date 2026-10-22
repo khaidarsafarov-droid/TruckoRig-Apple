@@ -38,7 +38,6 @@ final class AppState {
     let persistence: PersistenceController
     let catalog: RecordCatalog
     let premium: PremiumController
-    let drive: DriveCoordinator
     let telegram: TelegramCoordinator
 
     var selectedTab: MainTab = .journal
@@ -70,23 +69,13 @@ final class AppState {
             PremiumCopy.locale(for: resolved?.language ?? .system)
         }
         self.premium = controller
-        let drive = DriveCoordinator(
-            database: persistence.database,
-            settings: resolved,
-            media: MediaStore(scope: persistence.scope)
-        )
         let telegram = TelegramCoordinator(
             database: persistence.database,
             settings: resolved,
             scope: persistence.scope
         )
-        self.drive = drive
         self.telegram = telegram
-        DriveRuntime.coordinator = drive
         TelegramRuntime.coordinator = telegram
-        drive.onJournalChanged = { [weak self] in
-            self?.reloadJournal()
-        }
         telegram.isPremium = { [weak controller] in controller?.isActive ?? false }
         telegram.onJournalChanged = { [weak self] in
             self?.reloadJournal()
@@ -95,11 +84,8 @@ final class AppState {
 
     func bootstrap() {
         ensureProfileExists()
-        drive.suppressSchedule = true
         reloadJournal()
-        drive.suppressSchedule = false
         premium.start()
-        drive.launch()
         telegram.launch()
         TelegramBackgroundRegistrar.submit()
     }
@@ -109,7 +95,6 @@ final class AppState {
         catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
         scheduleReminders()
-        drive.noteLocalEdit()
     }
 
     /// Replaces pending smart reminders. Does not reload the journal.
@@ -132,7 +117,6 @@ final class AppState {
         }
         catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
-        drive.noteLocalEdit()
     }
 
     @ObservationIgnored private var reminderTask: Task<Void, Never>?

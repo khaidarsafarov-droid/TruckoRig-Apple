@@ -1,7 +1,7 @@
 import Foundation
 
-/// Rows a Drive restore writes. Maintenance is replaced only when the backup schema carries it.
-struct DriveJournalPlan {
+/// Rows a file restore writes. Maintenance is replaced only when the backup schema carries it.
+struct BackupJournalPlan {
     var loads: [Load]
     var paychecks: [Paycheck]
     var diesel: [Diesel]
@@ -14,15 +14,15 @@ struct DriveJournalPlan {
 ///
 /// Photos, scans and receipt bytes stay on the phone. The file keeps the path and OCR text
 /// Android already stores on a maintenance archive row, and nothing else.
-enum DriveJournalMapper {
+enum BackupJournalMapper {
 
     static func export(
         graph: AppDatabase.StoredGraph,
         settings: AppSettings,
-        identity: DriveIdentityStore,
+        identity: BackupIdentityStore,
         accountId: String,
         exportedAt: Int64
-    ) -> DriveBackup {
+    ) -> BackupData {
         var book = identity.load()
         var usedStops = Set<Int>()
         var usedPenalties = Set<Int>()
@@ -52,9 +52,9 @@ enum DriveJournalMapper {
         }
         adoptStoredThemeIfNeeded(settings, extra: &book.settingsExtra)
         identity.save(book)
-        return DriveBackup(
-            schemaVersion: DriveBackupSchema.current,
-            version: DriveBackupSchema.current,
+        return BackupData(
+            schemaVersion: BackupSchema.current,
+            version: BackupSchema.current,
             exportedAt: exportedAt,
             accountId: accountId,
             loads: loads,
@@ -67,11 +67,11 @@ enum DriveJournalMapper {
     }
 
     static func importBackup(
-        _ backup: DriveBackup,
+        _ backup: BackupData,
         settings: AppSettings,
-        identity: DriveIdentityStore,
+        identity: BackupIdentityStore,
         now: Date = Date()
-    ) -> DriveJournalPlan {
+    ) -> BackupJournalPlan {
         var book = identity.load()
         let loads = backup.loads.map { importLoad($0, book: &book, now: now) }
         let paychecks = backup.paychecks.map { importPaycheck($0, book: &book, now: now) }
@@ -82,11 +82,11 @@ enum DriveJournalMapper {
             apply(incoming, to: settings, extra: &book.settingsExtra)
         }
         identity.save(book)
-        return DriveJournalPlan(
+        return BackupJournalPlan(
             loads: loads,
             paychecks: paychecks,
             diesel: diesel,
-            replaceMaintenance: DriveBackupCodec.carriesMaintenance(backup),
+            replaceMaintenance: BackupDataCodec.carriesMaintenance(backup),
             maintenanceTasks: tasks,
             maintenanceArchive: archive
         )
@@ -96,12 +96,12 @@ enum DriveJournalMapper {
 
     private static func exportLoad(
         _ load: Load,
-        book: inout DriveIdentityBook,
+        book: inout BackupIdentityBook,
         usedStops: inout Set<Int>,
         usedPenalties: inout Set<Int>
-    ) -> DriveLoad {
+    ) -> BackupLoad {
         let androidID = androidLoadID(load.id, book: &book)
-        let extra = book.loadExtras[load.id.uuidString] ?? DriveLoadExtra()
+        let extra = book.loadExtras[load.id.uuidString] ?? BackupLoadExtra()
         let stops = (load.stops ?? []).sorted { $0.stopNumber < $1.stopNumber }
         let pickups = stops.filter { $0.type == .pickup }
         let deliveries = stops.filter { $0.type == .delivery }
@@ -129,7 +129,7 @@ enum DriveJournalMapper {
         let penalties = (load.penalties ?? []).map { penalty in
             exportPenalty(penalty, loadID: androidID, book: &book, used: &usedPenalties)
         }
-        return DriveLoad(
+        return BackupLoad(
             id: androidID,
             tripId: load.tripId,
             date: DateUtils.isoDay(load.date),
@@ -167,11 +167,11 @@ enum DriveJournalMapper {
     private static func exportStop(
         _ stop: Stop,
         loadID: String,
-        book: inout DriveIdentityBook,
+        book: inout BackupIdentityBook,
         used: inout Set<Int>
-    ) -> DriveStop {
-        let androidID = DriveIdentity.positiveInt(for: stop.id.uuidString, saved: &book.stopIntByUUID, used: &used)
-        return DriveStop(
+    ) -> BackupStop {
+        let androidID = BackupIdentity.positiveInt(for: stop.id.uuidString, saved: &book.stopIntByUUID, used: &used)
+        return BackupStop(
             id: androidID,
             loadId: loadID,
             stopNumber: stop.stopNumber,
@@ -191,16 +191,16 @@ enum DriveJournalMapper {
     private static func exportPenalty(
         _ penalty: Penalty,
         loadID: String,
-        book: inout DriveIdentityBook,
+        book: inout BackupIdentityBook,
         used: inout Set<Int>
-    ) -> DrivePenalty {
-        let androidID = DriveIdentity.positiveInt(
+    ) -> BackupPenalty {
+        let androidID = BackupIdentity.positiveInt(
             for: penalty.id.uuidString,
             saved: &book.penaltyIntByUUID,
             used: &used
         )
         book.penaltyDates[penalty.id.uuidString] = penalty.date.timeIntervalSince1970
-        return DrivePenalty(
+        return BackupPenalty(
             id: androidID,
             loadId: loadID,
             description: penalty.summary,
@@ -208,9 +208,9 @@ enum DriveJournalMapper {
         )
     }
 
-    private static func importLoad(_ load: DriveLoad, book: inout DriveIdentityBook, now: Date) -> Load {
+    private static func importLoad(_ load: BackupLoad, book: inout BackupIdentityBook, now: Date) -> Load {
         let id = loadUUID(load.id, book: &book)
-        book.loadExtras[id.uuidString] = DriveLoadExtra(
+        book.loadExtras[id.uuidString] = BackupLoadExtra(
             equipmentType: load.equipmentType,
             deadheadMiles: load.deadheadMiles,
             disputeApplyToLoad: load.disputeApplyToLoad,
@@ -245,7 +245,7 @@ enum DriveJournalMapper {
         return imported
     }
 
-    private static func importStop(_ stop: DriveStop, loadID: UUID, book: inout DriveIdentityBook) -> Stop {
+    private static func importStop(_ stop: BackupStop, loadID: UUID, book: inout BackupIdentityBook) -> Stop {
         let key = "\(loadID.uuidString)#\(stop.id)"
         let id: UUID
         if let saved = book.stopUUIDByKey[key], let uuid = UUID(uuidString: saved) {
@@ -273,10 +273,10 @@ enum DriveJournalMapper {
     }
 
     private static func importPenalty(
-        _ penalty: DrivePenalty,
+        _ penalty: BackupPenalty,
         loadID: UUID,
         fallback: Date,
-        book: inout DriveIdentityBook
+        book: inout BackupIdentityBook
     ) -> Penalty {
         let key = "\(loadID.uuidString)#\(penalty.id)"
         let id: UUID
@@ -301,15 +301,15 @@ enum DriveJournalMapper {
     private static func exportPaycheck(
         _ paycheck: Paycheck,
         settings: AppSettings,
-        book: inout DriveIdentityBook,
+        book: inout BackupIdentityBook,
         used: inout Set<Int>
-    ) -> DrivePaycheck {
-        let androidID = DriveIdentity.positiveInt(
+    ) -> BackupPaycheck {
+        let androidID = BackupIdentity.positiveInt(
             for: paycheck.id.uuidString,
             saved: &book.paycheckIntByUUID,
             used: &used
         )
-        var extra = book.paycheckExtras[paycheck.id.uuidString] ?? DrivePaycheckExtra()
+        var extra = book.paycheckExtras[paycheck.id.uuidString] ?? BackupPaycheckExtra()
         extra.company = paycheck.company
         extra.notes = paycheck.notes
         let range = weekRange(for: paycheck.date, settings: settings)
@@ -322,7 +322,7 @@ enum DriveJournalMapper {
         if extra.addedAt == nil { extra.addedAt = millis(paycheck.updatedAt) }
         book.paycheckExtras[paycheck.id.uuidString] = extra
         book.paycheckUUIDByAndroid[String(androidID)] = paycheck.id.uuidString
-        return DrivePaycheck(
+        return BackupPaycheck(
             id: androidID,
             weekNumber: paycheck.weekNumber,
             year: paycheck.year,
@@ -339,7 +339,7 @@ enum DriveJournalMapper {
         )
     }
 
-    private static func importPaycheck(_ paycheck: DrivePaycheck, book: inout DriveIdentityBook, now: Date) -> Paycheck {
+    private static func importPaycheck(_ paycheck: BackupPaycheck, book: inout BackupIdentityBook, now: Date) -> Paycheck {
         let key = String(paycheck.id)
         let id: UUID
         if let saved = book.paycheckUUIDByAndroid[key], let uuid = UUID(uuidString: saved) {
@@ -349,7 +349,7 @@ enum DriveJournalMapper {
             book.paycheckUUIDByAndroid[key] = id.uuidString
         }
         book.paycheckIntByUUID[id.uuidString] = paycheck.id
-        var extra = book.paycheckExtras[id.uuidString] ?? DrivePaycheckExtra()
+        var extra = book.paycheckExtras[id.uuidString] ?? BackupPaycheckExtra()
         extra.weekLabel = paycheck.weekLabel
         extra.weekStartDate = paycheck.weekStartDate
         extra.weekEndDate = paycheck.weekEndDate
@@ -376,11 +376,11 @@ enum DriveJournalMapper {
     private static func exportDiesel(
         _ fill: Diesel,
         settings: AppSettings,
-        book: inout DriveIdentityBook,
+        book: inout BackupIdentityBook,
         used: inout Set<Int>
-    ) -> DriveDiesel {
-        let androidID = DriveIdentity.positiveInt(for: fill.id.uuidString, saved: &book.dieselIntByUUID, used: &used)
-        var extra = book.dieselExtras[fill.id.uuidString] ?? DriveDieselExtra()
+    ) -> BackupDiesel {
+        let androidID = BackupIdentity.positiveInt(for: fill.id.uuidString, saved: &book.dieselIntByUUID, used: &used)
+        var extra = book.dieselExtras[fill.id.uuidString] ?? BackupDieselExtra()
         extra.state = fill.state
         extra.odometer = fill.odometer
         extra.receiptFileName = fill.receiptFileName
@@ -397,7 +397,7 @@ enum DriveJournalMapper {
         let price = thousandths(fill.pricePerGallon)
         let discount = fill.discountPricePerGallon.map(thousandths)
         let ref = settings.truckingWeek.week(for: fill.date)
-        return DriveDiesel(
+        return BackupDiesel(
             id: androidID,
             weekNumber: ref.weekNumber,
             year: ref.year,
@@ -415,7 +415,7 @@ enum DriveJournalMapper {
         )
     }
 
-    private static func importDiesel(_ fill: DriveDiesel, book: inout DriveIdentityBook, now: Date) -> Diesel {
+    private static func importDiesel(_ fill: BackupDiesel, book: inout BackupIdentityBook, now: Date) -> Diesel {
         let key = String(fill.id)
         let id: UUID
         if let saved = book.dieselUUIDByAndroid[key], let uuid = UUID(uuidString: saved) {
@@ -425,7 +425,7 @@ enum DriveJournalMapper {
             book.dieselUUIDByAndroid[key] = id.uuidString
         }
         book.dieselIntByUUID[id.uuidString] = fill.id
-        var extra = book.dieselExtras[id.uuidString] ?? DriveDieselExtra()
+        var extra = book.dieselExtras[id.uuidString] ?? BackupDieselExtra()
         extra.weekLabel = fill.weekLabel
         extra.weekStartDate = fill.weekStartDate
         extra.weekEndDate = fill.weekEndDate
@@ -454,12 +454,12 @@ enum DriveJournalMapper {
 
     private static func exportTask(
         _ task: MaintenanceTask,
-        book: inout DriveIdentityBook,
+        book: inout BackupIdentityBook,
         used: inout Set<Int64>
-    ) -> DriveMaintenanceTask {
-        let androidID = DriveIdentity.positiveLong(for: task.id, saved: &book.maintenanceLongByID, used: &used)
+    ) -> BackupMaintenanceTask {
+        let androidID = BackupIdentity.positiveLong(for: task.id, saved: &book.maintenanceLongByID, used: &used)
         book.maintenanceIDByLong[String(androidID)] = task.id
-        return DriveMaintenanceTask(
+        return BackupMaintenanceTask(
             id: androidID,
             title: task.title,
             startDate: task.startDate,
@@ -475,7 +475,7 @@ enum DriveJournalMapper {
         )
     }
 
-    private static func importTask(_ task: DriveMaintenanceTask, book: inout DriveIdentityBook) -> MaintenanceTask {
+    private static func importTask(_ task: BackupMaintenanceTask, book: inout BackupIdentityBook) -> MaintenanceTask {
         let id = maintenanceID(task.id, book: &book)
         return MaintenanceTask(
             id: id,
@@ -495,12 +495,12 @@ enum DriveJournalMapper {
 
     private static func exportArchive(
         _ entry: MaintenanceArchiveEntry,
-        book: inout DriveIdentityBook,
+        book: inout BackupIdentityBook,
         used: inout Set<Int64>
-    ) -> DriveMaintenanceArchive {
-        let androidID = DriveIdentity.positiveLong(for: entry.id, saved: &book.maintenanceLongByID, used: &used)
+    ) -> BackupMaintenanceArchive {
+        let androidID = BackupIdentity.positiveLong(for: entry.id, saved: &book.maintenanceLongByID, used: &used)
         book.maintenanceIDByLong[String(androidID)] = entry.id
-        return DriveMaintenanceArchive(
+        return BackupMaintenanceArchive(
             id: androidID,
             serviceName: entry.serviceName,
             serviceDate: entry.serviceDate,
@@ -513,8 +513,8 @@ enum DriveJournalMapper {
     }
 
     private static func importArchive(
-        _ entry: DriveMaintenanceArchive,
-        book: inout DriveIdentityBook
+        _ entry: BackupMaintenanceArchive,
+        book: inout BackupIdentityBook
     ) -> MaintenanceArchiveEntry {
         MaintenanceArchiveEntry(
             id: maintenanceID(entry.id, book: &book),
@@ -530,7 +530,7 @@ enum DriveJournalMapper {
 
     // MARK: - Settings
 
-    private static func exportSettings(_ settings: AppSettings, extra: DriveSettingsExtra) -> DriveAppSettings {
+    private static func exportSettings(_ settings: AppSettings, extra: BackupSettingsExtra) -> BackupAppSettings {
         let language: Int?
         switch settings.language {
         case .system:
@@ -542,7 +542,7 @@ enum DriveJournalMapper {
         }
         let goal = settings.weeklyGoal > 0 ? settings.weeklyGoal : nil
         let week = settings.weekStart.calendarWeekday
-        return DriveAppSettings(
+        return BackupAppSettings(
             themeModeOrdinal: settings.themeMode.rawValue,
             languageOrdinal: language,
             reduceMotion: extra.reduceMotion,
@@ -565,7 +565,7 @@ enum DriveJournalMapper {
     }
 
     /// A backup restored before theme lived in Settings kept the choice only in `extra`.
-    static func adoptStoredThemeIfNeeded(_ settings: AppSettings, extra: inout DriveSettingsExtra) {
+    static func adoptStoredThemeIfNeeded(_ settings: AppSettings, extra: inout BackupSettingsExtra) {
         if !settings.hasStoredThemeMode, let ordinal = extra.themeModeOrdinal {
             settings.themeMode = AppThemeMode.fromOrdinal(ordinal)
         }
@@ -574,7 +574,7 @@ enum DriveJournalMapper {
         }
     }
 
-    private static func apply(_ incoming: DriveAppSettings, to settings: AppSettings, extra: inout DriveSettingsExtra) {
+    private static func apply(_ incoming: BackupAppSettings, to settings: AppSettings, extra: inout BackupSettingsExtra) {
         if let ordinal = incoming.themeModeOrdinal {
             settings.themeMode = AppThemeMode.fromOrdinal(ordinal)
         }
@@ -620,7 +620,7 @@ enum DriveJournalMapper {
 
     // MARK: - Ids and clocks
 
-    private static func androidLoadID(_ id: UUID, book: inout DriveIdentityBook) -> String {
+    private static func androidLoadID(_ id: UUID, book: inout BackupIdentityBook) -> String {
         if let saved = book.loadAndroidByUUID[id.uuidString], !saved.isEmpty {
             return saved
         }
@@ -629,17 +629,17 @@ enum DriveJournalMapper {
         return id.uuidString
     }
 
-    private static func loadUUID(_ androidID: String, book: inout DriveIdentityBook) -> UUID {
+    private static func loadUUID(_ androidID: String, book: inout BackupIdentityBook) -> UUID {
         if let saved = book.loadUUIDByAndroid[androidID], let uuid = UUID(uuidString: saved) {
             return uuid
         }
-        let uuid = UUID(uuidString: androidID) ?? DriveIdentity.deterministicUUID(androidID)
+        let uuid = UUID(uuidString: androidID) ?? BackupIdentity.deterministicUUID(androidID)
         book.loadUUIDByAndroid[androidID] = uuid.uuidString
         book.loadAndroidByUUID[uuid.uuidString] = androidID
         return uuid
     }
 
-    private static func maintenanceID(_ androidID: Int64, book: inout DriveIdentityBook) -> String {
+    private static func maintenanceID(_ androidID: Int64, book: inout BackupIdentityBook) -> String {
         let key = String(androidID)
         if let saved = book.maintenanceIDByLong[key], !saved.isEmpty {
             book.maintenanceLongByID[saved] = androidID

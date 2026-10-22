@@ -2,11 +2,10 @@ import Foundation
 
 /// Android `AccountIds` for the single on-device journal.
 ///
-/// New Android installs use `local_dev`. The Drive file name is derived from that id so an
-/// iOS backup lands in the same app-data file a local Android install would write.
-public enum DriveAccount {
+/// New Android installs use `local_dev`. File backups write that id so a local Android
+/// install accepts the JSON, and this phone refuses a file tied to a different account.
+public enum BackupAccount {
     public static let localDev = "local_dev"
-    public static let legacyFileName = "truckerload_backup.tlb"
 
     /// Android `AccountIds.sanitizeFilePart`: trim, replace anything outside `[A-Za-z0-9_-]`,
     /// keep 80 characters, fall back to `unknown`.
@@ -28,13 +27,8 @@ public enum DriveAccount {
         return cleaned
     }
 
-    /// Android `GoogleDriveBackupPrefs.backupFileName`.
-    public static func backupFileName(accountId: String) -> String {
-        "truckerload_backup_\(sanitizeFilePart(accountId)).tlb"
-    }
-
-    /// Android prefs file `google_drive_backup_<account>`.
-    public static func prefsName(accountId: String) -> String {
-        "google_drive_backup_\(sanitizeFilePart(accountId))"
+    /// On-device map of Android integer ids. Not part of the JSON file.
+    public static func identitySuiteName(accountId: String) -> String {
+        "truckorig.backup.\(sanitizeFilePart(accountId)).identity"
     }
 }

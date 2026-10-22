@@ -2,10 +2,10 @@ import Foundation
 
 /// Stable ids and Android-only fields that the iOS tables do not have a column for.
 ///
-/// The `.tlb` file keeps Android's id types (load `String`, stop/paycheck/diesel `Int`,
+/// The JSON file keeps Android's id types (load `String`, stop/paycheck/diesel `Int`,
 /// maintenance `Long`). Re-exporting the same phone has to write those ids again, so the map
-/// is persisted. It is not part of the backup and is not cleared on Drive disconnect.
-struct DriveIdentityBook: Codable, Equatable {
+/// is persisted. It is not part of the backup file.
+struct BackupIdentityBook: Codable, Equatable {
     var loadAndroidByUUID: [String: String] = [:]
     var loadUUIDByAndroid: [String: String] = [:]
     var stopUUIDByKey: [String: String] = [:]
@@ -19,21 +19,21 @@ struct DriveIdentityBook: Codable, Equatable {
     var maintenanceIDByLong: [String: String] = [:]
     var maintenanceLongByID: [String: Int64] = [:]
 
-    var loadExtras: [String: DriveLoadExtra] = [:]
-    var paycheckExtras: [String: DrivePaycheckExtra] = [:]
-    var dieselExtras: [String: DriveDieselExtra] = [:]
+    var loadExtras: [String: BackupLoadExtra] = [:]
+    var paycheckExtras: [String: BackupPaycheckExtra] = [:]
+    var dieselExtras: [String: BackupDieselExtra] = [:]
     var penaltyDates: [String: Double] = [:]
-    var settingsExtra: DriveSettingsExtra = DriveSettingsExtra()
+    var settingsExtra: BackupSettingsExtra = BackupSettingsExtra()
 }
 
-struct DriveLoadExtra: Codable, Equatable {
+struct BackupLoadExtra: Codable, Equatable {
     var equipmentType: String?
     var deadheadMiles: Double = 0
     var disputeApplyToLoad: Bool = false
     var disputeAmountApplied: Bool = false
 }
 
-struct DrivePaycheckExtra: Codable, Equatable {
+struct BackupPaycheckExtra: Codable, Equatable {
     var company: String?
     var notes: String?
     var weekLabel: String?
@@ -43,7 +43,7 @@ struct DrivePaycheckExtra: Codable, Equatable {
     var addedAt: Int64?
 }
 
-struct DriveDieselExtra: Codable, Equatable {
+struct BackupDieselExtra: Codable, Equatable {
     var state: String?
     var odometer: Int?
     var receiptFileName: String?
@@ -55,7 +55,7 @@ struct DriveDieselExtra: Codable, Equatable {
 
 /// Android settings written back so a round trip does not drop them.
 /// Theme and OLED are edited in Settings; a backup from before that still lands here first.
-struct DriveSettingsExtra: Codable, Equatable {
+struct BackupSettingsExtra: Codable, Equatable {
     var themeModeOrdinal: Int?
     var reduceMotion: Bool?
     var oledDark: Bool?
@@ -67,7 +67,7 @@ struct DriveSettingsExtra: Codable, Equatable {
     var preservedLanguageOrdinal: Int?
 }
 
-final class DriveIdentityStore {
+final class BackupIdentityStore {
     private let defaults: UserDefaults
     private let key = "book"
 
@@ -75,23 +75,23 @@ final class DriveIdentityStore {
         self.defaults = defaults
     }
 
-    static func standard(accountId: String = DriveAccount.localDev) -> DriveIdentityStore {
-        let name = DriveAccount.prefsName(accountId: accountId) + "_identity"
-        return DriveIdentityStore(defaults: UserDefaults(suiteName: name) ?? .standard)
+    static func standard(accountId: String = BackupAccount.localDev) -> BackupIdentityStore {
+        let name = BackupAccount.identitySuiteName(accountId: accountId)
+        return BackupIdentityStore(defaults: UserDefaults(suiteName: name) ?? .standard)
     }
 
-    func load() -> DriveIdentityBook {
-        guard let data = defaults.data(forKey: key) else { return DriveIdentityBook() }
-        return (try? JSONDecoder().decode(DriveIdentityBook.self, from: data)) ?? DriveIdentityBook()
+    func load() -> BackupIdentityBook {
+        guard let data = defaults.data(forKey: key) else { return BackupIdentityBook() }
+        return (try? JSONDecoder().decode(BackupIdentityBook.self, from: data)) ?? BackupIdentityBook()
     }
 
-    func save(_ book: DriveIdentityBook) {
+    func save(_ book: BackupIdentityBook) {
         guard let data = try? JSONEncoder().encode(book) else { return }
         defaults.set(data, forKey: key)
     }
 }
 
-enum DriveIdentity {
+enum BackupIdentity {
     /// Same text always maps to the same UUID. The version nibble marks it as an app-assigned id.
     static func deterministicUUID(_ text: String) -> UUID {
         var high = UInt64(14_695_981_039_346_656_037)
