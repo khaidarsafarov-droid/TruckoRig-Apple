@@ -44,6 +44,42 @@ struct SettingsView: View {
         @Bindable var settings = settings
 
         Form {
+            Section("settings.appearance") {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("settings.theme.title")
+                        .font(.appBodyMedium)
+                        .foregroundStyle(Color.forestText)
+                    HStack(spacing: 8) {
+                        ForEach(AppThemeMode.allCases) { mode in
+                            Button {
+                                settings.themeMode = mode
+                            } label: {
+                                Text(mode.titleKey)
+                                    .font(.appCaptionMedium)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.7)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 4)
+                                    .foregroundStyle(settings.themeMode == mode ? Color.forestOnPrimary : Color.forestText)
+                                    .background(
+                                        settings.themeMode == mode ? Color.forestPrimary : Color.forestSurfaceMuted,
+                                        in: Capsule()
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityAddTraits(settings.themeMode == mode ? .isSelected : AccessibilityTraits())
+                        }
+                    }
+                }
+                if settings.themeMode.showsOledToggle {
+                    Toggle("settings.oled.title", isOn: $settings.oledDark)
+                    Text("settings.oled.subtitle")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
+            }
+
             Section("settings.general") {
                 Picker("settings.language", selection: $settings.language) {
                     ForEach(AppLanguage.allCases) { language in

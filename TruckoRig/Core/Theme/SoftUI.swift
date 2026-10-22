@@ -57,6 +57,44 @@ extension View {
     }
 }
 
+/// Applies the saved theme to a screen tree. OLED black is on only when the cabin is dark.
+struct AppCabinTheme: ViewModifier {
+    @Environment(\.colorScheme) private var systemScheme
+    var mode: AppThemeMode
+    var oledDark: Bool
+
+    private var oledActive: Bool {
+        ThemePalette.oledApplies(mode: mode, oledDark: oledDark, systemIsDark: systemScheme == .dark)
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .preferredColorScheme(mode.preferredColorScheme)
+            .environment(\.oledDarkActive, oledActive)
+            .background {
+                OLEDTraitInstaller(active: oledActive)
+            }
+            .modifier(OLEDBarChrome(active: oledActive))
+    }
+}
+
+/// True-black navigation and tab bars. Left off unless OLED is on, so the system bars stay as they are.
+private struct OLEDBarChrome: ViewModifier {
+    var active: Bool
+
+    func body(content: Content) -> some View {
+        if active {
+            content
+                .toolbarBackground(Color.forestBackground, for: .navigationBar)
+                .toolbarBackground(Color.forestBackground, for: .tabBar)
+                .toolbarBackground(.visible, for: .navigationBar)
+                .toolbarBackground(.visible, for: .tabBar)
+        } else {
+            content
+        }
+    }
+}
+
 struct SoftPrimaryButtonStyle: ButtonStyle {
     var isDestructive: Bool = false
     @Environment(\.isEnabled) private var isEnabled

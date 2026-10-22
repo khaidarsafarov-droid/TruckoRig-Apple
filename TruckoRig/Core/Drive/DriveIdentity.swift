@@ -53,7 +53,8 @@ struct DriveDieselExtra: Codable, Equatable {
     var addedAt: Int64?
 }
 
-/// Android settings this phone does not edit. Written back so a round trip does not drop them.
+/// Android settings written back so a round trip does not drop them.
+/// Theme and OLED are edited in Settings; a backup from before that still lands here first.
 struct DriveSettingsExtra: Codable, Equatable {
     var themeModeOrdinal: Int?
     var reduceMotion: Bool?

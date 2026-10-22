@@ -50,6 +50,7 @@ enum DriveJournalMapper {
         let archive = graph.maintenanceArchive.map { entry in
             exportArchive(entry, book: &book, used: &usedMaintenance)
         }
+        adoptStoredThemeIfNeeded(settings, extra: &book.settingsExtra)
         identity.save(book)
         return DriveBackup(
             schemaVersion: DriveBackupSchema.current,
@@ -542,10 +543,10 @@ enum DriveJournalMapper {
         let goal = settings.weeklyGoal > 0 ? settings.weeklyGoal : nil
         let week = settings.weekStart.calendarWeekday
         return DriveAppSettings(
-            themeModeOrdinal: extra.themeModeOrdinal,
+            themeModeOrdinal: settings.themeMode.rawValue,
             languageOrdinal: language,
             reduceMotion: extra.reduceMotion,
-            oledDark: extra.oledDark,
+            oledDark: settings.oledDark,
             dynamicColor: extra.dynamicColor,
             parserAutoUpdate: extra.parserAutoUpdate,
             parserPriceThresholdPercent: extra.parserPriceThresholdPercent,
@@ -563,9 +564,25 @@ enum DriveJournalMapper {
         )
     }
 
+    /// A backup restored before theme lived in Settings kept the choice only in `extra`.
+    static func adoptStoredThemeIfNeeded(_ settings: AppSettings, extra: inout DriveSettingsExtra) {
+        if !settings.hasStoredThemeMode, let ordinal = extra.themeModeOrdinal {
+            settings.themeMode = AppThemeMode.fromOrdinal(ordinal)
+        }
+        if !settings.hasStoredOledDark, let oled = extra.oledDark {
+            settings.oledDark = oled
+        }
+    }
+
     private static func apply(_ incoming: DriveAppSettings, to settings: AppSettings, extra: inout DriveSettingsExtra) {
+        if let ordinal = incoming.themeModeOrdinal {
+            settings.themeMode = AppThemeMode.fromOrdinal(ordinal)
+        }
         extra.themeModeOrdinal = incoming.themeModeOrdinal
         extra.reduceMotion = incoming.reduceMotion
+        if let oled = incoming.oledDark {
+            settings.oledDark = oled
+        }
         extra.oledDark = incoming.oledDark
         extra.dynamicColor = incoming.dynamicColor
         extra.parserAutoUpdate = incoming.parserAutoUpdate

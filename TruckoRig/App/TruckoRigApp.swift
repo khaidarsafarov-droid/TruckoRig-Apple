@@ -15,6 +15,7 @@ struct TruckoRigApp: App {
             RootView()
                 .environment(appState)
                 .tint(.forestPrimary)
+                .modifier(AppCabinTheme(mode: appState.settings.themeMode, oledDark: appState.settings.oledDark))
                 .environment(\.locale, resolvedLocale)
                 .task {
                     appState.bootstrap()
