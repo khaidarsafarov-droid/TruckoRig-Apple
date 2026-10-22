@@ -28,7 +28,7 @@ struct TelegramStash: Codable, Equatable {
 }
 
 /// Everything except the bot token. The token stays in the Keychain.
-struct TelegramPrefs {
+final class TelegramPrefs {
     private let defaults: UserDefaults
     private let prefix: String
 

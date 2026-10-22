@@ -923,7 +923,6 @@
 				0EB81F22256FB307ED161F23 /* Scanner */,
 				6BDE0CF79E8A192A3E6B8639 /* Settings */,
 				B462FE27BC46A315316E0089 /* Tax */,
-				B529E99A710012BA848AA66B /* Telegram */,
 				7334E852395B18F68E9CF412 /* WeeklyGoal */,
 				6FCE891CD0CF492A42C2E13A /* Widget */,
 			);
@@ -1112,13 +1111,6 @@
 				EEC971AF7240CF20B136736B /* TaxTrackerView.swift */,
 			);
 			path = "Tax";
-			sourceTree = "<group>";
-		};
-		B529E99A710012BA848AA66B /* Telegram */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Telegram";
 			sourceTree = "<group>";
 		};
 		7334E852395B18F68E9CF412 /* WeeklyGoal */ = {
