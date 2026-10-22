@@ -10226,23 +10226,6 @@
         }
       }
     },
-    "tax.exportReady": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Report"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Отчёт"
-          }
-        }
-      }
-    },
     "tax.federal": {
       "extractionState": "manual",
       "localizations": {
@@ -10385,13 +10368,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Everything"
+            "value": "Everything (one file, separate sheets)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Всё"
+            "value": "Всё вместе (один файл, разные листы)"
           }
         }
       }
@@ -10425,7 +10408,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "За этот год нечего отправлять"
+            "value": "Нечего отправлять за этот год"
           }
         }
       }
@@ -10442,7 +10425,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Год %lld — выберите, что включить"
+            "value": "Год %lld — выберите, что отправить"
           }
         }
       }
@@ -10459,7 +10442,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Только рейсы"
+            "value": "Только грузы"
           }
         }
       }
@@ -10476,7 +10459,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Только обслуживание"
+            "value": "Только ТО / расходы"
           }
         }
       }
@@ -10493,7 +10476,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Только per diem"
+            "value": "Только суточные"
           }
         }
       }
@@ -11520,6 +11503,108 @@
           "stringUnit": {
             "state": "translated",
             "value": "La importación de Telegram es Premium."
+          }
+        }
+      }
+    },
+    "tax.send.what": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Include in the file"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что включить в файл"
+          }
+        }
+      }
+    },
+    "tax.send.apps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After Send, pick an app: Telegram, WhatsApp, email, etc."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После «Отправить» выберите приложение: Telegram, WhatsApp, почту и т.д."
+          }
+        }
+      }
+    },
+    "tax.send.preparing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing file…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готовим файл…"
+          }
+        }
+      }
+    },
+    "tax.send.action": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отправить"
+          }
+        }
+      }
+    },
+    "tax.export.success %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report ready: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отчёт готов: %@"
+          }
+        }
+      }
+    },
+    "tax.export.error %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export failed: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ошибка экспорта: %@"
           }
         }
       }

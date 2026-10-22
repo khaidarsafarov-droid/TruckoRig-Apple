@@ -136,7 +136,9 @@
 		E812A5D08CD02C98B4A55AD4 /* PremiumPolicy.swift */ = {isa = PBXBuildFile; fileRef = B623A1A76B97E0EEABA3595D /* PremiumPolicy.swift */; };
 		CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */ = {isa = PBXBuildFile; fileRef = 2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */; };
 		9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */ = {isa = PBXBuildFile; fileRef = 36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */; };
+		87EB4E74F31E439EBE46A010 /* AccountantWorkbook.swift */ = {isa = PBXBuildFile; fileRef = 5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */; };
 		8869A36CAF7FBF5C7899B2FA /* TaxEstimate.swift */ = {isa = PBXBuildFile; fileRef = 0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */; };
+		57D48107DCAD176096D80F9D /* XlsxWorkbook.swift */ = {isa = PBXBuildFile; fileRef = D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */; };
 		EF0716C4DA1B4426B52D35B6 /* TelegramCopy.swift */ = {isa = PBXBuildFile; fileRef = 1A7ECC665686BD45C1748A48 /* TelegramCopy.swift */; };
 		BC7F50E9BF3305935F66BB7F /* TelegramFoundation.swift */ = {isa = PBXBuildFile; fileRef = 3E43520566618F3BD7D35FD9 /* TelegramFoundation.swift */; };
 		6D11BA4CF1D376B8AB731962 /* TelegramHTTP.swift */ = {isa = PBXBuildFile; fileRef = B249EA0DE1C7915F0F8271F7 /* TelegramHTTP.swift */; };
@@ -402,7 +404,9 @@
 		B623A1A76B97E0EEABA3595D /* PremiumPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumPolicy.swift"; sourceTree = "<group>"; };
 		2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderPolicy.swift"; sourceTree = "<group>"; };
 		36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReceiptKindClassifier.swift"; sourceTree = "<group>"; };
+		5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountantWorkbook.swift"; sourceTree = "<group>"; };
 		0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxEstimate.swift"; sourceTree = "<group>"; };
+		D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XlsxWorkbook.swift"; sourceTree = "<group>"; };
 		1A7ECC665686BD45C1748A48 /* TelegramCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramCopy.swift"; sourceTree = "<group>"; };
 		3E43520566618F3BD7D35FD9 /* TelegramFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramFoundation.swift"; sourceTree = "<group>"; };
 		B249EA0DE1C7915F0F8271F7 /* TelegramHTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramHTTP.swift"; sourceTree = "<group>"; };
@@ -907,7 +911,9 @@
 		FDED2F2045248E329691F51E /* Tax */ = {
 			isa = PBXGroup;
 			children = (
+				5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */,
 				0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */,
+				D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */,
 			);
 			path = "Tax";
 			sourceTree = "<group>";
@@ -1563,7 +1569,9 @@
 				E812A5D08CD02C98B4A55AD4 /* PremiumPolicy.swift */,
 				CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */,
 				9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */,
+				87EB4E74F31E439EBE46A010 /* AccountantWorkbook.swift */,
 				8869A36CAF7FBF5C7899B2FA /* TaxEstimate.swift */,
+				57D48107DCAD176096D80F9D /* XlsxWorkbook.swift */,
 				EF0716C4DA1B4426B52D35B6 /* TelegramCopy.swift */,
 				BC7F50E9BF3305935F66BB7F /* TelegramFoundation.swift */,
 				6D11BA4CF1D376B8AB731962 /* TelegramHTTP.swift */,

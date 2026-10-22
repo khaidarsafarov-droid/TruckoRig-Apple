@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Quarterly tax estimate: paycheck gross, diesel, and $69 per on-duty day.
 struct TaxTrackerView: View {
@@ -8,12 +9,28 @@ struct TaxTrackerView: View {
     @State private var month = Calendar.current.component(.month, from: Date())
     @State private var exportURL: ExportedBackup?
     @State private var isChoosingExport = false
-    @State private var statusMessage: String?
+    @State private var isExporting = false
+    @State private var exportMessage: String?
+    @State private var sendAll = true
+    @State private var sendLoads = true
+    @State private var sendDiesel = true
+    @State private var sendPerDiem = true
+    @State private var sendMaintenance = true
 
     private var calendar: Calendar { Calendar.current }
+    private var reportingWeek: TruckingWeek { appState.settings.truckingWeek }
 
+    /// Reporting week-year, matching Android `getLoadsByWeekYearOnce`.
     private var loadsThisYear: [Load] {
-        appState.catalog.loads.filter { calendar.component(.year, from: $0.date) == year }
+        appState.catalog.loads.filter { $0.year == year }
+    }
+
+    private var dieselThisYear: [Diesel] {
+        appState.catalog.diesel.filter { reportingWeek.week(for: $0.date).year == year }
+    }
+
+    private var paychecksThisYear: [Paycheck] {
+        appState.catalog.paychecks.filter { $0.year == year }
     }
 
     private var autoDates: Set<String> {
@@ -35,15 +52,11 @@ struct TaxTrackerView: View {
     }
 
     private var estimate: TaxEstimate {
-        let gross = appState.catalog.paychecks
-            .filter { calendar.component(.year, from: $0.date) == year }
-            .reduce(0) { partial, paycheck in
-                let gross = paycheck.grossAmount.flatMap { $0 > 0 ? $0 : nil } ?? paycheck.amount
-                return partial + gross
-            }
-        let diesel = appState.catalog.diesel
-            .filter { calendar.component(.year, from: $0.date) == year }
-            .reduce(0) { $0 + $1.totalCost }
+        let gross = paychecksThisYear.reduce(0) { partial, paycheck in
+            let gross = paycheck.grossAmount.flatMap { $0 > 0 ? $0 : nil } ?? paycheck.amount
+            return partial + gross
+        }
+        let diesel = dieselThisYear.reduce(0) { $0 + $1.totalCost }
         return TaxEstimate.make(
             grossIncome: gross,
             dieselDeductions: diesel,
@@ -87,6 +100,15 @@ struct TaxTrackerView: View {
                     LabeledContent("tax.owed") { Text(Formatters.moneyPrecise(estimate.totalOwed)) }
                         .font(.appHeadline)
                 }
+                SoftButton(title: "tax.send", systemImage: "square.and.arrow.up", isLoading: isExporting) {
+                    openSendSheet()
+                }
+                .disabled(isExporting)
+                if let exportMessage {
+                    Text(exportMessage)
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
                 Text("tax.disclaimer")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
@@ -99,32 +121,20 @@ struct TaxTrackerView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    isChoosingExport = true
+                    openSendSheet()
                 } label: {
                     Label("tax.send", systemImage: "square.and.arrow.up")
                 }
+                .disabled(isExporting)
                 .accessibilityLabel("tax.send")
             }
         }
-        .confirmationDialog("tax.send", isPresented: $isChoosingExport, titleVisibility: .visible) {
-            Button("tax.send.all") { share(sections: [.all]) }
-            Button("tax.send.loads") { share(sections: [.loads]) }
-            Button("tax.send.diesel") { share(sections: [.diesel]) }
-            Button("tax.send.perDiem") { share(sections: [.perDiem]) }
-            Button("tax.send.maintenance") { share(sections: [.maintenance]) }
-            Button("action.cancel", role: .cancel) {}
-        } message: {
-            Text("tax.send.hint \(year)")
+        .sheet(isPresented: $isChoosingExport) {
+            sendSheet
         }
         .sheet(item: $exportURL) { export in
-            ShareSheet(items: [export.url])
+            ShareSheet(items: [WorkbookShareSource(url: export.url)])
         }
-        .alert(
-            "tax.exportReady",
-            isPresented: .isPresented($statusMessage),
-            actions: { Button("action.ok") {} },
-            message: { Text(statusMessage ?? "") }
-        )
     }
 
     private var yearSelector: some View {
@@ -242,55 +252,241 @@ struct TaxTrackerView: View {
                 effectiveDates: effectiveDates
             )
         } catch {
-            statusMessage = error.localizedDescription
+            exportMessage = error.localizedDescription
         }
     }
 
+    private var sendSheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Spacing.tight) {
+                    Text("tax.send.hint \(year)")
+                        .font(.appBody)
+                        .foregroundStyle(Color.forestTextSecondary)
+                    Text("tax.send.what")
+                        .font(.appHeadline)
+                        .padding(.top, Spacing.tight)
+                    sendCheck("tax.send.all", checked: sendAll, enabled: !isExporting) {
+                        sendAll.toggle()
+                        if sendAll {
+                            sendLoads = true
+                            sendDiesel = true
+                            sendPerDiem = true
+                            sendMaintenance = true
+                        }
+                    }
+                    sendCheck("tax.send.loads", checked: sendLoads, enabled: !isExporting && !sendAll) {
+                        sendLoads.toggle()
+                        syncAllFromParts()
+                    }
+                    sendCheck("tax.send.diesel", checked: sendDiesel, enabled: !isExporting && !sendAll) {
+                        sendDiesel.toggle()
+                        syncAllFromParts()
+                    }
+                    sendCheck("tax.send.perDiem", checked: sendPerDiem, enabled: !isExporting && !sendAll) {
+                        sendPerDiem.toggle()
+                        syncAllFromParts()
+                    }
+                    sendCheck("tax.send.maintenance", checked: sendMaintenance, enabled: !isExporting && !sendAll) {
+                        sendMaintenance.toggle()
+                        syncAllFromParts()
+                    }
+                    Text("tax.send.apps")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                        .padding(.top, Spacing.standard)
+                    SoftButton(
+                        title: isExporting ? LocalizedStringKey("tax.send.preparing") : LocalizedStringKey("tax.send.action"),
+                        isLoading: isExporting
+                    ) {
+                        share(sections: sendSelection)
+                    }
+                    .disabled(!canSend || isExporting)
+                    if let exportMessage {
+                        Text(exportMessage)
+                            .font(.appCaption)
+                            .foregroundStyle(Color.forestTextSecondary)
+                    }
+                }
+                .padding(Spacing.standard)
+            }
+            .forestBackground()
+            .navigationTitle("tax.send")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("action.cancel") { isChoosingExport = false }
+                        .disabled(isExporting)
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+    }
+
+    private var sendSelection: Set<AccountantExportSection> {
+        if sendAll { return [.all] }
+        var sections = Set<AccountantExportSection>()
+        if sendLoads { sections.insert(.loads) }
+        if sendDiesel { sections.insert(.diesel) }
+        if sendPerDiem { sections.insert(.perDiem) }
+        if sendMaintenance { sections.insert(.maintenance) }
+        return sections
+    }
+
+    private var canSend: Bool {
+        sendAll || !sendSelection.isEmpty
+    }
+
+    private func sendCheck(
+        _ title: LocalizedStringKey,
+        checked: Bool,
+        enabled: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: Spacing.tight) {
+                Image(systemName: checked ? "checkmark.square.fill" : "square")
+                    .foregroundStyle(enabled ? Color.forestPrimary : Color.forestTextSecondary)
+                Text(title)
+                    .font(.appBody)
+                    .foregroundStyle(enabled ? Color.forestText : Color.forestTextSecondary)
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+    }
+
+    private func syncAllFromParts() {
+        sendAll = sendLoads && sendDiesel && sendPerDiem && sendMaintenance
+    }
+
+    private func openSendSheet() {
+        sendAll = true
+        sendLoads = true
+        sendDiesel = true
+        sendPerDiem = true
+        sendMaintenance = true
+        exportMessage = nil
+        isChoosingExport = true
+    }
+
     private func share(sections: Set<AccountantExportSection>) {
-        let resolved = AccountantExportSection.resolve(sections)
-        var rows: [AccountantExport.Row] = []
-        if resolved.contains(.loads) {
-            rows += loadsThisYear.map { load in
-                AccountantExport.Row(section: "loads", cells: [load.tripId, Formatters.moneyPrecise(load.totalRate), DateUtils.mediumDate(load.date), load.route])
-            }
-        }
-        if resolved.contains(.diesel) {
-            rows += appState.catalog.diesel.filter { calendar.component(.year, from: $0.date) == year }.map { fill in
-                AccountantExport.Row(section: "diesel", cells: [DateUtils.mediumDate(fill.date), fill.location ?? "", Formatters.moneyPrecise(fill.totalCost), Formatters.gallons(fill.gallons)])
-            }
-        }
-        if resolved.contains(.perDiem) {
-            rows += effectiveDates.sorted().map { iso in
-                AccountantExport.Row(section: "per_diem", cells: [iso, String(format: "%.2f", PerDiemCalculator.dailyRate), "", ""])
-            }
-        }
-        if resolved.contains(.maintenance) {
-            let prefix = String(format: "%04d", year)
-            rows += appState.catalog.maintenanceArchive.filter { $0.serviceDate.hasPrefix(prefix) }.map { entry in
-                let name = entry.serviceName.isEmpty ? entry.description : entry.serviceName
-                return AccountantExport.Row(
-                    section: "maintenance",
-                    cells: [name, Formatters.moneyPrecise(entry.amount.dollars), entry.description, entry.serviceDate]
-                )
-            }
-        }
-        let counts: [AccountantExportSection: Int] = [
-            .loads: rows.filter { $0.section == "loads" }.count,
-            .diesel: rows.filter { $0.section == "diesel" }.count,
-            .perDiem: rows.filter { $0.section == "per_diem" }.count,
-            .maintenance: rows.filter { $0.section == "maintenance" }.count,
-        ]
-        guard !AccountantExport.isEmpty(sections: sections, counts: counts) else {
-            statusMessage = String(localized: "tax.send.empty")
+        isExporting = true
+        let input = workbookInput()
+        guard !AccountantWorkbook.isEmpty(input, sections: sections) else {
+            isExporting = false
+            exportMessage = String(localized: "tax.send.empty")
             return
         }
-        let csv = AccountantExport.csv(year: year, rows: rows)
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("truckorig-tax-\(year).csv")
+        let bytes = AccountantWorkbook.data(input: input, sections: sections)
+        let name = AccountantWorkbook.fileName(year: year, sections: sections, calendar: calendar)
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         do {
-            try csv.write(to: url, atomically: true, encoding: .utf8)
-            exportURL = ExportedBackup(url: url)
+            try bytes.write(to: url, options: .atomic)
+            exportMessage = String(localized: "tax.export.success \(name)")
+            isExporting = false
+            isChoosingExport = false
+            DispatchQueue.main.async {
+                exportURL = ExportedBackup(url: url)
+            }
         } catch {
-            statusMessage = error.localizedDescription
+            isExporting = false
+            exportMessage = String(localized: "tax.export.error \(error.localizedDescription)")
         }
+    }
+
+    private func workbookInput() -> AccountantWorkbookInput {
+        let prefix = String(format: "%04d-", year)
+        let maintenance = appState.catalog.maintenanceArchive
+            .filter { $0.serviceDate.hasPrefix(prefix) }
+            .sorted { $0.serviceDate < $1.serviceDate }
+            .map { entry in
+                AccountantWorkbookMaintenance(
+                    serviceDate: entry.serviceDate,
+                    serviceName: entry.serviceName,
+                    description: entry.description,
+                    amount: entry.amount
+                )
+            }
+        return AccountantWorkbookInput(
+            year: year,
+            loads: loadsThisYear.map(workbookLoad),
+            diesel: dieselThisYear.map(workbookDiesel),
+            perDiemDates: effectiveDates,
+            maintenance: maintenance,
+            grossIncome: estimate.grossIncome
+        )
+    }
+
+    private func workbookLoad(_ load: Load) -> AccountantWorkbookLoad {
+        var summary = load.summary
+        if summary.firstPickupAt == nil {
+            summary.firstPickupAt = load.date
+        }
+        if summary.actualFinishAt == nil && summary.lastDeliveryAt == nil {
+            summary.lastDeliveryAt = load.date
+        }
+        let days = PerDiemCalculator.uniqueOnDutyDates(
+            loads: [summary],
+            year: year,
+            today: Date(),
+            calendar: calendar
+        ).count
+        let route = load.route.isEmpty ? "\(load.pointA ?? "") → \(load.pointB ?? "")" : load.route
+        return AccountantWorkbookLoad(
+            date: DateUtils.isoDay(load.date),
+            tripId: load.tripId,
+            route: route,
+            rate: MoneyCents.fromDollars(load.totalRate),
+            miles: load.totalMiles,
+            onDutyDays: days
+        )
+    }
+
+    private func workbookDiesel(_ fill: Diesel) -> AccountantWorkbookDiesel {
+        let ref = reportingWeek.week(for: fill.date)
+        let start = reportingWeek.startDate(of: ref).map { DateUtils.isoDay($0) } ?? ""
+        let end = reportingWeek.endDate(of: ref).map { DateUtils.isoDay($0) } ?? ""
+        return AccountantWorkbookDiesel(
+            weekNumber: ref.weekNumber,
+            year: ref.year,
+            weekStartDate: start,
+            weekEndDate: end,
+            totalAmount: MoneyCents.fromDollars(fill.totalCost),
+            gallons: fill.gallons,
+            pricePerGallon: fill.pricePerGallon > 0 ? fill.pricePerGallon : nil,
+            discountPricePerGallon: fill.discountPricePerGallon.flatMap { $0 > 0 ? $0 : nil },
+            location: fill.location ?? ""
+        )
+    }
+}
+
+/// Share item that sets the mail subject to the workbook name, matching Android `EXTRA_SUBJECT`.
+final class WorkbookShareSource: NSObject, UIActivityItemSource {
+    let url: URL
+
+    init(url: URL) {
+        self.url = url
+    }
+
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+        url
+    }
+
+    func activityViewController(
+        _ activityViewController: UIActivityViewController,
+        itemForActivityType activityType: UIActivity.ActivityType?
+    ) -> Any? {
+        url
+    }
+
+    func activityViewController(
+        _ activityViewController: UIActivityViewController,
+        subjectForActivityType activityType: UIActivity.ActivityType?
+    ) -> String {
+        url.deletingPathExtension().lastPathComponent
     }
 }
