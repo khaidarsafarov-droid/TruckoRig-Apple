@@ -191,6 +191,7 @@ final class BackupRestoreTests: XCTestCase {
         XCTAssertEqual(graph.maintenance.map(\.title), ["Keep"])
     }
 
+    @MainActor
     func testServiceRoundTripWarnsWhenLocalIsNewerAndAcceptsABom() throws {
         let source = try AppDatabase.ephemeral()
         let defaults = UserDefaults(suiteName: "backup-service-\(UUID().uuidString)")!

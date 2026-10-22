@@ -105,6 +105,8 @@ enum BackupService {
 
     /// Full replace of the journal. Schema v1 leaves maintenance in place. Photos and scans
     /// linked to a removed load are deleted; other media on this phone stays.
+    /// Week reindexing touches the main-actor journal cache, so restore runs there too.
+    @MainActor
     @discardableResult
     static func restoreBackupJSON(
         _ json: String,
