@@ -163,6 +163,130 @@ final class AccountantWorkbookTests: XCTestCase {
         XCTAssertFalse(maintenanceXML.contains("t=\"inlineStr\"><is><t>350.00"))
     }
 
+    /// Matches Android `AccountantWorkbookBuilderTest` empty-vs-zero: missing values are empty
+    /// cells, and a real zero stays a number. Week, year, and day counters use format `0`.
+    func testBlankStaysEmptyAndRealZeroStaysNumeric() throws {
+        XCTAssertEqual(XlsxCell.date(iso: ""), .blank)
+        XCTAssertEqual(XlsxCell.date(iso: "   "), .blank)
+        XCTAssertEqual(XlsxCell.date(iso: "not-a-date"), .text("not-a-date"))
+
+        let input = AccountantWorkbookInput(
+            year: 2026,
+            loads: [
+                AccountantWorkbookLoad(
+                    date: "2026-06-01",
+                    tripId: "100",
+                    route: "A → B",
+                    rate: MoneyCents.fromDollars(100),
+                    miles: 0,
+                    onDutyDays: 0
+                ),
+            ],
+            diesel: [
+                AccountantWorkbookDiesel(
+                    weekNumber: 22,
+                    year: 2026,
+                    weekStartDate: "",
+                    weekEndDate: "   ",
+                    totalAmount: MoneyCents.fromDollars(10),
+                    gallons: nil,
+                    pricePerGallon: nil,
+                    discountPricePerGallon: nil,
+                    location: ""
+                ),
+                AccountantWorkbookDiesel(
+                    weekNumber: 23,
+                    year: 2026,
+                    weekStartDate: "2026-06-01",
+                    weekEndDate: "2026-06-07",
+                    totalAmount: .zero,
+                    gallons: 0,
+                    pricePerGallon: 0,
+                    discountPricePerGallon: nil,
+                    location: "Pilot"
+                ),
+                AccountantWorkbookDiesel(
+                    weekNumber: 24,
+                    year: 2026,
+                    weekStartDate: "2026-06-08",
+                    weekEndDate: "2026-06-14",
+                    totalAmount: MoneyCents.fromDollars(40),
+                    gallons: 10,
+                    pricePerGallon: 4,
+                    discountPricePerGallon: 4,
+                    location: "TA"
+                ),
+            ],
+            perDiemDates: [],
+            maintenance: [],
+            grossIncome: 0
+        )
+        let files = try unzip(AccountantWorkbook.data(input: input, sections: [.all]))
+        let names = try sheetNames(in: files)
+        let formats = try formatCodes(try text(files, "xl/styles.xml"))
+        XCTAssertTrue(formats.values.contains("yyyy-mm-dd"))
+        XCTAssertFalse(formats.values.contains("dd.mm.yyyy"))
+
+        let loads = try typedRows(named: "Грузы", names: names, files: files)
+        assertText(loads[1][1], "100")
+        assertText(loads[1][2], "A → B")
+        assertNumber(loads[1][0], value: "46174", format: "yyyy-mm-dd", formats: formats)
+        assertNumber(loads[1][4], value: "0", format: "0", formats: formats)
+        assertNumber(loads[1][5], value: "0.00", format: "0.00", formats: formats)
+        assertNumber(loads[1][6], value: "0", format: "0", formats: formats)
+
+        let diesel = try typedRows(named: "Дизель", names: names, files: files)
+        let missing = diesel[1]
+        assertNumber(missing[0], value: "22", format: "0", formats: formats)
+        assertNumber(missing[1], value: "2026", format: "0", formats: formats)
+        XCTAssertEqual(missing[2].kind, .blank)
+        XCTAssertEqual(missing[3].kind, .blank)
+        assertNumber(missing[4], value: "10.00", format: "#,##0.00", formats: formats)
+        XCTAssertEqual(missing[5].kind, .blank)
+        XCTAssertEqual(missing[6].kind, .blank)
+        XCTAssertEqual(missing[7].kind, .blank)
+        XCTAssertEqual(missing[8].kind, .blank)
+        XCTAssertEqual(missing[9].kind, .blank)
+        XCTAssertFalse(missing.contains { $0.kind == .number && $0.value == "0" && formats[$0.style] != "0" })
+
+        let presentZero = diesel[2]
+        assertNumber(presentZero[5], value: "0.00", format: "0.00", formats: formats)
+        assertNumber(presentZero[6], value: "0.000", format: "0.000", formats: formats)
+        XCTAssertEqual(presentZero[7].kind, .blank)
+        XCTAssertEqual(presentZero[8].kind, .blank)
+        assertNumber(presentZero[4], value: "0.00", format: "#,##0.00", formats: formats)
+        assertText(presentZero[9], "Pilot")
+
+        let equalPrices = diesel[3]
+        assertNumber(equalPrices[6], value: "4.000", format: "0.000", formats: formats)
+        assertNumber(equalPrices[7], value: "4.000", format: "0.000", formats: formats)
+        assertNumber(equalPrices[8], value: "0.00", format: "#,##0.00", formats: formats)
+        assertText(equalPrices[9], "TA")
+
+        let perDiem = try typedRows(named: "Суточные", names: names, files: files)
+        XCTAssertEqual(perDiem.count, 2)
+        assertText(perDiem[1][0], "ИТОГО (0 дн.)")
+        assertNumber(perDiem[1][1], value: "69.00", format: "#,##0.00", formats: formats)
+        assertNumber(perDiem[1][2], value: "0.00", format: "#,##0.00", formats: formats)
+
+        let maintenance = try typedRows(named: "ТО", names: names, files: files)
+        XCTAssertEqual(maintenance.count, 2)
+        assertText(maintenance[1][0], "ИТОГО")
+        XCTAssertEqual(maintenance[1][1].kind, .blank)
+        XCTAssertEqual(maintenance[1][2].kind, .blank)
+        assertNumber(maintenance[1][3], value: "0.00", format: "#,##0.00", formats: formats)
+
+        let summary = try typedRows(named: "Сводка", names: names, files: files)
+        assertNumber(summary[1][1], value: "2026", format: "0", formats: formats)
+        assertNumber(summary[2][1], value: "0.00", format: "#,##0.00", formats: formats)
+
+        let dieselXML = try text(files, try path(named: "Дизель", names: names, files: files))
+        XCTAssertFalse(dieselXML.contains(">2026-06-01<"))
+        XCTAssertFalse(dieselXML.contains("<v></v>"))
+        XCTAssertTrue(dieselXML.contains("<v>0.000</v>"))
+        XCTAssertTrue(dieselXML.contains("<v>0.00</v>"))
+    }
+
     func testDieselOnlyOmitsOtherDataSheets() throws {
         let files = try unzip(AccountantWorkbook.data(input: sampleInput(), sections: [.diesel]))
         let names = try sheetNames(in: files)

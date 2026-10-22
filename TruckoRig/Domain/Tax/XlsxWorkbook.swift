@@ -5,7 +5,7 @@ import Foundation
 public enum XlsxNumberFormat: Equatable, Sendable {
     /// `#,##0.00`
     case money
-    /// `0` — miles, week, year, counts.
+    /// `0` — miles, and integer counters (week, year, days). Same format as Android's Integer style.
     case integer
     /// `0.00` — gallons and RPM.
     case decimal2
@@ -22,9 +22,12 @@ public enum XlsxCell: Equatable, Sendable {
     case number(raw: String, format: XlsxNumberFormat)
     case blank
 
-    /// Excel date serial for an ISO `yyyy-mm-dd`, or the original text when it is not a real date.
+    /// Excel date serial for an ISO `yyyy-mm-dd`. Blank or whitespace is an empty cell.
+    /// Anything else that is not a real date stays text, and is never written as serial 0.
     public static func date(iso: String) -> XlsxCell {
-        guard let serial = XlsxWorkbook.excelSerial(iso: iso) else { return .text(iso) }
+        let day = iso.trimmingCharacters(in: .whitespacesAndNewlines)
+        if day.isEmpty { return .blank }
+        guard let serial = XlsxWorkbook.excelSerial(iso: day) else { return .text(iso) }
         return .number(raw: String(serial), format: .date)
     }
 }

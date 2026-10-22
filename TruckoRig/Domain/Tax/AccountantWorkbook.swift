@@ -27,7 +27,7 @@ public struct AccountantWorkbookLoad: Equatable, Sendable {
     }
 }
 
-/// One diesel row. Prices are dollars; `nil` is an empty cell, matching Android's nullable fields.
+/// One diesel row. Prices are dollars. `nil` is an empty cell; a real zero stays numeric, matching Android.
 public struct AccountantWorkbookDiesel: Equatable, Sendable {
     public var weekNumber: Int
     public var year: Int
@@ -182,7 +182,8 @@ public enum AccountantWorkbook {
     }
 
     /// Dollars saved versus list price, in cents, using Android `UnitPrice.timesGallons` rounding.
-    /// `nil` when gallons or either price is missing. Zero when the discount is not lower.
+    /// `nil` (empty cell) when gallons or either price is missing or not positive.
+    /// Zero when both prices are positive and the discount is not lower.
     public static func savingsCents(
         gallons: Double?,
         pricePerGallon: Double?,
@@ -352,8 +353,9 @@ public enum AccountantWorkbook {
         return .number(raw: raw, format: .decimal3)
     }
 
+    /// `nil` and non-finite prices are an empty cell. Zero is the numeric value `0.000`.
     private static func unitPrice(_ dollars: Double?) -> String {
-        guard let dollars, dollars > 0 else { return "" }
+        guard let dollars, dollars.isFinite else { return "" }
         return UnitPricePlain.formatPlain(thousandths: UnitPricePlain.thousandths(from: dollars))
     }
 
