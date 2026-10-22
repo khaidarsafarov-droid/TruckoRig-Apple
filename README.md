@@ -140,8 +140,9 @@ HTML/JSON-экспорт Telegram. Потяните журнал вниз — о
   пишет Android для локального журнала: JSON без шифрования (шифруется база на телефоне), без
   байтов фото, сканов и чеков. Вход — Google Sign-In, запись — Drive REST v3. Пока в `Info.plist`
   стоит заглушка `GIDClientID`, раздел в Настройках выключен. Рядом остаётся прежний обмен
-  JSON-файлом через share sheet. Ktor и Supabase не используются. Экспорт для бухгалтера и
-  список прочих расходов — CSV, а не книга Excel.
+  JSON-файлом через share sheet. Ktor и Supabase не используются. Экспорт для бухгалтера —
+  книга Excel (.xlsx) с теми же листами, колонками и итогами, что Android SpreadsheetML.
+  Список прочих расходов остаётся CSV, как в Android.
 - **Telegram — бот на телефоне.** Токен от @BotFather вводится в Настройках или на последнем
   шаге первого запуска и лежит в Keychain (`com.truckorig.telegram-bot-token`). Приложение само
   ходит в `https://api.telegram.org` через `URLSession`: `getMe`, имя TruckoRig, команды, меню,

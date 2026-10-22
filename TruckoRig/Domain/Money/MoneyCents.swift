@@ -15,6 +15,16 @@ public struct MoneyCents: Equatable, Sendable, Comparable, Hashable {
 
     public var dollars: Double { Double(cents) / 100 }
 
+    /// US dollar text with exactly two decimals and no thousands separator.
+    /// Matches Android `Money.formatPlain`.
+    public func formatPlain() -> String {
+        let negative = cents < 0
+        let absCents = abs(cents)
+        let dollars = absCents / 100
+        let fraction = String(format: "%02d", absCents % 100)
+        return "\(negative ? "-" : "")\(dollars).\(fraction)"
+    }
+
     public static func < (lhs: MoneyCents, rhs: MoneyCents) -> Bool {
         lhs.cents < rhs.cents
     }

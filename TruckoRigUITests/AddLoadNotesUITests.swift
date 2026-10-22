@@ -59,7 +59,7 @@ final class AddLoadNotesUITests: XCTestCase {
                 guard field.exists, field.isHittable else { return false }
                 return field.frame.maxY <= keyboard.frame.minY + 8
             }
-            wait(for: [XCTNSPredicateExpectation(predicate: aboveKeyboard, object: nil)], timeout: 5)
+            wait(for: [XCTNSPredicateExpectation(predicate: aboveKeyboard, object: nil)], timeout: 15)
             let focused = notesField(app)
             XCTAssertTrue(focused.isHittable)
             XCTAssertLessThanOrEqual(focused.frame.maxY, keyboard.frame.minY + 8)

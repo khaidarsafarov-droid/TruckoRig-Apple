@@ -62,7 +62,7 @@ public enum PerDiemCalculator {
     }
 }
 
-/// What the driver can include in the accountant export.
+/// What the driver can include in the accountant workbook.
 public enum AccountantExportSection: String, CaseIterable, Sendable {
     case loads
     case diesel
@@ -167,25 +167,6 @@ public struct TaxEstimate: Equatable, Sendable {
 }
 
 public enum AccountantExport {
-    public struct Row: Equatable, Sendable {
-        public var section: String
-        public var cells: [String]
-        public init(section: String, cells: [String]) {
-            self.section = section
-            self.cells = cells
-        }
-    }
-
-    public static func csv(year: Int, rows: [Row]) -> String {
-        var lines = ["section,year,c1,c2,c3,c4"]
-        for row in rows {
-            let padded = row.cells + Array(repeating: "", count: max(0, 4 - row.cells.count))
-            let cells = ([row.section, String(year)] + padded.prefix(4)).map(MiscExpenseFields.csvQuote)
-            lines.append(cells.joined(separator: ","))
-        }
-        return lines.joined(separator: "\n") + "\n"
-    }
-
     public static func isEmpty(sections: Set<AccountantExportSection>, counts: [AccountantExportSection: Int]) -> Bool {
         let resolved = AccountantExportSection.resolve(sections)
         return resolved.allSatisfy { (counts[$0] ?? 0) == 0 }
