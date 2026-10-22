@@ -495,7 +495,10 @@ private struct MapChip: View {
                 .foregroundStyle(selected ? Color.forestOnPrimary : Color.forestText)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(selected ? Color.forestPrimary : Color.forestSurfaceMuted, in: Capsule())
+                .background(
+                    selected ? AnyShapeStyle(Color.forestPrimary) : AnyShapeStyle(Color.forestSurfaceMuted),
+                    in: Capsule()
+                )
         }
         .buttonStyle(.plain)
     }
