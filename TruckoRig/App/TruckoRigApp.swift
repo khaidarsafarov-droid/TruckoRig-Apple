@@ -7,6 +7,7 @@ struct TruckoRigApp: App {
 
     init() {
         DriveBackgroundRegistrar.register()
+        TelegramBackgroundRegistrar.register()
     }
 
     var body: some Scene {

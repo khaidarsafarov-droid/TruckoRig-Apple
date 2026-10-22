@@ -5,6 +5,7 @@ struct RootView: View {
 
     @Environment(AppState.self) private var appState
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Group {
@@ -36,6 +37,15 @@ struct RootView: View {
         }
         .onChange(of: appState.settings.weekStart) { _, _ in
             appState.publishWidgetSnapshot()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                appState.telegram.resume()
+                TelegramBackgroundRegistrar.submit()
+            } else if phase == .background {
+                appState.telegram.pause()
+                TelegramBackgroundRegistrar.submit()
+            }
         }
         .fullScreenCover(item: presentation) { route in
             WidgetPresentationCover(route: route)

@@ -72,6 +72,11 @@
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.truckorig.drive-sync</string>
+		<string>com.truckorig.telegram-sync</string>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tg</string>
 	</array>
 </dict>
 </plist>

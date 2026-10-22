@@ -112,6 +112,8 @@ struct SettingsView: View {
 
             DriveBackupSection()
 
+            TelegramSettingsSection()
+
             Section {
                 SettingsPremiumSection()
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))

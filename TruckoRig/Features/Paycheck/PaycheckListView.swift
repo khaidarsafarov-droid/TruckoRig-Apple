@@ -144,6 +144,9 @@ struct PaycheckEditorView: View {
                     Text("paycheck.file.hint")
                         .font(.appCaption)
                         .foregroundStyle(Color.forestTextSecondary)
+                    Text("paycheck.telegram.hint")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
                     ReceiptCaptureButtons { image in
                         Task { await recognize(image) }
                     }

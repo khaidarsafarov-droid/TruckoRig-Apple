@@ -8362,13 +8362,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "In Settings export a JSON file and import it on another phone. Google Drive is not in this version."
+            "value": "In Settings create a backup file on the phone or save to Google Drive and restore when you change devices."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "В Настройках экспортируйте JSON и импортируйте его на другом телефоне. Google Drive в этой версии нет."
+            "value": "В Настройках создайте файл-бэкап на телефоне или сохраните данные в Google Drive и восстановите их при смене устройства."
           }
         }
       }
@@ -10817,6 +10817,709 @@
           "stringUnit": {
             "state": "translated",
             "value": "Закрыть"
+          }
+        }
+      }
+    },
+    "about.telegram.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "13. Telegram"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "13. Telegram"
+          }
+        }
+      }
+    },
+    "about.telegram.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Settings add a bot token from @BotFather. The on-device bot reads messages and adds loads, paychecks, and diesel to the journal."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В Настройках добавьте токен бота от @BotFather. Бот на телефоне читает сообщения и сам добавляет в журнал грузы, зарплату и дизель."
+          }
+        }
+      }
+    },
+    "paycheck.telegram.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Or forward the file to the Telegram bot — it also recognizes paychecks and asks before saving."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Или перешлите файл боту в Telegram — он тоже распознает зарплату и спросит подтверждение."
+          }
+        }
+      }
+    },
+    "journal.telegram.syncStarted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram sync started"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Синхронизация Telegram запущена"
+          }
+        }
+      }
+    },
+    "settings.telegram.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram Bot"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram бот"
+          }
+        }
+      }
+    },
+    "settings.telegram.desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get a token from @BotFather and tap Add bot. We set the bot name to TruckoRig and use the app photo. The token is stored securely and is not shown on this screen."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Получите токен у @BotFather и нажмите «Добавить бота». Мы зададим боту имя TruckoRig и фото приложения. Токен хранится в защищённом хранилище и не отображается на экране."
+          }
+        }
+      }
+    },
+    "settings.telegram.tokenLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BOT TOKEN"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BOT TOKEN"
+          }
+        }
+      }
+    },
+    "settings.telegram.placeholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "123456789:AAH..."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "123456789:AAH..."
+          }
+        }
+      }
+    },
+    "settings.telegram.configured": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token configured (hidden)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Токен настроен (скрыт)"
+          }
+        }
+      }
+    },
+    "settings.telegram.test": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверить"
+          }
+        }
+      }
+    },
+    "settings.telegram.saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token saved. Bot named TruckoRig with the app photo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Токен сохранён. Бот назван TruckoRig, поставлено фото приложения."
+          }
+        }
+      }
+    },
+    "settings.telegram.active": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bot is listening for messages"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бот отслеживает сообщения"
+          }
+        }
+      }
+    },
+    "settings.telegram.inactive": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bot is not running"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бот не запущен"
+          }
+        }
+      }
+    },
+    "settings.telegram.ok %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "✅ Bot @%@ — token is valid"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "✅ Бот @%@ — токен рабочий"
+          }
+        }
+      }
+    },
+    "settings.telegram.invalid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "❌ Invalid token. Check the token from @BotFather and try again."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "❌ Токен недействителен. Проверьте токен у @BotFather и попробуйте снова."
+          }
+        }
+      }
+    },
+    "settings.telegram.add": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add bot"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить бота"
+          }
+        }
+      }
+    },
+    "settings.telegram.change": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменить"
+          }
+        }
+      }
+    },
+    "settings.telegram.dialogTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram bot token"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Токен Telegram-бота"
+          }
+        }
+      }
+    },
+    "settings.telegram.dialogHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste the token from @BotFather. After saving, the bot is named TruckoRig and uses the app photo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вставьте токен от @BotFather. После сохранения бот получит имя TruckoRig и фото приложения."
+          }
+        }
+      }
+    },
+    "settings.telegram.missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bot token is not set"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Токен бота не задан"
+          }
+        }
+      }
+    },
+    "settings.telegram.show": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать"
+          }
+        }
+      }
+    },
+    "settings.telegram.hide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрыть"
+          }
+        }
+      }
+    },
+    "settings.telegram.checking": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проверка…"
+          }
+        }
+      }
+    },
+    "settings.telegram.secure": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secure storage unavailable — bot tokens are not saved; login is stored with reduced protection"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Защищённое хранилище недоступно — токены бота не сохраняются; вход сохранён с пониженной защитой"
+          }
+        }
+      }
+    },
+    "settings.telegram.openBot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open bot and pair"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открыть бота и привязать"
+          }
+        }
+      }
+    },
+    "settings.telegram.pairHint %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not paired yet. Press Start in the bot, or send /start %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чат ещё не привязан. Нажмите «Старт» в боте или отправьте /start %@"
+          }
+        }
+      }
+    },
+    "settings.telegram.unpaired": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat unpaired. Pair again with the new code."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чат отвязан. Привяжите снова с новым кодом."
+          }
+        }
+      }
+    },
+    "settings.telegram.unpair": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unpair chat"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отвязать чат"
+          }
+        }
+      }
+    },
+    "settings.telegram.paired": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paired with your Telegram chat"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Привязан к вашему чату в Telegram"
+          }
+        }
+      }
+    },
+    "onboard.telegram.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect your Telegram bot"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подключите Telegram-бота"
+          }
+        }
+      }
+    },
+    "onboard.telegram.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After you create an account, connect a bot so Telegram messages can be parsed and saved as loads."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После регистрации можно сразу привязать бота: он будет разбирать грузы из Telegram и сохранять их в приложение."
+          }
+        }
+      }
+    },
+    "onboard.telegram.steps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to get a token"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как получить токен"
+          }
+        }
+      }
+    },
+    "onboard.telegram.step1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Tap Open BotFather — Telegram opens @BotFather."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Нажмите «Открыть BotFather» — откроется бот @BotFather в Telegram."
+          }
+        }
+      }
+    },
+    "onboard.telegram.step2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. Send /newbot (new bot) or /token (if you already have one)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. Отправьте /newbot (новый бот) или /token (если бот уже есть)."
+          }
+        }
+      }
+    },
+    "onboard.telegram.step3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. Copy the token — it looks like 123456789:AAH…"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. Скопируйте токен — он выглядит как 123456789:AAH…"
+          }
+        }
+      }
+    },
+    "onboard.telegram.step4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4. Paste it below and tap Save. The bot is named TruckoRig, gets the app photo, and can receive loads."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4. Вставьте токен ниже и нажмите «Сохранить». Бот получит имя TruckoRig, фото приложения — и можно присылать грузы."
+          }
+        }
+      }
+    },
+    "onboard.telegram.botfather": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open BotFather"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открыть BotFather"
+          }
+        }
+      }
+    },
+    "onboard.telegram.save": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save token"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранить токен"
+          }
+        }
+      }
+    },
+    "onboard.telegram.skip": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip for now"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пропустить сейчас"
+          }
+        }
+      }
+    },
+    "onboard.telegram.skipHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can add the bot later in Settings → Telegram bot."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Можно добавить бота позже в Настройках → Telegram бот."
+          }
+        }
+      }
+    },
+    "premium.locked.telegram": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram import is part of Premium."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Импорт из Telegram входит в Premium."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La importación de Telegram es Premium."
           }
         }
       }
