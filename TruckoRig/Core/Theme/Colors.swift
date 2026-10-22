@@ -22,9 +22,89 @@ extension Color {
     /// Dark mode is a separate cabin palette, not a tint of the light one, so each token names
     /// both variants. Values come from Android `SoftUiColors`, `BrandPalettes` and `SemanticColors`.
     static func adaptive(light: String, dark: String) -> Color {
-        Color(uiColor: UIColor { traits in
-            UIColor(Color(hex: traits.userInterfaceStyle == .dark ? dark : light))
-        })
+        Color(uiColor: CabinUIColors.adaptive(light: light, dark: dark))
+    }
+}
+
+private struct OLEDDarkActiveKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    /// Resolved OLED black. True only when the driver asked for it and the cabin is actually dark.
+    ///
+    /// This is a plain SwiftUI value. A custom `UITraitDefinition` aborts on iOS 26 when UIKit
+    /// reads the override, so surfaces resolve from this environment instead.
+    var oledDarkActive: Bool {
+        get { self[OLEDDarkActiveKey.self] }
+        set { self[OLEDDarkActiveKey.self] = newValue }
+    }
+}
+
+enum CabinUIColors {
+    static func adaptive(light: String, dark: String) -> UIColor {
+        UIColor { traits in
+            let hex = traits.userInterfaceStyle == .dark ? dark : light
+            return UIColor(Color(hex: hex))
+        }
+    }
+}
+
+/// Page, card, and muted fills. OLED replaces these only, and only while the cabin is dark.
+///
+/// The widget leaves `oledDarkActive` at its default `false`, matching Android
+/// `WidgetCabinColors.resolve`, which reads the app theme and ignores `oled_dark`.
+struct CabinSurface: ShapeStyle, View, Sendable {
+    enum Role: Sendable {
+        case background
+        case card
+        case muted
+    }
+
+    var role: Role
+    /// Multiplier applied after the hex is chosen. `1` is the solid Android surface.
+    var fade: Double = 1
+
+    func resolve(in environment: EnvironmentValues) -> Color {
+        color(dark: environment.colorScheme == .dark, oledRequested: environment.oledDarkActive)
+    }
+
+    var body: some View {
+        CabinSurfaceFill(surface: self)
+    }
+
+    func faded(to opacity: Double) -> CabinSurface {
+        var copy = self
+        copy.fade = opacity
+        return copy
+    }
+
+    func color(dark: Bool, oledRequested: Bool) -> Color {
+        let oled = oledRequested && dark
+        let hex: String
+        switch role {
+        case .background:
+            hex = ThemePalette.background(dark: dark, oled: oled)
+        case .card:
+            hex = ThemePalette.surface(dark: dark, oled: oled)
+        case .muted:
+            hex = ThemePalette.surfaceMuted(dark: dark, oled: oled)
+        }
+        return Color(hex: hex).opacity(fade)
+    }
+
+    static let background = CabinSurface(role: .background)
+    static let card = CabinSurface(role: .card)
+    static let muted = CabinSurface(role: .muted)
+}
+
+private struct CabinSurfaceFill: View {
+    var surface: CabinSurface
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.oledDarkActive) private var oledDarkActive
+
+    var body: some View {
+        Rectangle().fill(surface.color(dark: colorScheme == .dark, oledRequested: oledDarkActive))
     }
 }
 
@@ -40,12 +120,12 @@ extension Color {
     /// Same fill as `forestPrimary` (Android `ForestAccent` / `ForestAccentDark`).
     static let forestAccent = Color.forestPrimary
 
-    /// Page canvas. Light `#F5F4F1`, dark `#0D0F1E`.
-    static let forestBackground = Color.adaptive(light: "F5F4F1", dark: "0D0F1E")
-    /// Card surface. Light `#FDFCFA`, dark `#161929`.
-    static let forestCard = Color.adaptive(light: "FDFCFA", dark: "161929")
-    /// Input and chip wash. Light sage `#EAE9F4`, dark `#262A4F`.
-    static let forestSurfaceMuted = Color.adaptive(light: "EAE9F4", dark: "262A4F")
+    /// Page canvas. Light `#F5F4F1`, dark `#0D0F1E`, OLED `#000000`.
+    static var forestBackground: CabinSurface { .background }
+    /// Card surface. Light `#FDFCFA`, dark `#161929`, OLED `#121212`.
+    static var forestCard: CabinSurface { .card }
+    /// Input and chip wash. Light sage `#EAE9F4`, dark `#262A4F`, OLED `#1C1C1C`.
+    static var forestSurfaceMuted: CabinSurface { .muted }
 
     static let forestText = Color.adaptive(light: "16182B", dark: "EEEBE3")
     static let forestTextSecondary = Color.adaptive(light: "585A6E", dark: "A7A6B4")

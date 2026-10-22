@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import WidgetKit
 
 /// Driver preferences, stored in `UserDefaults`.
 ///
@@ -9,14 +10,22 @@ import Observation
 final class AppSettings {
 
     @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private let widgetDefaults: UserDefaults?
     private(set) var scope: AccountScope
 
-    init(scope: AccountScope = .local, defaults: UserDefaults = .standard) {
+    init(
+        scope: AccountScope = .local,
+        defaults: UserDefaults = .standard,
+        widgetDefaults: UserDefaults? = UserDefaults(suiteName: WidgetBridge.appGroup)
+    ) {
         self.defaults = defaults
+        self.widgetDefaults = widgetDefaults
         self.scope = scope
         self.weeklyGoal = Self.read(defaults, scope, .weeklyGoal, default: 0)
         self.language = Self.readEnum(defaults, scope, .language, default: .system)
         self.weekStart = Self.readEnum(defaults, scope, .weekStart, default: .sunday)
+        self.themeMode = Self.readThemeMode(defaults, scope)
+        self.oledDark = Self.read(defaults, scope, .oledDark, default: false)
         self.rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
         self.rpmTargetProfit = Self.read(defaults, scope, .rpmTargetProfit, default: RPMThresholds.default.targetProfit)
         self.notifyMissingWeek = Self.read(defaults, scope, .notifyMissingWeek, default: true)
@@ -31,11 +40,21 @@ final class AppSettings {
         if UITestLaunch.isEnabled {
             self.onboardingComplete = true
         }
+        mirrorThemeToWidget(reloadWidget: false)
     }
 
     // MARK: - Values
 
     var weeklyGoal: Double { didSet { write(.weeklyGoal, weeklyGoal) } }
+    /// Android `app_theme_mode`. Defaults to system.
+    var themeMode: AppThemeMode {
+        didSet {
+            write(.themeMode, themeMode.rawValue)
+            mirrorThemeToWidget(reloadWidget: true)
+        }
+    }
+    /// Android `oled_dark`. Kept when Light is selected; applied only while the cabin is dark.
+    var oledDark: Bool { didSet { write(.oledDark, oledDark) } }
     var language: AppLanguage { didSet { write(.language, language.rawValue) } }
     var weekStart: WeekStartDay { didSet { write(.weekStart, weekStart.rawValue) } }
     var rpmMinProfit: Double { didSet { write(.rpmMinProfit, rpmMinProfit) } }
@@ -72,10 +91,20 @@ final class AppSettings {
         TruckingWeek(weekStart: weekStart)
     }
 
+    var hasStoredThemeMode: Bool {
+        defaults.object(forKey: Self.storageKey(scope, .themeMode)) != nil
+    }
+
+    var hasStoredOledDark: Bool {
+        defaults.object(forKey: Self.storageKey(scope, .oledDark)) != nil
+    }
+
     // MARK: - Storage
 
     private enum Key: String {
         case weeklyGoal
+        case themeMode = "app_theme_mode"
+        case oledDark = "oled_dark"
         case language
         case weekStart
         case rpmMinProfit
@@ -100,6 +129,22 @@ final class AppSettings {
 
     private static func read<T>(_ defaults: UserDefaults, _ scope: AccountScope, _ key: Key, default fallback: T) -> T {
         defaults.object(forKey: storageKey(scope, key)) as? T ?? fallback
+    }
+
+    private static func readThemeMode(_ defaults: UserDefaults, _ scope: AccountScope) -> AppThemeMode {
+        guard let raw = defaults.object(forKey: storageKey(scope, .themeMode)) as? Int else { return .system }
+        return AppThemeMode.fromOrdinal(raw)
+    }
+
+    /// The widget extension cannot see this process's standard defaults, so the ordinal is copied
+    /// to the App Group under the Android key. OLED is not copied: the Android widget ignores it.
+    private func mirrorThemeToWidget(reloadWidget: Bool) {
+        guard let widgetDefaults else { return }
+        widgetDefaults.set(themeMode.rawValue, forKey: AppThemeMode.dataStoreKey)
+        // Launch republishes the snapshot, which reloads the widget. A later theme change does not.
+        if reloadWidget {
+            WidgetCenter.shared.reloadTimelines(ofKind: WidgetBridge.kind)
+        }
     }
 
     private static func readEnum<T: RawRepresentable>(

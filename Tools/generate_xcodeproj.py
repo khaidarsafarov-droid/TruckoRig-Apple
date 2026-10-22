@@ -48,6 +48,7 @@ WIDGET_SHARED_SOURCES = [
     "TruckoRig/Core/Persistence/WidgetBridge.swift",
     "TruckoRig/Core/Theme/Colors.swift",
     "TruckoRig/Core/Theme/Fonts.swift",
+    "TruckoRig/Core/Theme/ThemePalette.swift",
     "TruckoRig/Core/Theme/PaceStatusPresentation.swift",
     "TruckoRig/Core/Utils/StringUtils.swift",
     "TruckoRig/Domain/DeepLink/WidgetDeepLink.swift",

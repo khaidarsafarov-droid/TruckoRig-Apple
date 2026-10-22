@@ -139,7 +139,7 @@ struct CameraView: View {
                         .foregroundStyle(Color.forestText)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Color.forestCard.opacity(0.9), in: Capsule())
+                        .background(Color.forestCard.faded(to: 0.9), in: Capsule())
                 }
                 Spacer()
                 Button {

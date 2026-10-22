@@ -326,7 +326,9 @@ struct ScanResultView: View {
                                         .padding(.vertical, 8)
                                         .foregroundStyle(pending.category == category ? Color.forestOnPrimary : Color.forestText)
                                         .background(
-                                            pending.category == category ? Color.forestPrimary : Color.forestSurfaceMuted,
+                                            pending.category == category
+                                                ? AnyShapeStyle(Color.forestPrimary)
+                                                : AnyShapeStyle(Color.forestSurfaceMuted),
                                             in: Capsule()
                                         )
                                 }

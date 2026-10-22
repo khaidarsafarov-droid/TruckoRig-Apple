@@ -53,7 +53,7 @@ struct WeeklyGoalWidgetView: View {
             mediumHeader
             VStack(spacing: 4) {
                 goalLine
-                goalBar(fill: Color.widgetIndigo, height: 6)
+                goalBar(fill: Color.forestPrimary, height: 6)
                     .reportFrame("wg.bar", probe)
                 actionRow(style: .labeled)
             }
@@ -122,7 +122,7 @@ struct WeeklyGoalWidgetView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                goalBar(fill: Color.brandGold, track: Color.heroText.opacity(0.22), height: 4)
+                goalBar(fill: Color.brandGold, track: AnyShapeStyle(Color.heroText.opacity(0.22)), height: 4)
                     .reportFrame("wg.bar", probe)
             }
             .padding(.horizontal, 12)
@@ -171,7 +171,11 @@ struct WeeklyGoalWidgetView: View {
         )
     }
 
-    private func goalBar(fill: Color, track: Color = Color.forestSurfaceMuted, height: CGFloat) -> some View {
+    private func goalBar(
+        fill: Color,
+        track: AnyShapeStyle = AnyShapeStyle(Color.forestSurfaceMuted),
+        height: CGFloat
+    ) -> some View {
         Capsule()
             .fill(track)
             .frame(height: height)
@@ -222,7 +226,7 @@ struct WeeklyGoalWidgetView: View {
                     .padding(.vertical, 8)
                 }
             }
-            .foregroundStyle(Color.widgetIndigo)
+            .foregroundStyle(Color.forestPrimary)
             .background(Color.forestSurfaceMuted, in: RoundedRectangle(cornerRadius: style == .labeled ? 18 : 16, style: .continuous))
             .reportFrame(kind.frameID, probe)
         }
@@ -269,7 +273,7 @@ enum WidgetActionKind: String, CaseIterable {
 }
 
 extension Color {
-    /// Indigo that stays indigo on the widget's light plate. Dark-mode `forestPrimary` is gold.
+    /// Indigo that stays indigo. Dark-mode `forestPrimary` is gold, which charts should not pick up.
     static let widgetIndigo = Color(hex: "3F3D9E")
 }
 

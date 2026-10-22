@@ -17,7 +17,7 @@ enum Spacing {
 
 private struct SoftCardModifier: ViewModifier {
     var padding: CGFloat
-    var background: Color
+    var background: CabinSurface
 
     func body(content: Content) -> some View {
         content
@@ -43,7 +43,7 @@ private struct SoftShadowModifier: ViewModifier {
 }
 
 extension View {
-    func softCard(padding: CGFloat = Spacing.standard, background: Color = .forestCard) -> some View {
+    func softCard(padding: CGFloat = Spacing.standard, background: CabinSurface = .card) -> some View {
         modifier(SoftCardModifier(padding: padding, background: background))
     }
 
@@ -54,6 +54,41 @@ extension View {
     /// Standard screen chrome: forest background edge to edge.
     func forestBackground() -> some View {
         background(Color.forestBackground.ignoresSafeArea())
+    }
+}
+
+/// Applies the saved theme to a screen tree. OLED black is on only when the cabin is dark.
+struct AppCabinTheme: ViewModifier {
+    @Environment(\.colorScheme) private var systemScheme
+    var mode: AppThemeMode
+    var oledDark: Bool
+
+    private var oledActive: Bool {
+        ThemePalette.oledApplies(mode: mode, oledDark: oledDark, systemIsDark: systemScheme == .dark)
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .modifier(OLEDBarChrome(active: oledActive))
+            .environment(\.oledDarkActive, oledActive)
+            .preferredColorScheme(mode.preferredColorScheme)
+    }
+}
+
+/// True-black navigation and tab bars. Left off unless OLED is on, so the system bars stay as they are.
+private struct OLEDBarChrome: ViewModifier {
+    var active: Bool
+
+    func body(content: Content) -> some View {
+        if active {
+            content
+                .toolbarBackground(Color.forestBackground, for: .navigationBar)
+                .toolbarBackground(Color.forestBackground, for: .tabBar)
+                .toolbarBackground(.visible, for: .navigationBar)
+                .toolbarBackground(.visible, for: .tabBar)
+        } else {
+            content
+        }
     }
 }
 

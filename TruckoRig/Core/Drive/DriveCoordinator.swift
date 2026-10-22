@@ -51,6 +51,8 @@ final class DriveCoordinator {
         self.identity = identity ?? DriveIdentityStore.standard()
         self.transport = transport ?? DriveURLSessionTransport()
         self.clientID = DriveSchedule.validatedClientID(clientID)
+        var storedTheme = self.identity.load().settingsExtra
+        DriveJournalMapper.adoptStoredThemeIfNeeded(self.settings, extra: &storedTheme)
         reloadFromPrefs()
         monitor.pathUpdateHandler = { [weak self] path in
             let offline = path.status != .satisfied

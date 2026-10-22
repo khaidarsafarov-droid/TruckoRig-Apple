@@ -6,7 +6,10 @@ struct WeeklyGoalWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WidgetBridge.kind, provider: WeeklyGoalProvider()) { entry in
             WeeklyGoalWidgetView(snapshot: entry.snapshot)
-                .containerBackground(for: .widget) { Color.forestCard }
+                .containerBackground(for: .widget) {
+                    Color.forestCard
+                }
+                .preferredColorScheme(AppThemeMode.widgetColorScheme())
         }
         .configurationDisplayName(Text("app.name"))
         .description(Text("widget.goal.description"))
