@@ -17,7 +17,7 @@ enum Spacing {
 
 private struct SoftCardModifier: ViewModifier {
     var padding: CGFloat
-    var background: Color
+    var background: CabinSurface
 
     func body(content: Content) -> some View {
         content
@@ -43,7 +43,7 @@ private struct SoftShadowModifier: ViewModifier {
 }
 
 extension View {
-    func softCard(padding: CGFloat = Spacing.standard, background: Color = .forestCard) -> some View {
+    func softCard(padding: CGFloat = Spacing.standard, background: CabinSurface = .card) -> some View {
         modifier(SoftCardModifier(padding: padding, background: background))
     }
 
@@ -69,12 +69,9 @@ struct AppCabinTheme: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .preferredColorScheme(mode.preferredColorScheme)
-            .environment(\.oledDarkActive, oledActive)
-            .background {
-                OLEDTraitInstaller(active: oledActive)
-            }
             .modifier(OLEDBarChrome(active: oledActive))
+            .environment(\.oledDarkActive, oledActive)
+            .preferredColorScheme(mode.preferredColorScheme)
     }
 }
 

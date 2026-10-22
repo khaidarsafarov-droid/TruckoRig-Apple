@@ -109,35 +109,38 @@ final class ThemeSettingsTests: XCTestCase {
     }
 
     func testResolvedColorsKeepGoldAndSwapOledSurfaces() {
-        let light = traits(.light, oled: false)
-        let lightOled = traits(.light, oled: true)
-        let dark = traits(.dark, oled: false)
-        let oled = traits(.dark, oled: true)
+        let light = environment(dark: false, oled: false)
+        let lightOled = environment(dark: false, oled: true)
+        let dark = environment(dark: true, oled: false)
+        let oled = environment(dark: true, oled: true)
+        let lightTraits = UITraitCollection(userInterfaceStyle: .light)
+        let darkTraits = UITraitCollection(userInterfaceStyle: .dark)
 
-        let accent = CabinUIColors.adaptive(light: ThemePalette.accentLight, dark: ThemePalette.accentDark, oled: nil)
-        let onAccent = CabinUIColors.adaptive(light: "FFFFFF", dark: "1D1708", oled: nil)
-        let gold = CabinUIColors.adaptive(light: "C8A867", dark: "D6BC85", oled: nil)
+        let accent = CabinUIColors.adaptive(light: ThemePalette.accentLight, dark: ThemePalette.accentDark)
+        let onAccent = CabinUIColors.adaptive(light: "FFFFFF", dark: "1D1708")
+        let gold = CabinUIColors.adaptive(light: "C8A867", dark: "D6BC85")
 
-        XCTAssertEqual(hex(CabinUIColors.background, light), ThemePalette.backgroundLight)
-        XCTAssertEqual(hex(CabinUIColors.card, light), ThemePalette.surfaceLight)
-        XCTAssertEqual(hex(CabinUIColors.muted, light), ThemePalette.surfaceMutedLight)
-        XCTAssertEqual(hex(accent, light), ThemePalette.accentLight)
+        XCTAssertEqual(hex(CabinSurface.background.resolve(in: light)), ThemePalette.backgroundLight)
+        XCTAssertEqual(hex(CabinSurface.card.resolve(in: light)), ThemePalette.surfaceLight)
+        XCTAssertEqual(hex(CabinSurface.muted.resolve(in: light)), ThemePalette.surfaceMutedLight)
+        XCTAssertEqual(hex(accent, lightTraits), ThemePalette.accentLight)
 
-        XCTAssertEqual(hex(CabinUIColors.background, lightOled), ThemePalette.backgroundLight)
-        XCTAssertEqual(hex(accent, lightOled), ThemePalette.accentLight)
+        XCTAssertEqual(hex(CabinSurface.background.resolve(in: lightOled)), ThemePalette.backgroundLight)
+        XCTAssertEqual(hex(CabinSurface.card.resolve(in: lightOled)), ThemePalette.surfaceLight)
+        XCTAssertEqual(hex(accent, lightTraits), ThemePalette.accentLight)
 
-        XCTAssertEqual(hex(CabinUIColors.background, dark), ThemePalette.backgroundDark)
-        XCTAssertEqual(hex(CabinUIColors.card, dark), ThemePalette.surfaceDark)
-        XCTAssertEqual(hex(CabinUIColors.muted, dark), ThemePalette.surfaceMutedDark)
-        XCTAssertEqual(hex(accent, dark), ThemePalette.accentDark)
-        XCTAssertEqual(hex(onAccent, dark), "1D1708")
+        XCTAssertEqual(hex(CabinSurface.background.resolve(in: dark)), ThemePalette.backgroundDark)
+        XCTAssertEqual(hex(CabinSurface.card.resolve(in: dark)), ThemePalette.surfaceDark)
+        XCTAssertEqual(hex(CabinSurface.muted.resolve(in: dark)), ThemePalette.surfaceMutedDark)
+        XCTAssertEqual(hex(accent, darkTraits), ThemePalette.accentDark)
+        XCTAssertEqual(hex(onAccent, darkTraits), "1D1708")
 
-        XCTAssertEqual(hex(CabinUIColors.background, oled), ThemePalette.backgroundOled)
-        XCTAssertEqual(hex(CabinUIColors.card, oled), ThemePalette.surfaceOled)
-        XCTAssertEqual(hex(CabinUIColors.muted, oled), ThemePalette.surfaceMutedOled)
-        XCTAssertEqual(hex(accent, oled), ThemePalette.accentDark)
-        XCTAssertEqual(hex(onAccent, oled), "1D1708")
-        XCTAssertEqual(hex(gold, oled), "D6BC85")
+        XCTAssertEqual(hex(CabinSurface.background.resolve(in: oled)), ThemePalette.backgroundOled)
+        XCTAssertEqual(hex(CabinSurface.card.resolve(in: oled)), ThemePalette.surfaceOled)
+        XCTAssertEqual(hex(CabinSurface.muted.resolve(in: oled)), ThemePalette.surfaceMutedOled)
+        XCTAssertEqual(hex(accent, darkTraits), ThemePalette.accentDark)
+        XCTAssertEqual(hex(onAccent, darkTraits), "1D1708")
+        XCTAssertEqual(hex(gold, darkTraits), "D6BC85")
     }
 
     func testDriveBackupRestoresThemeModeAndOled() throws {
@@ -175,11 +178,15 @@ final class ThemeSettingsTests: XCTestCase {
         AppSettings(scope: .local, defaults: defaults, widgetDefaults: widgetDefaults)
     }
 
-    private func traits(_ style: UIUserInterfaceStyle, oled: Bool) -> UITraitCollection {
-        UITraitCollection { mutable in
-            mutable.userInterfaceStyle = style
-            mutable[OLEDDarkTrait.self] = oled
-        }
+    private func environment(dark: Bool, oled: Bool) -> EnvironmentValues {
+        var values = EnvironmentValues()
+        values.colorScheme = dark ? .dark : .light
+        values.oledDarkActive = oled
+        return values
+    }
+
+    private func hex(_ color: Color) -> String {
+        hex(UIColor(color), UITraitCollection(userInterfaceStyle: .light))
     }
 
     private func hex(_ color: UIColor, _ traits: UITraitCollection) -> String {

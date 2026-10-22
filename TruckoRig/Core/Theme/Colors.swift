@@ -22,36 +22,19 @@ extension Color {
     /// Dark mode is a separate cabin palette, not a tint of the light one, so each token names
     /// both variants. Values come from Android `SoftUiColors`, `BrandPalettes` and `SemanticColors`.
     static func adaptive(light: String, dark: String) -> Color {
-        Color(uiColor: CabinUIColors.adaptive(light: light, dark: dark, oled: nil))
-    }
-
-    /// Same as `adaptive`, with Android's true-black OLED override when the dark cabin is active.
-    static func adaptiveSurface(light: String, dark: String, oled: String) -> Color {
-        Color(uiColor: CabinUIColors.adaptive(light: light, dark: dark, oled: oled))
+        Color(uiColor: CabinUIColors.adaptive(light: light, dark: dark))
     }
 }
 
-/// True-black OLED flag bridged into `UITraitCollection` so every `Color.forest*` surface updates.
-struct OLEDDarkTrait: UITraitDefinition {
+private struct OLEDDarkActiveKey: EnvironmentKey {
     static let defaultValue = false
-    static let affectsColorAppearance = true
-    static let name = "com.truckorig.oledDark"
-}
-
-private struct OLEDDarkActiveKey: UITraitBridgedEnvironmentKey {
-    static let defaultValue = false
-
-    static func read(from traitCollection: UITraitCollection) -> Bool {
-        traitCollection[OLEDDarkTrait.self]
-    }
-
-    static func write(to mutableTraits: inout UIMutableTraits, value: Bool) {
-        mutableTraits[OLEDDarkTrait.self] = value
-    }
 }
 
 extension EnvironmentValues {
     /// Resolved OLED black. True only when the driver asked for it and the cabin is actually dark.
+    ///
+    /// This is a plain SwiftUI value. A custom `UITraitDefinition` aborts on iOS 26 when UIKit
+    /// reads the override, so surfaces resolve from this environment instead.
     var oledDarkActive: Bool {
         get { self[OLEDDarkActiveKey.self] }
         set { self[OLEDDarkActiveKey.self] = newValue }
@@ -59,67 +42,69 @@ extension EnvironmentValues {
 }
 
 enum CabinUIColors {
-    static let background = adaptive(
-        light: ThemePalette.backgroundLight,
-        dark: ThemePalette.backgroundDark,
-        oled: ThemePalette.backgroundOled
-    )
-    static let card = adaptive(
-        light: ThemePalette.surfaceLight,
-        dark: ThemePalette.surfaceDark,
-        oled: ThemePalette.surfaceOled
-    )
-    static let muted = adaptive(
-        light: ThemePalette.surfaceMutedLight,
-        dark: ThemePalette.surfaceMutedDark,
-        oled: ThemePalette.surfaceMutedOled
-    )
-
-    static func adaptive(light: String, dark: String, oled: String?) -> UIColor {
+    static func adaptive(light: String, dark: String) -> UIColor {
         UIColor { traits in
-            let darkMode = traits.userInterfaceStyle == .dark
-            let hex: String
-            if darkMode, let oled, traits[OLEDDarkTrait.self] {
-                hex = oled
-            } else {
-                hex = darkMode ? dark : light
-            }
+            let hex = traits.userInterfaceStyle == .dark ? dark : light
             return UIColor(Color(hex: hex))
         }
     }
 }
 
-/// Pushes the OLED trait onto the window so UIKit bars resolve the same surfaces as SwiftUI.
-struct OLEDTraitInstaller: UIViewControllerRepresentable {
-    var active: Bool
-
-    func makeUIViewController(context: Context) -> OLEDTraitController {
-        let controller = OLEDTraitController()
-        controller.view.isUserInteractionEnabled = false
-        controller.view.backgroundColor = .clear
-        return controller
+/// Page, card, and muted fills. OLED replaces these only, and only while the cabin is dark.
+///
+/// The widget leaves `oledDarkActive` at its default `false`, matching Android
+/// `WidgetCabinColors.resolve`, which reads the app theme and ignores `oled_dark`.
+struct CabinSurface: ShapeStyle, View, Sendable {
+    enum Role: Sendable {
+        case background
+        case card
+        case muted
     }
 
-    func updateUIViewController(_ controller: OLEDTraitController, context: Context) {
-        controller.active = active
+    var role: Role
+    /// Multiplier applied after the hex is chosen. `1` is the solid Android surface.
+    var fade: Double = 1
+
+    func resolve(in environment: EnvironmentValues) -> Color {
+        color(dark: environment.colorScheme == .dark, oledRequested: environment.oledDarkActive)
     }
+
+    var body: some View {
+        CabinSurfaceFill(surface: self)
+    }
+
+    func faded(to opacity: Double) -> CabinSurface {
+        var copy = self
+        copy.fade = opacity
+        return copy
+    }
+
+    func color(dark: Bool, oledRequested: Bool) -> Color {
+        let oled = oledRequested && dark
+        let hex: String
+        switch role {
+        case .background:
+            hex = ThemePalette.background(dark: dark, oled: oled)
+        case .card:
+            hex = ThemePalette.surface(dark: dark, oled: oled)
+        case .muted:
+            hex = ThemePalette.surfaceMuted(dark: dark, oled: oled)
+        }
+        return Color(hex: hex).opacity(fade)
+    }
+
+    static let background = CabinSurface(role: .background)
+    static let card = CabinSurface(role: .card)
+    static let muted = CabinSurface(role: .muted)
 }
 
-final class OLEDTraitController: UIViewController {
-    var active = false {
-        didSet { apply() }
-    }
+private struct CabinSurfaceFill: View {
+    var surface: CabinSurface
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.oledDarkActive) private var oledDarkActive
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        apply()
-    }
-
-    private func apply() {
-        guard let window = view.window else { return }
-        guard window.traitOverrides[OLEDDarkTrait.self] != active else { return }
-        window.traitOverrides[OLEDDarkTrait.self] = active
-        window.backgroundColor = CabinUIColors.background
+    var body: some View {
+        Rectangle().fill(surface.color(dark: colorScheme == .dark, oledRequested: oledDarkActive))
     }
 }
 
@@ -136,23 +121,11 @@ extension Color {
     static let forestAccent = Color.forestPrimary
 
     /// Page canvas. Light `#F5F4F1`, dark `#0D0F1E`, OLED `#000000`.
-    static let forestBackground = Color.adaptiveSurface(
-        light: ThemePalette.backgroundLight,
-        dark: ThemePalette.backgroundDark,
-        oled: ThemePalette.backgroundOled
-    )
+    static var forestBackground: CabinSurface { .background }
     /// Card surface. Light `#FDFCFA`, dark `#161929`, OLED `#121212`.
-    static let forestCard = Color.adaptiveSurface(
-        light: ThemePalette.surfaceLight,
-        dark: ThemePalette.surfaceDark,
-        oled: ThemePalette.surfaceOled
-    )
+    static var forestCard: CabinSurface { .card }
     /// Input and chip wash. Light sage `#EAE9F4`, dark `#262A4F`, OLED `#1C1C1C`.
-    static let forestSurfaceMuted = Color.adaptiveSurface(
-        light: ThemePalette.surfaceMutedLight,
-        dark: ThemePalette.surfaceMutedDark,
-        oled: ThemePalette.surfaceMutedOled
-    )
+    static var forestSurfaceMuted: CabinSurface { .muted }
 
     static let forestText = Color.adaptive(light: "16182B", dark: "EEEBE3")
     static let forestTextSecondary = Color.adaptive(light: "585A6E", dark: "A7A6B4")

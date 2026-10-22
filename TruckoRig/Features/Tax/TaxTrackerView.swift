@@ -203,7 +203,10 @@ struct TaxTrackerView: View {
             Text("\(day)")
                 .font(.appCaptionMedium)
                 .frame(maxWidth: .infinity, minHeight: 32)
-                .background(on ? Color.forestPrimary : Color.forestSurfaceMuted, in: Circle())
+                .background(
+                    on ? AnyShapeStyle(Color.forestPrimary) : AnyShapeStyle(Color.forestSurfaceMuted),
+                    in: Circle()
+                )
                 .foregroundStyle(on ? Color.forestOnPrimary : Color.forestText)
         }
         .buttonStyle(.plain)

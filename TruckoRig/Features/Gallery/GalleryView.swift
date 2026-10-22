@@ -243,7 +243,10 @@ struct GalleryView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .foregroundStyle(selected ? Color.forestOnPrimary : Color.forestText)
-                .background(selected ? Color.forestPrimary : Color.forestSurfaceMuted, in: Capsule())
+                .background(
+                    selected ? AnyShapeStyle(Color.forestPrimary) : AnyShapeStyle(Color.forestSurfaceMuted),
+                    in: Capsule()
+                )
         }
         .buttonStyle(.plain)
     }

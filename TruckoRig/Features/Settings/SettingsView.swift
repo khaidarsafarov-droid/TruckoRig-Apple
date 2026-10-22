@@ -63,7 +63,9 @@ struct SettingsView: View {
                                     .padding(.horizontal, 4)
                                     .foregroundStyle(settings.themeMode == mode ? Color.forestOnPrimary : Color.forestText)
                                     .background(
-                                        settings.themeMode == mode ? Color.forestPrimary : Color.forestSurfaceMuted,
+                                        settings.themeMode == mode
+                                            ? AnyShapeStyle(Color.forestPrimary)
+                                            : AnyShapeStyle(Color.forestSurfaceMuted),
                                         in: Capsule()
                                     )
                             }

@@ -325,20 +325,20 @@ struct JournalLoadCard: View {
         let source = LoadSourceTag.detect(tripId: load.tripId, rawMessage: load.rawMessage)
         let title: LocalizedStringKey
         let foreground: Color
-        let background: Color
+        let background: AnyShapeStyle
         switch source {
         case .relay:
             title = "load.source.relay"
             foreground = Color.forestPrimary
-            background = Color.forestSurfaceMuted
+            background = AnyShapeStyle(Color.forestSurfaceMuted)
         case .manual:
             title = "load.source.manual"
             foreground = Color.forestSuccess
-            background = Color.successContainer
+            background = AnyShapeStyle(Color.successContainer)
         case .broker:
             title = "load.source.broker"
             foreground = Color.forestWarning
-            background = Color.warningContainer
+            background = AnyShapeStyle(Color.warningContainer)
         }
         return Text(title)
             .font(.appCaptionMedium)

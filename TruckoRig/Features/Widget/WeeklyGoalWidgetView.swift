@@ -122,7 +122,7 @@ struct WeeklyGoalWidgetView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                goalBar(fill: Color.brandGold, track: Color.heroText.opacity(0.22), height: 4)
+                goalBar(fill: Color.brandGold, track: AnyShapeStyle(Color.heroText.opacity(0.22)), height: 4)
                     .reportFrame("wg.bar", probe)
             }
             .padding(.horizontal, 12)
@@ -171,7 +171,11 @@ struct WeeklyGoalWidgetView: View {
         )
     }
 
-    private func goalBar(fill: Color, track: Color = Color.forestSurfaceMuted, height: CGFloat) -> some View {
+    private func goalBar(
+        fill: Color,
+        track: AnyShapeStyle = AnyShapeStyle(Color.forestSurfaceMuted),
+        height: CGFloat
+    ) -> some View {
         Capsule()
             .fill(track)
             .frame(height: height)
