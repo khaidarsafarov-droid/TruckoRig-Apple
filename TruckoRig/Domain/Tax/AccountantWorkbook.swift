@@ -206,49 +206,51 @@ public enum AccountantWorkbook {
         let perDiemDays = input.perDiemDates.count
         let perDiemTotal = PerDiemCalculator.amount(dayCount: perDiemDays)
         let maintenanceTotal = input.maintenance.reduce(MoneyCents.zero) { $0 + $1.amount }
-        var rows: [[String]] = [
-            ["\(displayName) — отчёт для бухгалтера", ""],
-            ["Год", String(input.year)],
-            ["Валовой доход (paycheck), USD", plain(input.grossIncome)],
-            ["", ""],
+        var rows: [[XlsxCell]] = [
+            [.text("\(displayName) — отчёт для бухгалтера"), .blank],
+            [.text("Год"), integer(input.year)],
+            [.text("Валовой доход (paycheck), USD"), money(input.grossIncome)],
+            [.blank, .blank],
         ]
         if sections.contains(.loads) {
-            rows.append(["Грузов", String(input.loads.count)])
-            rows.append(["Сумма ставок грузов, USD", loadsTotal.formatPlain()])
+            rows.append([.text("Грузов"), integer(input.loads.count)])
+            rows.append([.text("Сумма ставок грузов, USD"), money(loadsTotal)])
         }
         if sections.contains(.diesel) {
-            rows.append(["Заправок дизеля", String(input.diesel.count)])
-            rows.append(["Дизель всего, USD", dieselTotal.formatPlain()])
+            rows.append([.text("Заправок дизеля"), integer(input.diesel.count)])
+            rows.append([.text("Дизель всего, USD"), money(dieselTotal)])
         }
         if sections.contains(.perDiem) {
-            rows.append(["Дней на рейсах (суточные)", String(perDiemDays)])
-            rows.append(["Ставка суточных, USD/день", plain(PerDiemCalculator.dailyRate)])
-            rows.append(["Суточные всего, USD", plain(perDiemTotal)])
+            rows.append([.text("Дней на рейсах (суточные)"), integer(perDiemDays)])
+            rows.append([.text("Ставка суточных, USD/день"), money(PerDiemCalculator.dailyRate)])
+            rows.append([.text("Суточные всего, USD"), money(perDiemTotal)])
         }
         if sections.contains(.maintenance) {
-            rows.append(["Записей ТО", String(input.maintenance.count)])
-            rows.append(["ТО всего, USD", maintenanceTotal.formatPlain()])
+            rows.append([.text("Записей ТО"), integer(input.maintenance.count)])
+            rows.append([.text("ТО всего, USD"), money(maintenanceTotal)])
         }
-        rows.append(["", ""])
+        rows.append([.blank, .blank])
         rows.append([
-            "Подсказка",
-            "Каждый лист — отдельная таблица. Откройте в Excel / Google Таблицах. Отправьте через Telegram, WhatsApp или почту.",
+            .text("Подсказка"),
+            .text("Каждый лист — отдельная таблица. Откройте в Excel / Google Таблицах. Отправьте через Telegram, WhatsApp или почту."),
         ])
         return XlsxSheet(name: "Сводка", rows: rows, headerRow: false)
     }
 
     private static func loadsSheet(_ input: AccountantWorkbookInput) -> XlsxSheet {
-        let header = ["Дата", "Trip ID", "Маршрут", "Ставка, USD", "Мили", "RPM", "Дней на рейсе"]
-        let body = input.loads.sorted { $0.date < $1.date }.map { load -> [String] in
+        let header = ["Дата", "Trip ID", "Маршрут", "Ставка, USD", "Мили", "RPM", "Дней на рейсе"].map {
+            XlsxCell.text($0)
+        }
+        let body = input.loads.sorted { $0.date < $1.date }.map { load -> [XlsxCell] in
             let rpm = load.miles > 0 ? load.rate.dollars / load.miles : 0
             return [
-                load.date,
-                load.tripId,
-                load.route,
-                load.rate.formatPlain(),
-                plain(load.miles, digits: 0),
-                plain(rpm),
-                String(load.onDutyDays),
+                isoDate(load.date),
+                .text(load.tripId),
+                .text(load.route),
+                money(load.rate),
+                miles(load.miles),
+                rpmCell(rpm),
+                integer(load.onDutyDays),
             ]
         }
         return XlsxSheet(name: "Грузы", rows: [header] + body, headerRow: true)
@@ -258,54 +260,96 @@ public enum AccountantWorkbook {
         let header = [
             "Неделя", "Год", "Начало недели", "Конец недели", "Сумма, USD",
             "Галлоны", "Цена / гал", "Цена со скидкой / гал", "Экономия, USD", "Место",
-        ]
+        ].map { XlsxCell.text($0) }
         let body = input.diesel.sorted {
             ($0.year, $0.weekNumber) < ($1.year, $1.weekNumber)
-        }.map { fill -> [String] in
+        }.map { fill -> [XlsxCell] in
             let savings = savingsCents(
                 gallons: fill.gallons,
                 pricePerGallon: fill.pricePerGallon,
                 discountPricePerGallon: fill.discountPricePerGallon
             )
             return [
-                String(fill.weekNumber),
-                String(fill.year),
-                fill.weekStartDate,
-                fill.weekEndDate,
-                fill.totalAmount.formatPlain(),
-                fill.gallons.map { plain($0) } ?? "",
-                unitPrice(fill.pricePerGallon),
-                unitPrice(fill.discountPricePerGallon),
-                savings?.formatPlain() ?? "",
-                fill.location,
+                integer(fill.weekNumber),
+                integer(fill.year),
+                isoDate(fill.weekStartDate),
+                isoDate(fill.weekEndDate),
+                money(fill.totalAmount),
+                gallons(fill.gallons),
+                unitPriceCell(fill.pricePerGallon),
+                unitPriceCell(fill.discountPricePerGallon),
+                moneyOrBlank(savings),
+                .text(fill.location),
             ]
         }
         return XlsxSheet(name: "Дизель", rows: [header] + body, headerRow: true)
     }
 
     private static func perDiemSheet(_ input: AccountantWorkbookInput) -> XlsxSheet {
-        let header = ["Дата на рейсе", "Ставка, USD", "Сумма, USD"]
-        let rate = plain(PerDiemCalculator.dailyRate)
-        let body = input.perDiemDates.sorted().map { date in [date, rate, rate] }
+        let header = ["Дата на рейсе", "Ставка, USD", "Сумма, USD"].map { XlsxCell.text($0) }
+        let rate = money(PerDiemCalculator.dailyRate)
+        let body = input.perDiemDates.sorted().map { day -> [XlsxCell] in
+            [isoDate(day), rate, rate]
+        }
         let total = [
-            "ИТОГО (\(input.perDiemDates.count) дн.)",
+            XlsxCell.text("ИТОГО (\(input.perDiemDates.count) дн.)"),
             rate,
-            plain(PerDiemCalculator.amount(dayCount: input.perDiemDates.count)),
+            money(PerDiemCalculator.amount(dayCount: input.perDiemDates.count)),
         ]
         return XlsxSheet(name: "Суточные", rows: [header] + body + [total], headerRow: true)
     }
 
     private static func maintenanceSheet(_ input: AccountantWorkbookInput) -> XlsxSheet {
-        let header = ["Дата ТО", "Услуга", "Описание", "Сумма, USD"]
-        let body = input.maintenance.map { entry in
-            [entry.serviceDate, entry.serviceName, entry.description, entry.amount.formatPlain()]
+        let header = ["Дата ТО", "Услуга", "Описание", "Сумма, USD"].map { XlsxCell.text($0) }
+        let body = input.maintenance.map { entry -> [XlsxCell] in
+            [isoDate(entry.serviceDate), .text(entry.serviceName), .text(entry.description), money(entry.amount)]
         }
         let total = input.maintenance.reduce(MoneyCents.zero) { $0 + $1.amount }
         return XlsxSheet(
             name: "ТО",
-            rows: [header] + body + [["ИТОГО", "", "", total.formatPlain()]],
+            rows: [header] + body + [[.text("ИТОГО"), .blank, .blank, money(total)]],
             headerRow: true
         )
+    }
+
+    private static func isoDate(_ iso: String) -> XlsxCell {
+        XlsxCell.date(iso: iso)
+    }
+
+    private static func money(_ cents: MoneyCents) -> XlsxCell {
+        .number(raw: cents.formatPlain(), format: .money)
+    }
+
+    private static func money(_ dollars: Double) -> XlsxCell {
+        .number(raw: plain(dollars), format: .money)
+    }
+
+    private static func moneyOrBlank(_ cents: MoneyCents?) -> XlsxCell {
+        guard let cents else { return .blank }
+        return money(cents)
+    }
+
+    private static func integer(_ value: Int) -> XlsxCell {
+        .number(raw: String(value), format: .integer)
+    }
+
+    private static func miles(_ value: Double) -> XlsxCell {
+        .number(raw: plain(value, digits: 0), format: .integer)
+    }
+
+    private static func rpmCell(_ value: Double) -> XlsxCell {
+        .number(raw: plain(value), format: .decimal2)
+    }
+
+    private static func gallons(_ value: Double?) -> XlsxCell {
+        guard let value else { return .blank }
+        return .number(raw: plain(value), format: .decimal2)
+    }
+
+    private static func unitPriceCell(_ dollars: Double?) -> XlsxCell {
+        let raw = unitPrice(dollars)
+        guard !raw.isEmpty else { return .blank }
+        return .number(raw: raw, format: .decimal3)
     }
 
     private static func unitPrice(_ dollars: Double?) -> String {
