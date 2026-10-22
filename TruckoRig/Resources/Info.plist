@@ -50,6 +50,28 @@
 				<string>truckorig</string>
 			</array>
 		</dict>
+		<!-- Reversed iOS OAuth client id. Replace together with GIDClientID. Keep the truckorig scheme. -->
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>google-sign-in</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.REPLACE_WITH_IOS_OAUTH_CLIENT_ID</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- Placeholder until an iOS OAuth client exists. Not a credential. Drive stays off while this value is unchanged. -->
+	<key>GIDClientID</key>
+	<string>REPLACE_WITH_IOS_OAUTH_CLIENT_ID.apps.googleusercontent.com</string>
+
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>processing</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.truckorig.drive-sync</string>
 	</array>
 </dict>
 </plist>

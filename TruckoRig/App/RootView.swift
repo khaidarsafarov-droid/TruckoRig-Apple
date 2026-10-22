@@ -28,6 +28,7 @@ struct RootView: View {
                 .environment(appState)
         }
         .onOpenURL { url in
+            if DriveSignInCallback.handle(url) { return }
             appState.open(url)
         }
         .onChange(of: appState.settings.language) { _, _ in
