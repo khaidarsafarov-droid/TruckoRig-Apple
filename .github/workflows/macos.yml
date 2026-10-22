@@ -50,13 +50,6 @@ jobs:
       - name: Show the software keyboard in UI tests
         run: defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
 
-      - name: Pre-authorize notifications so the system alert cannot cover the UI test
-        run: |
-          set -euo pipefail
-          xcrun simctl boot "${{ steps.simulator.outputs.udid }}" || true
-          xcrun simctl bootstatus "${{ steps.simulator.outputs.udid }}" -b
-          xcrun simctl privacy "${{ steps.simulator.outputs.udid }}" grant notifications com.truckorig
-
       - name: Build the app and widget, then run unit tests
         run: |
           set -euo pipefail
