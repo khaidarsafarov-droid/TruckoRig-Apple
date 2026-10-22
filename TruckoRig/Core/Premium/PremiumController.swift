@@ -59,6 +59,9 @@ final class PremiumController {
             notifications: SystemTrialNotificationCenter(),
             store: PremiumLocalStore.standard()
         )
+        if UITestLaunch.isEnabled {
+            markOfferHandled()
+        }
     }
 
     /// Does not start StoreKit. Previews and storage tests use this.
@@ -229,6 +232,7 @@ final class PremiumController {
     }
 
     private func permissionGranted() async -> Bool {
+        if UITestLaunch.isEnabled { return false }
         switch await notifications.authorization() {
         case .authorized:
             return true

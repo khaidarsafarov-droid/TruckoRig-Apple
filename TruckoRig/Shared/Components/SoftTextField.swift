@@ -10,10 +10,22 @@ struct SoftTextField: View {
     var isSecure = false
     var autocapitalization: TextInputAutocapitalization = .sentences
     var errorMessage: String?
+    /// When set, focusing this field publishes `focusTag` so a parent `ScrollViewReader` can scroll to it.
+    var focusTag: String?
+    var activeFocus: Binding<String?>?
 
     @FocusState private var isFocused: Bool
 
+    /// Reports focus upward. The text field keeps its own `@FocusState`; the binding is only the scroll id.
+    func keyboardFocus(_ tag: String, in active: Binding<String?>) -> Self {
+        var copy = self
+        copy.focusTag = tag
+        copy.activeFocus = active
+        return copy
+    }
+
     var body: some View {
+        let linked = activeFocus?.wrappedValue
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(.appCaptionMedium)
@@ -36,9 +48,9 @@ struct SoftTextField: View {
             .background(Color.forestSurfaceMuted, in: RoundedRectangle(cornerRadius: Spacing.controlRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: Spacing.controlRadius, style: .continuous)
-                    .strokeBorder(borderColor, lineWidth: isFocused || errorMessage != nil ? 1.5 : 0)
+                    .strokeBorder(borderColor, lineWidth: showsFocusRing || errorMessage != nil ? 1.5 : 0)
             )
-            .animation(.easeOut(duration: 0.15), value: isFocused)
+            .animation(.easeOut(duration: 0.15), value: showsFocusRing)
 
             if let errorMessage {
                 Text(errorMessage)
@@ -46,12 +58,48 @@ struct SoftTextField: View {
                     .foregroundStyle(Color.forestError)
             }
         }
+        .modifier(FocusTagID(tag: focusTag))
         .accessibilityElement(children: .contain)
+        .onChange(of: isFocused) { _, focused in
+            guard let focusTag, let activeFocus else { return }
+            if focused {
+                if activeFocus.wrappedValue != focusTag {
+                    activeFocus.wrappedValue = focusTag
+                }
+            } else if activeFocus.wrappedValue == focusTag {
+                activeFocus.wrappedValue = nil
+            }
+        }
+        .onChange(of: linked) { _, newValue in
+            guard let focusTag else { return }
+            let shouldFocus = newValue == focusTag
+            if isFocused != shouldFocus {
+                isFocused = shouldFocus
+            }
+        }
+    }
+
+    private var showsFocusRing: Bool {
+        if let focusTag, activeFocus?.wrappedValue == focusTag { return true }
+        return isFocused
     }
 
     private var borderColor: Color {
         if errorMessage != nil { return .forestError }
-        return isFocused ? .forestPrimary : .clear
+        return showsFocusRing ? .forestPrimary : .clear
+    }
+}
+
+/// Applies a scroll id only when the field participates in keyboard avoidance.
+private struct FocusTagID: ViewModifier {
+    var tag: String?
+
+    func body(content: Content) -> some View {
+        if let tag {
+            content.id(tag)
+        } else {
+            content
+        }
     }
 }
 
@@ -64,16 +112,20 @@ struct SoftNumberField: View {
     @Binding var value: Double
     var placeholder: LocalizedStringKey = "0"
     var allowsDecimal = true
+    var focusTag: String?
+    var activeFocus: Binding<String?>?
 
     @State private var text: String = ""
 
+    func keyboardFocus(_ tag: String, in active: Binding<String?>) -> Self {
+        var copy = self
+        copy.focusTag = tag
+        copy.activeFocus = active
+        return copy
+    }
+
     var body: some View {
-        SoftTextField(
-            title: title,
-            text: $text,
-            placeholder: placeholder,
-            keyboard: allowsDecimal ? .decimalPad : .numberPad
-        )
+        numberField
         .onAppear {
             text = value == 0 ? "" : formatted(value)
         }
@@ -85,6 +137,22 @@ struct SoftNumberField: View {
             // Only rewrite the field when something other than typing changed the value.
             if abs(parsed - value) > 0.0001 {
                 text = value == 0 ? "" : formatted(value)
+            }
+        }
+    }
+
+    private var numberField: some View {
+        let field = SoftTextField(
+            title: title,
+            text: $text,
+            placeholder: placeholder,
+            keyboard: allowsDecimal ? .decimalPad : .numberPad
+        )
+        return Group {
+            if let focusTag, let activeFocus {
+                field.keyboardFocus(focusTag, in: activeFocus)
+            } else {
+                field
             }
         }
     }

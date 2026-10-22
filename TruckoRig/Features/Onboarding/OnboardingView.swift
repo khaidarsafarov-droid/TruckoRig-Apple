@@ -9,6 +9,7 @@ struct OnboardingView: View {
     @State private var familyName = ""
     @State private var role = DriverRole.ownerOperator
     @State private var errorMessage: String?
+    @FocusState private var focus: String?
 
     private var canContinueName: Bool {
         !givenName.trimmed.isEmpty && !familyName.trimmed.isEmpty
@@ -16,20 +17,30 @@ struct OnboardingView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: Spacing.section) {
-                if step == 0 {
-                    nameStep
-                } else {
-                    roleStep
+            KeyboardAvoidingScroll(focus: $focus) {
+                VStack(alignment: .leading, spacing: Spacing.section) {
+                    if step == 0 {
+                        nameStep
+                    } else {
+                        roleStep
+                    }
                 }
-                Spacer()
+                .padding(Spacing.section)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(Spacing.section)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .forestBackground()
             .navigationTitle(step == 0 ? "onboard.title" : "onboard.roleTitle")
             .navigationBarTitleDisplayMode(.large)
+            .onChange(of: step) { _, _ in
+                focus = nil
+                KeyboardDismissal.resign()
+            }
         }
+    }
+
+    private var focusBinding: Binding<String?> {
+        Binding(get: { focus }, set: { focus = $0 })
     }
 
     private var nameStep: some View {
@@ -38,7 +49,9 @@ struct OnboardingView: View {
                 .font(.appBody)
                 .foregroundStyle(Color.forestTextSecondary)
             SoftTextField(title: "onboard.givenName", text: $givenName, autocapitalization: .words)
+                .keyboardFocus(KeyboardField.givenName, in: focusBinding)
             SoftTextField(title: "onboard.familyName", text: $familyName, autocapitalization: .words)
+                .keyboardFocus(KeyboardField.familyName, in: focusBinding)
             if let errorMessage {
                 Text(errorMessage)
                     .font(.appCaption)

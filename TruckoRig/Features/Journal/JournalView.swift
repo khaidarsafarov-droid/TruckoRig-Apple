@@ -224,7 +224,8 @@ struct JournalView: View {
             title: "journal.empty.title",
             message: "journal.empty.message",
             actionTitle: "journal.addLoad",
-            action: { isAddingLoad = true }
+            action: { isAddingLoad = true },
+            actionIdentifier: "journal.addLoad"
         )
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
@@ -271,6 +272,7 @@ private struct JournalMenuSheet: View {
                 Button(action: onAdd) {
                     Label("journal.addLoad", systemImage: "plus")
                 }
+                .accessibilityIdentifier("journal.addLoad")
 
                 menuRow(.analytics, "screen.analytics", "chart.bar")
                 menuRow(.goal, "tab.goal", "target")
