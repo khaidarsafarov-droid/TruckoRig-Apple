@@ -142,13 +142,16 @@ struct StopsSection: View {
                 Button { onAdd(.pickup) } label: {
                     Label("stop.addPickup", systemImage: "plus.circle")
                 }
+                .buttonStyle(.borderless)
                 .accessibilityIdentifier("uitest.addPickup")
                 Spacer()
                 Button { onAdd(.delivery) } label: {
                     Label("stop.addDelivery", systemImage: "plus.circle")
                 }
+                .buttonStyle(.borderless)
             }
             .font(.appCaptionMedium)
+            .accessibilityElement(children: .contain)
         }
     }
 }

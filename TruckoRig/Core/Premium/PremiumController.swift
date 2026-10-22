@@ -232,7 +232,7 @@ final class PremiumController {
     }
 
     private func permissionGranted() async -> Bool {
-        if UITestLaunch.isEnabled { return false }
+        if UITestLaunch.suppressesSystemPrompts { return false }
         switch await notifications.authorization() {
         case .authorized:
             return true

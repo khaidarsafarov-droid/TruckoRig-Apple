@@ -54,4 +54,17 @@ final class KeyboardAvoidanceTests: XCTestCase {
         XCTAssertEqual(KeyboardSheetDetent.resolved(resting: .medium, fieldFocused: false), .medium)
         XCTAssertEqual(KeyboardSheetDetent.resolved(resting: .large, fieldFocused: false), .large)
     }
+
+    func testUITestLaunchIsRecognizedFromTheArgumentOrEnvironment() {
+        XCTAssertTrue(UITestLaunch.isEnabled(arguments: [UITestLaunch.argument], environment: [:]))
+        XCTAssertTrue(UITestLaunch.isEnabled(arguments: [], environment: [UITestLaunch.environmentKey: "1"]))
+        XCTAssertFalse(UITestLaunch.isEnabled(arguments: [], environment: [:]))
+    }
+
+    func testSystemPromptsAreSuppressedForTheUITestAndTheUnitTestHost() {
+        XCTAssertTrue(UITestLaunch.suppressesSystemPrompts(uiTest: true, xcTestConfigurationPath: nil))
+        XCTAssertTrue(UITestLaunch.suppressesSystemPrompts(uiTest: false, xcTestConfigurationPath: "/tmp/config.xctestconfiguration"))
+        XCTAssertFalse(UITestLaunch.suppressesSystemPrompts(uiTest: false, xcTestConfigurationPath: nil))
+        XCTAssertFalse(UITestLaunch.suppressesSystemPrompts(uiTest: false, xcTestConfigurationPath: ""))
+    }
 }
