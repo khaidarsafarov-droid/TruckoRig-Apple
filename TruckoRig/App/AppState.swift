@@ -75,22 +75,22 @@ final class AppState {
             settings: resolved,
             media: MediaStore(scope: persistence.scope)
         )
-        self.drive = drive
-        DriveRuntime.coordinator = drive
-        self.drive.onJournalChanged = { [weak self] in
-            self?.reloadJournal()
-        }
         let telegram = TelegramCoordinator(
             database: persistence.database,
             settings: resolved,
             scope: persistence.scope
         )
+        self.drive = drive
+        self.telegram = telegram
+        DriveRuntime.coordinator = drive
+        TelegramRuntime.coordinator = telegram
+        drive.onJournalChanged = { [weak self] in
+            self?.reloadJournal()
+        }
         telegram.isPremium = { [weak controller] in controller?.isActive ?? false }
         telegram.onJournalChanged = { [weak self] in
             self?.reloadJournal()
         }
-        self.telegram = telegram
-        TelegramRuntime.coordinator = telegram
     }
 
     func bootstrap() {
