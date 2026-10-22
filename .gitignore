@@ -25,3 +25,6 @@ Package.resolved
 # Fastlane / CI artifacts
 fastlane/report.xml
 fastlane/screenshots
+
+# Google Maps SDK key. Copy Config/Secrets.example.xcconfig here. Never commit a real key.
+Config/Secrets.xcconfig

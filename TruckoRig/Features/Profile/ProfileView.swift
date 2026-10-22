@@ -60,7 +60,7 @@ struct ProfileView: View {
                 NavigationLink { GalleryView() } label: {
                     Label("screen.gallery", systemImage: "photo.on.rectangle")
                 }
-                NavigationLink { RouteMapView() } label: {
+                NavigationLink { MapScreen() } label: {
                     Label("screen.map", systemImage: "map")
                 }
             }
