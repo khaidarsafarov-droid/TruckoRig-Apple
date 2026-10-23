@@ -413,7 +413,40 @@ final class SmartNotificationTests: XCTestCase {
         XCTAssertTrue(decision.evaluatedNow)
     }
 
-    private func request(now: Date, lastRunAt: Date?, russian: Bool = false) -> SmartNotificationRequest {
+    func testFrenchCopyLeavesEnglishAndRussianTextUnchanged() {
+        let now = makeDate(2026, 7, 29, 15, 0)
+        let last = now.addingTimeInterval(-24 * 60 * 60)
+        let decision = SmartNotificationEngine.evaluate(request(now: now, lastRunAt: last, french: true))
+        XCTAssertEqual(decision.notifications[0].title, "Ajoutez la paie")
+        XCTAssertEqual(decision.notifications[0].body, "Aucune donnée pour la semaine 30")
+        XCTAssertEqual(decision.notifications[1].title, "Ajoutez le diesel")
+        XCTAssertEqual(decision.notifications[1].body, "Aucune donnée pour la semaine 30")
+        XCTAssertEqual(decision.notifications[2].title, "Rappel d'entretien")
+        XCTAssertEqual(decision.notifications[2].body, "Oil — il est temps d'entretenir le camion")
+
+        var bundled = request(now: now, lastRunAt: last, french: true)
+        bundled.alreadyNotifiedMissingWeek = true
+        bundled.maintenanceDue = [("oil", "Oil"), ("tires", "Tires")]
+        let many = SmartNotificationEngine.evaluate(bundled)
+        XCTAssertEqual(many.notifications.map(\.identifier), ["100"])
+        XCTAssertEqual(many.notifications[0].body, "2 tâches : Oil, Tires")
+        XCTAssertEqual(
+            SmartNotificationCopy.maintenanceBody(count: 1, summary: "Oil", russian: false, french: true),
+            "1 tâche : Oil"
+        )
+        XCTAssertEqual(
+            SmartNotificationCopy.maintenanceBody(count: 0, summary: "Oil", russian: false, french: true),
+            "0 tâche : Oil"
+        )
+        XCTAssertEqual(
+            SmartNotificationCopy.maintenanceBody(count: 2, summary: "Oil, Tires", russian: true),
+            "2 задач: Oil, Tires"
+        )
+        XCTAssertEqual(SmartNotificationCopy.paycheckTitle(russian: false), "Add paycheck")
+        XCTAssertEqual(SmartNotificationCopy.dieselTitle(russian: true), "Добавьте дизель")
+    }
+
+    private func request(now: Date, lastRunAt: Date?, russian: Bool = false, french: Bool = false) -> SmartNotificationRequest {
         SmartNotificationRequest(
             now: now,
             calendar: calendar,
@@ -428,7 +461,8 @@ final class SmartNotificationTests: XCTestCase {
             alreadyNotifiedMissingWeek: false,
             missingWeekNumber: 30,
             maintenanceDue: [("oil", "Oil")],
-            russian: russian
+            russian: russian,
+            french: french
         )
     }
 }

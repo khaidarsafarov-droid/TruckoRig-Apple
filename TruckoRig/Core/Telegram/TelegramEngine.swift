@@ -115,6 +115,7 @@ final class TelegramEngine {
             }
         }
         _ = try? await session.send(TelegramBotAPI.setMyCommands(token))
+        _ = try? await session.send(TelegramBotAPI.setMyCommands(token, languageCode: "fr"))
         _ = try? await session.send(TelegramBotAPI.setChatMenuButton(token))
         if prefs.photoStamp != TelegramBranding.photoStamp(token), let jpeg = TelegramLogoJPEG.encode() {
             if await session.setProfilePhoto(token: token, jpeg: jpeg) {

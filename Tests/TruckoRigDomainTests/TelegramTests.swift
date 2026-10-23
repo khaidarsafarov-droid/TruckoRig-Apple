@@ -235,6 +235,56 @@ final class TelegramTests: XCTestCase {
         XCTAssertEqual(TelegramCopy.en.count, TelegramCopy.ru.count)
     }
 
+    func testFrenchCopyMatchesEnglishKeysPlaceholdersAndResolution() {
+        XCTAssertEqual(Set(TelegramCopy.fr.keys), Set(TelegramCopy.en.keys))
+        XCTAssertEqual(Set(TelegramCopy.ru.keys), Set(TelegramCopy.en.keys))
+        XCTAssertEqual(placeholderTokens(TelegramCopy.fr), placeholderTokens(TelegramCopy.en))
+        XCTAssertEqual(placeholderTokens(TelegramCopy.ru), placeholderTokens(TelegramCopy.en))
+
+        let welcome = TelegramCopy.text("sync_welcome", .fr)
+        XCTAssertTrue(welcome.contains("Bienvenue dans TruckoRig"))
+        XCTAssertTrue(welcome.contains("/help · /status · /import · /cancel"))
+        XCTAssertFalse(welcome.contains("tu "))
+
+        XCTAssertEqual(TelegramLanguage.resolve(appLanguage: "french", deviceIdentifier: "en_US"), .fr)
+        XCTAssertEqual(TelegramLanguage.resolve(appLanguage: "system", deviceIdentifier: "fr_CA"), .fr)
+        XCTAssertEqual(TelegramLanguage.resolve(appLanguage: "system", deviceIdentifier: "fr"), .fr)
+        XCTAssertEqual(TelegramLanguage.resolve(appLanguage: "english", deviceIdentifier: "fr_CA"), .en)
+        XCTAssertEqual(TelegramLanguage.resolve(appLanguage: "russian", deviceIdentifier: "fr"), .ru)
+        XCTAssertEqual(TelegramLanguage.resolve(appLanguage: "system", deviceIdentifier: "en_US"), .en)
+        XCTAssertEqual(TelegramLanguage.resolve(appLanguage: "system", deviceIdentifier: "ru_RU"), .ru)
+
+        XCTAssertEqual(TelegramIngest.fieldLabel("trip", .fr), "Trip ID")
+        XCTAssertEqual(TelegramIngest.fieldLabel("rate", .fr), "taux")
+        XCTAssertEqual(TelegramIngest.fieldLabel("pickup", .fr), "adresse de cueillette")
+        XCTAssertEqual(TelegramIngest.fieldLabel("delivery", .fr), "adresse de livraison")
+        XCTAssertEqual(TelegramIngest.fieldLabel("miles", .fr), "milles")
+        XCTAssertEqual(TelegramIngest.fieldLabel("miles", .en), "miles")
+        XCTAssertEqual(TelegramIngest.fieldLabel("rate", .ru), "ставка")
+
+        XCTAssertEqual(TelegramMenu.commandsJSON(languageCode: "en"), TelegramMenu.commandsJSON())
+        XCTAssertEqual(TelegramMenu.commandsJSON(languageCode: "ru"), TelegramMenu.commandsJSON())
+        XCTAssertTrue(TelegramMenu.commandsJSON(languageCode: "fr").contains("Démarrer"))
+        XCTAssertFalse(TelegramMenu.commandsJSON().contains("Démarrer"))
+        let frenchMenu = TelegramBotAPI.setMyCommands("123:ABC", languageCode: "fr")
+        XCTAssertTrue(frenchMenu.body?.contains(#""language_code":"fr""#) == true)
+        XCTAssertFalse(TelegramBotAPI.setMyCommands("123:ABC").body?.contains("language_code") == true)
+    }
+
+    private func placeholderTokens(_ table: [String: String]) -> [String: [String]] {
+        let pattern = #"%(?:\d+\$)?(?:\.\d+)?[sdf@]"#
+        let regex = try! NSRegularExpression(pattern: pattern)
+        var tokens: [String: [String]] = [:]
+        for key in table.keys.sorted() {
+            let value = table[key] ?? ""
+            let range = NSRange(value.startIndex..., in: value)
+            tokens[key] = regex.matches(in: value, range: range).map { match in
+                String(value[Range(match.range, in: value)!])
+            }
+        }
+        return tokens
+    }
+
     private func message(_ id: Int64, chat: String, text: String) -> TelegramUpdate {
         TelegramUpdate(updateId: id, chatId: chat, chatType: "private", text: text)
     }

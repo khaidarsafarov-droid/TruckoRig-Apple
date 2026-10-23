@@ -105,6 +105,118 @@ public struct AccountantWorkbookInput: Equatable, Sendable {
 
 /// Excel workbook with the same sheets, columns, headers, totals and file-name label as
 /// Android `AccountantWorkbookBuilder`. The container is OOXML `.xlsx` rather than SpreadsheetML `.xls`.
+/// Captions inside the accountant workbook. `.russian` is the text every existing
+/// language already receives. `.french` translates those captions only.
+public enum AccountantWorkbookLanguage: Sendable {
+    case russian
+    case french
+}
+
+public struct AccountantWorkbookCopy: Equatable, Sendable {
+    public var summaryTitle: String
+    public var year: String
+    public var grossIncome: String
+    public var loadCount: String
+    public var loadSum: String
+    public var dieselCount: String
+    public var dieselSum: String
+    public var perDiemDays: String
+    public var perDiemRate: String
+    public var perDiemSum: String
+    public var maintenanceCount: String
+    public var maintenanceSum: String
+    public var hintLabel: String
+    public var hint: String
+    public var summarySheet: String
+    public var loadsSheet: String
+    public var loadsHeader: [String]
+    public var dieselSheet: String
+    public var dieselHeader: [String]
+    public var perDiemSheet: String
+    public var perDiemHeader: [String]
+    public var maintenanceSheet: String
+    public var maintenanceHeader: [String]
+    public var total: String
+    public var perDiemDayOne: String
+    public var perDiemDayOther: String
+
+    public func perDiemTotal(count: Int) -> String {
+        let unit = count == 0 || count == 1 ? perDiemDayOne : perDiemDayOther
+        return "\(total) (\(count) \(unit))"
+    }
+
+    public static let russian = AccountantWorkbookCopy(
+        summaryTitle: "TruckoRig — отчёт для бухгалтера",
+        year: "Год",
+        grossIncome: "Валовой доход (paycheck), USD",
+        loadCount: "Грузов",
+        loadSum: "Сумма ставок грузов, USD",
+        dieselCount: "Заправок дизеля",
+        dieselSum: "Дизель всего, USD",
+        perDiemDays: "Дней на рейсах (суточные)",
+        perDiemRate: "Ставка суточных, USD/день",
+        perDiemSum: "Суточные всего, USD",
+        maintenanceCount: "Записей ТО",
+        maintenanceSum: "ТО всего, USD",
+        hintLabel: "Подсказка",
+        hint: "Каждый лист — отдельная таблица. Откройте в Excel / Google Таблицах. Отправьте через Telegram, WhatsApp или почту.",
+        summarySheet: "Сводка",
+        loadsSheet: "Грузы",
+        loadsHeader: ["Дата", "Trip ID", "Маршрут", "Ставка, USD", "Мили", "RPM", "Дней на рейсе"],
+        dieselSheet: "Дизель",
+        dieselHeader: [
+            "Неделя", "Год", "Начало недели", "Конец недели", "Сумма, USD",
+            "Галлоны", "Цена / гал", "Цена со скидкой / гал", "Экономия, USD", "Место",
+        ],
+        perDiemSheet: "Суточные",
+        perDiemHeader: ["Дата на рейсе", "Ставка, USD", "Сумма, USD"],
+        maintenanceSheet: "ТО",
+        maintenanceHeader: ["Дата ТО", "Услуга", "Описание", "Сумма, USD"],
+        total: "ИТОГО",
+        perDiemDayOne: "дн.",
+        perDiemDayOther: "дн."
+    )
+
+    public static let french = AccountantWorkbookCopy(
+        summaryTitle: "TruckoRig — rapport pour le comptable",
+        year: "Année",
+        grossIncome: "Revenu brut (paie), USD",
+        loadCount: "Voyages",
+        loadSum: "Somme des taux, USD",
+        dieselCount: "Pleins de diesel",
+        dieselSum: "Diesel total, USD",
+        perDiemDays: "Jours en voyage (indemnité)",
+        perDiemRate: "Taux de l'indemnité, USD/jour",
+        perDiemSum: "Indemnité totale, USD",
+        maintenanceCount: "Entrées d'entretien",
+        maintenanceSum: "Entretien total, USD",
+        hintLabel: "Note",
+        hint: "Chaque feuille est un tableau distinct. Ouvrez-le dans Excel ou Google Sheets. Envoyez-le par Telegram, WhatsApp ou courriel.",
+        summarySheet: "Sommaire",
+        loadsSheet: "Voyages",
+        loadsHeader: ["Date", "Trip ID", "Trajet", "Taux, USD", "Milles", "RPM", "Jours en voyage"],
+        dieselSheet: "Diesel",
+        dieselHeader: [
+            "Semaine", "Année", "Début de la semaine", "Fin de la semaine", "Montant, USD",
+            "Gallons", "Prix / gal", "Prix avec rabais / gal", "Économie, USD", "Lieu",
+        ],
+        perDiemSheet: "Indemnité",
+        perDiemHeader: ["Date en voyage", "Taux, USD", "Montant, USD"],
+        maintenanceSheet: "Entretien",
+        maintenanceHeader: ["Date d'entretien", "Service", "Description", "Montant, USD"],
+        total: "TOTAL",
+        perDiemDayOne: "jour",
+        perDiemDayOther: "jours"
+    )
+
+    public static func resolve(_ language: AccountantWorkbookLanguage) -> AccountantWorkbookCopy {
+        switch language {
+        case .russian: return .russian
+        case .french: return .french
+        }
+    }
+}
+
 public enum AccountantWorkbook {
     public static let displayName = "TruckoRig"
     public static let filePrefix = "TruckoRig"
@@ -155,30 +267,33 @@ public enum AccountantWorkbook {
 
     public static func sheets(
         input: AccountantWorkbookInput,
-        sections requested: Set<AccountantExportSection>
+        sections requested: Set<AccountantExportSection>,
+        language: AccountantWorkbookLanguage = .russian
     ) -> [XlsxSheet] {
         let sections = resolveSections(requested)
-        var sheets = [summarySheet(input, sections: sections)]
+        let copy = AccountantWorkbookCopy.resolve(language)
+        var sheets = [summarySheet(input, sections: sections, copy: copy)]
         if sections.contains(.loads) {
-            sheets.append(loadsSheet(input))
+            sheets.append(loadsSheet(input, copy: copy))
         }
         if sections.contains(.diesel) {
-            sheets.append(dieselSheet(input))
+            sheets.append(dieselSheet(input, copy: copy))
         }
         if sections.contains(.perDiem) {
-            sheets.append(perDiemSheet(input))
+            sheets.append(perDiemSheet(input, copy: copy))
         }
         if sections.contains(.maintenance) {
-            sheets.append(maintenanceSheet(input))
+            sheets.append(maintenanceSheet(input, copy: copy))
         }
         return sheets
     }
 
     public static func data(
         input: AccountantWorkbookInput,
-        sections: Set<AccountantExportSection>
+        sections: Set<AccountantExportSection>,
+        language: AccountantWorkbookLanguage = .russian
     ) -> Data {
-        XlsxWorkbook.data(sheets: sheets(input: input, sections: sections))
+        XlsxWorkbook.data(sheets: sheets(input: input, sections: sections, language: language))
     }
 
     /// Dollars saved versus list price, in cents, using Android `UnitPrice.timesGallons` rounding.
@@ -200,7 +315,8 @@ public enum AccountantWorkbook {
 
     private static func summarySheet(
         _ input: AccountantWorkbookInput,
-        sections: Set<AccountantExportSection>
+        sections: Set<AccountantExportSection>,
+        copy: AccountantWorkbookCopy
     ) -> XlsxSheet {
         let loadsTotal = input.loads.reduce(MoneyCents.zero) { $0 + $1.rate }
         let dieselTotal = input.diesel.reduce(MoneyCents.zero) { $0 + $1.totalAmount }
@@ -208,38 +324,38 @@ public enum AccountantWorkbook {
         let perDiemTotal = PerDiemCalculator.amount(dayCount: perDiemDays)
         let maintenanceTotal = input.maintenance.reduce(MoneyCents.zero) { $0 + $1.amount }
         var rows: [[XlsxCell]] = [
-            [.text("\(displayName) — отчёт для бухгалтера"), .blank],
-            [.text("Год"), integer(input.year)],
-            [.text("Валовой доход (paycheck), USD"), money(input.grossIncome)],
+            [.text(copy.summaryTitle), .blank],
+            [.text(copy.year), integer(input.year)],
+            [.text(copy.grossIncome), money(input.grossIncome)],
             [.blank, .blank],
         ]
         if sections.contains(.loads) {
-            rows.append([.text("Грузов"), integer(input.loads.count)])
-            rows.append([.text("Сумма ставок грузов, USD"), money(loadsTotal)])
+            rows.append([.text(copy.loadCount), integer(input.loads.count)])
+            rows.append([.text(copy.loadSum), money(loadsTotal)])
         }
         if sections.contains(.diesel) {
-            rows.append([.text("Заправок дизеля"), integer(input.diesel.count)])
-            rows.append([.text("Дизель всего, USD"), money(dieselTotal)])
+            rows.append([.text(copy.dieselCount), integer(input.diesel.count)])
+            rows.append([.text(copy.dieselSum), money(dieselTotal)])
         }
         if sections.contains(.perDiem) {
-            rows.append([.text("Дней на рейсах (суточные)"), integer(perDiemDays)])
-            rows.append([.text("Ставка суточных, USD/день"), money(PerDiemCalculator.dailyRate)])
-            rows.append([.text("Суточные всего, USD"), money(perDiemTotal)])
+            rows.append([.text(copy.perDiemDays), integer(perDiemDays)])
+            rows.append([.text(copy.perDiemRate), money(PerDiemCalculator.dailyRate)])
+            rows.append([.text(copy.perDiemSum), money(perDiemTotal)])
         }
         if sections.contains(.maintenance) {
-            rows.append([.text("Записей ТО"), integer(input.maintenance.count)])
-            rows.append([.text("ТО всего, USD"), money(maintenanceTotal)])
+            rows.append([.text(copy.maintenanceCount), integer(input.maintenance.count)])
+            rows.append([.text(copy.maintenanceSum), money(maintenanceTotal)])
         }
         rows.append([.blank, .blank])
         rows.append([
-            .text("Подсказка"),
-            .text("Каждый лист — отдельная таблица. Откройте в Excel / Google Таблицах. Отправьте через Telegram, WhatsApp или почту."),
+            .text(copy.hintLabel),
+            .text(copy.hint),
         ])
-        return XlsxSheet(name: "Сводка", rows: rows, headerRow: false)
+        return XlsxSheet(name: copy.summarySheet, rows: rows, headerRow: false)
     }
 
-    private static func loadsSheet(_ input: AccountantWorkbookInput) -> XlsxSheet {
-        let header = ["Дата", "Trip ID", "Маршрут", "Ставка, USD", "Мили", "RPM", "Дней на рейсе"].map {
+    private static func loadsSheet(_ input: AccountantWorkbookInput, copy: AccountantWorkbookCopy) -> XlsxSheet {
+        let header = copy.loadsHeader.map {
             XlsxCell.text($0)
         }
         let body = input.loads.sorted { $0.date < $1.date }.map { load -> [XlsxCell] in
@@ -254,14 +370,11 @@ public enum AccountantWorkbook {
                 integer(load.onDutyDays),
             ]
         }
-        return XlsxSheet(name: "Грузы", rows: [header] + body, headerRow: true)
+        return XlsxSheet(name: copy.loadsSheet, rows: [header] + body, headerRow: true)
     }
 
-    private static func dieselSheet(_ input: AccountantWorkbookInput) -> XlsxSheet {
-        let header = [
-            "Неделя", "Год", "Начало недели", "Конец недели", "Сумма, USD",
-            "Галлоны", "Цена / гал", "Цена со скидкой / гал", "Экономия, USD", "Место",
-        ].map { XlsxCell.text($0) }
+    private static func dieselSheet(_ input: AccountantWorkbookInput, copy: AccountantWorkbookCopy) -> XlsxSheet {
+        let header = copy.dieselHeader.map { XlsxCell.text($0) }
         let body = input.diesel.sorted {
             ($0.year, $0.weekNumber) < ($1.year, $1.weekNumber)
         }.map { fill -> [XlsxCell] in
@@ -283,32 +396,32 @@ public enum AccountantWorkbook {
                 .text(fill.location),
             ]
         }
-        return XlsxSheet(name: "Дизель", rows: [header] + body, headerRow: true)
+        return XlsxSheet(name: copy.dieselSheet, rows: [header] + body, headerRow: true)
     }
 
-    private static func perDiemSheet(_ input: AccountantWorkbookInput) -> XlsxSheet {
-        let header = ["Дата на рейсе", "Ставка, USD", "Сумма, USD"].map { XlsxCell.text($0) }
+    private static func perDiemSheet(_ input: AccountantWorkbookInput, copy: AccountantWorkbookCopy) -> XlsxSheet {
+        let header = copy.perDiemHeader.map { XlsxCell.text($0) }
         let rate = money(PerDiemCalculator.dailyRate)
         let body = input.perDiemDates.sorted().map { day -> [XlsxCell] in
             [isoDate(day), rate, rate]
         }
         let total = [
-            XlsxCell.text("ИТОГО (\(input.perDiemDates.count) дн.)"),
+            XlsxCell.text(copy.perDiemTotal(count: input.perDiemDates.count)),
             rate,
             money(PerDiemCalculator.amount(dayCount: input.perDiemDates.count)),
         ]
-        return XlsxSheet(name: "Суточные", rows: [header] + body + [total], headerRow: true)
+        return XlsxSheet(name: copy.perDiemSheet, rows: [header] + body + [total], headerRow: true)
     }
 
-    private static func maintenanceSheet(_ input: AccountantWorkbookInput) -> XlsxSheet {
-        let header = ["Дата ТО", "Услуга", "Описание", "Сумма, USD"].map { XlsxCell.text($0) }
+    private static func maintenanceSheet(_ input: AccountantWorkbookInput, copy: AccountantWorkbookCopy) -> XlsxSheet {
+        let header = copy.maintenanceHeader.map { XlsxCell.text($0) }
         let body = input.maintenance.map { entry -> [XlsxCell] in
             [isoDate(entry.serviceDate), .text(entry.serviceName), .text(entry.description), money(entry.amount)]
         }
         let total = input.maintenance.reduce(MoneyCents.zero) { $0 + $1.amount }
         return XlsxSheet(
-            name: "ТО",
-            rows: [header] + body + [[.text("ИТОГО"), .blank, .blank, money(total)]],
+            name: copy.maintenanceSheet,
+            rows: [header] + body + [[.text(copy.total), .blank, .blank, money(total)]],
             headerRow: true
         )
     }

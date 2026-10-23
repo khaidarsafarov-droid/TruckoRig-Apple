@@ -27,6 +27,24 @@ public enum TelegramMenu {
         return "[" + rows.joined(separator: ",") + "]"
     }
 
+    /// French command menu. `commandsJSON()` stays the English menu the bot already registers.
+    public static func commandsJSON(languageCode: String) -> String {
+        let commands: [(String, String)]
+        if languageCode == "fr" {
+            commands = [
+                ("start", "Démarrer"),
+                ("help", "Mode d'emploi du bot"),
+                ("status", "Nombre de dossiers dans l'app"),
+                ("import", "Importation groupée de voyages"),
+                ("cancel", "Annuler l'importation ou une question en cours"),
+            ]
+        } else {
+            return commandsJSON()
+        }
+        let rows = commands.map { #"{"command":"\#($0.0)","description":"\#($0.1)"}"# }
+        return "[" + rows.joined(separator: ",") + "]"
+    }
+
     public static let removeKeyboardJSON = #"{"remove_keyboard":true}"#
 
     public static func isMenuButton(_ text: String) -> Bool {

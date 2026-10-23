@@ -101,6 +101,12 @@ public enum TelegramIngest {
         case ("miles", .en): return "miles"
         case ("date", .ru): return "дата"
         case ("date", .en): return "date"
+        case ("trip", .fr): return "Trip ID"
+        case ("rate", .fr): return "taux"
+        case ("pickup", .fr): return "adresse de cueillette"
+        case ("delivery", .fr): return "adresse de livraison"
+        case ("miles", .fr): return "milles"
+        case ("date", .fr): return "date"
         default: return key
         }
     }

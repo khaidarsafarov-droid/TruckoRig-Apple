@@ -226,7 +226,7 @@ struct AnalyticsView: View {
                     AxisMarks(values: Array(weeks.indices)) { value in
                         AxisValueLabel {
                             if let index = value.as(Int.self), weeks.indices.contains(index) {
-                                Text("W\(weeks[index].week.weekNumber)")
+                                Text("analytics.weekTick \(weeks[index].week.weekNumber)")
                                     .font(.appCaption)
                             }
                         }

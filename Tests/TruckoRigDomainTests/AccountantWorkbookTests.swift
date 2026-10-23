@@ -72,6 +72,53 @@ final class AccountantWorkbookTests: XCTestCase {
         XCTAssertFalse(summaryXML.contains("t=\"inlineStr\"><is><t>50000.00"))
     }
 
+    func testFrenchCaptionsKeepColumnsValuesAndFileName() throws {
+        let russian = try unzip(AccountantWorkbook.data(input: sampleInput(), sections: [.all]))
+        let french = try unzip(AccountantWorkbook.data(input: sampleInput(), sections: [.all], language: .french))
+        let russianNames = try sheetNames(in: russian)
+        let frenchNames = try sheetNames(in: french)
+        XCTAssertEqual(russianNames, ["Сводка", "Грузы", "Дизель", "Суточные", "ТО"])
+        XCTAssertEqual(frenchNames, ["Sommaire", "Voyages", "Diesel", "Indemnité", "Entretien"])
+
+        let russianLoads = try rows(named: "Грузы", names: russianNames, files: russian)
+        let frenchLoads = try rows(named: "Voyages", names: frenchNames, files: french)
+        XCTAssertEqual(
+            frenchLoads[0],
+            ["Date", "Trip ID", "Trajet", "Taux, USD", "Milles", "RPM", "Jours en voyage"]
+        )
+        XCTAssertEqual(frenchLoads[0].count, russianLoads[0].count)
+        XCTAssertEqual(Array(frenchLoads.dropFirst()), Array(russianLoads.dropFirst()))
+
+        let russianDiesel = try rows(named: "Дизель", names: russianNames, files: russian)
+        let frenchDiesel = try rows(named: "Diesel", names: frenchNames, files: french)
+        XCTAssertEqual(frenchDiesel[0].count, russianDiesel[0].count)
+        XCTAssertEqual(frenchDiesel[0][2], "Début de la semaine")
+        XCTAssertEqual(frenchDiesel[0][3], "Fin de la semaine")
+        XCTAssertEqual(Array(frenchDiesel.dropFirst()), Array(russianDiesel.dropFirst()))
+
+        let russianPerDiem = try rows(named: "Суточные", names: russianNames, files: russian)
+        let frenchPerDiem = try rows(named: "Indemnité", names: frenchNames, files: french)
+        XCTAssertEqual(frenchPerDiem[0], ["Date en voyage", "Taux, USD", "Montant, USD"])
+        XCTAssertEqual(frenchPerDiem[0].count, russianPerDiem[0].count)
+        XCTAssertEqual(Array(frenchPerDiem.dropFirst().dropLast()), Array(russianPerDiem.dropFirst().dropLast()))
+        XCTAssertEqual(frenchPerDiem.last, ["TOTAL (2 jours)", "69.00", "138.00"])
+        XCTAssertEqual(russianPerDiem.last, ["ИТОГО (2 дн.)", "69.00", "138.00"])
+
+        let russianMaintenance = try rows(named: "ТО", names: russianNames, files: russian)
+        let frenchMaintenance = try rows(named: "Entretien", names: frenchNames, files: french)
+        XCTAssertEqual(frenchMaintenance[0], ["Date d'entretien", "Service", "Description", "Montant, USD"])
+        XCTAssertEqual(frenchMaintenance[0].count, russianMaintenance[0].count)
+        XCTAssertEqual(frenchMaintenance[1], russianMaintenance[1])
+        XCTAssertEqual(frenchMaintenance.last, ["TOTAL", "", "", "350.00"])
+        XCTAssertEqual(russianMaintenance.last, ["ИТОГО", "", "", "350.00"])
+
+        XCTAssertEqual(AccountantWorkbook.fileLabel([.all]), "All")
+        XCTAssertEqual(AccountantWorkbook.fileLabel([.loads]), "Loads")
+        XCTAssertEqual(AccountantWorkbook.fileLabel([.diesel]), "Diesel")
+        XCTAssertEqual(AccountantWorkbook.fileLabel([.perDiem]), "PerDiem")
+        XCTAssertEqual(AccountantWorkbook.fileLabel([.maintenance]), "Maintenance")
+    }
+
     func testNumericCellsDatesStylesAndTotals() throws {
         XCTAssertEqual(XlsxWorkbook.excelSerial(iso: "2026-03-02"), 46083)
         XCTAssertEqual(XlsxWorkbook.excelSerial(iso: "1900-03-01"), 61)

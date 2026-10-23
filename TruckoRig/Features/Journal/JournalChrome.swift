@@ -204,6 +204,8 @@ struct JournalLoadCard: View {
     var onCamera: () -> Void
     var onScan: () -> Void
 
+    @Environment(\.locale) private var locale
+
     private var band: RPMBand {
         RPMCalculator.band(for: load.ratePerMile, thresholds: thresholds)
     }
@@ -267,7 +269,7 @@ struct JournalLoadCard: View {
     }
 
     private var headerText: String {
-        let date = journalDate(load.effectiveFinishDate)
+        let date = journalDate(load.effectiveFinishDate, locale: locale)
         let trip = load.tripId.hasPrefix("#") ? load.tripId : "#\(load.tripId)"
         return "\(date) · \(trip)"
     }
@@ -314,7 +316,7 @@ struct JournalLoadCard: View {
         return HStack(spacing: 10) {
             fact("mappin", String(localized: "load.card.miles \(USMoneyFormat.number(load.totalMiles))"), Color.forestPrimary)
             if stops > 0 {
-                fact("flag", stopsPhrase(stops), Color.forestWarning)
+                fact("flag", stopsPhrase(stops, locale: locale), Color.forestWarning)
             }
             Spacer(minLength: 4)
             sourceTag
@@ -373,14 +375,22 @@ struct JournalLoadCard: View {
     }
 }
 
-private func journalDate(_ date: Date) -> String {
+private func journalDate(_ date: Date, locale: Locale) -> String {
     let formatter = DateFormatter()
-    formatter.locale = .current
+    formatter.locale = locale.language.languageCode?.identifier == "fr" ? locale : .current
     formatter.setLocalizedDateFormatFromTemplate("EEEMMMd")
     return formatter.string(from: date)
 }
 
-private func stopsPhrase(_ count: Int) -> String {
+private func stopsPhrase(_ count: Int, locale: Locale) -> String {
+    // French agrees on 0/1 versus the rest. English and Russian keep the existing
+    // one/few/many split, so "21 stop" / "21 остановка" stay exactly as they are.
+    if locale.language.languageCode?.identifier == "fr" {
+        if count == 0 || count == 1 {
+            return String(localized: "load.card.stops.one \(count)", locale: locale)
+        }
+        return String(localized: "load.card.stops.many \(count)", locale: locale)
+    }
     let mod10 = count % 10
     let mod100 = count % 100
     if mod10 == 1 && mod100 != 11 {

@@ -195,6 +195,7 @@
 		DFB3BB2E44147CF06640401A /* SoftButton.swift */ = {isa = PBXBuildFile; fileRef = 78E4700C12FAFE14A48EA814 /* SoftButton.swift */; };
 		946A6773234047F83B13F72E /* SoftCard.swift */ = {isa = PBXBuildFile; fileRef = 9A0E18B200B7FA69FB005B28 /* SoftCard.swift */; };
 		7CFEE8CD71969E6F1E1D7400 /* SoftTextField.swift */ = {isa = PBXBuildFile; fileRef = E9A91E3DC8256945501586BD /* SoftTextField.swift */; };
+		DDAF9B2294A4D505B3CEB210 /* InfoPlist.xcstrings */ = {isa = PBXBuildFile; fileRef = 5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */; };
 		D0C6607B983873E3DC978456 /* Localizable.xcstrings */ = {isa = PBXBuildFile; fileRef = 1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */; };
 		94EC851B1A266716E8FD76C4 /* us_states.json */ = {isa = PBXBuildFile; fileRef = CCB54446952969CD381EB575 /* us_states.json */; };
 		7D26503774452AD4DE57058E /* DMSans-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */; };
@@ -472,6 +473,7 @@
 		D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		532AF507B6EBE044E9E6ECDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
+		5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "InfoPlist.xcstrings"; sourceTree = "<group>"; };
 		1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
 		B40BD3D131438FCD5F734D0C /* Premium.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Premium.storekit"; sourceTree = "<group>"; };
 		135A264B50C225848871ED7D /* TruckoRig.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRig.entitlements"; sourceTree = "<group>"; };
@@ -1197,6 +1199,7 @@
 				B3F95451D5F06AFDF040781F /* DM-Sans */,
 				745272E958C4DF8C5ABE228D /* Fonts */,
 				532AF507B6EBE044E9E6ECDB /* Info.plist */,
+				5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */,
 				1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */,
 				B40BD3D131438FCD5F734D0C /* Premium.storekit */,
 				135A264B50C225848871ED7D /* TruckoRig.entitlements */,
@@ -1398,6 +1401,7 @@
 			knownRegions = (
 				en,
 				es,
+				fr,
 				ru,
 				Base,
 			);
@@ -1423,6 +1427,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDAF9B2294A4D505B3CEB210 /* InfoPlist.xcstrings */,
 				D0C6607B983873E3DC978456 /* Localizable.xcstrings */,
 				94EC851B1A266716E8FD76C4 /* us_states.json */,
 				7D26503774452AD4DE57058E /* DMSans-Bold.ttf */,
