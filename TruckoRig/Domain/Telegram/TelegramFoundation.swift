@@ -4,13 +4,18 @@ import Foundation
 public enum TelegramLanguage: String, Equatable, Sendable {
     case en
     case ru
+    case fr
 
     public static func resolve(appLanguage: String, deviceIdentifier: String) -> TelegramLanguage {
         switch appLanguage {
         case "russian": return .ru
         case "english": return .en
+        case "french": return .fr
         default:
-            return deviceIdentifier.lowercased().hasPrefix("ru") ? .ru : .en
+            let identifier = deviceIdentifier.lowercased()
+            if identifier.hasPrefix("ru") { return .ru }
+            if identifier.hasPrefix("fr") { return .fr }
+            return .en
         }
     }
 }

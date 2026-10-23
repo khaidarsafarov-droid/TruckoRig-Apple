@@ -6,6 +6,7 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable {
     case system
     case russian
     case english
+    case french
 
     var id: String { rawValue }
 
@@ -15,6 +16,7 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable {
         case .system: return nil
         case .russian: return "ru"
         case .english: return "en"
+        case .french: return "fr"
         }
     }
 
@@ -23,6 +25,7 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable {
         case .system: return String(localized: "settings.language.system")
         case .russian: return "Русский"
         case .english: return "English"
+        case .french: return "Français"
         }
     }
 }

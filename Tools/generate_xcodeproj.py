@@ -415,6 +415,7 @@ def build() -> str:
     add("\t\t\tknownRegions = (")
     add("\t\t\t\ten,")
     add("\t\t\t\tes,")
+    add("\t\t\t\tfr,")
     add("\t\t\t\tru,")
     add("\t\t\t\tBase,")
     add("\t\t\t);")

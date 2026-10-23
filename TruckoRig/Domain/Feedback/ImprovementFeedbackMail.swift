@@ -31,13 +31,14 @@ public enum ImprovementFeedbackMail {
         topicLabel: String,
         appVersion: String,
         systemName: String,
-        systemRelease: String
+        systemRelease: String,
+        topicHeading: String = "Тема:"
     ) -> Draft? {
         let text = message.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return nil }
         let subject = "[\(displayName)] \(topicLabel)"
         let body = """
-        Тема: \(topicLabel)
+        \(topicHeading) \(topicLabel)
 
         \(text)
 

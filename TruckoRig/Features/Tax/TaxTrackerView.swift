@@ -20,6 +20,19 @@ struct TaxTrackerView: View {
     private var calendar: Calendar { Calendar.current }
     private var reportingWeek: TruckingWeek { appState.settings.truckingWeek }
 
+    /// French captions only when the driver is actually in French. English and Russian
+    /// keep the workbook text they already get.
+    private var exportLanguage: AccountantWorkbookLanguage {
+        switch appState.settings.language {
+        case .french:
+            return .french
+        case .system where Locale.preferredLanguages.first?.hasPrefix("fr") == true:
+            return .french
+        default:
+            return .russian
+        }
+    }
+
     /// Reporting week-year, matching Android `getLoadsByWeekYearOnce`.
     private var loadsThisYear: [Load] {
         appState.catalog.loads.filter { $0.year == year }
@@ -384,7 +397,7 @@ struct TaxTrackerView: View {
             exportMessage = String(localized: "tax.send.empty")
             return
         }
-        let bytes = AccountantWorkbook.data(input: input, sections: sections)
+        let bytes = AccountantWorkbook.data(input: input, sections: sections, language: exportLanguage)
         let name = AccountantWorkbook.fileName(year: year, sections: sections, calendar: calendar)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         do {

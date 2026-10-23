@@ -6,6 +6,7 @@ struct ImprovementFeedbackView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+    @Environment(\.locale) private var locale
 
     @State private var topic: ImprovementFeedbackMail.Topic = .improve
     @State private var message = ""
@@ -70,13 +71,17 @@ struct ImprovementFeedbackView: View {
 
     private func send() {
         let label = topicLabel(topic)
+        let heading = locale.language.languageCode?.identifier == "fr"
+            ? String(localized: "improve.mail.topic", locale: locale)
+            : "Тема:"
         guard let draft = ImprovementFeedbackMail.compose(
             topic: topic,
             message: message,
             topicLabel: label,
             appVersion: Self.appVersion,
             systemName: "iOS",
-            systemRelease: UIDevice.current.systemVersion
+            systemRelease: UIDevice.current.systemVersion,
+            topicHeading: heading
         ) else {
             notice = String(localized: "improve.empty")
             return

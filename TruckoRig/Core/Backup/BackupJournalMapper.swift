@@ -539,6 +539,8 @@ enum BackupJournalMapper {
             language = 0
         case .english:
             language = extra.preservedLanguageOrdinal == 2 ? 2 : 1
+        case .french:
+            language = 3
         }
         let goal = settings.weeklyGoal > 0 ? settings.weeklyGoal : nil
         let week = settings.weekStart.calendarWeekday
@@ -597,6 +599,9 @@ enum BackupJournalMapper {
             case 2:
                 settings.language = .english
                 extra.preservedLanguageOrdinal = 2
+            case 3:
+                settings.language = .french
+                extra.preservedLanguageOrdinal = nil
             default:
                 break
             }

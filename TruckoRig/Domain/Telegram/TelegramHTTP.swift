@@ -132,6 +132,15 @@ public enum TelegramBotAPI {
         json(token, "setMyCommands", #"{"commands":\#(TelegramMenu.commandsJSON())}"#)
     }
 
+    /// Adds command descriptions for one language without changing the default menu.
+    public static func setMyCommands(_ token: String, languageCode: String) -> TelegramHTTPRequest {
+        json(
+            token,
+            "setMyCommands",
+            #"{"commands":\#(TelegramMenu.commandsJSON(languageCode: languageCode)),"language_code":"\#(languageCode)"}"#
+        )
+    }
+
     public static func setChatMenuButton(_ token: String) -> TelegramHTTPRequest {
         json(token, "setChatMenuButton", #"{"menu_button":{"type":"commands"}}"#)
     }
