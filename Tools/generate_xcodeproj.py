@@ -34,6 +34,15 @@ UITESTS_BUNDLE_ID = "com.truckorig.uitests"
 GRDB_REPOSITORY = "https://github.com/sqlcipher/GRDB.swift"
 GRDB_VERSION = "7.11.1"
 GRDB_PRODUCT = "GRDB"
+# Maps SDK for iOS. The key is not in the repo: Config/Maps.xcconfig reads GOOGLE_MAPS_API_KEY.
+MAPS_REPOSITORY = "https://github.com/googlemaps/ios-maps-sdk"
+MAPS_VERSION = "11.2.0"
+MAPS_PRODUCT = "GoogleMaps"
+CONFIG_DIR = "Config"
+CONFIG_FILES = [
+    "Config/Maps.xcconfig",
+    "Config/Secrets.example.xcconfig",
+]
 MARKETING_VERSION = "1.5.7"
 DEPLOYMENT_TARGET = "17.0"
 
@@ -76,6 +85,7 @@ FILE_TYPES = {
     ".ttf": "file",
     ".otf": "file",
     ".storekit": "text.json",
+    ".xcconfig": "text.xcconfig",
 }
 
 
@@ -132,6 +142,9 @@ def build() -> str:
     tree.collect(WIDGET_DIR)
     tree.collect(TESTS_DIR)
     tree.collect(UITESTS_DIR)
+    # xcconfig lives outside the app sources. Secrets.xcconfig is gitignored and not referenced.
+    tree.groups[CONFIG_DIR] = list(CONFIG_FILES)
+    tree.files.extend(CONFIG_FILES)
 
     app_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(APP_DIR + os.sep)]
     widget_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(WIDGET_DIR + os.sep)]
@@ -190,6 +203,10 @@ def build() -> str:
     add(
         f"\t\t{object_id('buildfile-app', GRDB_PRODUCT)} /* {GRDB_PRODUCT} in Frameworks */ = "
         f"{{isa = PBXBuildFile; productRef = {object_id('package-product', GRDB_PRODUCT)} /* {GRDB_PRODUCT} */; }};"
+    )
+    add(
+        f"\t\t{object_id('buildfile-app', MAPS_PRODUCT)} /* {MAPS_PRODUCT} in Frameworks */ = "
+        f"{{isa = PBXBuildFile; productRef = {object_id('package-product', MAPS_PRODUCT)} /* {MAPS_PRODUCT} */; }};"
     )
     appex = f"{PROJECT_NAME}Widget.appex"
     add(
@@ -285,6 +302,7 @@ def build() -> str:
         add("\t\t\tfiles = (")
         if target == "app":
             add(f"\t\t\t\t{object_id('buildfile-app', GRDB_PRODUCT)} /* {GRDB_PRODUCT} in Frameworks */,")
+            add(f"\t\t\t\t{object_id('buildfile-app', MAPS_PRODUCT)} /* {MAPS_PRODUCT} in Frameworks */,")
         add("\t\t\t);")
         add("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
         add("\t\t};")
@@ -300,6 +318,7 @@ def build() -> str:
     add(f"\t\t\t\t{object_id('group', WIDGET_DIR)} /* {WIDGET_DIR} */,")
     add(f"\t\t\t\t{object_id('group', TESTS_DIR)} /* {TESTS_DIR} */,")
     add(f"\t\t\t\t{object_id('group', UITESTS_DIR)} /* {UITESTS_DIR} */,")
+    add(f"\t\t\t\t{object_id('group', CONFIG_DIR)} /* {CONFIG_DIR} */,")
     add(f"\t\t\t\t{object_id('group', 'Products')} /* Products */,")
     add("\t\t\t);")
     add("\t\t\tsourceTree = \"<group>\";")
@@ -365,6 +384,7 @@ def build() -> str:
         if key == "app":
             add("\t\t\tpackageProductDependencies = (")
             add(f"\t\t\t\t{object_id('package-product', GRDB_PRODUCT)} /* {GRDB_PRODUCT} */,")
+            add(f"\t\t\t\t{object_id('package-product', MAPS_PRODUCT)} /* {MAPS_PRODUCT} */,")
             add("\t\t\t);")
         add(f"\t\t\tproductName = {name};")
         add(f"\t\t\tproductReference = {object_id('product', product)} /* {product} */;")
@@ -401,6 +421,7 @@ def build() -> str:
     add(f"\t\t\tmainGroup = {object_id('group', 'root')};")
     add("\t\t\tpackageReferences = (")
     add(f"\t\t\t\t{object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */,")
+    add(f"\t\t\t\t{object_id('package', MAPS_REPOSITORY)} /* XCRemoteSwiftPackageReference \"ios-maps-sdk\" */,")
     add("\t\t\t);")
     add(f"\t\t\tproductRefGroup = {object_id('group', 'Products')} /* Products */;")
     add("\t\t\tprojectDirPath = \"\";")
@@ -478,6 +499,12 @@ def build() -> str:
         for name, settings in target_configurations(key).items():
             add(f"\t\t{object_id(f'config-{key}', name)} /* {name} */ = {{")
             add("\t\t\tisa = XCBuildConfiguration;")
+            if key == "app":
+                maps_config = "Config/Maps.xcconfig"
+                add(
+                    f"\t\t\tbaseConfigurationReference = {object_id('fileref', maps_config)} "
+                    "/* Maps.xcconfig */;"
+                )
             add("\t\t\tbuildSettings = {")
             for setting, value in settings.items():
                 add(f"\t\t\t\t{setting} = {value};")
@@ -517,6 +544,14 @@ def build() -> str:
     add(f"\t\t\t\tversion = {GRDB_VERSION};")
     add("\t\t\t};")
     add("\t\t};")
+    add(f"\t\t{object_id('package', MAPS_REPOSITORY)} /* XCRemoteSwiftPackageReference \"ios-maps-sdk\" */ = {{")
+    add("\t\t\tisa = XCRemoteSwiftPackageReference;")
+    add(f"\t\t\trepositoryURL = \"{MAPS_REPOSITORY}\";")
+    add("\t\t\trequirement = {")
+    add("\t\t\t\tkind = exactVersion;")
+    add(f"\t\t\t\tversion = {MAPS_VERSION};")
+    add("\t\t\t};")
+    add("\t\t};")
     add("/* End XCRemoteSwiftPackageReference section */")
 
     add("")
@@ -525,6 +560,11 @@ def build() -> str:
     add("\t\t\tisa = XCSwiftPackageProductDependency;")
     add(f"\t\t\tpackage = {object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */;")
     add(f"\t\t\tproductName = {GRDB_PRODUCT};")
+    add("\t\t};")
+    add(f"\t\t{object_id('package-product', MAPS_PRODUCT)} /* {MAPS_PRODUCT} */ = {{")
+    add("\t\t\tisa = XCSwiftPackageProductDependency;")
+    add(f"\t\t\tpackage = {object_id('package', MAPS_REPOSITORY)} /* XCRemoteSwiftPackageReference \"ios-maps-sdk\" */;")
+    add(f"\t\t\tproductName = {MAPS_PRODUCT};")
     add("\t\t};")
     add("/* End XCSwiftPackageProductDependency section */")
 
@@ -589,6 +629,9 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone":
                 '"UIInterfaceOrientationPortrait"',
             "LD_RUNPATH_SEARCH_PATHS": '"$(inherited) @executable_path/Frameworks"',
+            # Maps SDK categories. The key itself stays in Config/Maps.xcconfig, not here,
+            # so this dictionary cannot override GOOGLE_MAPS_API_KEY with an empty value.
+            "OTHER_LDFLAGS": '"$(inherited) -ObjC"',
             "MARKETING_VERSION": MARKETING_VERSION,
             "PRODUCT_BUNDLE_IDENTIFIER": APP_BUNDLE_ID,
             "PRODUCT_NAME": '"$(TARGET_NAME)"',

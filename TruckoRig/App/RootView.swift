@@ -204,7 +204,7 @@ struct SidebarView: View {
         case .expenses: MiscExpenseListView()
         case .tax: TaxTrackerView()
         case .maintenance: MaintenanceListView()
-        case .map: RouteMapView()
+        case .map: MapScreen()
         case .gallery: GalleryView()
         case .profile: ProfileView()
         case .settings: SettingsView()
