@@ -78,5 +78,9 @@
 	<array>
 		<string>tg</string>
 	</array>
+
+	<!-- Substituted from Config/Maps.xcconfig. Empty in CI; the map shows a fallback instead of crashing. -->
+	<key>GMSApiKey</key>
+	<string>$(GOOGLE_MAPS_API_KEY)</string>
 </dict>
 </plist>

@@ -226,7 +226,7 @@ struct JournalView: View {
         case .paycheck: PaycheckListView()
         case .diesel: DieselListView()
         case .maintenance: MaintenanceListView()
-        case .map: RouteMapView()
+        case .map: MapScreen()
         case .gallery: GalleryView()
         case .settings: SettingsView()
         case .profile: ProfileView()

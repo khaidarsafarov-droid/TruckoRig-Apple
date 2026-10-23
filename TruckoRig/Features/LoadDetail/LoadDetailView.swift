@@ -10,7 +10,6 @@ struct LoadDetailView: View {
 
     @State private var isEditing = false
     @State private var isConfirmingDelete = false
-    @State private var showMap = false
     @State private var errorMessage: String?
 
     private var band: RPMBand {
@@ -38,9 +37,6 @@ struct LoadDetailView: View {
                     Button { isEditing = true } label: {
                         Label("action.edit", systemImage: "pencil")
                     }
-                    Button { showMap = true } label: {
-                        Label("screen.map", systemImage: "map")
-                    }
                     Button(role: .destructive) { isConfirmingDelete = true } label: {
                         Label("action.delete", systemImage: "trash")
                     }
@@ -51,9 +47,6 @@ struct LoadDetailView: View {
         }
         .sheet(isPresented: $isEditing) {
             EditLoadView(load: load)
-        }
-        .navigationDestination(isPresented: $showMap) {
-            RouteMapView(load: load)
         }
         .confirmationDialog("journal.delete.confirm", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("action.delete", role: .destructive) { delete() }

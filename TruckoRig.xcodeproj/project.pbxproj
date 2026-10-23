@@ -70,7 +70,6 @@
 		238B516F853C6CBC771F3ECD /* ThemePalette.swift */ = {isa = PBXBuildFile; fileRef = 6FFFC95AA58C3210DBBA4FFB /* ThemePalette.swift */; };
 		534B6A2BDED296BB69268497 /* AppLog.swift */ = {isa = PBXBuildFile; fileRef = 79E3F919905E7EC566301483 /* AppLog.swift */; };
 		3FE6E37D81E1733805CB6835 /* DateUtils.swift */ = {isa = PBXBuildFile; fileRef = A2CB2D6B64A9C53B569292E9 /* DateUtils.swift */; };
-		FD7410F5DF021D204A656A5A /* GeoUtils.swift */ = {isa = PBXBuildFile; fileRef = 71AA9139C8B1DA3C8BE5CD6D /* GeoUtils.swift */; };
 		40721081B2854BE9A2DB0B99 /* LocationProvider.swift */ = {isa = PBXBuildFile; fileRef = 96504B9424D3E602FA85310E /* LocationProvider.swift */; };
 		B3DEF67D94C5A632591B98CD /* OCRService.swift */ = {isa = PBXBuildFile; fileRef = E2B035AF781CC96577EF33A1 /* OCRService.swift */; };
 		553B8278C13DBCED044A9B21 /* StringUtils.swift */ = {isa = PBXBuildFile; fileRef = C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */; };
@@ -100,6 +99,12 @@
 		82D6344895F51FD4C3B77CFA /* MaintenanceDrafts.swift */ = {isa = PBXBuildFile; fileRef = 39E5094B7BFEEC47FAD0FD11 /* MaintenanceDrafts.swift */; };
 		262C265EFD1DC3509C54223C /* MaintenanceMileage.swift */ = {isa = PBXBuildFile; fileRef = 800504AC56F6EABFD67BE63B /* MaintenanceMileage.swift */; };
 		B5C98623FAD9EA8EAB92E92E /* MaintenanceModels.swift */ = {isa = PBXBuildFile; fileRef = 0875DD2F7E84D2E8599FF469 /* MaintenanceModels.swift */; };
+		CA8ACB9E495C4E3C07380084 /* CrowdMapAggregator.swift */ = {isa = PBXBuildFile; fileRef = 2312523487B12A0A692A5520 /* CrowdMapAggregator.swift */; };
+		A4292F555DFC28F3761833C6 /* MapModels.swift */ = {isa = PBXBuildFile; fileRef = E9B6FE24C5C474C04FB9AE8C /* MapModels.swift */; };
+		FCDFD814B101492355F988D0 /* MapMoney.swift */ = {isa = PBXBuildFile; fileRef = 3719D8E23771B2BE98F43C6D /* MapMoney.swift */; };
+		F464EF135D2291683591BFEE /* MapStateMetrics.swift */ = {isa = PBXBuildFile; fileRef = BC2DBE45E6E199269647F92C /* MapStateMetrics.swift */; };
+		09CC97451978A66EF26CD5FE /* MapsAPIKey.swift */ = {isa = PBXBuildFile; fileRef = 7B1B2C22A62419E320B8C2D0 /* MapsAPIKey.swift */; };
+		29480169DD1CE974D50A628E /* StateOutlines.swift */ = {isa = PBXBuildFile; fileRef = 07EFC602FE4E2CFEC1772ED7 /* StateOutlines.swift */; };
 		7905649839F895CA5FB1EBC6 /* AttachLoadSelection.swift */ = {isa = PBXBuildFile; fileRef = F9068F57C9B52A0353C02FA1 /* AttachLoadSelection.swift */; };
 		05AC122F199C624E85435698 /* AttachmentNaming.swift */ = {isa = PBXBuildFile; fileRef = EDBAB01A84FE71C7B9C0E62B /* AttachmentNaming.swift */; };
 		AF015024646A8CC760134E5C /* LocationStamp.swift */ = {isa = PBXBuildFile; fileRef = 15E24B28256ECBFB48D63139 /* LocationStamp.swift */; };
@@ -169,8 +174,9 @@
 		1374C865E85F31496DDF26D7 /* LoadDetailView.swift */ = {isa = PBXBuildFile; fileRef = DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */; };
 		ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */ = {isa = PBXBuildFile; fileRef = A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */; };
 		90DA2D7AF8C3725CD8BD9AB1 /* MaintenanceListView.swift */ = {isa = PBXBuildFile; fileRef = BC5B7C245920F2DFC117552A /* MaintenanceListView.swift */; };
-		C0D7E59ED5DE31187826E4A4 /* RouteMapView.swift */ = {isa = PBXBuildFile; fileRef = 5873C6D76FE321A0AE0B4A36 /* RouteMapView.swift */; };
-		DB5C36383D4813E8A902D76B /* StateHeatmapView.swift */ = {isa = PBXBuildFile; fileRef = 1552DA0AD24254908A9D6A04 /* StateHeatmapView.swift */; };
+		FF4DB6B13AB89375AEF56E26 /* GoogleHeatmapMap.swift */ = {isa = PBXBuildFile; fileRef = 8A0DE863C70B128604D46983 /* GoogleHeatmapMap.swift */; };
+		E8095A13DE7FCA49AB14BD49 /* MapLoadAdapter.swift */ = {isa = PBXBuildFile; fileRef = BEF78EAAE5F55D9E061833B1 /* MapLoadAdapter.swift */; };
+		C3FBCE5BCEEFAC78F83EEE47 /* MapScreen.swift */ = {isa = PBXBuildFile; fileRef = CD2A03EDAA28854A389520B6 /* MapScreen.swift */; };
 		D7E7E9B18E913D35E8FC16CB /* OnboardingView.swift */ = {isa = PBXBuildFile; fileRef = F96F953B32AD6DF231A43D0B /* OnboardingView.swift */; };
 		A95929A891E1CF9C4859174E /* PaycheckListView.swift */ = {isa = PBXBuildFile; fileRef = 76FD5DAD989FF972EC630913 /* PaycheckListView.swift */; };
 		2D3672F813B7FB59D8DDFBDE /* PaywallView.swift */ = {isa = PBXBuildFile; fileRef = E6F6385037EBC6925ABF5B23 /* PaywallView.swift */; };
@@ -196,6 +202,7 @@
 		946A6773234047F83B13F72E /* SoftCard.swift */ = {isa = PBXBuildFile; fileRef = 9A0E18B200B7FA69FB005B28 /* SoftCard.swift */; };
 		7CFEE8CD71969E6F1E1D7400 /* SoftTextField.swift */ = {isa = PBXBuildFile; fileRef = E9A91E3DC8256945501586BD /* SoftTextField.swift */; };
 		D0C6607B983873E3DC978456 /* Localizable.xcstrings */ = {isa = PBXBuildFile; fileRef = 1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */; };
+		94EC851B1A266716E8FD76C4 /* us_states.json */ = {isa = PBXBuildFile; fileRef = CCB54446952969CD381EB575 /* us_states.json */; };
 		7D26503774452AD4DE57058E /* DMSans-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */; };
 		0521C1360E4B3452BF2B6805 /* DMSans-Medium.ttf */ = {isa = PBXBuildFile; fileRef = 026B0667ACA09C7D306CF27E /* DMSans-Medium.ttf */; };
 		ED7174AC2717ABA55D58B306 /* DMSans-Regular.ttf */ = {isa = PBXBuildFile; fileRef = 017F100A6A0E6976EA44AF57 /* DMSans-Regular.ttf */; };
@@ -237,6 +244,7 @@
 		B0CBF53E11D3FEA8B2A90041 /* AddLoadNotesUITests.swift */ = {isa = PBXBuildFile; fileRef = 47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */; };
 		109E7A66906193EF84584997 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 1B12FA89457B475550D08A7A /* GRDB */; };
 		02EA9075F77D717628BCC520 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C46C885EC8E7B841ADD4A002 /* GoogleSignIn */; };
+		15526688769DC7F70FA1BACC /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = C282B09B29FB0A5E9CF3F42D /* GoogleMaps */; };
 		ADD14D21F915C76FF9FEE31E /* TruckoRigWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -279,6 +287,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D68807FED8449A70B846E60D /* Maps.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Maps.xcconfig"; sourceTree = "<group>"; };
+		030B18B3E2541435666926E9 /* Secrets.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Secrets.example.xcconfig"; sourceTree = "<group>"; };
 		D54B22793ECC643C70585249 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppState.swift"; sourceTree = "<group>"; };
 		CFB51C6271E4645F7DB9D6D1 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
 		2E4E5C1D387990139022C762 /* TruckoRigApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckoRigApp.swift"; sourceTree = "<group>"; };
@@ -341,7 +351,6 @@
 		6FFFC95AA58C3210DBBA4FFB /* ThemePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemePalette.swift"; sourceTree = "<group>"; };
 		79E3F919905E7EC566301483 /* AppLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLog.swift"; sourceTree = "<group>"; };
 		A2CB2D6B64A9C53B569292E9 /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateUtils.swift"; sourceTree = "<group>"; };
-		71AA9139C8B1DA3C8BE5CD6D /* GeoUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeoUtils.swift"; sourceTree = "<group>"; };
 		96504B9424D3E602FA85310E /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationProvider.swift"; sourceTree = "<group>"; };
 		E2B035AF781CC96577EF33A1 /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRService.swift"; sourceTree = "<group>"; };
 		C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringUtils.swift"; sourceTree = "<group>"; };
@@ -371,6 +380,12 @@
 		39E5094B7BFEEC47FAD0FD11 /* MaintenanceDrafts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceDrafts.swift"; sourceTree = "<group>"; };
 		800504AC56F6EABFD67BE63B /* MaintenanceMileage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceMileage.swift"; sourceTree = "<group>"; };
 		0875DD2F7E84D2E8599FF469 /* MaintenanceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceModels.swift"; sourceTree = "<group>"; };
+		2312523487B12A0A692A5520 /* CrowdMapAggregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CrowdMapAggregator.swift"; sourceTree = "<group>"; };
+		E9B6FE24C5C474C04FB9AE8C /* MapModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapModels.swift"; sourceTree = "<group>"; };
+		3719D8E23771B2BE98F43C6D /* MapMoney.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapMoney.swift"; sourceTree = "<group>"; };
+		BC2DBE45E6E199269647F92C /* MapStateMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapStateMetrics.swift"; sourceTree = "<group>"; };
+		7B1B2C22A62419E320B8C2D0 /* MapsAPIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapsAPIKey.swift"; sourceTree = "<group>"; };
+		07EFC602FE4E2CFEC1772ED7 /* StateOutlines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StateOutlines.swift"; sourceTree = "<group>"; };
 		F9068F57C9B52A0353C02FA1 /* AttachLoadSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttachLoadSelection.swift"; sourceTree = "<group>"; };
 		EDBAB01A84FE71C7B9C0E62B /* AttachmentNaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttachmentNaming.swift"; sourceTree = "<group>"; };
 		15E24B28256ECBFB48D63139 /* LocationStamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationStamp.swift"; sourceTree = "<group>"; };
@@ -440,8 +455,9 @@
 		DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDetailView.swift"; sourceTree = "<group>"; };
 		A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceEditors.swift"; sourceTree = "<group>"; };
 		BC5B7C245920F2DFC117552A /* MaintenanceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceListView.swift"; sourceTree = "<group>"; };
-		5873C6D76FE321A0AE0B4A36 /* RouteMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RouteMapView.swift"; sourceTree = "<group>"; };
-		1552DA0AD24254908A9D6A04 /* StateHeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StateHeatmapView.swift"; sourceTree = "<group>"; };
+		8A0DE863C70B128604D46983 /* GoogleHeatmapMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleHeatmapMap.swift"; sourceTree = "<group>"; };
+		BEF78EAAE5F55D9E061833B1 /* MapLoadAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapLoadAdapter.swift"; sourceTree = "<group>"; };
+		CD2A03EDAA28854A389520B6 /* MapScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapScreen.swift"; sourceTree = "<group>"; };
 		F96F953B32AD6DF231A43D0B /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OnboardingView.swift"; sourceTree = "<group>"; };
 		76FD5DAD989FF972EC630913 /* PaycheckListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaycheckListView.swift"; sourceTree = "<group>"; };
 		E6F6385037EBC6925ABF5B23 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallView.swift"; sourceTree = "<group>"; };
@@ -472,6 +488,7 @@
 		1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
 		B40BD3D131438FCD5F734D0C /* Premium.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Premium.storekit"; sourceTree = "<group>"; };
 		135A264B50C225848871ED7D /* TruckoRig.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRig.entitlements"; sourceTree = "<group>"; };
+		CCB54446952969CD381EB575 /* us_states.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "us_states.json"; sourceTree = "<group>"; };
 		810ABF68C96DF0850D97653E /* Bindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bindings.swift"; sourceTree = "<group>"; };
 		D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DomainMessages.swift"; sourceTree = "<group>"; };
 		3DB1BD398F08E7A51783904A /* KeyboardAvoidance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidance.swift"; sourceTree = "<group>"; };
@@ -508,6 +525,7 @@
 			files = (
 				109E7A66906193EF84584997 /* GRDB in Frameworks */,
 				02EA9075F77D717628BCC520 /* GoogleSignIn in Frameworks */,
+				15526688769DC7F70FA1BACC /* GoogleMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,6 +560,7 @@
 				F52F77CC0D3228E216E3A6F4 /* TruckoRigWidget */,
 				D699D40C0DE22C80CB771F02 /* TruckoRigTests */,
 				23876982F4FAC5BD0024AE63 /* TruckoRigUITests */,
+				1B3039B2E15DD2AB7EA6156D /* Config */,
 				AE7805B56D1DCAFAA071416F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -555,6 +574,15 @@
 				C1829AC6AFE2DACF82419BC7 /* TruckoRigUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1B3039B2E15DD2AB7EA6156D /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				D68807FED8449A70B846E60D /* Maps.xcconfig */,
+				030B18B3E2541435666926E9 /* Secrets.example.xcconfig */,
+			);
+			path = "Config";
 			sourceTree = "<group>";
 		};
 		7BD173E8EB3E2895F7843687 /* TruckoRig */ = {
@@ -714,7 +742,6 @@
 			children = (
 				79E3F919905E7EC566301483 /* AppLog.swift */,
 				A2CB2D6B64A9C53B569292E9 /* DateUtils.swift */,
-				71AA9139C8B1DA3C8BE5CD6D /* GeoUtils.swift */,
 				96504B9424D3E602FA85310E /* LocationProvider.swift */,
 				E2B035AF781CC96577EF33A1 /* OCRService.swift */,
 				C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */,
@@ -732,6 +759,7 @@
 				DBC52C42B8550EB07DE15BA5 /* Expense */,
 				96E2746B684190E31FCE6574 /* Feedback */,
 				7BADDB4AA54C07708ADE5D05 /* Maintenance */,
+				45C792403B5D037DD8820C36 /* Map */,
 				4E989472DC1835293771EC03 /* Media */,
 				E9AFEDA3544FB266955C1976 /* Models */,
 				42904B510FE1177696359109 /* Money */,
@@ -819,6 +847,19 @@
 				0875DD2F7E84D2E8599FF469 /* MaintenanceModels.swift */,
 			);
 			path = "Maintenance";
+			sourceTree = "<group>";
+		};
+		45C792403B5D037DD8820C36 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				2312523487B12A0A692A5520 /* CrowdMapAggregator.swift */,
+				E9B6FE24C5C474C04FB9AE8C /* MapModels.swift */,
+				3719D8E23771B2BE98F43C6D /* MapMoney.swift */,
+				BC2DBE45E6E199269647F92C /* MapStateMetrics.swift */,
+				7B1B2C22A62419E320B8C2D0 /* MapsAPIKey.swift */,
+				07EFC602FE4E2CFEC1772ED7 /* StateOutlines.swift */,
+			);
+			path = "Map";
 			sourceTree = "<group>";
 		};
 		4E989472DC1835293771EC03 /* Media */ = {
@@ -1077,8 +1118,9 @@
 		A39869135E171AE4DA1018FB /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				5873C6D76FE321A0AE0B4A36 /* RouteMapView.swift */,
-				1552DA0AD24254908A9D6A04 /* StateHeatmapView.swift */,
+				8A0DE863C70B128604D46983 /* GoogleHeatmapMap.swift */,
+				BEF78EAAE5F55D9E061833B1 /* MapLoadAdapter.swift */,
+				CD2A03EDAA28854A389520B6 /* MapScreen.swift */,
 			);
 			path = "Map";
 			sourceTree = "<group>";
@@ -1178,6 +1220,7 @@
 				1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */,
 				B40BD3D131438FCD5F734D0C /* Premium.storekit */,
 				135A264B50C225848871ED7D /* TruckoRig.entitlements */,
+				CCB54446952969CD381EB575 /* us_states.json */,
 			);
 			path = "Resources";
 			sourceTree = "<group>";
@@ -1286,6 +1329,7 @@
 			packageProductDependencies = (
 				1B12FA89457B475550D08A7A /* GRDB */,
 				C46C885EC8E7B841ADD4A002 /* GoogleSignIn */,
+				C282B09B29FB0A5E9CF3F42D /* GoogleMaps */,
 			);
 			productName = TruckoRig;
 			productReference = B3DA8B53248BA20805DF53E9 /* TruckoRig.app */;
@@ -1382,6 +1426,7 @@
 			packageReferences = (
 				9BB06B0C1407CCB03A073C2A /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				C105F06F19AB1C9BFDBE38E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				DE132C8D81EA110251B64495 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
 			);
 			productRefGroup = AE7805B56D1DCAFAA071416F /* Products */;
 			projectDirPath = "";
@@ -1401,6 +1446,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0C6607B983873E3DC978456 /* Localizable.xcstrings */,
+				94EC851B1A266716E8FD76C4 /* us_states.json */,
 				7D26503774452AD4DE57058E /* DMSans-Bold.ttf */,
 				0521C1360E4B3452BF2B6805 /* DMSans-Medium.ttf */,
 				ED7174AC2717ABA55D58B306 /* DMSans-Regular.ttf */,
@@ -1510,7 +1556,6 @@
 				238B516F853C6CBC771F3ECD /* ThemePalette.swift */,
 				534B6A2BDED296BB69268497 /* AppLog.swift */,
 				3FE6E37D81E1733805CB6835 /* DateUtils.swift */,
-				FD7410F5DF021D204A656A5A /* GeoUtils.swift */,
 				40721081B2854BE9A2DB0B99 /* LocationProvider.swift */,
 				B3DEF67D94C5A632591B98CD /* OCRService.swift */,
 				553B8278C13DBCED044A9B21 /* StringUtils.swift */,
@@ -1540,6 +1585,12 @@
 				82D6344895F51FD4C3B77CFA /* MaintenanceDrafts.swift */,
 				262C265EFD1DC3509C54223C /* MaintenanceMileage.swift */,
 				B5C98623FAD9EA8EAB92E92E /* MaintenanceModels.swift */,
+				CA8ACB9E495C4E3C07380084 /* CrowdMapAggregator.swift */,
+				A4292F555DFC28F3761833C6 /* MapModels.swift */,
+				FCDFD814B101492355F988D0 /* MapMoney.swift */,
+				F464EF135D2291683591BFEE /* MapStateMetrics.swift */,
+				09CC97451978A66EF26CD5FE /* MapsAPIKey.swift */,
+				29480169DD1CE974D50A628E /* StateOutlines.swift */,
 				7905649839F895CA5FB1EBC6 /* AttachLoadSelection.swift */,
 				05AC122F199C624E85435698 /* AttachmentNaming.swift */,
 				AF015024646A8CC760134E5C /* LocationStamp.swift */,
@@ -1609,8 +1660,9 @@
 				1374C865E85F31496DDF26D7 /* LoadDetailView.swift */,
 				ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */,
 				90DA2D7AF8C3725CD8BD9AB1 /* MaintenanceListView.swift */,
-				C0D7E59ED5DE31187826E4A4 /* RouteMapView.swift */,
-				DB5C36383D4813E8A902D76B /* StateHeatmapView.swift */,
+				FF4DB6B13AB89375AEF56E26 /* GoogleHeatmapMap.swift */,
+				E8095A13DE7FCA49AB14BD49 /* MapLoadAdapter.swift */,
+				C3FBCE5BCEEFAC78F83EEE47 /* MapScreen.swift */,
 				D7E7E9B18E913D35E8FC16CB /* OnboardingView.swift */,
 				A95929A891E1CF9C4859174E /* PaycheckListView.swift */,
 				2D3672F813B7FB59D8DDFBDE /* PaywallView.swift */,
@@ -1754,6 +1806,7 @@
 		};
 		CC0E0193F4281B4DA5C369FC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D68807FED8449A70B846E60D /* Maps.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1766,6 +1819,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "$(inherited) -ObjC";
 				MARKETING_VERSION = 1.5.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1776,6 +1830,7 @@
 		};
 		12ACBD0672F76C7DFF9F6BD9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D68807FED8449A70B846E60D /* Maps.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1788,6 +1843,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "$(inherited) -ObjC";
 				MARKETING_VERSION = 1.5.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1965,6 +2021,14 @@
 				version = 8.0.0;
 			};
 		};
+		DE132C8D81EA110251B64495 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = exactVersion;
+				version = 11.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1977,6 +2041,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C105F06F19AB1C9BFDBE38E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		C282B09B29FB0A5E9CF3F42D /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE132C8D81EA110251B64495 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
