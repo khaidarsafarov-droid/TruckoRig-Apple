@@ -1,0 +1,4 @@
+// Google Maps SDK for iOS. Empty by default so CI and a fresh clone build with no key.
+// A real key belongs in Config/Secrets.xcconfig (gitignored). Copy Secrets.example.xcconfig.
+GOOGLE_MAPS_API_KEY =
+#include? "Secrets.xcconfig"
