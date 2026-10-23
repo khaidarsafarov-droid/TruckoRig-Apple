@@ -143,20 +143,20 @@ final class ThemeSettingsTests: XCTestCase {
         XCTAssertEqual(hex(gold, darkTraits), "D6BC85")
     }
 
-    func testDriveBackupRestoresThemeModeAndOled() throws {
+    func testBackupDataRestoresThemeModeAndOled() throws {
         let database = try AppDatabase.ephemeral()
         let settings = makeSettings()
-        let identity = DriveIdentityStore(defaults: defaults)
-        var extra = DriveSettingsExtra(themeModeOrdinal: 2, oledDark: true)
-        DriveJournalMapper.adoptStoredThemeIfNeeded(settings, extra: &extra)
+        let identity = BackupIdentityStore(defaults: defaults)
+        var extra = BackupSettingsExtra(themeModeOrdinal: 2, oledDark: true)
+        BackupJournalMapper.adoptStoredThemeIfNeeded(settings, extra: &extra)
         XCTAssertEqual(settings.themeMode, .dark)
         XCTAssertTrue(settings.oledDark)
 
-        let exported = DriveJournalMapper.export(
+        let exported = BackupJournalMapper.export(
             graph: try database.fetchGraph(),
             settings: settings,
             identity: identity,
-            accountId: DriveAccount.localDev,
+            accountId: BackupAccount.localDev,
             exportedAt: 1
         )
         XCTAssertEqual(exported.appSettings?.themeModeOrdinal, 2)
@@ -166,8 +166,8 @@ final class ThemeSettingsTests: XCTestCase {
         fresh.themeMode = .light
         fresh.oledDark = false
         let json = #"{"schemaVersion":2,"version":2,"accountId":"local_dev","loads":[],"appSettings":{"themeModeOrdinal":1,"oledDark":true}}"#
-        let backup = try DriveBackupCodec.decode(json)
-        _ = DriveJournalMapper.importBackup(backup, settings: fresh, identity: identity)
+        let backup = try BackupDataCodec.decode(json)
+        _ = BackupJournalMapper.importBackup(backup, settings: fresh, identity: identity)
         XCTAssertEqual(fresh.themeMode, .light)
         XCTAssertTrue(fresh.oledDark)
         XCTAssertEqual(makeSettings().themeMode, .light)

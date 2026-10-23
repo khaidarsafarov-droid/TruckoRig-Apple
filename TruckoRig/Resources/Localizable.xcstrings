@@ -3053,19 +3053,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The first month is free. After that, the App Store charges the monthly price on the button — $2.99 in the United States. Telegram, analytics, the weekly goal, the map, taxes, scanner, camera, export, and Drive backup stay on this plan. Loads, diesel, paychecks, and deadhead stay free."
+            "value": "The first month is free. After that, the App Store charges the monthly price on the button — $2.99 in the United States. Telegram, analytics, the weekly goal, the map, taxes, scanner, camera, and backup stay on this plan. Loads, diesel, paychecks, and deadhead stay free."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El primer mes es gratis. Después, el App Store cobra el precio del botón: 2,99 $ al mes en Estados Unidos. Telegram, analítica, meta semanal, mapa, impuestos, escáner, cámara, exportación y copia en Drive quedan en este plan. Las cargas, el diésel, los pagos y el deadhead siguen gratis."
+            "value": "El primer mes es gratis. Después, el App Store cobra el precio del botón: 2,99 $ al mes en Estados Unidos. Telegram, analítica, meta semanal, mapa, impuestos, escáner, cámara y el respaldo quedan en este plan. Las cargas, el diésel, los pagos y el deadhead siguen gratis."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Первый месяц бесплатно. Дальше App Store списывает цену на кнопке — в США это 2,99 $ в месяц. Telegram, аналитика, недельная цель, карта, налоги, сканер, камера, экспорт и копия в Drive остаются в этой подписке. Грузы, дизель, зарплаты и deadhead остаются бесплатными."
+            "value": "Первый месяц бесплатно. Дальше App Store списывает цену на кнопке — в США это 2,99 $ в месяц. Telegram, аналитика, недельная цель, карта, налоги, сканер, камера и резервная копия остаются в этой подписке. Грузы, дизель, зарплаты и deadhead остаются бесплатными."
           }
         }
       }
@@ -4377,13 +4377,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Export backup"
+            "value": "Create backup file"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Экспорт копии"
+            "value": "Создать файл бэкапа"
           }
         }
       }
@@ -4394,13 +4394,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A backup file from one phone restores on another."
+            "value": "The JSON file is a full copy of loads, paychecks, and diesel."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Файл копии с одного телефона подходит другому."
+            "value": "JSON — полная копия грузов, зарплат и дизеля."
           }
         }
       }
@@ -4422,517 +4422,92 @@
         }
       }
     },
-    "settings.backup.report %lld %lld %lld": {
+    "settings.backup.restoreHint": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Added %lld, updated %lld, kept %lld newer"
+            "value": ".json / .tlb file from Downloads/TruckoRig (legacy Loads_….txt still works if it contains JSON)"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Добавлено %lld, обновлено %lld, оставлено новее %lld"
+            "value": "Файл .json / .tlb из Загрузки/TruckoRig (старые Loads_….txt тоже читаются, если внутри есть JSON)"
           }
         }
       }
     },
-    "settings.drive.apiError %@": {
+    "settings.backup.restoreTitle": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Drive error: %@"
+            "value": "Restore from file?"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ошибка Drive: %@"
+            "value": "Восстановить из файла?"
           }
         }
       }
     },
-    "settings.drive.auto": {
+    "settings.backup.restoreBody": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Auto-sync"
+            "value": "Your current journal (loads, paychecks, diesel) will be replaced by the file. Photos and scans linked to removed loads will be deleted; other media on this device will be kept."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Автосинхронизация"
+            "value": "Текущий журнал (грузы, зарплаты, дизель) будет заменён данными из файла. Фото и сканы, привязанные к удалённым грузам, будут удалены; остальные медиафайлы на устройстве сохранятся."
           }
         }
       }
     },
-    "settings.drive.autoDesc": {
+    "settings.backup.restoreAction": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "After load changes, copy backup to Drive"
+            "value": "Restore"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "После изменений грузов копировать бэкап в Drive"
+            "value": "Восстановить"
           }
         }
       }
     },
-    "settings.drive.badFormat": {
+    "settings.backup.saved %lld %@": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Invalid file format"
+            "value": "Backup: %lld loads → %@"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Неверный формат файла"
+            "value": "Бэкап: %lld грузов → %@"
           }
         }
       }
     },
-    "settings.drive.busy": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Syncing…"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Синхронизация…"
-          }
-        }
-      }
-    },
-    "settings.drive.cancelled": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Google Drive connect was cancelled"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Подключение Google Drive отменено"
-          }
-        }
-      }
-    },
-    "settings.drive.conflict": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This device has changes after the last sync, and Drive has a newer backup. Restore will overwrite local data."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "На устройстве есть изменения после последней синхронизации, а в Drive — более новая копия. Восстановление перезапишет локальные данные."
-          }
-        }
-      }
-    },
-    "settings.drive.connectFailed": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not connect Google Drive"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не удалось подключить Google Drive"
-          }
-        }
-      }
-    },
-    "settings.drive.connected": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Google Drive connected"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Google Drive подключён"
-          }
-        }
-      }
-    },
-    "settings.drive.corrupted": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The file is corrupted"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Файл повреждён"
-          }
-        }
-      }
-    },
-    "settings.drive.desc": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your log stays on this phone. You can save a copy to Google Drive — the app only uses its own folder, not your personal files."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Журнал хранится на этом телефоне. Копию можно сохранить на Google Диск — приложение видит только свою папку, не ваши личные файлы."
-          }
-        }
-      }
-    },
-    "settings.drive.disconnect": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Disconnect"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Отключить"
-          }
-        }
-      }
-    },
-    "settings.drive.last %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last sync: %@"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Последняя синхронизация: %@"
-          }
-        }
-      }
-    },
-    "settings.drive.lastError %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last Drive error: %@"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Последняя ошибка Drive: %@"
-          }
-        }
-      }
-    },
-    "settings.drive.lastNever": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "never"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ещё не было"
-          }
-        }
-      }
-    },
-    "settings.drive.linkedHint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Google Drive is connected for a backup of your log."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Google Диск подключён для резервной копии журнала."
-          }
-        }
-      }
-    },
-    "settings.drive.localHint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connect Google Drive to save a copy of your log. The app cannot see your personal files."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Подключите Google Диск, чтобы сохранить копию журнала. Личные файлы приложение не видит."
-          }
-        }
-      }
-    },
-    "settings.drive.needWindow": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not open Google Drive. Open Settings again and retry."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не удалось открыть Google Drive. Откройте Настройки ещё раз."
-          }
-        }
-      }
-    },
-    "settings.drive.notLinked": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connect Google Drive first"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сначала подключите Google Drive"
-          }
-        }
-      }
-    },
-    "settings.drive.nothing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nothing to back up"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Нет данных для бэкапа"
-          }
-        }
-      }
-    },
-    "settings.drive.now": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sync with Google Drive"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Синхронизировать с Google Диском"
-          }
-        }
-      }
-    },
-    "settings.drive.offline": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Offline — local data available; Drive sync paused"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Нет сети — локальные данные доступны, синхронизация Drive отложена"
-          }
-        }
-      }
-    },
-    "settings.drive.restore": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restore from Drive"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Восстановить из Drive"
-          }
-        }
-      }
-    },
-    "settings.drive.restoreBody": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Local loads, paychecks, and diesel will be replaced by the Google Drive copy. All photos and scans on this device will be deleted (backups do not include media)."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Локальные грузы, зарплаты и дизель будут заменены копией из Google Drive. Все фото и сканы на устройстве будут удалены (бэкап их не содержит)."
-          }
-        }
-      }
-    },
-    "settings.drive.restoreTitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restore from Drive?"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Восстановить из Drive?"
-          }
-        }
-      }
-    },
-    "settings.drive.saved %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saved to Google Drive (%@)"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сохранено в Google Drive (%@)"
-          }
-        }
-      }
-    },
-    "settings.drive.schema": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This file was created by a newer app version. Please update TruckoRig."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Файл создан более новой версией приложения. Обновите TruckoRig."
-          }
-        }
-      }
-    },
-    "settings.drive.statusOff": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Not connected"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не подключено"
-          }
-        }
-      }
-    },
-    "settings.drive.statusOn %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connected: %@"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Подключено: %@"
-          }
-        }
-      }
-    },
-    "settings.drive.success %lld %lld %lld": {
+    "settings.backup.success %lld %lld %lld": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -4949,41 +4524,126 @@
         }
       }
     },
-    "settings.drive.title": {
+    "settings.backup.error": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Google Drive"
+            "value": "Could not create backup file"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Google Drive"
+            "value": "Не удалось создать файл бэкапа"
           }
         }
       }
     },
-    "settings.drive.tooLarge": {
+    "settings.backup.readFailed": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This backup is too large to restore on the device."
+            "value": "Could not read file"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Файл слишком большой для восстановления на устройстве."
+            "value": "Не удалось прочитать файл"
           }
         }
       }
     },
-    "settings.drive.unbound": {
+    "settings.backup.badFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid file format"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неверный формат файла"
+          }
+        }
+      }
+    },
+    "settings.backup.corrupted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file is corrupted"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Файл повреждён"
+          }
+        }
+      }
+    },
+    "settings.backup.chartNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is a load chart note, not a backup file. Create a new backup in Settings."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это текстовая заметка со списком грузов, а не файл бэкапа. Создайте новый бэкап в Настройках."
+          }
+        }
+      }
+    },
+    "settings.backup.schema": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This file was created by a newer app version. Please update TruckoRig."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Файл создан более новой версией приложения. Обновите TruckoRig."
+          }
+        }
+      }
+    },
+    "settings.backup.wrongAccount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This backup belongs to another account and will not be restored."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервная копия принадлежит другому аккаунту и не будет восстановлена."
+          }
+        }
+      }
+    },
+    "settings.backup.unbound": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -5000,7 +4660,7 @@
         }
       }
     },
-    "settings.drive.unboundAction": {
+    "settings.backup.unboundAction": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -5017,36 +4677,36 @@
         }
       }
     },
-    "settings.drive.unavailable": {
+    "settings.backup.tooLarge": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Google Drive backup isn't available yet. Replace GIDClientID in Info.plist with an iOS OAuth client id, then rebuild."
+            "value": "This backup is too large to restore on the device."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Резервная копия Google Drive пока недоступна. Замените GIDClientID в Info.plist на iOS OAuth client id и пересоберите приложение."
+            "value": "Файл слишком большой для восстановления на устройстве."
           }
         }
       }
     },
-    "settings.drive.wrongAccount": {
+    "settings.backup.localNewer": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This backup belongs to another account and will not be restored."
+            "value": "This phone’s journal is newer than this file. Restore will overwrite local data."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Резервная копия принадлежит другому аккаунту и не будет восстановлена."
+            "value": "Журнал на этом телефоне новее файла. Восстановление перезапишет локальные данные."
           }
         }
       }
@@ -8370,13 +8030,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "In Settings create a backup file on the phone or save to Google Drive and restore when you change devices."
+            "value": "In Settings create a backup file on the phone and restore it when you change devices."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "В Настройках создайте файл-бэкап на телефоне или сохраните данные в Google Drive и восстановите их при смене устройства."
+            "value": "В Настройках создайте файл-бэкап на телефоне и восстановите его при смене устройства."
           }
         }
       }

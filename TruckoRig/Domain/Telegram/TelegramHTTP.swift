@@ -137,7 +137,7 @@ public enum TelegramBotAPI {
     }
 
     public static func getUpdates(token: String, offset: Int64?, timeoutSeconds: Int = longPollSeconds, limit: Int = 100) -> TelegramHTTPRequest {
-        let allowed = DriveHTTP.formEncode(#"["message","callback_query"]"#)
+        let allowed = Self.formEncode(#"["message","callback_query"]"#)
         var url = root(token) + "/getUpdates?timeout=\(timeoutSeconds)&limit=\(min(100, max(1, limit)))&allowed_updates=\(allowed)"
         if let offset, offset > 0 { url += "&offset=\(offset)" }
         return TelegramHTTPRequest(method: "GET", url: url, timeout: readTimeout)
@@ -168,7 +168,7 @@ public enum TelegramBotAPI {
     }
 
     public static func getFile(token: String, fileId: String) -> TelegramHTTPRequest {
-        let encoded = DriveHTTP.formEncode(fileId).replacingOccurrences(of: "+", with: "%20")
+        let encoded = Self.formEncode(fileId).replacingOccurrences(of: "+", with: "%20")
         return TelegramHTTPRequest(method: "GET", url: root(token) + "/getFile?file_id=\(encoded)", timeout: 20)
     }
 
@@ -309,8 +309,31 @@ public enum TelegramBotAPI {
 
     private static func form(_ fields: [String: String]) -> String {
         fields.keys.sorted().map { key in
-            DriveHTTP.formEncode(key) + "=" + DriveHTTP.formEncode(fields[key] ?? "")
+            formEncode(key) + "=" + formEncode(fields[key] ?? "")
         }.joined(separator: "&")
+    }
+
+    /// `application/x-www-form-urlencoded`, same rules Telegram's Android client uses (space as `+`).
+    private static func formEncode(_ value: String) -> String {
+        var out = ""
+        for byte in value.utf8 {
+            let scalar = Unicode.Scalar(byte)
+            let unreserved = (byte >= 48 && byte <= 57)
+                || (byte >= 65 && byte <= 90)
+                || (byte >= 97 && byte <= 122)
+                || scalar == "-"
+                || scalar == "_"
+                || scalar == "."
+                || scalar == "*"
+            if scalar == " " {
+                out.append("+")
+            } else if unreserved {
+                out.append(Character(scalar))
+            } else {
+                out.append(String(format: "%%%02X", byte))
+            }
+        }
+        return out
     }
 
     private static func chatId(_ chat: [String: Any]?) -> String {

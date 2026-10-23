@@ -1,7 +1,7 @@
 import Foundation
 
-/// Android `DriveSyncPolicy`. Retry and conflict rules with no Drive SDK.
-public enum DriveSyncPolicy {
+/// Android `DriveSyncPolicy`. Retry and conflict rules kept for a later cloud sync.
+public enum BackupSyncPolicy {
     public static let defaultMaxAttempts = 3
     public static let defaultBaseDelayMs: Int64 = 400
     /// Ignore tiny clock skew when comparing remote modifiedTime vs last sync.
@@ -71,10 +71,17 @@ public enum DriveSyncPolicy {
         }
         return false
     }
+
+    /// File restore: warn when this phone's journal is newer than the file's `exportedAt`.
+    public static func shouldWarnBeforeFileRestore(localNewestMillis: Int64, backupExportedAt: Int64) -> Bool {
+        if localNewestMillis <= 0 { return false }
+        if backupExportedAt <= 0 { return true }
+        return localNewestMillis > backupExportedAt
+    }
 }
 
 /// Android `DriveSyncEligibility`. Any non-blank account, including `local_dev`, may schedule.
-public enum DriveSyncEligibility {
+public enum BackupSyncEligibility {
     public static func shouldEnqueuePeriodic(userId: String?) -> Bool {
         guard let userId else { return false }
         return !userId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty

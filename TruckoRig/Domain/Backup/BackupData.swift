@@ -1,20 +1,32 @@
 import Foundation
 
 /// Android `BackupSchema`.
-public enum DriveBackupSchema {
+public enum BackupSchema {
     public static let current = 2
     public static let v1 = 1
     public static let v2 = 2
     public static let jsonMIME = "application/json"
+    /// Android `BrandConstants.FILE_PREFIX`.
+    public static let filePrefix = "TruckoRig"
 
     public static func resolve(schemaVersion: Int, version: Int) -> Int {
         if schemaVersion > 0 { return schemaVersion }
         if version > 0 { return version }
         return v1
     }
+
+    /// Android `BackupSchema.jsonFileName`: `<FILE_PREFIX>_Backup_yyyyMMdd_HHmmss.json`.
+    public static func jsonFileName(exportedAt: Int64, timeZone: TimeZone = .current) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = timeZone
+        formatter.dateFormat = "yyyyMMdd_HHmmss"
+        let date = Date(timeIntervalSince1970: Double(exportedAt) / 1000)
+        return "\(filePrefix)_Backup_\(formatter.string(from: date)).json"
+    }
 }
 
-public struct DriveStop: Equatable, Sendable {
+public struct BackupStop: Equatable, Sendable {
     public var id: Int
     public var loadId: String
     public var stopNumber: Int
@@ -60,7 +72,7 @@ public struct DriveStop: Equatable, Sendable {
     }
 }
 
-public struct DrivePenalty: Equatable, Sendable {
+public struct BackupPenalty: Equatable, Sendable {
     public var id: Int
     public var loadId: String
     public var description: String
@@ -75,7 +87,7 @@ public struct DrivePenalty: Equatable, Sendable {
     }
 }
 
-public struct DriveLoad: Equatable, Sendable {
+public struct BackupLoad: Equatable, Sendable {
     public var id: String
     public var tripId: String
     public var date: String
@@ -103,8 +115,8 @@ public struct DriveLoad: Equatable, Sendable {
     public var disputeApplyToLoad: Bool
     public var disputeAmountApplied: Bool
     public var actualFinishDate: String?
-    public var stops: [DriveStop]
-    public var penalties: [DrivePenalty]
+    public var stops: [BackupStop]
+    public var penalties: [BackupPenalty]
     public var equipmentType: String?
     public var deadheadMiles: Double
 
@@ -136,8 +148,8 @@ public struct DriveLoad: Equatable, Sendable {
         disputeApplyToLoad: Bool = false,
         disputeAmountApplied: Bool = false,
         actualFinishDate: String? = nil,
-        stops: [DriveStop] = [],
-        penalties: [DrivePenalty] = [],
+        stops: [BackupStop] = [],
+        penalties: [BackupPenalty] = [],
         equipmentType: String? = nil,
         deadheadMiles: Double = 0
     ) {
@@ -175,7 +187,7 @@ public struct DriveLoad: Equatable, Sendable {
     }
 }
 
-public struct DrivePaycheck: Equatable, Sendable {
+public struct BackupPaycheck: Equatable, Sendable {
     public var id: Int
     public var weekNumber: Int
     public var year: Int
@@ -222,7 +234,7 @@ public struct DrivePaycheck: Equatable, Sendable {
     }
 }
 
-public struct DriveDiesel: Equatable, Sendable {
+public struct BackupDiesel: Equatable, Sendable {
     public var id: Int
     public var weekNumber: Int
     public var year: Int
@@ -272,7 +284,7 @@ public struct DriveDiesel: Equatable, Sendable {
     }
 }
 
-public struct DriveMaintenanceTask: Equatable, Sendable {
+public struct BackupMaintenanceTask: Equatable, Sendable {
     public var id: Int64
     public var title: String
     public var startDate: String
@@ -315,7 +327,7 @@ public struct DriveMaintenanceTask: Equatable, Sendable {
     }
 }
 
-public struct DriveMaintenanceArchive: Equatable, Sendable {
+public struct BackupMaintenanceArchive: Equatable, Sendable {
     public var id: Int64
     public var serviceName: String
     public var serviceDate: String
@@ -347,7 +359,7 @@ public struct DriveMaintenanceArchive: Equatable, Sendable {
     }
 }
 
-public struct DriveAppSettings: Equatable, Sendable {
+public struct BackupAppSettings: Equatable, Sendable {
     public var themeModeOrdinal: Int?
     public var languageOrdinal: Int?
     public var reduceMotion: Bool?
@@ -413,29 +425,29 @@ public struct DriveAppSettings: Equatable, Sendable {
 }
 
 /// Android `BackupData`. Photos, scans and receipt bytes are not in the file.
-public struct DriveBackup: Equatable, Sendable {
+public struct BackupData: Equatable, Sendable {
     public var schemaVersion: Int
     public var version: Int
     public var exportedAt: Int64
     public var accountId: String?
-    public var loads: [DriveLoad]
-    public var paychecks: [DrivePaycheck]
-    public var diesel: [DriveDiesel]
-    public var maintenanceTasks: [DriveMaintenanceTask]
-    public var maintenanceArchive: [DriveMaintenanceArchive]
-    public var appSettings: DriveAppSettings?
+    public var loads: [BackupLoad]
+    public var paychecks: [BackupPaycheck]
+    public var diesel: [BackupDiesel]
+    public var maintenanceTasks: [BackupMaintenanceTask]
+    public var maintenanceArchive: [BackupMaintenanceArchive]
+    public var appSettings: BackupAppSettings?
 
     public init(
         schemaVersion: Int = 0,
         version: Int = 0,
         exportedAt: Int64 = 0,
         accountId: String? = nil,
-        loads: [DriveLoad] = [],
-        paychecks: [DrivePaycheck] = [],
-        diesel: [DriveDiesel] = [],
-        maintenanceTasks: [DriveMaintenanceTask] = [],
-        maintenanceArchive: [DriveMaintenanceArchive] = [],
-        appSettings: DriveAppSettings? = nil
+        loads: [BackupLoad] = [],
+        paychecks: [BackupPaycheck] = [],
+        diesel: [BackupDiesel] = [],
+        maintenanceTasks: [BackupMaintenanceTask] = [],
+        maintenanceArchive: [BackupMaintenanceArchive] = [],
+        appSettings: BackupAppSettings? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.version = version
@@ -450,27 +462,27 @@ public struct DriveBackup: Equatable, Sendable {
     }
 }
 
-public enum DriveBackupDecodeError: Error, Equatable, Sendable {
+public enum BackupDecodeError: Error, Equatable, Sendable {
     case invalidFormat
     case corrupted
     case schemaTooNew(Int)
 }
 
-public struct DriveJournal: Equatable, Sendable {
-    public var loads: [DriveLoad]
-    public var paychecks: [DrivePaycheck]
-    public var diesel: [DriveDiesel]
-    public var maintenanceTasks: [DriveMaintenanceTask]
-    public var maintenanceArchive: [DriveMaintenanceArchive]
-    public var appSettings: DriveAppSettings?
+public struct BackupJournal: Equatable, Sendable {
+    public var loads: [BackupLoad]
+    public var paychecks: [BackupPaycheck]
+    public var diesel: [BackupDiesel]
+    public var maintenanceTasks: [BackupMaintenanceTask]
+    public var maintenanceArchive: [BackupMaintenanceArchive]
+    public var appSettings: BackupAppSettings?
 
     public init(
-        loads: [DriveLoad] = [],
-        paychecks: [DrivePaycheck] = [],
-        diesel: [DriveDiesel] = [],
-        maintenanceTasks: [DriveMaintenanceTask] = [],
-        maintenanceArchive: [DriveMaintenanceArchive] = [],
-        appSettings: DriveAppSettings? = nil
+        loads: [BackupLoad] = [],
+        paychecks: [BackupPaycheck] = [],
+        diesel: [BackupDiesel] = [],
+        maintenanceTasks: [BackupMaintenanceTask] = [],
+        maintenanceArchive: [BackupMaintenanceArchive] = [],
+        appSettings: BackupAppSettings? = nil
     ) {
         self.loads = loads
         self.paychecks = paychecks
@@ -481,7 +493,7 @@ public struct DriveJournal: Equatable, Sendable {
     }
 }
 
-public enum DriveRestoreRejection: Equatable, Sendable {
+public enum BackupRestoreRejection: Equatable, Sendable {
     case wrongAccount
     case unboundAccount
     case schemaTooNew(Int)
@@ -490,14 +502,14 @@ public enum DriveRestoreRejection: Equatable, Sendable {
     case tooLarge
 }
 
-public enum DriveRestoreOutcome: Equatable, Sendable {
-    case replaced(DriveJournal)
-    case rejected(DriveRestoreRejection)
+public enum BackupRestoreOutcome: Equatable, Sendable {
+    case replaced(BackupJournal)
+    case rejected(BackupRestoreRejection)
 }
 
 /// JSON codec and full-replace restore. Gson omits nulls and does not HTML-escape.
-public enum DriveBackupCodec {
-    public static func hasExportableContent(_ backup: DriveBackup) -> Bool {
+public enum BackupDataCodec {
+    public static func hasExportableContent(_ backup: BackupData) -> Bool {
         !backup.loads.isEmpty
             || !backup.paychecks.isEmpty
             || !backup.diesel.isEmpty
@@ -505,18 +517,18 @@ public enum DriveBackupCodec {
             || !backup.maintenanceArchive.isEmpty
     }
 
-    public static func carriesMaintenance(_ backup: DriveBackup) -> Bool {
-        DriveBackupSchema.resolve(schemaVersion: backup.schemaVersion, version: backup.version) >= DriveBackupSchema.v2
+    public static func carriesMaintenance(_ backup: BackupData) -> Bool {
+        BackupSchema.resolve(schemaVersion: backup.schemaVersion, version: backup.version) >= BackupSchema.v2
     }
 
-    public static func encode(_ backup: DriveBackup) -> String {
+    public static func encode(_ backup: BackupData) -> String {
         var fields: [(String, String)] = [
-            ("schemaVersion", String(DriveBackupSchema.current)),
-            ("version", String(DriveBackupSchema.current)),
+            ("schemaVersion", String(BackupSchema.current)),
+            ("version", String(BackupSchema.current)),
             ("exportedAt", String(backup.exportedAt)),
         ]
         if let accountId = backup.accountId {
-            fields.append(("accountId", DriveJSON.escape(accountId)))
+            fields.append(("accountId", BackupJSON.escape(accountId)))
         }
         fields.append(("loads", array(backup.loads.map(encodeLoad))))
         fields.append(("paychecks", array(backup.paychecks.map(encodePaycheck))))
@@ -529,27 +541,27 @@ public enum DriveBackupCodec {
         return object(fields)
     }
 
-    public static func decode(_ json: String) throws -> DriveBackup {
-        let stripped = DriveJSON.stripBOM(json).trimmingCharacters(in: .whitespacesAndNewlines)
-        if stripped.isEmpty { throw DriveBackupDecodeError.invalidFormat }
+    public static func decode(_ json: String) throws -> BackupData {
+        let stripped = BackupJSON.stripBOM(json).trimmingCharacters(in: .whitespacesAndNewlines)
+        if stripped.isEmpty { throw BackupDecodeError.invalidFormat }
         let root: [String: Any]
         do {
             let object = try JSONSerialization.jsonObject(with: Data(stripped.utf8))
-            guard let dictionary = object as? [String: Any] else { throw DriveBackupDecodeError.corrupted }
+            guard let dictionary = object as? [String: Any] else { throw BackupDecodeError.corrupted }
             root = dictionary
-        } catch let error as DriveBackupDecodeError {
+        } catch let error as BackupDecodeError {
             throw error
         } catch {
-            throw DriveBackupDecodeError.corrupted
+            throw BackupDecodeError.corrupted
         }
-        let schema = DriveBackupSchema.resolve(
+        let schema = BackupSchema.resolve(
             schemaVersion: int(root["schemaVersion"]) ?? 0,
             version: int(root["version"]) ?? 0
         )
-        if schema > DriveBackupSchema.current {
-            throw DriveBackupDecodeError.schemaTooNew(schema)
+        if schema > BackupSchema.current {
+            throw BackupDecodeError.schemaTooNew(schema)
         }
-        return DriveBackup(
+        return BackupData(
             schemaVersion: schema,
             version: schema,
             exportedAt: int64(root["exportedAt"]) ?? 0,
@@ -559,24 +571,24 @@ public enum DriveBackupCodec {
             diesel: try array(root["diesel"], encode: diesel),
             maintenanceTasks: try array(root["maintenanceTasks"], encode: task),
             maintenanceArchive: try array(root["maintenanceArchive"], encode: archive),
-            appSettings: root["appSettings"].flatMap { value -> DriveAppSettings? in
+            appSettings: root["appSettings"].flatMap { value -> BackupAppSettings? in
                 if value is NSNull { return nil }
                 return settings(value)
             }
         )
     }
 
-    public static func fromJSON(_ json: String) -> DriveBackup? {
+    public static func fromJSON(_ json: String) -> BackupData? {
         try? decode(json)
     }
 
     /// Full replace. Schema v1 leaves maintenance in place. Null settings leave the phone's settings.
     public static func restore(
-        _ backup: DriveBackup,
-        onto journal: DriveJournal,
+        _ backup: BackupData,
+        onto journal: BackupJournal,
         activeAccountId: String,
         allowUnboundAccount: Bool
-    ) -> DriveRestoreOutcome {
+    ) -> BackupRestoreOutcome {
         let account = backup.accountId?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let active = activeAccountId.trimmingCharacters(in: .whitespacesAndNewlines)
         if account.isEmpty {
@@ -599,37 +611,37 @@ public enum DriveBackupCodec {
     }
 
     public static func exceedsRestoreLimit(byteCount: Int) -> Bool {
-        byteCount > DriveSchedule.maxRestoreBytes
+        byteCount > BackupSchedule.maxRestoreBytes
     }
 
     // MARK: - Encode
 
-    private static func encodeLoad(_ load: DriveLoad) -> String {
+    private static func encodeLoad(_ load: BackupLoad) -> String {
         var fields: [(String, String)] = [
-            ("id", DriveJSON.escape(load.id)),
-            ("tripId", DriveJSON.escape(load.tripId)),
-            ("date", DriveJSON.escape(load.date)),
+            ("id", BackupJSON.escape(load.id)),
+            ("tripId", BackupJSON.escape(load.tripId)),
+            ("date", BackupJSON.escape(load.date)),
             ("totalRate", String(load.totalRateCents)),
-            ("totalMiles", DriveJSON.renderDouble(load.totalMiles)),
-            ("pointA", DriveJSON.escape(load.pointA)),
-            ("pointB", DriveJSON.escape(load.pointB)),
+            ("totalMiles", BackupJSON.renderDouble(load.totalMiles)),
+            ("pointA", BackupJSON.escape(load.pointA)),
+            ("pointB", BackupJSON.escape(load.pointB)),
             ("puCount", String(load.puCount)),
             ("delCount", String(load.delCount)),
             ("weekNumber", String(load.weekNumber)),
             ("year", String(load.year)),
-            ("rawMessage", DriveJSON.escape(load.rawMessage)),
+            ("rawMessage", BackupJSON.escape(load.rawMessage)),
             ("parsedAt", String(load.parsedAt)),
             ("updatedAt", String(load.updatedAt)),
-            ("route", DriveJSON.escape(load.route)),
-            ("firstPuCityState", DriveJSON.escape(load.firstPuCityState)),
-            ("lastDelCityState", DriveJSON.escape(load.lastDelCityState)),
-            ("durationDays", DriveJSON.renderDouble(load.durationDays)),
+            ("route", BackupJSON.escape(load.route)),
+            ("firstPuCityState", BackupJSON.escape(load.firstPuCityState)),
+            ("lastDelCityState", BackupJSON.escape(load.lastDelCityState)),
+            ("durationDays", BackupJSON.renderDouble(load.durationDays)),
             ("pace", String(load.paceCents)),
             ("stopCount", String(load.stopCount)),
             ("isDispute", bool(load.isDispute)),
         ]
         if let disputeResponseDate = load.disputeResponseDate {
-            fields.append(("disputeResponseDate", DriveJSON.escape(disputeResponseDate)))
+            fields.append(("disputeResponseDate", BackupJSON.escape(disputeResponseDate)))
         }
         fields.append(("disputeCompleted", bool(load.disputeCompleted)))
         if let disputeAmountCents = load.disputeAmountCents {
@@ -638,106 +650,106 @@ public enum DriveBackupCodec {
         fields.append(("disputeApplyToLoad", bool(load.disputeApplyToLoad)))
         fields.append(("disputeAmountApplied", bool(load.disputeAmountApplied)))
         if let actualFinishDate = load.actualFinishDate {
-            fields.append(("actualFinishDate", DriveJSON.escape(actualFinishDate)))
+            fields.append(("actualFinishDate", BackupJSON.escape(actualFinishDate)))
         }
         fields.append(("stops", array(load.stops.map(encodeStop))))
         fields.append(("penalties", array(load.penalties.map(encodePenalty))))
         if let equipmentType = load.equipmentType {
-            fields.append(("equipmentType", DriveJSON.escape(equipmentType)))
+            fields.append(("equipmentType", BackupJSON.escape(equipmentType)))
         }
-        fields.append(("deadheadMiles", DriveJSON.renderDouble(load.deadheadMiles)))
+        fields.append(("deadheadMiles", BackupJSON.renderDouble(load.deadheadMiles)))
         return object(fields)
     }
 
-    private static func encodeStop(_ stop: DriveStop) -> String {
+    private static func encodeStop(_ stop: BackupStop) -> String {
         var fields: [(String, String)] = [
             ("id", String(stop.id)),
-            ("loadId", DriveJSON.escape(stop.loadId)),
+            ("loadId", BackupJSON.escape(stop.loadId)),
             ("stopNumber", String(stop.stopNumber)),
-            ("type", DriveJSON.escape(stop.type)),
+            ("type", BackupJSON.escape(stop.type)),
         ]
-        if let puNumber = stop.puNumber { fields.append(("puNumber", DriveJSON.escape(puNumber))) }
-        if let note = stop.note { fields.append(("note", DriveJSON.escape(note))) }
-        fields.append(("scheduledTime", DriveJSON.escape(stop.scheduledTime)))
-        fields.append(("timezone", DriveJSON.escape(stop.timezone)))
-        if let facilityCode = stop.facilityCode { fields.append(("facilityCode", DriveJSON.escape(facilityCode))) }
-        fields.append(("fullAddress", DriveJSON.escape(stop.fullAddress)))
-        fields.append(("city", DriveJSON.escape(stop.city)))
-        fields.append(("state", DriveJSON.escape(stop.state)))
-        fields.append(("zip", DriveJSON.escape(stop.zip)))
+        if let puNumber = stop.puNumber { fields.append(("puNumber", BackupJSON.escape(puNumber))) }
+        if let note = stop.note { fields.append(("note", BackupJSON.escape(note))) }
+        fields.append(("scheduledTime", BackupJSON.escape(stop.scheduledTime)))
+        fields.append(("timezone", BackupJSON.escape(stop.timezone)))
+        if let facilityCode = stop.facilityCode { fields.append(("facilityCode", BackupJSON.escape(facilityCode))) }
+        fields.append(("fullAddress", BackupJSON.escape(stop.fullAddress)))
+        fields.append(("city", BackupJSON.escape(stop.city)))
+        fields.append(("state", BackupJSON.escape(stop.state)))
+        fields.append(("zip", BackupJSON.escape(stop.zip)))
         return object(fields)
     }
 
-    private static func encodePenalty(_ penalty: DrivePenalty) -> String {
+    private static func encodePenalty(_ penalty: BackupPenalty) -> String {
         object([
             ("id", String(penalty.id)),
-            ("loadId", DriveJSON.escape(penalty.loadId)),
-            ("description", DriveJSON.escape(penalty.description)),
+            ("loadId", BackupJSON.escape(penalty.loadId)),
+            ("description", BackupJSON.escape(penalty.description)),
             ("amount", String(penalty.amountCents)),
         ])
     }
 
-    private static func encodePaycheck(_ paycheck: DrivePaycheck) -> String {
+    private static func encodePaycheck(_ paycheck: BackupPaycheck) -> String {
         var fields: [(String, String)] = [
             ("id", String(paycheck.id)),
             ("weekNumber", String(paycheck.weekNumber)),
             ("year", String(paycheck.year)),
-            ("weekLabel", DriveJSON.escape(paycheck.weekLabel)),
-            ("weekStartDate", DriveJSON.escape(paycheck.weekStartDate)),
-            ("weekEndDate", DriveJSON.escape(paycheck.weekEndDate)),
+            ("weekLabel", BackupJSON.escape(paycheck.weekLabel)),
+            ("weekStartDate", BackupJSON.escape(paycheck.weekStartDate)),
+            ("weekEndDate", BackupJSON.escape(paycheck.weekEndDate)),
         ]
-        if let driverName = paycheck.driverName { fields.append(("driverName", DriveJSON.escape(driverName))) }
+        if let driverName = paycheck.driverName { fields.append(("driverName", BackupJSON.escape(driverName))) }
         if let gross = paycheck.grossAmountCents { fields.append(("grossAmount", boxedCents(gross))) }
         fields.append(("netAmount", String(paycheck.netAmountCents)))
-        fields.append(("rawExtractedText", DriveJSON.escape(paycheck.rawExtractedText)))
+        fields.append(("rawExtractedText", BackupJSON.escape(paycheck.rawExtractedText)))
         if let sourceFileName = paycheck.sourceFileName {
-            fields.append(("sourceFileName", DriveJSON.escape(sourceFileName)))
+            fields.append(("sourceFileName", BackupJSON.escape(sourceFileName)))
         }
         fields.append(("addedAt", String(paycheck.addedAt)))
         if let sourceFilePath = paycheck.sourceFilePath {
-            fields.append(("sourceFilePath", DriveJSON.escape(sourceFilePath)))
+            fields.append(("sourceFilePath", BackupJSON.escape(sourceFilePath)))
         }
         return object(fields)
     }
 
-    private static func encodeDiesel(_ fill: DriveDiesel) -> String {
+    private static func encodeDiesel(_ fill: BackupDiesel) -> String {
         var fields: [(String, String)] = [
             ("id", String(fill.id)),
             ("weekNumber", String(fill.weekNumber)),
             ("year", String(fill.year)),
-            ("weekLabel", DriveJSON.escape(fill.weekLabel)),
-            ("weekStartDate", DriveJSON.escape(fill.weekStartDate)),
-            ("weekEndDate", DriveJSON.escape(fill.weekEndDate)),
+            ("weekLabel", BackupJSON.escape(fill.weekLabel)),
+            ("weekStartDate", BackupJSON.escape(fill.weekStartDate)),
+            ("weekEndDate", BackupJSON.escape(fill.weekEndDate)),
             ("totalAmount", String(fill.totalAmountCents)),
         ]
-        if let gallons = fill.gallons { fields.append(("gallons", DriveJSON.renderDouble(gallons))) }
+        if let gallons = fill.gallons { fields.append(("gallons", BackupJSON.renderDouble(gallons))) }
         if let price = fill.pricePerGallonThousandths { fields.append(("pricePerGallon", boxedThousandths(price))) }
         if let discount = fill.discountPricePerGallonThousandths {
             fields.append(("discountPricePerGallon", boxedThousandths(discount)))
         }
-        if let location = fill.location { fields.append(("location", DriveJSON.escape(location))) }
-        fields.append(("rawExtractedText", DriveJSON.escape(fill.rawExtractedText)))
+        if let location = fill.location { fields.append(("location", BackupJSON.escape(location))) }
+        fields.append(("rawExtractedText", BackupJSON.escape(fill.rawExtractedText)))
         if let sourceFileName = fill.sourceFileName {
-            fields.append(("sourceFileName", DriveJSON.escape(sourceFileName)))
+            fields.append(("sourceFileName", BackupJSON.escape(sourceFileName)))
         }
         fields.append(("addedAt", String(fill.addedAt)))
         return object(fields)
     }
 
-    private static func encodeTask(_ task: DriveMaintenanceTask) -> String {
+    private static func encodeTask(_ task: BackupMaintenanceTask) -> String {
         var fields: [(String, String)] = [
             ("id", String(task.id)),
-            ("title", DriveJSON.escape(task.title)),
-            ("startDate", DriveJSON.escape(task.startDate)),
-            ("reminderType", DriveJSON.escape(task.reminderType)),
+            ("title", BackupJSON.escape(task.title)),
+            ("startDate", BackupJSON.escape(task.startDate)),
+            ("reminderType", BackupJSON.escape(task.reminderType)),
         ]
         if let intervalMiles = task.intervalMiles {
-            fields.append(("intervalMiles", DriveJSON.renderDouble(intervalMiles)))
+            fields.append(("intervalMiles", BackupJSON.renderDouble(intervalMiles)))
         }
         if let odometer = task.odometerAtStart {
-            fields.append(("odometerAtStart", DriveJSON.renderDouble(odometer)))
+            fields.append(("odometerAtStart", BackupJSON.renderDouble(odometer)))
         }
-        if let dueDate = task.dueDate { fields.append(("dueDate", DriveJSON.escape(dueDate))) }
+        if let dueDate = task.dueDate { fields.append(("dueDate", BackupJSON.escape(dueDate))) }
         fields.append(("isCompleted", bool(task.isCompleted)))
         if let completedAt = task.completedAt { fields.append(("completedAt", String(completedAt))) }
         if let notifiedAt = task.notifiedAt { fields.append(("notifiedAt", String(notifiedAt))) }
@@ -746,21 +758,21 @@ public enum DriveBackupCodec {
         return object(fields)
     }
 
-    private static func encodeArchive(_ entry: DriveMaintenanceArchive) -> String {
+    private static func encodeArchive(_ entry: BackupMaintenanceArchive) -> String {
         var fields: [(String, String)] = [
             ("id", String(entry.id)),
-            ("serviceName", DriveJSON.escape(entry.serviceName)),
-            ("serviceDate", DriveJSON.escape(entry.serviceDate)),
-            ("description", DriveJSON.escape(entry.description)),
-            ("amount", DriveJSON.renderDouble(entry.amount)),
+            ("serviceName", BackupJSON.escape(entry.serviceName)),
+            ("serviceDate", BackupJSON.escape(entry.serviceDate)),
+            ("description", BackupJSON.escape(entry.description)),
+            ("amount", BackupJSON.renderDouble(entry.amount)),
         ]
-        if let photoPath = entry.photoPath { fields.append(("photoPath", DriveJSON.escape(photoPath))) }
-        if let ocrText = entry.ocrText { fields.append(("ocrText", DriveJSON.escape(ocrText))) }
+        if let photoPath = entry.photoPath { fields.append(("photoPath", BackupJSON.escape(photoPath))) }
+        if let ocrText = entry.ocrText { fields.append(("ocrText", BackupJSON.escape(ocrText))) }
         fields.append(("createdAt", String(entry.createdAt)))
         return object(fields)
     }
 
-    private static func encodeSettings(_ settings: DriveAppSettings) -> String {
+    private static func encodeSettings(_ settings: BackupAppSettings) -> String {
         var fields: [(String, String)] = []
         func intField(_ key: String, _ value: Int?) {
             if let value { fields.append((key, String(value))) }
@@ -769,7 +781,7 @@ public enum DriveBackupCodec {
             if let value { fields.append((key, bool(value))) }
         }
         func doubleField(_ key: String, _ value: Double?) {
-            if let value { fields.append((key, DriveJSON.renderDouble(value))) }
+            if let value { fields.append((key, BackupJSON.renderDouble(value))) }
         }
         intField("themeModeOrdinal", settings.themeModeOrdinal)
         intField("languageOrdinal", settings.languageOrdinal)
@@ -784,7 +796,7 @@ public enum DriveBackupCodec {
         boolField("notifyMissingWeek", settings.notifyMissingWeek)
         boolField("notifyMaintenance", settings.notifyMaintenance)
         if let lastEquipmentType = settings.lastEquipmentType {
-            fields.append(("lastEquipmentType", DriveJSON.escape(lastEquipmentType)))
+            fields.append(("lastEquipmentType", BackupJSON.escape(lastEquipmentType)))
         }
         doubleField("weeklyProfitGoal", settings.weeklyProfitGoal)
         doubleField("rpmMinProfit", settings.rpmMinProfit)
@@ -809,7 +821,7 @@ public enum DriveBackupCodec {
         var out = "{"
         for (index, field) in fields.enumerated() {
             if index > 0 { out += "," }
-            out += DriveJSON.escape(field.0)
+            out += BackupJSON.escape(field.0)
             out += ":"
             out += field.1
         }
@@ -825,18 +837,18 @@ public enum DriveBackupCodec {
 
     private static func array<T>(_ value: Any?, encode: (Any) throws -> T) throws -> [T] {
         if value == nil || value is NSNull { return [] }
-        guard let items = value as? [Any] else { throw DriveBackupDecodeError.corrupted }
+        guard let items = value as? [Any] else { throw BackupDecodeError.corrupted }
         return try items.map(encode)
     }
 
     private static func dictionary(_ value: Any) throws -> [String: Any] {
-        guard let dictionary = value as? [String: Any] else { throw DriveBackupDecodeError.corrupted }
+        guard let dictionary = value as? [String: Any] else { throw BackupDecodeError.corrupted }
         return dictionary
     }
 
-    private static func load(_ value: Any) throws -> DriveLoad {
+    private static func load(_ value: Any) throws -> BackupLoad {
         let row = try dictionary(value)
-        return DriveLoad(
+        return BackupLoad(
             id: string(row["id"]) ?? "",
             tripId: string(row["tripId"]) ?? "",
             date: string(row["date"]) ?? "",
@@ -871,9 +883,9 @@ public enum DriveBackupCodec {
         )
     }
 
-    private static func stop(_ value: Any) throws -> DriveStop {
+    private static func stop(_ value: Any) throws -> BackupStop {
         let row = try dictionary(value)
-        return DriveStop(
+        return BackupStop(
             id: int(row["id"]) ?? 0,
             loadId: string(row["loadId"]) ?? "",
             stopNumber: int(row["stopNumber"]) ?? 0,
@@ -890,9 +902,9 @@ public enum DriveBackupCodec {
         )
     }
 
-    private static func penalty(_ value: Any) throws -> DrivePenalty {
+    private static func penalty(_ value: Any) throws -> BackupPenalty {
         let row = try dictionary(value)
-        return DrivePenalty(
+        return BackupPenalty(
             id: int(row["id"]) ?? 0,
             loadId: string(row["loadId"]) ?? "",
             description: string(row["description"]) ?? "",
@@ -900,9 +912,9 @@ public enum DriveBackupCodec {
         )
     }
 
-    private static func paycheck(_ value: Any) throws -> DrivePaycheck {
+    private static func paycheck(_ value: Any) throws -> BackupPaycheck {
         let row = try dictionary(value)
-        return DrivePaycheck(
+        return BackupPaycheck(
             id: int(row["id"]) ?? 0,
             weekNumber: int(row["weekNumber"]) ?? 0,
             year: int(row["year"]) ?? 0,
@@ -919,9 +931,9 @@ public enum DriveBackupCodec {
         )
     }
 
-    private static func diesel(_ value: Any) throws -> DriveDiesel {
+    private static func diesel(_ value: Any) throws -> BackupDiesel {
         let row = try dictionary(value)
-        return DriveDiesel(
+        return BackupDiesel(
             id: int(row["id"]) ?? 0,
             weekNumber: int(row["weekNumber"]) ?? 0,
             year: int(row["year"]) ?? 0,
@@ -939,9 +951,9 @@ public enum DriveBackupCodec {
         )
     }
 
-    private static func task(_ value: Any) throws -> DriveMaintenanceTask {
+    private static func task(_ value: Any) throws -> BackupMaintenanceTask {
         let row = try dictionary(value)
-        return DriveMaintenanceTask(
+        return BackupMaintenanceTask(
             id: int64(row["id"]) ?? 0,
             title: string(row["title"]) ?? "",
             startDate: string(row["startDate"]) ?? "",
@@ -957,9 +969,9 @@ public enum DriveBackupCodec {
         )
     }
 
-    private static func archive(_ value: Any) throws -> DriveMaintenanceArchive {
+    private static func archive(_ value: Any) throws -> BackupMaintenanceArchive {
         let row = try dictionary(value)
-        return DriveMaintenanceArchive(
+        return BackupMaintenanceArchive(
             id: int64(row["id"]) ?? 0,
             serviceName: string(row["serviceName"]) ?? "",
             serviceDate: string(row["serviceDate"]) ?? "",
@@ -971,9 +983,9 @@ public enum DriveBackupCodec {
         )
     }
 
-    private static func settings(_ value: Any) -> DriveAppSettings? {
+    private static func settings(_ value: Any) -> BackupAppSettings? {
         guard let row = value as? [String: Any] else { return nil }
-        return DriveAppSettings(
+        return BackupAppSettings(
             themeModeOrdinal: int(row["themeModeOrdinal"]),
             languageOrdinal: int(row["languageOrdinal"]),
             reduceMotion: boolValue(row["reduceMotion"]),
@@ -1036,5 +1048,42 @@ public enum DriveBackupCodec {
         if value == nil || value is NSNull { return nil }
         if let number = value as? NSNumber { return number.boolValue }
         return nil
+    }
+}
+
+enum BackupJSON {
+    static func stripBOM(_ text: String) -> String {
+        text.hasPrefix("\u{FEFF}") ? String(text.dropFirst()) : text
+    }
+
+    static func escape(_ raw: String) -> String {
+        var out = "\""
+        for scalar in raw.unicodeScalars {
+            switch scalar {
+            case "\\": out += "\\\\"
+            case "\"": out += "\\\""
+            case "\n": out += "\\n"
+            case "\r": out += "\\r"
+            case "\t": out += "\\t"
+            case "\u{0008}": out += "\\b"
+            case "\u{000C}": out += "\\f"
+            default:
+                if scalar.value < 0x20 {
+                    out += String(format: "\\u%04x", scalar.value)
+                } else {
+                    out.unicodeScalars.append(scalar)
+                }
+            }
+        }
+        out += "\""
+        return out
+    }
+
+    /// Java `Double.toString` for the finite values a backup actually stores.
+    static func renderDouble(_ value: Double) -> String {
+        guard value.isFinite else { return "0.0" }
+        let text = String(value)
+        if text.contains(".") || text.contains("e") || text.contains("E") { return text }
+        return text + ".0"
     }
 }

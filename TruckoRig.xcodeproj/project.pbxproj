@@ -12,12 +12,8 @@
 		EBF90D2D9284729C26F6619A /* RootView.swift */ = {isa = PBXBuildFile; fileRef = CFB51C6271E4645F7DB9D6D1 /* RootView.swift */; };
 		CAA4B3CE3C304ACBFEC5F216 /* TruckoRigApp.swift */ = {isa = PBXBuildFile; fileRef = 2E4E5C1D387990139022C762 /* TruckoRigApp.swift */; };
 		02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */ = {isa = PBXBuildFile; fileRef = A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */; };
-		FD9F81E5D5763FEEE3A5F383 /* DriveBackground.swift */ = {isa = PBXBuildFile; fileRef = 9AACFAA3CDDE266C2C0149E0 /* DriveBackground.swift */; };
-		7983E91DFA17D662FA4357B8 /* DriveCoordinator.swift */ = {isa = PBXBuildFile; fileRef = 98258AA396E2FC0B13531BB9 /* DriveCoordinator.swift */; };
-		8E57CD692CCDAB1D26050228 /* DriveIdentity.swift */ = {isa = PBXBuildFile; fileRef = B225602993F712F52973DDAB /* DriveIdentity.swift */; };
-		5081040667F9B1D4DB09FF2F /* DriveJournalMapper.swift */ = {isa = PBXBuildFile; fileRef = D49A7A19ED762BA1E9A3717E /* DriveJournalMapper.swift */; };
-		46B4B179B5F386C9D1F9DC9C /* DrivePrefs.swift */ = {isa = PBXBuildFile; fileRef = FE96AE4A716CEE318BC36D4C /* DrivePrefs.swift */; };
-		2696561214A7671521042816 /* DriveSession.swift */ = {isa = PBXBuildFile; fileRef = A0FF3B1DE6827877DBE33296 /* DriveSession.swift */; };
+		5A9BCDF30C20AD26B24C47F4 /* BackupIdentity.swift */ = {isa = PBXBuildFile; fileRef = E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */; };
+		8B5A088FC7272F60C4AE8CC9 /* BackupJournalMapper.swift */ = {isa = PBXBuildFile; fileRef = 4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */; };
 		C78C50B770CA1364F83346A7 /* PhotoGeotag.swift */ = {isa = PBXBuildFile; fileRef = BA43F40BD4128397C998180D /* PhotoGeotag.swift */; };
 		AEEC91520189FE6F0DD49FEA /* PhotoImageWriter.swift */ = {isa = PBXBuildFile; fileRef = 50F6DD627F0878086019F5D8 /* PhotoImageWriter.swift */; };
 		6775E55DDA8AA0C55EA89B78 /* ScanPDFWriter.swift */ = {isa = PBXBuildFile; fileRef = 5F1B83CDEAB0E4DC52F1C802 /* ScanPDFWriter.swift */; };
@@ -73,6 +69,11 @@
 		40721081B2854BE9A2DB0B99 /* LocationProvider.swift */ = {isa = PBXBuildFile; fileRef = 96504B9424D3E602FA85310E /* LocationProvider.swift */; };
 		B3DEF67D94C5A632591B98CD /* OCRService.swift */ = {isa = PBXBuildFile; fileRef = E2B035AF781CC96577EF33A1 /* OCRService.swift */; };
 		553B8278C13DBCED044A9B21 /* StringUtils.swift */ = {isa = PBXBuildFile; fileRef = C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */; };
+		4E35DF5735EA9DB8D6C09EC1 /* BackupAccount.swift */ = {isa = PBXBuildFile; fileRef = 085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */; };
+		FE9FBDC58450BA99FCAFCAA2 /* BackupData.swift */ = {isa = PBXBuildFile; fileRef = 92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */; };
+		306760269278F232415BDE90 /* BackupRestoreParser.swift */ = {isa = PBXBuildFile; fileRef = 0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */; };
+		B7F6B8FBA41296AAF6C6F7A9 /* BackupSchedule.swift */ = {isa = PBXBuildFile; fileRef = 9EC8965324449551C656D14D /* BackupSchedule.swift */; };
+		98B6530A722C47BDDAE9841A /* BackupSyncPolicy.swift */ = {isa = PBXBuildFile; fileRef = C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */; };
 		CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */ = {isa = PBXBuildFile; fileRef = 2875D2376898F097057DD656 /* AnalyticsCalculator.swift */; };
 		A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */ = {isa = PBXBuildFile; fileRef = 9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */; };
 		B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */ = {isa = PBXBuildFile; fileRef = 6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */; };
@@ -88,12 +89,6 @@
 		B393EDEC5905B2E08B2F28BC /* DieselPurchaseMath.swift */ = {isa = PBXBuildFile; fileRef = E13FD3B31D49AC499F3B47EB /* DieselPurchaseMath.swift */; };
 		81D255887DCC08E836DD3A70 /* DieselReceiptExtractor.swift */ = {isa = PBXBuildFile; fileRef = 2ABBDBA24009D3651D78A5A3 /* DieselReceiptExtractor.swift */; };
 		9F956CC21B448984C4D9A8A5 /* DieselTextParser.swift */ = {isa = PBXBuildFile; fileRef = 44394B990D387738A91B47BE /* DieselTextParser.swift */; };
-		D7B339B457E1564CED3A7924 /* DriveAccount.swift */ = {isa = PBXBuildFile; fileRef = 6F89593226AE64280CB7067E /* DriveAccount.swift */; };
-		FC4F0D9EB716A9168C572DBD /* DriveBackup.swift */ = {isa = PBXBuildFile; fileRef = 6E48F3F280A88A1EB1B09669 /* DriveBackup.swift */; };
-		99C3205A2B9E6FC29F4136AD /* DriveConnect.swift */ = {isa = PBXBuildFile; fileRef = BB2157F7E3C6FDF05808EF2F /* DriveConnect.swift */; };
-		95EA723AF4167BB16DCEE12C /* DriveHTTP.swift */ = {isa = PBXBuildFile; fileRef = A7442C28390AD52DD098825B /* DriveHTTP.swift */; };
-		FA8369F066AADC202241B169 /* DriveSchedule.swift */ = {isa = PBXBuildFile; fileRef = 85343898904D6C9BB8E7149F /* DriveSchedule.swift */; };
-		90D11E9441E87FCFAD1C4C83 /* DriveSyncPolicy.swift */ = {isa = PBXBuildFile; fileRef = 692ED014AC1D1960588D2314 /* DriveSyncPolicy.swift */; };
 		68D67CA07FB9A92E02357C20 /* MiscExpenseFields.swift */ = {isa = PBXBuildFile; fileRef = 8BEF209E6DCD4B75692C8158 /* MiscExpenseFields.swift */; };
 		4B0DEE4348EC5F09CFBA602D /* ImprovementFeedbackMail.swift */ = {isa = PBXBuildFile; fileRef = 84757FB26B847439A0169DE1 /* ImprovementFeedbackMail.swift */; };
 		82D6344895F51FD4C3B77CFA /* MaintenanceDrafts.swift */ = {isa = PBXBuildFile; fileRef = 39E5094B7BFEEC47FAD0FD11 /* MaintenanceDrafts.swift */; };
@@ -185,7 +180,6 @@
 		A6BA626E0C65B68CD84F2610 /* PrivacyView.swift */ = {isa = PBXBuildFile; fileRef = 8B4F45F160AE48F03A3BF4B8 /* PrivacyView.swift */; };
 		F8DE66E3C688B334B7EBDE76 /* ProfileView.swift */ = {isa = PBXBuildFile; fileRef = 42D25AE24CEB99D7943D1DDF /* ProfileView.swift */; };
 		0E6682067DBA3801417D8711 /* ScannerView.swift */ = {isa = PBXBuildFile; fileRef = C6D31BCFC3156C00E82B3F68 /* ScannerView.swift */; };
-		654DC874F79B4F172523E39B /* DriveBackupSection.swift */ = {isa = PBXBuildFile; fileRef = 97BD9C7868DADDC940032083 /* DriveBackupSection.swift */; };
 		C1AFBE27692193C5FEF14A69 /* SettingsView.swift */ = {isa = PBXBuildFile; fileRef = B569DDAA030C4217F07077AF /* SettingsView.swift */; };
 		4CDF01DE94B9F44F70777678 /* TelegramSettingsSection.swift */ = {isa = PBXBuildFile; fileRef = 82764F490E37BC1688993580 /* TelegramSettingsSection.swift */; };
 		8B4ED60A785176648990FAB6 /* TaxTrackerView.swift */ = {isa = PBXBuildFile; fileRef = EEC971AF7240CF20B136736B /* TaxTrackerView.swift */; };
@@ -232,7 +226,7 @@
 		0F55C0FB98E7C4263CEBD28C /* Roboto-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 1FD1CD9C069F3DB1C83340F4 /* Roboto-Bold.ttf */; };
 		48058AA0391FBA5D903BEDBE /* Roboto-Medium.ttf */ = {isa = PBXBuildFile; fileRef = D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */; };
 		C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
-		EFA8982952F3E770254384B5 /* DriveRestoreTests.swift */ = {isa = PBXBuildFile; fileRef = EB4050B0531CB944C1EEFDE9 /* DriveRestoreTests.swift */; };
+		330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */ = {isa = PBXBuildFile; fileRef = 366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */; };
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
 		1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */ = {isa = PBXBuildFile; fileRef = 95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */; };
 		A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */ = {isa = PBXBuildFile; fileRef = CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */; };
@@ -243,7 +237,6 @@
 		8C92BA158F040C1659892D89 /* WidgetLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */; };
 		B0CBF53E11D3FEA8B2A90041 /* AddLoadNotesUITests.swift */ = {isa = PBXBuildFile; fileRef = 47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */; };
 		109E7A66906193EF84584997 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 1B12FA89457B475550D08A7A /* GRDB */; };
-		02EA9075F77D717628BCC520 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C46C885EC8E7B841ADD4A002 /* GoogleSignIn */; };
 		15526688769DC7F70FA1BACC /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = C282B09B29FB0A5E9CF3F42D /* GoogleMaps */; };
 		ADD14D21F915C76FF9FEE31E /* TruckoRigWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -293,12 +286,8 @@
 		CFB51C6271E4645F7DB9D6D1 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
 		2E4E5C1D387990139022C762 /* TruckoRigApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckoRigApp.swift"; sourceTree = "<group>"; };
 		A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestLaunch.swift"; sourceTree = "<group>"; };
-		9AACFAA3CDDE266C2C0149E0 /* DriveBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveBackground.swift"; sourceTree = "<group>"; };
-		98258AA396E2FC0B13531BB9 /* DriveCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveCoordinator.swift"; sourceTree = "<group>"; };
-		B225602993F712F52973DDAB /* DriveIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveIdentity.swift"; sourceTree = "<group>"; };
-		D49A7A19ED762BA1E9A3717E /* DriveJournalMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveJournalMapper.swift"; sourceTree = "<group>"; };
-		FE96AE4A716CEE318BC36D4C /* DrivePrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DrivePrefs.swift"; sourceTree = "<group>"; };
-		A0FF3B1DE6827877DBE33296 /* DriveSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveSession.swift"; sourceTree = "<group>"; };
+		E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupIdentity.swift"; sourceTree = "<group>"; };
+		4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupJournalMapper.swift"; sourceTree = "<group>"; };
 		BA43F40BD4128397C998180D /* PhotoGeotag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoGeotag.swift"; sourceTree = "<group>"; };
 		50F6DD627F0878086019F5D8 /* PhotoImageWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoImageWriter.swift"; sourceTree = "<group>"; };
 		5F1B83CDEAB0E4DC52F1C802 /* ScanPDFWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScanPDFWriter.swift"; sourceTree = "<group>"; };
@@ -354,6 +343,11 @@
 		96504B9424D3E602FA85310E /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationProvider.swift"; sourceTree = "<group>"; };
 		E2B035AF781CC96577EF33A1 /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRService.swift"; sourceTree = "<group>"; };
 		C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringUtils.swift"; sourceTree = "<group>"; };
+		085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupAccount.swift"; sourceTree = "<group>"; };
+		92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupData.swift"; sourceTree = "<group>"; };
+		0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreParser.swift"; sourceTree = "<group>"; };
+		9EC8965324449551C656D14D /* BackupSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupSchedule.swift"; sourceTree = "<group>"; };
+		C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupSyncPolicy.swift"; sourceTree = "<group>"; };
 		2875D2376898F097057DD656 /* AnalyticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCalculator.swift"; sourceTree = "<group>"; };
 		9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoalMoneyMath.swift"; sourceTree = "<group>"; };
 		6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadYieldCalculator.swift"; sourceTree = "<group>"; };
@@ -369,12 +363,6 @@
 		E13FD3B31D49AC499F3B47EB /* DieselPurchaseMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DieselPurchaseMath.swift"; sourceTree = "<group>"; };
 		2ABBDBA24009D3651D78A5A3 /* DieselReceiptExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DieselReceiptExtractor.swift"; sourceTree = "<group>"; };
 		44394B990D387738A91B47BE /* DieselTextParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DieselTextParser.swift"; sourceTree = "<group>"; };
-		6F89593226AE64280CB7067E /* DriveAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveAccount.swift"; sourceTree = "<group>"; };
-		6E48F3F280A88A1EB1B09669 /* DriveBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveBackup.swift"; sourceTree = "<group>"; };
-		BB2157F7E3C6FDF05808EF2F /* DriveConnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveConnect.swift"; sourceTree = "<group>"; };
-		A7442C28390AD52DD098825B /* DriveHTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveHTTP.swift"; sourceTree = "<group>"; };
-		85343898904D6C9BB8E7149F /* DriveSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveSchedule.swift"; sourceTree = "<group>"; };
-		692ED014AC1D1960588D2314 /* DriveSyncPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveSyncPolicy.swift"; sourceTree = "<group>"; };
 		8BEF209E6DCD4B75692C8158 /* MiscExpenseFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MiscExpenseFields.swift"; sourceTree = "<group>"; };
 		84757FB26B847439A0169DE1 /* ImprovementFeedbackMail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImprovementFeedbackMail.swift"; sourceTree = "<group>"; };
 		39E5094B7BFEEC47FAD0FD11 /* MaintenanceDrafts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceDrafts.swift"; sourceTree = "<group>"; };
@@ -466,7 +454,6 @@
 		8B4F45F160AE48F03A3BF4B8 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PrivacyView.swift"; sourceTree = "<group>"; };
 		42D25AE24CEB99D7943D1DDF /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileView.swift"; sourceTree = "<group>"; };
 		C6D31BCFC3156C00E82B3F68 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScannerView.swift"; sourceTree = "<group>"; };
-		97BD9C7868DADDC940032083 /* DriveBackupSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveBackupSection.swift"; sourceTree = "<group>"; };
 		B569DDAA030C4217F07077AF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsView.swift"; sourceTree = "<group>"; };
 		82764F490E37BC1688993580 /* TelegramSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramSettingsSection.swift"; sourceTree = "<group>"; };
 		EEC971AF7240CF20B136736B /* TaxTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxTrackerView.swift"; sourceTree = "<group>"; };
@@ -498,7 +485,7 @@
 		78E4700C12FAFE14A48EA814 /* SoftButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftButton.swift"; sourceTree = "<group>"; };
 		9A0E18B200B7FA69FB005B28 /* SoftCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftCard.swift"; sourceTree = "<group>"; };
 		E9A91E3DC8256945501586BD /* SoftTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftTextField.swift"; sourceTree = "<group>"; };
-		EB4050B0531CB944C1EEFDE9 /* DriveRestoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveRestoreTests.swift"; sourceTree = "<group>"; };
+		366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreTests.swift"; sourceTree = "<group>"; };
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
 		95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidanceTests.swift"; sourceTree = "<group>"; };
 		CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaRecordTests.swift"; sourceTree = "<group>"; };
@@ -524,7 +511,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				109E7A66906193EF84584997 /* GRDB in Frameworks */,
-				02EA9075F77D717628BCC520 /* GoogleSignIn in Frameworks */,
 				15526688769DC7F70FA1BACC /* GoogleMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -612,7 +598,7 @@
 		090D21624E822B14A78C3788 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				0BC5940027FD679AAAEA2BB2 /* Drive */,
+				711DCD7B1C389CA57D3C1A1F /* Backup */,
 				7B46438A6EE8560A29A047FC /* Media */,
 				FEFCE8C6556E50EF09698C6E /* Models */,
 				7286F81711A383D0B6A2BF46 /* Notifications */,
@@ -625,17 +611,13 @@
 			path = "Core";
 			sourceTree = "<group>";
 		};
-		0BC5940027FD679AAAEA2BB2 /* Drive */ = {
+		711DCD7B1C389CA57D3C1A1F /* Backup */ = {
 			isa = PBXGroup;
 			children = (
-				9AACFAA3CDDE266C2C0149E0 /* DriveBackground.swift */,
-				98258AA396E2FC0B13531BB9 /* DriveCoordinator.swift */,
-				B225602993F712F52973DDAB /* DriveIdentity.swift */,
-				D49A7A19ED762BA1E9A3717E /* DriveJournalMapper.swift */,
-				FE96AE4A716CEE318BC36D4C /* DrivePrefs.swift */,
-				A0FF3B1DE6827877DBE33296 /* DriveSession.swift */,
+				E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */,
+				4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */,
 			);
-			path = "Drive";
+			path = "Backup";
 			sourceTree = "<group>";
 		};
 		7B46438A6EE8560A29A047FC /* Media */ = {
@@ -752,10 +734,10 @@
 		EF78672B34351ACBBFA8B0A6 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				914EADC02F521124468E615B /* Backup */,
 				86339DB7995642FDF6BCE161 /* Calculators */,
 				28213617981289BC4EE70056 /* DeepLink */,
 				2F79C3EE4EE7143A74089728 /* Diesel */,
-				E500EE97F289610851037498 /* Drive */,
 				DBC52C42B8550EB07DE15BA5 /* Expense */,
 				96E2746B684190E31FCE6574 /* Feedback */,
 				7BADDB4AA54C07708ADE5D05 /* Maintenance */,
@@ -772,6 +754,18 @@
 				B1F5FEDB0865207E1E84621B /* Telegram */,
 			);
 			path = "Domain";
+			sourceTree = "<group>";
+		};
+		914EADC02F521124468E615B /* Backup */ = {
+			isa = PBXGroup;
+			children = (
+				085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */,
+				92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */,
+				0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */,
+				9EC8965324449551C656D14D /* BackupSchedule.swift */,
+				C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */,
+			);
+			path = "Backup";
 			sourceTree = "<group>";
 		};
 		86339DB7995642FDF6BCE161 /* Calculators */ = {
@@ -808,19 +802,6 @@
 				44394B990D387738A91B47BE /* DieselTextParser.swift */,
 			);
 			path = "Diesel";
-			sourceTree = "<group>";
-		};
-		E500EE97F289610851037498 /* Drive */ = {
-			isa = PBXGroup;
-			children = (
-				6F89593226AE64280CB7067E /* DriveAccount.swift */,
-				6E48F3F280A88A1EB1B09669 /* DriveBackup.swift */,
-				BB2157F7E3C6FDF05808EF2F /* DriveConnect.swift */,
-				A7442C28390AD52DD098825B /* DriveHTTP.swift */,
-				85343898904D6C9BB8E7149F /* DriveSchedule.swift */,
-				692ED014AC1D1960588D2314 /* DriveSyncPolicy.swift */,
-			);
-			path = "Drive";
 			sourceTree = "<group>";
 		};
 		DBC52C42B8550EB07DE15BA5 /* Expense */ = {
@@ -1178,7 +1159,6 @@
 		6BDE0CF79E8A192A3E6B8639 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				97BD9C7868DADDC940032083 /* DriveBackupSection.swift */,
 				B569DDAA030C4217F07077AF /* SettingsView.swift */,
 				82764F490E37BC1688993580 /* TelegramSettingsSection.swift */,
 			);
@@ -1276,7 +1256,7 @@
 		D699D40C0DE22C80CB771F02 /* TruckoRigTests */ = {
 			isa = PBXGroup;
 			children = (
-				EB4050B0531CB944C1EEFDE9 /* DriveRestoreTests.swift */,
+				366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */,
 				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
 				95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */,
 				CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */,
@@ -1328,7 +1308,6 @@
 			name = TruckoRig;
 			packageProductDependencies = (
 				1B12FA89457B475550D08A7A /* GRDB */,
-				C46C885EC8E7B841ADD4A002 /* GoogleSignIn */,
 				C282B09B29FB0A5E9CF3F42D /* GoogleMaps */,
 			);
 			productName = TruckoRig;
@@ -1425,7 +1404,6 @@
 			mainGroup = CC5D242D023A9271190EA7C6;
 			packageReferences = (
 				9BB06B0C1407CCB03A073C2A /* XCRemoteSwiftPackageReference "GRDB.swift" */,
-				C105F06F19AB1C9BFDBE38E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				DE132C8D81EA110251B64495 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
 			);
 			productRefGroup = AE7805B56D1DCAFAA071416F /* Products */;
@@ -1498,12 +1476,8 @@
 				EBF90D2D9284729C26F6619A /* RootView.swift */,
 				CAA4B3CE3C304ACBFEC5F216 /* TruckoRigApp.swift */,
 				02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */,
-				FD9F81E5D5763FEEE3A5F383 /* DriveBackground.swift */,
-				7983E91DFA17D662FA4357B8 /* DriveCoordinator.swift */,
-				8E57CD692CCDAB1D26050228 /* DriveIdentity.swift */,
-				5081040667F9B1D4DB09FF2F /* DriveJournalMapper.swift */,
-				46B4B179B5F386C9D1F9DC9C /* DrivePrefs.swift */,
-				2696561214A7671521042816 /* DriveSession.swift */,
+				5A9BCDF30C20AD26B24C47F4 /* BackupIdentity.swift */,
+				8B5A088FC7272F60C4AE8CC9 /* BackupJournalMapper.swift */,
 				C78C50B770CA1364F83346A7 /* PhotoGeotag.swift */,
 				AEEC91520189FE6F0DD49FEA /* PhotoImageWriter.swift */,
 				6775E55DDA8AA0C55EA89B78 /* ScanPDFWriter.swift */,
@@ -1559,6 +1533,11 @@
 				40721081B2854BE9A2DB0B99 /* LocationProvider.swift */,
 				B3DEF67D94C5A632591B98CD /* OCRService.swift */,
 				553B8278C13DBCED044A9B21 /* StringUtils.swift */,
+				4E35DF5735EA9DB8D6C09EC1 /* BackupAccount.swift */,
+				FE9FBDC58450BA99FCAFCAA2 /* BackupData.swift */,
+				306760269278F232415BDE90 /* BackupRestoreParser.swift */,
+				B7F6B8FBA41296AAF6C6F7A9 /* BackupSchedule.swift */,
+				98B6530A722C47BDDAE9841A /* BackupSyncPolicy.swift */,
 				CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */,
 				A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */,
 				B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */,
@@ -1574,12 +1553,6 @@
 				B393EDEC5905B2E08B2F28BC /* DieselPurchaseMath.swift */,
 				81D255887DCC08E836DD3A70 /* DieselReceiptExtractor.swift */,
 				9F956CC21B448984C4D9A8A5 /* DieselTextParser.swift */,
-				D7B339B457E1564CED3A7924 /* DriveAccount.swift */,
-				FC4F0D9EB716A9168C572DBD /* DriveBackup.swift */,
-				99C3205A2B9E6FC29F4136AD /* DriveConnect.swift */,
-				95EA723AF4167BB16DCEE12C /* DriveHTTP.swift */,
-				FA8369F066AADC202241B169 /* DriveSchedule.swift */,
-				90D11E9441E87FCFAD1C4C83 /* DriveSyncPolicy.swift */,
 				68D67CA07FB9A92E02357C20 /* MiscExpenseFields.swift */,
 				4B0DEE4348EC5F09CFBA602D /* ImprovementFeedbackMail.swift */,
 				82D6344895F51FD4C3B77CFA /* MaintenanceDrafts.swift */,
@@ -1671,7 +1644,6 @@
 				A6BA626E0C65B68CD84F2610 /* PrivacyView.swift */,
 				F8DE66E3C688B334B7EBDE76 /* ProfileView.swift */,
 				0E6682067DBA3801417D8711 /* ScannerView.swift */,
-				654DC874F79B4F172523E39B /* DriveBackupSection.swift */,
 				C1AFBE27692193C5FEF14A69 /* SettingsView.swift */,
 				4CDF01DE94B9F44F70777678 /* TelegramSettingsSection.swift */,
 				8B4ED60A785176648990FAB6 /* TaxTrackerView.swift */,
@@ -1714,7 +1686,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EFA8982952F3E770254384B5 /* DriveRestoreTests.swift */,
+				330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */,
 				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
 				1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */,
 				A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */,
@@ -2013,14 +1985,6 @@
 				version = 7.11.1;
 			};
 		};
-		C105F06F19AB1C9BFDBE38E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
-			requirement = {
-				kind = exactVersion;
-				version = 8.0.0;
-			};
-		};
 		DE132C8D81EA110251B64495 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
@@ -2036,11 +2000,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9BB06B0C1407CCB03A073C2A /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
-		};
-		C46C885EC8E7B841ADD4A002 /* GoogleSignIn */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C105F06F19AB1C9BFDBE38E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
-			productName = GoogleSignIn;
 		};
 		C282B09B29FB0A5E9CF3F42D /* GoogleMaps */ = {
 			isa = XCSwiftPackageProductDependency;

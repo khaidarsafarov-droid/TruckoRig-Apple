@@ -1,8 +1,8 @@
 import XCTest
 @testable import TruckoRig
 
-/// Database round trip for the Android `.tlb` journal: ids, money, and orphan-photo pruning.
-final class DriveRestoreTests: XCTestCase {
+/// Database round trip for the Android v2 JSON journal: ids, money, and orphan-photo pruning.
+final class BackupRestoreTests: XCTestCase {
 
     func testExportImportKeepsAndroidIdsAndPrunesOnlyOrphanPhotos() throws {
         let database = try AppDatabase.ephemeral()
@@ -11,7 +11,7 @@ final class DriveRestoreTests: XCTestCase {
         settings.weekStart = .monday
         settings.language = .russian
         settings.weeklyGoal = 4500
-        let identity = DriveIdentityStore(defaults: defaults)
+        let identity = BackupIdentityStore(defaults: defaults)
         let mediaRoot = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let media = MediaStore(scope: .local, root: mediaRoot)
         defer { try? FileManager.default.removeItem(at: mediaRoot) }
@@ -99,11 +99,11 @@ final class DriveRestoreTests: XCTestCase {
         try database.save(archive)
 
         let exportedAt: Int64 = 1_721_570_000_000
-        let first = DriveJournalMapper.export(
+        let first = BackupJournalMapper.export(
             graph: try database.fetchGraph(),
             settings: settings,
             identity: identity,
-            accountId: DriveAccount.localDev,
+            accountId: BackupAccount.localDev,
             exportedAt: exportedAt
         )
         XCTAssertEqual(first.loads.count, 2)
@@ -116,14 +116,14 @@ final class DriveRestoreTests: XCTestCase {
         XCTAssertEqual(first.paychecks[0].grossAmountCents, 320_000)
         XCTAssertEqual(first.diesel[0].totalAmountCents, 54_025)
         XCTAssertEqual(first.diesel[0].pricePerGallonThousandths, 4_502)
-        XCTAssertFalse(DriveBackupCodec.encode(first).contains("telegram"))
-        XCTAssertFalse(DriveBackupCodec.encode(first).contains("photos"))
+        XCTAssertFalse(BackupDataCodec.encode(first).contains("telegram"))
+        XCTAssertFalse(BackupDataCodec.encode(first).contains("photos"))
 
         var remote = first
         remote.loads = [keptDrive]
-        let decoded = try DriveBackupCodec.decode(DriveBackupCodec.encode(remote))
-        let plan = DriveJournalMapper.importBackup(decoded, settings: settings, identity: identity)
-        let removed = try database.applyDriveJournal(plan)
+        let decoded = try BackupDataCodec.decode(BackupDataCodec.encode(remote))
+        let plan = BackupJournalMapper.importBackup(decoded, settings: settings, identity: identity)
+        let removed = try database.applyBackupJournal(plan)
         for photo in removed.photos {
             media.delete(fileName: photo.fileName, filePath: photo.filePath, kind: .photo)
         }
@@ -156,11 +156,11 @@ final class DriveRestoreTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: media.url(for: "dropped.jpg", kind: .photo).path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: media.url(for: "loose.jpg", kind: .photo).path))
 
-        let second = DriveJournalMapper.export(
+        let second = BackupJournalMapper.export(
             graph: try database.fetchGraph(),
             settings: settings,
             identity: identity,
-            accountId: DriveAccount.localDev,
+            accountId: BackupAccount.localDev,
             exportedAt: exportedAt
         )
         XCTAssertEqual(second.loads.map(\.id), [keptDrive.id])
@@ -178,16 +178,74 @@ final class DriveRestoreTests: XCTestCase {
         let database = try AppDatabase.ephemeral()
         let defaults = UserDefaults(suiteName: "drive-v1-\(UUID().uuidString)")!
         let settings = AppSettings(scope: .local, defaults: defaults)
-        let identity = DriveIdentityStore(defaults: defaults)
+        let identity = BackupIdentityStore(defaults: defaults)
         let task = MaintenanceTask(title: "Keep", startDate: "2026-01-01", reminderType: .date, createdAt: 1, updatedAt: 1)
         try database.save(task)
         let v1 = #"{"version":1,"accountId":"local_dev","loads":[{"id":"L-1","tripId":"T-1","date":"2026-07-21","totalRate":100}]}"#
-        let backup = try DriveBackupCodec.decode(v1)
-        let plan = DriveJournalMapper.importBackup(backup, settings: settings, identity: identity)
+        let backup = try BackupDataCodec.decode(v1)
+        let plan = BackupJournalMapper.importBackup(backup, settings: settings, identity: identity)
         XCTAssertFalse(plan.replaceMaintenance)
-        _ = try database.applyDriveJournal(plan)
+        _ = try database.applyBackupJournal(plan)
         let graph = try database.fetchGraph()
         XCTAssertEqual(graph.loads.map(\.tripId), ["T-1"])
         XCTAssertEqual(graph.maintenance.map(\.title), ["Keep"])
+    }
+
+    @MainActor
+    func testServiceRoundTripWarnsWhenLocalIsNewerAndAcceptsABom() throws {
+        let source = try AppDatabase.ephemeral()
+        let defaults = UserDefaults(suiteName: "backup-service-\(UUID().uuidString)")!
+        let settings = AppSettings(scope: .local, defaults: defaults)
+        let identity = BackupIdentityStore(defaults: defaults)
+        let exportedAt: Int64 = 1_700_000_000_000
+        let load = Load(
+            tripId: "T-FILE",
+            date: Date(timeIntervalSince1970: 1_700_000_000),
+            totalRate: 100,
+            totalMiles: 10,
+            updatedAt: Date(timeIntervalSince1970: 1_700_000_100)
+        )
+        try source.save(load)
+        let file = try BackupService.exportFile(
+            from: source,
+            settings: settings,
+            identity: identity,
+            exportedAt: exportedAt
+        )
+        XCTAssertTrue(file.fileName.hasPrefix("TruckoRig_Backup_"))
+        XCTAssertTrue(file.fileName.hasSuffix(".json"))
+        XCTAssertEqual(file.loadCount, 1)
+        XCTAssertTrue(
+            try BackupService.shouldWarnBeforeRestore(in: source, backupExportedAt: exportedAt)
+        )
+        XCTAssertFalse(
+            BackupService.shouldWarnBeforeRestore(localNewestMillis: exportedAt, backupExportedAt: exportedAt)
+        )
+
+        var bom = Data([0xEF, 0xBB, 0xBF])
+        bom.append(file.data)
+        let preview = try BackupService.preview(data: bom)
+        XCTAssertFalse(preview.unbound)
+        XCTAssertEqual(preview.exportedAt, exportedAt)
+
+        let destination = try AppDatabase.ephemeral()
+        let mediaRoot = FileManager.default.temporaryDirectory
+            .appendingPathComponent("backup-service-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: mediaRoot) }
+        let restored = try BackupService.restoreBackupJSON(
+            preview.json,
+            into: destination,
+            settings: settings,
+            identity: BackupIdentityStore(defaults: defaults),
+            media: MediaStore(scope: .local, root: mediaRoot),
+            allowUnboundAccount: false
+        )
+        XCTAssertEqual(restored.loads, 1)
+        XCTAssertEqual(try destination.fetchGraph().loads.map(\.tripId), ["T-FILE"])
+
+        let newer = Data(#"{"schemaVersion":99,"loads":[]}"#.utf8)
+        XCTAssertThrowsError(try BackupService.preview(data: newer)) { error in
+            XCTAssertEqual(error as? BackupService.Failure, .schemaTooNew(99))
+        }
     }
 }

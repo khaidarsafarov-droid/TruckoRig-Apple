@@ -3,7 +3,7 @@ import Foundation
 /// Journal rows → the fields the map aggregator is allowed to see.
 enum MapLoadAdapter {
     static func inputs(from loads: [Load]) -> [MapLoadInput] {
-        let extras = DriveIdentityStore.standard().load().loadExtras
+        let extras = BackupIdentityStore.standard().load().loadExtras
         return loads.map { load in
             let extra = extras[load.id.uuidString]
             return MapLoadInput(

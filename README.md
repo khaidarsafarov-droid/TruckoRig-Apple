@@ -38,10 +38,10 @@ open TruckoRig.xcodeproj
 swift test
 ```
 
-218 доменных тестов: парсинг реальных сообщений Relay, определение года по истории чата, недельные
+210 доменных тестов: парсинг реальных сообщений Relay, определение года по истории чата, недельные
 границы на стыке лет, статусы темпа, дедуп Trip ID, CSV round-trip, напоминание за три дня до конца
-бесплатного месяца, снапшот виджета, deep link `truckorig://`, Google Drive (формат `.tlb`,
-повторная загрузка, выбор файла, условия автокопии), Telegram Bot API (токен, long poll,
+бесплатного месяца, снапшот виджета, deep link `truckorig://`, файл бэкапа в формате Android v2
+(Gson, BOM, отказ от более новой схемы), Telegram Bot API (токен, long poll,
 привязка чата, команды, импорт экспорта, чеки) и карта (штаты отправления, рейтинг RPM,
 периоды, полигоны GeoJSON).
 
@@ -100,18 +100,15 @@ TruckoRigTests/   тесты шифрования и миграции (XCTest, �
 
 ## Бэкап
 
-В Settings: экспорт и импорт JSON. Формат тот же, что раньше уходил в облачный снапшот, поэтому
-старые файлы `.truckorig.json` по-прежнему открываются. Конфликты — last-write-wins по `updatedAt`.
+В Settings: «Создать файл бэкапа» и «Восстановить из файла». Файл — тот же JSON, что Android
+пишет вручную: `TruckoRig_Backup_yyyyMMdd_HHmmss.json`, схема 2 (грузы, зарплаты, дизель, ТО и
+настройки). Обмен через Files (`fileExporter` / `fileImporter`). Восстановление заменяет журнал.
+Если на телефоне есть правки новее `exportedAt` файла, приложение спрашивает ещё раз. Файл новее
+поддерживаемой схемы не принимается. UTF-8 BOM в начале файла снимается. Старый
+`.truckorig.json` (снапшот аккаунта) этим импортом не читается.
 
-Ниже в тех же Настройках — копия на Google Drive, файл `truckerload_backup_local_dev.tlb`
-в скрытой папке приложения (`drive.appdata`), как на Android. Чтобы включить вход:
-
-1. В Google Cloud Console (тот же проект, что у Android, либо любой с включённым Drive API) создайте OAuth-клиент типа **iOS**. Bundle ID: `com.truckorig`.
-2. Скопируйте client id (`….apps.googleusercontent.com`) в `TruckoRig/Resources/Info.plist`, ключ `GIDClientID`, вместо `REPLACE_WITH_IOS_OAUTH_CLIENT_ID.apps.googleusercontent.com`.
-3. URL scheme — перевёрнутый client id: `com.googleusercontent.apps.<префикс>`. Замените им заглушку `com.googleusercontent.apps.REPLACE_WITH_IOS_OAUTH_CLIENT_ID` в `CFBundleURLTypes`. Схему `truckorig` не удаляйте.
-4. Отдельный API key, `GoogleService-Info.plist` и SHA-1 для iOS не нужны. Android client id из исходников Android на iOS не подходит. Пока заглушка на месте, кнопка входа не вызывает Google.
-
-Автокопия: через 45 секунд после правки журнала и примерно раз в 12 часов при наличии сети (`BGTaskScheduler`, задача `com.truckorig.drive-sync`). Система сама выбирает минуту запуска.
+Фото и сканы, привязанные к грузам, которых нет в файле, удаляются. Остальные медиафайлы остаются.
+Токен Telegram в файл не попадает.
 
 ## Telegram
 
@@ -156,12 +153,13 @@ HTML/JSON-экспорт Telegram. Потяните журнал вниз — о
   неделя №1 — та, в которую попадает 1 января. Номера недель совпадают с Android для того же рейса.
 - **Без Tesseract.** Vision распознаёт русский и английский на устройстве; вторая OCR-библиотека
   добавила бы десятки мегабайт ради того же результата.
-- **Google Drive — только `drive.appdata`.** Файл `truckerload_backup_local_dev.tlb` тот же, что
-  пишет Android для локального журнала: JSON без шифрования (шифруется база на телефоне), без
-  байтов фото, сканов и чеков. Вход — Google Sign-In, запись — Drive REST v3. Пока в `Info.plist`
-  стоит заглушка `GIDClientID`, раздел в Настройках выключен. Рядом остаётся прежний обмен
-  JSON-файлом через share sheet. Ktor и Supabase не используются. Экспорт для бухгалтера —
-  книга Excel (.xlsx) с теми же листами, колонками и итогами, что Android SpreadsheetML.
+- **Файл бэкапа — JSON Android v2.** Имя `TruckoRig_Backup_yyyyMMdd_HHmmss.json`. Внутри грузы,
+  зарплаты, дизель, ТО и настройки, без байтов фото, сканов и чеков и без токена бота. `accountId`
+  локального журнала — `local_dev`, как у Android без входа. Файл чужого аккаунта не применяется.
+  Google Drive с iOS снят: нет Google Sign-In, `GIDClientID`, схемы OAuth и фоновой задачи
+  `com.truckorig.drive-sync`. Кодек, сопоставление журнала и правила конфликта переименованы в
+  `Backup*` и остаются для iCloud на следующем этапе. Ktor и Supabase не используются. Экспорт для
+  бухгалтера — книга Excel (.xlsx) с теми же листами, колонками и итогами, что Android SpreadsheetML.
   Список прочих расходов остаётся CSV, как в Android.
 - **Telegram — бот на телефоне.** Токен от @BotFather вводится в Настройках или на последнем
   шаге первого запуска и лежит в Keychain (`com.truckorig.telegram-bot-token`). Приложение само
@@ -187,7 +185,7 @@ HTML/JSON-экспорт Telegram. Потяните журнал вниз — о
   Маршрутов рейса, пинов фото, АЗС, кластеров и «моего местоположения» нет — их нет и на
   Android-карте. Имена штатов английские (`USStates` и Puerto Rico): Android в этой подписи
   держит русский каталог даже для английской локали. Кнопки «+» и «−» свои: у Maps SDK for iOS
-  нет системных zoom controls. `equipmentType` и deadhead читаются из extras Google Drive, если
+  нет системных zoom controls. `equipmentType` и deadhead читаются из extras бэкапа, если
   они записаны; в агрегате штата типы техники смешиваются, как на Android. `MapStateMetrics`
   (штат назначения) перенесён и покрыт тестами, отдельного экрана у него нет. Кнопка карты на
   карточке рейса убрана. Экран закрыт Premium. Пока ключ не задан, списки под картой остаются,

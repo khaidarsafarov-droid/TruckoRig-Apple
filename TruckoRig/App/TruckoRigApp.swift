@@ -6,7 +6,6 @@ struct TruckoRigApp: App {
     @State private var appState = AppState()
 
     init() {
-        DriveBackgroundRegistrar.register()
         TelegramBackgroundRegistrar.register()
     }
 

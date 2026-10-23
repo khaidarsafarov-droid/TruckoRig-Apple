@@ -358,7 +358,7 @@ final class AppDatabase {
     /// Photos and scans linked to a load that is not in the backup are deleted. Unlinked media
     /// stays. Receipt files are not deleted here; the caller removes the returned photo and scan files.
     /// Loads are upserted rather than deleted first, so a kept load does not lose its photos.
-    func applyDriveJournal(_ plan: DriveJournalPlan) throws -> RemovedMedia {
+    func applyBackupJournal(_ plan: BackupJournalPlan) throws -> RemovedMedia {
         try queue.write { db in
             let kept = plan.loads.map(\.id.uuidString)
             let removedPhotos = try Self.mediaRows(db, table: "photo", kept: kept).map(Self.photo(from:))
@@ -369,7 +369,7 @@ final class AppDatabase {
             for load in plan.loads {
                 try db.execute(
                     sql: "UPDATE load SET tripId = ? WHERE id = ?",
-                    arguments: ["__drive_\(load.id.uuidString)", load.id.uuidString]
+                    arguments: ["__backup_\(load.id.uuidString)", load.id.uuidString]
                 )
             }
             if kept.isEmpty {

@@ -7,8 +7,15 @@ struct SettingsView: View {
 
     @Environment(AppState.self) private var appState
 
-    @State private var export: ExportedBackup?
+    @State private var exportDocument = BackupJSONDocument()
+    @State private var exportName = "TruckoRig_Backup"
+    @State private var exportLoadCount = 0
+    @State private var isExporting = false
     @State private var isImporting = false
+    @State private var confirmRestore: BackupConfirm?
+    @State private var pendingJSON: String?
+    @State private var pendingExportedAt: Int64 = 0
+    @State private var pendingUnbound = false
     @State private var statusMessage: String?
     @State private var errorMessage: String?
 
@@ -141,14 +148,15 @@ struct SettingsView: View {
             }
 
             Section("settings.backup") {
-                Button("settings.backup.export") { exportBackup() }
-                Button("settings.backup.import") { isImporting = true }
                 Text("settings.backup.hint")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
+                Button("settings.backup.export") { exportBackup() }
+                Button("settings.backup.import") { confirmRestore = .replace }
+                Text("settings.backup.restoreHint")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
             }
-
-            DriveBackupSection()
 
             TelegramSettingsSection()
 
@@ -184,15 +192,62 @@ struct SettingsView: View {
         .navigationTitle("screen.settings")
         .scrollContentBackground(.hidden)
         .forestBackground()
-        .sheet(item: $export) { export in
-            ShareSheet(items: [export.url])
-        }
-        .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json]) { result in
+        .fileExporter(
+            isPresented: $isExporting,
+            document: exportDocument,
+            contentType: .json,
+            defaultFilename: exportName
+        ) { result in
             switch result {
-            case .success(let url): restore(from: url)
-            case .failure(let error): errorMessage = error.localizedDescription
+            case .success(let url):
+                statusMessage = String(
+                    localized: "settings.backup.saved \(exportLoadCount) \(url.lastPathComponent)"
+                )
+            case .failure(let error):
+                if !Self.isCancellation(error) { errorMessage = error.localizedDescription }
             }
         }
+        .fileImporter(
+            isPresented: $isImporting,
+            allowedContentTypes: [.json, .plainText, .text, .data]
+        ) { result in
+            switch result {
+            case .success(let url): inspectImport(url)
+            case .failure(let error):
+                if !Self.isCancellation(error) { errorMessage = error.localizedDescription }
+            }
+        }
+        .alert(
+            "settings.backup.restoreTitle",
+            isPresented: Binding(
+                get: { confirmRestore != nil },
+                set: { if !$0 { confirmRestore = nil } }
+            ),
+            presenting: confirmRestore,
+            actions: { confirm in
+                switch confirm {
+                case .replace:
+                    Button("settings.backup.restoreAction") { isImporting = true }
+                    Button("action.cancel", role: .cancel) {}
+                case .unbound:
+                    Button("settings.backup.unboundAction") { continueAfterUnbound() }
+                    Button("action.cancel", role: .cancel) { pendingJSON = nil }
+                case .localNewer:
+                    Button("settings.backup.restoreAction") { commitPendingRestore() }
+                    Button("action.cancel", role: .cancel) { pendingJSON = nil }
+                }
+            },
+            message: { confirm in
+                switch confirm {
+                case .replace:
+                    Text("settings.backup.restoreBody")
+                case .unbound:
+                    Text("settings.backup.unbound")
+                case .localNewer:
+                    Text("settings.backup.localNewer")
+                }
+            }
+        )
         .alert(
             "error.title",
             isPresented: .isPresented($errorMessage),
@@ -231,29 +286,123 @@ struct SettingsView: View {
 
     private func exportBackup() {
         do {
-            let url = try BackupService.exportSnapshot(from: appState.persistence.database, scope: appState.persistence.scope)
-            export = ExportedBackup(url: url)
+            let file = try BackupService.exportFile(
+                from: appState.persistence.database,
+                settings: appState.settings,
+                identity: BackupIdentityStore.standard()
+            )
+            exportDocument = BackupJSONDocument(data: file.data)
+            exportLoadCount = file.loadCount
+            exportName = file.fileName.hasSuffix(".json") ? String(file.fileName.dropLast(5)) : file.fileName
+            isExporting = true
+        } catch let error as BackupService.Failure {
+            errorMessage = BackupService.userMessage(for: error)
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
-    private func restore(from url: URL) {
+    private func inspectImport(_ url: URL) {
         do {
-            let report = try BackupService.restore(
-                from: url,
-                into: appState.persistence.database,
-                week: appState.settings.truckingWeek,
-                scope: appState.persistence.scope
-            )
-            appState.adoptRestoredGoal()
-            appState.reloadJournal()
-            statusMessage = String(
-                localized: "settings.backup.report \(report.inserted) \(report.updated) \(report.skipped)"
-            )
+            let data = try BackupService.read(url: url)
+            let preview = try BackupService.preview(data: data)
+            pendingJSON = preview.json
+            pendingExportedAt = preview.exportedAt
+            pendingUnbound = preview.unbound
+            if preview.unbound {
+                confirmRestore = .unbound
+                return
+            }
+            if try BackupService.shouldWarnBeforeRestore(
+                in: appState.persistence.database,
+                backupExportedAt: preview.exportedAt
+            ) {
+                confirmRestore = .localNewer
+                return
+            }
+            try commitRestore(allowUnbound: false)
+        } catch let error as BackupService.Failure {
+            errorMessage = BackupService.userMessage(for: error)
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func continueAfterUnbound() {
+        do {
+            if try BackupService.shouldWarnBeforeRestore(
+                in: appState.persistence.database,
+                backupExportedAt: pendingExportedAt
+            ) {
+                confirmRestore = .localNewer
+                return
+            }
+            try commitRestore(allowUnbound: true)
+        } catch let error as BackupService.Failure {
+            errorMessage = BackupService.userMessage(for: error)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func commitPendingRestore() {
+        do {
+            try commitRestore(allowUnbound: pendingUnbound)
+        } catch let error as BackupService.Failure {
+            errorMessage = BackupService.userMessage(for: error)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func commitRestore(allowUnbound: Bool) throws {
+        guard let json = pendingJSON else { return }
+        let report = try BackupService.restoreBackupJSON(
+            json,
+            into: appState.persistence.database,
+            settings: appState.settings,
+            identity: BackupIdentityStore.standard(),
+            media: MediaStore(scope: appState.persistence.scope),
+            allowUnboundAccount: allowUnbound
+        )
+        pendingJSON = nil
+        pendingUnbound = false
+        appState.reloadJournal()
+        statusMessage = String(
+            localized: "settings.backup.success \(report.loads) \(report.paychecks) \(report.diesel)"
+        )
+    }
+
+    private static func isCancellation(_ error: Error) -> Bool {
+        let ns = error as NSError
+        return ns.domain == NSCocoaErrorDomain && ns.code == NSUserCancelledError
+    }
+}
+
+/// Which restore confirmation is on screen.
+private enum BackupConfirm: Identifiable {
+    case replace
+    case unbound
+    case localNewer
+
+    var id: Self { self }
+}
+
+/// JSON document handed to the Files exporter. The suggested name supplies the `.json` extension.
+struct BackupJSONDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.json] }
+    var data: Data
+
+    init(data: Data = Data()) {
+        self.data = data
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        data = configuration.file.regularFileContents ?? Data()
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: data)
     }
 }
 
