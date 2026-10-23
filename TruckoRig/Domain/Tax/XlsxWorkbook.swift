@@ -1,14 +1,45 @@
 import Foundation
 
-/// One worksheet in an OOXML workbook. Cell values are text, matching the Android
-/// accountant export, which writes every SpreadsheetML cell as `ss:Type="String"`.
+/// Number format applied to a numeric OOXML cell. The raw `<v>` value stays invariant
+/// (`.` decimal separator); Excel and Numbers render it with the workbook locale.
+public enum XlsxNumberFormat: Equatable, Sendable {
+    /// `#,##0.00`
+    case money
+    /// `0` — miles, and integer counters (week, year, days). Same format as Android's Integer style.
+    case integer
+    /// `0.00` — gallons and RPM.
+    case decimal2
+    /// `0.000` — price per gallon.
+    case decimal3
+    /// `yyyy-mm-dd`, stored as an Excel 1900 date serial.
+    case date
+}
+
+/// One cell. Text stays inline strings. Numbers and dates are numeric cells so SUM and
+/// sort work, including under a Russian Excel locale.
+public enum XlsxCell: Equatable, Sendable {
+    case text(String)
+    case number(raw: String, format: XlsxNumberFormat)
+    case blank
+
+    /// Excel date serial for an ISO `yyyy-mm-dd`. Blank or whitespace is an empty cell.
+    /// Anything else that is not a real date stays text, and is never written as serial 0.
+    public static func date(iso: String) -> XlsxCell {
+        let day = iso.trimmingCharacters(in: .whitespacesAndNewlines)
+        if day.isEmpty { return .blank }
+        guard let serial = XlsxWorkbook.excelSerial(iso: day) else { return .text(iso) }
+        return .number(raw: String(serial), format: .date)
+    }
+}
+
+/// One worksheet in an OOXML workbook.
 public struct XlsxSheet: Equatable, Sendable {
     public var name: String
-    public var rows: [[String]]
-    /// When true, the first row uses the header style (bold, fill `#E6EDE9`).
+    public var rows: [[XlsxCell]]
+    /// When true, the first row uses the header style (bold, fill `#E6EDE9`) and the pane is frozen.
     public var headerRow: Bool
 
-    public init(name: String, rows: [[String]], headerRow: Bool) {
+    public init(name: String, rows: [[XlsxCell]], headerRow: Bool) {
         self.name = name
         self.rows = rows
         self.headerRow = headerRow
@@ -130,29 +161,96 @@ public enum XlsxWorkbook {
         """
     }
 
-    /// Header fill `#E6EDE9` and the unused money format `#,##0.00`, same as Android's Styles block.
-    /// Android defines the money format and then writes every value as text, so no cell uses it.
-    private static let stylesXML = """
-    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-      <numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00"/></numFmts>
-      <fonts count="2">
-        <font><sz val="11"/><name val="Calibri"/></font>
-        <font><b/><sz val="11"/><name val="Calibri"/></font>
-      </fonts>
-      <fills count="3">
-        <fill><patternFill patternType="none"/></fill>
-        <fill><patternFill patternType="gray125"/></fill>
-        <fill><patternFill patternType="solid"><fgColor rgb="FFE6EDE9"/></patternFill></fill>
-      </fills>
-      <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
-      <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-      <cellXfs count="2">
-        <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
-        <xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/>
-      </cellXfs>
-    </styleSheet>
-    """
+    /// Custom format ids start at 164. Built-in ids below that are not repeated here.
+    /// Style index 0 is General text, 1 is the header, and the rest follow this list.
+    private static let numberFormats: [(XlsxNumberFormat, Int, String)] = [
+        (.money, 164, "#,##0.00"),
+        (.integer, 165, "0"),
+        (.decimal2, 166, "0.00"),
+        (.decimal3, 167, "0.000"),
+        (.date, 168, "yyyy-mm-dd"),
+    ]
+
+    /// Header fill `#E6EDE9`, plus number formats actually referenced by cellXfs.
+    /// `cellStyles`/`cellStyleXfs` name the Normal style so Excel, Numbers and openpyxl
+    /// do not repair the package or substitute a default stylesheet.
+    private static var stylesXML: String {
+        let numFmts = numberFormats.map { _, id, code in
+            "<numFmt numFmtId=\"\(id)\" formatCode=\"\(code)\"/>"
+        }.joined()
+        let numericXfs = numberFormats.map { _, id, _ in
+            "<xf numFmtId=\"\(id)\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyNumberFormat=\"1\"/>"
+        }.joined()
+        let xfCount = numberFormats.count + 2
+        return """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+          <numFmts count="\(numberFormats.count)">\(numFmts)</numFmts>
+          <fonts count="2">
+            <font><sz val="11"/><name val="Calibri"/></font>
+            <font><b/><sz val="11"/><name val="Calibri"/></font>
+          </fonts>
+          <fills count="3">
+            <fill><patternFill patternType="none"/></fill>
+            <fill><patternFill patternType="gray125"/></fill>
+            <fill><patternFill patternType="solid"><fgColor rgb="FFE6EDE9"/></patternFill></fill>
+          </fills>
+          <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
+          <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+          <cellXfs count="\(xfCount)">
+            <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+            <xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/>
+            \(numericXfs)
+          </cellXfs>
+          <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+          <dxfs count="0"/>
+          <tableStyles count="0" defaultTableStyle="TableStyleMedium2" defaultPivotStyle="PivotStyleLight16"/>
+        </styleSheet>
+        """
+    }
+
+    private static func styleIndex(for format: XlsxNumberFormat) -> Int {
+        let offset = numberFormats.firstIndex { $0.0 == format } ?? 0
+        return offset + 2
+    }
+
+    /// Excel 1900 date system. `2026-03-02` is serial 46083.
+    /// Dates on or after 1900-03-01 equal the day count since 1899-12-30, which lines up
+    /// with Excel once its fictional 1900-02-29 is taken into account. Real dates in
+    /// January and February 1900 are one less than that count.
+    static func excelSerial(iso: String) -> Int? {
+        let parts = iso.split(separator: "-", omittingEmptySubsequences: false)
+        guard parts.count == 3,
+              parts[0].count == 4,
+              let year = Int(parts[0]),
+              let month = Int(parts[1]),
+              let day = Int(parts[2]),
+              (1900...9999).contains(year),
+              (1...12).contains(month)
+        else { return nil }
+        let leap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
+        let monthDays = [0, 31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        guard (1...monthDays[month]).contains(day) else { return nil }
+        let days = daysFromCivil(year: year, month: month, day: day)
+            - daysFromCivil(year: 1899, month: 12, day: 30)
+        if year == 1900 && month < 3 {
+            return days - 1
+        }
+        return days
+    }
+
+    /// Howard Hinnant's `days_from_civil`: days since 1970-01-01. Only differences are used.
+    private static func daysFromCivil(year: Int, month: Int, day: Int) -> Int {
+        var y = year
+        let m = month
+        if m <= 2 { y -= 1 }
+        let era = (y >= 0 ? y : y - 399) / 400
+        let yoe = y - era * 400
+        let shiftedMonth = m + (m > 2 ? -3 : 9)
+        let doy = (153 * shiftedMonth + 2) / 5 + day - 1
+        let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy
+        return era * 146097 + doe - 719468
+    }
 
     private static func worksheetXML(_ sheet: XlsxSheet) -> String {
         var rows: [String] = []
@@ -160,21 +258,90 @@ public enum XlsxWorkbook {
             let rowNumber = rowIndex + 1
             let header = sheet.headerRow && rowIndex == 0
             let cells = row.enumerated().map { column, value in
-                cell(column: column, row: rowNumber, value: value, header: header)
+                cell(column: column, row: rowNumber, cell: value, header: header)
             }.joined()
             rows.append("<row r=\"\(rowNumber)\">\(cells)</row>")
         }
+        let views = sheet.headerRow
+            ? "<sheetViews><sheetView workbookViewId=\"0\"><pane ySplit=\"1\" topLeftCell=\"A2\" activePane=\"bottomLeft\" state=\"frozen\"/><selection pane=\"bottomLeft\" activeCell=\"A2\" sqref=\"A2\"/></sheetView></sheetViews>"
+            : ""
+        let cols = columnsXML(sheet.rows)
         return """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>\(rows.joined())</sheetData></worksheet>
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">\(views)\(cols)<sheetData>\(rows.joined())</sheetData></worksheet>
         """
     }
 
-    private static func cell(column: Int, row: Int, value: String, header: Bool) -> String {
+    private static func columnsXML(_ rows: [[XlsxCell]]) -> String {
+        let count = rows.map(\.count).max() ?? 0
+        guard count > 0 else { return "" }
+        var widths = Array(repeating: 10, count: count)
+        for row in rows {
+            for (index, cell) in row.enumerated() {
+                let width = min(48, max(10, estimatedWidth(cell)))
+                if width > widths[index] {
+                    widths[index] = width
+                }
+            }
+        }
+        let cols = widths.enumerated().map { index, width in
+            "<col min=\"\(index + 1)\" max=\"\(index + 1)\" width=\"\(width)\" customWidth=\"1\"/>"
+        }.joined()
+        return "<cols>\(cols)</cols>"
+    }
+
+    /// Character estimate plus a little extra so Cyrillic headers and `yyyy-mm-dd` do not clip.
+    private static func estimatedWidth(_ cell: XlsxCell) -> Int {
+        let characters: Int
+        switch cell {
+        case .blank:
+            return 10
+        case .text(let value):
+            characters = value.count
+        case .number(_, let format):
+            switch format {
+            case .date, .money: characters = 12
+            case .decimal3, .decimal2, .integer: characters = 8
+            }
+        }
+        return characters + characters / 5 + 2
+    }
+
+    private static func cell(column: Int, row: Int, cell: XlsxCell, header: Bool) -> String {
         let ref = "\(columnName(column))\(row)"
-        let style = header ? " s=\"1\"" : ""
+        if header {
+            return inlineString(ref: ref, value: textContent(cell), style: " s=\"1\"")
+        }
+        switch cell {
+        case .blank:
+            return "<c r=\"\(ref)\"/>"
+        case .text(let value):
+            if value.isEmpty { return "<c r=\"\(ref)\"/>" }
+            return inlineString(ref: ref, value: value, style: "")
+        case .number(let raw, let format):
+            guard isInvariantNumber(raw) else {
+                return inlineString(ref: ref, value: raw, style: "")
+            }
+            return "<c r=\"\(ref)\" s=\"\(styleIndex(for: format))\"><v>\(raw)</v></c>"
+        }
+    }
+
+    private static func inlineString(ref: String, value: String, style: String) -> String {
         let preserve = needsPreserve(value) ? " xml:space=\"preserve\"" : ""
         return "<c r=\"\(ref)\" t=\"inlineStr\"\(style)><is><t\(preserve)>\(xmlEscape(value))</t></is></c>"
+    }
+
+    private static func textContent(_ cell: XlsxCell) -> String {
+        switch cell {
+        case .text(let value): return value
+        case .number(let raw, _): return raw
+        case .blank: return ""
+        }
+    }
+
+    /// Invariant numeric literal. Rejects localized decimals and leading zeros so `<v>` stays a real number.
+    private static func isInvariantNumber(_ raw: String) -> Bool {
+        raw.range(of: #"^-?(?:0|[1-9]\d*)(?:\.\d+)?$"#, options: .regularExpression) != nil
     }
 
     private static func needsPreserve(_ value: String) -> Bool {
