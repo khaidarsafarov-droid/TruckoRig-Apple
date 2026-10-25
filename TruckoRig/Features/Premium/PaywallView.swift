@@ -69,6 +69,8 @@ struct PaywallView: View {
                                 .font(.appBody)
                                 .foregroundStyle(Color.forestText)
                                 .fixedSize(horizontal: false, vertical: true)
+                                .accessibilityIdentifier("paywall.body")
+                            PaywallIncludedSection()
                             Text("premium.terms")
                                 .font(.appCaption)
                                 .foregroundStyle(Color.forestTextSecondary)
