@@ -1,5 +1,13 @@
 import SwiftUI
 
+/// Identifiers of the included rows and free chips, in layout order.
+struct PaywallRowIDKey: PreferenceKey {
+    static var defaultValue: [String] = []
+    static func reduce(value: inout [String], nextValue: () -> [String]) {
+        value.append(contentsOf: nextValue())
+    }
+}
+
 /// Paid tools on the paywall, one row each, in the order the product lists them.
 ///
 /// The last row is a file the driver can restore on Android or iPhone. iOS does not offer
@@ -100,6 +108,7 @@ struct PaywallIncludedSection: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("paywall.included")
+                .preference(key: PaywallRowIDKey.self, value: ["paywall.included"])
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(Array(PaywallFeature.allCases.enumerated()), id: \.element.id) { index, feature in
                     if index > 0 {
@@ -117,6 +126,7 @@ struct PaywallIncludedSection: View {
                     .foregroundStyle(Color.forestTextSecondary)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("paywall.free.title")
+                    .preference(key: PaywallRowIDKey.self, value: ["paywall.free.title"])
                 PaywallChipFlow(spacing: 8) {
                     ForEach(PaywallFreeTool.allCases) { tool in
                         PaywallFreeChip(tool: tool)
@@ -151,6 +161,7 @@ private struct PaywallFeatureRow: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(feature.titleKey) + Text(verbatim: ". ") + Text(feature.benefitKey))
         .accessibilityIdentifier(feature.accessibilityID)
+        .preference(key: PaywallRowIDKey.self, value: [feature.accessibilityID])
     }
 }
 
@@ -167,6 +178,7 @@ private struct PaywallFreeChip: View {
             .padding(.vertical, 6)
             .background(Color.forestSurfaceMuted, in: Capsule())
             .accessibilityIdentifier(tool.accessibilityID)
+            .preference(key: PaywallRowIDKey.self, value: [tool.accessibilityID])
     }
 }
 
