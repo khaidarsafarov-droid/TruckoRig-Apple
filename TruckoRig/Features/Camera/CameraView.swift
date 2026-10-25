@@ -10,6 +10,7 @@ struct CameraView: View {
 
     @Environment(AppState.self) private var appState
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.locale) private var locale
 
     @State private var locationProvider = LocationProvider()
     @State private var attach = CameraAttachContext.fromLatestLoad(loadId: nil, tripId: nil, loadDate: nil)
@@ -215,11 +216,15 @@ struct CameraView: View {
         let timestamp = Date()
         let fix = await locationProvider.currentLocation()
         let stamp = await PhotoGeotag.stamp(for: fix)
+        let unknownLabel = locale.language.languageCode?.identifier == "fr"
+            ? String(localized: "media.location.unknown", locale: locale)
+            : PhotoCapture.unknownLabel
         let lines = PhotoCapture.watermarkLines(
             title: attach.tripId,
             tripId: attach.tripId,
             timestamp: timestamp,
-            location: stamp
+            location: stamp,
+            unknownLabel: unknownLabel
         )
         guard let jpeg = PhotoImageWriter.jpeg(from: image, lines: lines),
               let preview = UIImage(data: jpeg)

@@ -86,28 +86,65 @@ public enum SmartNotificationCopy {
     /// Older Android builds posted one notification per task in 101…130.
     public static let legacyMaintenanceIdentifiers: [String] = (101...130).map(String.init)
 
-    public static func maintenanceTitle(russian: Bool) -> String {
-        russian ? "Напоминание ТО" : "Maintenance reminder"
+    public static func maintenanceTitle(russian: Bool, french: Bool = false) -> String {
+        if french { return frenchText("notify.maintenance.title", "Rappel d'entretien") }
+        if russian { return "Напоминание ТО" }
+        return "Maintenance reminder"
     }
 
-    public static func maintenanceBody(title: String, russian: Bool) -> String {
-        russian ? "\(title) — пора обслуживать трак" : "\(title) — time to service the truck"
+    public static func maintenanceBody(title: String, russian: Bool, french: Bool = false) -> String {
+        if french {
+            return frenchText(
+                "notify.maintenance.body \(title)",
+                "\(title) — il est temps d'entretenir le camion"
+            )
+        }
+        if russian { return "\(title) — пора обслуживать трак" }
+        return "\(title) — time to service the truck"
     }
 
-    public static func maintenanceBody(count: Int, summary: String, russian: Bool) -> String {
-        russian ? "\(count) задач: \(summary)" : "\(count) tasks: \(summary)"
+    public static func maintenanceBody(count: Int, summary: String, russian: Bool, french: Bool = false) -> String {
+        if french {
+            let fallback = count == 0 || count == 1
+                ? "\(count) tâche : \(summary)"
+                : "\(count) tâches : \(summary)"
+            return frenchText("notify.maintenance.tasks \(count) \(summary)", fallback)
+        }
+        if russian { return "\(count) задач: \(summary)" }
+        return "\(count) tasks: \(summary)"
     }
 
-    public static func paycheckTitle(russian: Bool) -> String {
-        russian ? "Добавьте зарплату" : "Add paycheck"
+    public static func paycheckTitle(russian: Bool, french: Bool = false) -> String {
+        if french { return frenchText("notify.paycheck.title", "Ajoutez la paie") }
+        if russian { return "Добавьте зарплату" }
+        return "Add paycheck"
     }
 
-    public static func dieselTitle(russian: Bool) -> String {
-        russian ? "Добавьте дизель" : "Add diesel"
+    public static func dieselTitle(russian: Bool, french: Bool = false) -> String {
+        if french { return frenchText("notify.diesel.title", "Ajoutez le diesel") }
+        if russian { return "Добавьте дизель" }
+        return "Add diesel"
     }
 
-    public static func missingWeekBody(week: Int, russian: Bool) -> String {
-        russian ? "Нет данных за неделю \(week)" : "No data for week \(week)"
+    public static func missingWeekBody(week: Int, russian: Bool, french: Bool = false) -> String {
+        if french {
+            return frenchText("notify.missing.body \(week)", "Aucune donnée pour la semaine \(week)")
+        }
+        if russian { return "Нет данных за неделю \(week)" }
+        return "No data for week \(week)"
+    }
+
+    /// Catalog text when the app bundle has the key. Linux tests, and a lookup that misses,
+    /// return `fallback`, which is the same French sentence stored in the catalog.
+    /// `defaultValue:` is not in the Linux Swift 6 Foundation overlay.
+    private static func frenchText(_ key: String, _ fallback: String) -> String {
+        #if canImport(Darwin)
+        let resolved = String(localized: String.LocalizationValue(stringLiteral: key), locale: Locale(identifier: "fr"))
+        if resolved.isEmpty || resolved == key { return fallback }
+        return resolved
+        #else
+        return fallback
+        #endif
     }
 }
 
@@ -167,6 +204,7 @@ public struct SmartNotificationRequest: Sendable {
     /// Tasks `MaintenanceMileage.shouldNotify` already accepted, in display order.
     public var maintenanceDue: [(id: String, title: String)]
     public var russian: Bool
+    public var french: Bool
 
     public init(
         now: Date,
@@ -182,7 +220,8 @@ public struct SmartNotificationRequest: Sendable {
         alreadyNotifiedMissingWeek: Bool,
         missingWeekNumber: Int,
         maintenanceDue: [(id: String, title: String)],
-        russian: Bool
+        russian: Bool,
+        french: Bool = false
     ) {
         self.now = now
         self.calendar = calendar
@@ -198,6 +237,7 @@ public struct SmartNotificationRequest: Sendable {
         self.missingWeekNumber = missingWeekNumber
         self.maintenanceDue = maintenanceDue
         self.russian = russian
+        self.french = french
     }
 }
 
@@ -237,8 +277,8 @@ public enum SmartNotificationEngine {
         if request.allowMissingWeek && plan.notifyMissingPaycheck {
             notifications.append(PendingLocalNotification(
                 identifier: SmartNotificationCopy.paycheckIdentifier,
-                title: SmartNotificationCopy.paycheckTitle(russian: request.russian),
-                body: SmartNotificationCopy.missingWeekBody(week: request.missingWeekNumber, russian: request.russian),
+                title: SmartNotificationCopy.paycheckTitle(russian: request.russian, french: request.french),
+                body: SmartNotificationCopy.missingWeekBody(week: request.missingWeekNumber, russian: request.russian, french: request.french),
                 channel: SmartNotificationCopy.missingChannel,
                 fireAt: fireAt
             ))
@@ -246,8 +286,8 @@ public enum SmartNotificationEngine {
         if request.allowMissingWeek && plan.notifyMissingDiesel {
             notifications.append(PendingLocalNotification(
                 identifier: SmartNotificationCopy.dieselIdentifier,
-                title: SmartNotificationCopy.dieselTitle(russian: request.russian),
-                body: SmartNotificationCopy.missingWeekBody(week: request.missingWeekNumber, russian: request.russian),
+                title: SmartNotificationCopy.dieselTitle(russian: request.russian, french: request.french),
+                body: SmartNotificationCopy.missingWeekBody(week: request.missingWeekNumber, russian: request.russian, french: request.french),
                 channel: SmartNotificationCopy.missingChannel,
                 fireAt: fireAt
             ))
@@ -255,17 +295,18 @@ public enum SmartNotificationEngine {
         if !plan.maintenanceDueTitles.isEmpty {
             let body: String
             if plan.maintenanceDueTitles.count == 1 {
-                body = SmartNotificationCopy.maintenanceBody(title: plan.maintenanceDueTitles[0], russian: request.russian)
+                body = SmartNotificationCopy.maintenanceBody(title: plan.maintenanceDueTitles[0], russian: request.russian, french: request.french)
             } else {
                 body = SmartNotificationCopy.maintenanceBody(
                     count: plan.maintenanceDueTitles.count,
                     summary: plan.maintenanceSummaryBody(),
-                    russian: request.russian
+                    russian: request.russian,
+                    french: request.french
                 )
             }
             notifications.append(PendingLocalNotification(
                 identifier: SmartNotificationCopy.maintenanceIdentifier,
-                title: SmartNotificationCopy.maintenanceTitle(russian: request.russian),
+                title: SmartNotificationCopy.maintenanceTitle(russian: request.russian, french: request.french),
                 body: body,
                 channel: SmartNotificationCopy.alertsChannel,
                 fireAt: fireAt

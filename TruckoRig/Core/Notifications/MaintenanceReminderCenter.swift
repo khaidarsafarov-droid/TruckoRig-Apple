@@ -92,7 +92,8 @@ enum MaintenanceReminderCenter {
             alreadyNotifiedMissingWeek: settings.missingNotifiedWeek == weekKey,
             missingWeekNumber: previous.weekNumber,
             maintenanceDue: due,
-            russian: prefersRussian(settings.language)
+            russian: prefersRussian(settings.language),
+            french: prefersFrench(settings.language)
         ))
     }
 
@@ -107,9 +108,18 @@ enum MaintenanceReminderCenter {
     static func prefersRussian(_ language: AppLanguage) -> Bool {
         switch language {
         case .russian: return true
-        case .english: return false
+        case .english, .french: return false
         case .system:
             return Locale.preferredLanguages.first?.hasPrefix("ru") == true
+        }
+    }
+
+    static func prefersFrench(_ language: AppLanguage) -> Bool {
+        switch language {
+        case .french: return true
+        case .russian, .english: return false
+        case .system:
+            return Locale.preferredLanguages.first?.hasPrefix("fr") == true
         }
     }
 

@@ -1,0 +1,93 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSCameraUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig использует камеру, чтобы сфотографировать документы рейса и отсканировать бумаги."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig использует камеру, чтобы сфотографировать документы рейса и отсканировать бумаги."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig utilise la caméra pour photographier les documents du voyage et numériser les papiers."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig использует камеру, чтобы сфотографировать документы рейса и отсканировать бумаги."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig записывает место съёмки на фото рейса, чтобы было видно, где подписаны документы."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig записывает место съёмки на фото рейса, чтобы было видно, где подписаны документы."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig enregistre le lieu de la prise de vue sur la photo du voyage, afin d'indiquer où les documents ont été signés."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig записывает место съёмки на фото рейса, чтобы было видно, где подписаны документы."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig может взять фото документа из галереи, если камера недоступна, и добавить страницы в сканер."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig может взять фото документа из галереи, если камера недоступна, и добавить страницы в сканер."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig peut prendre une photo du document dans la photothèque si la caméra n'est pas disponible, et ajouter des pages au numériseur."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig может взять фото документа из галереи, если камера недоступна, и добавить страницы в сканер."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
