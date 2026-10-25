@@ -46,6 +46,7 @@ struct DieselListView: View {
     }
 
     var body: some View {
+        let system = appState.settings.measurementSystem
         List {
             if !fills.isEmpty {
                 Section {
@@ -57,11 +58,14 @@ struct DieselListView: View {
                     .pickerStyle(.segmented)
                     HStack {
                         StatTile(title: "diesel.totalCost", value: Formatters.money(totalCost))
-                        StatTile(title: "diesel.totalGallons", value: Formatters.gallons(totalGallons))
-                        StatTile(title: "diesel.mpg", value: Formatters.mpg(mpg))
+                        StatTile(
+                            title: system == .kilometers ? "diesel.totalLiters" : "diesel.totalGallons",
+                            value: Formatters.gallons(totalGallons, system: system)
+                        )
+                        StatTile(title: "diesel.mpg", value: Formatters.mpg(mpg, system: system))
                     }
                     if mpg == 0 {
-                        Text("diesel.mpg.hint")
+                        Text(system == .kilometers ? "diesel.mpg.hint.metric" : "diesel.mpg.hint")
                             .font(.appCaption)
                             .foregroundStyle(Color.forestTextSecondary)
                     }
@@ -121,7 +125,7 @@ struct DieselListView: View {
                 Text(fill.location ?? String(localized: "diesel.untitled"))
                     .font(.appBodyMedium)
                     .foregroundStyle(Color.forestText)
-                Text("\(DateUtils.mediumDate(fill.date)) · \(Formatters.gallons(fill.gallons))" as String)
+                Text("\(DateUtils.mediumDate(fill.date)) · \(Formatters.gallons(fill.gallons, system: appState.settings.measurementSystem))" as String)
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             }
@@ -129,7 +133,7 @@ struct DieselListView: View {
             VStack(alignment: .trailing, spacing: 2) {
                 Text(Formatters.moneyPrecise(fill.totalCost))
                     .font(.appCaptionMedium)
-                Text(fill.pricePerGallon.formatted(.currency(code: Formatters.currencyCode).precision(.fractionLength(3))))
+                Text(Formatters.unitPrice(fill.pricePerGallon, system: appState.settings.measurementSystem))
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
                 if let saved = DieselPurchaseMath.savings(
@@ -179,6 +183,9 @@ struct DieselEditorView: View {
     @State private var scanMessage: String?
     @State private var isScanning = false
     @State private var errorMessage: String?
+    @State private var didPresentOdometer = false
+
+    private var system: MeasurementSystem { appState.settings.measurementSystem }
 
     init(fill: Diesel?) {
         self.fill = fill
@@ -219,7 +226,7 @@ struct DieselEditorView: View {
         NavigationStack {
             Form {
                 Section("diesel.receipt") {
-                    Text("diesel.scan.hint")
+                    Text(system == .kilometers ? "diesel.scan.hint.metric" : "diesel.scan.hint")
                         .font(.appCaption)
                         .foregroundStyle(Color.forestTextSecondary)
                     ReceiptCaptureButtons { image in
@@ -235,9 +242,18 @@ struct DieselEditorView: View {
                     }
                 }
                 Section("diesel.amounts") {
-                    SoftNumberField(title: "diesel.gallons", value: $gallons)
-                    SoftNumberField(title: "diesel.pricePerGallon", value: $pricePerGallon)
-                    SoftNumberField(title: "diesel.discount", value: $discountPrice)
+                    SoftNumberField(
+                        title: system == .kilometers ? "diesel.liters" : "diesel.gallons",
+                        value: UnitEntry.volume(stored: $gallons, system: system)
+                    )
+                    SoftNumberField(
+                        title: system == .kilometers ? "diesel.pricePerLiter" : "diesel.pricePerGallon",
+                        value: UnitEntry.unitPrice(stored: $pricePerGallon, system: system)
+                    )
+                    SoftNumberField(
+                        title: "diesel.discount",
+                        value: UnitEntry.unitPrice(stored: $discountPrice, system: system)
+                    )
                     SoftNumberField(title: "diesel.totalCost", value: $totalCost)
                     if let paidTotal {
                         LabeledContent("diesel.paid") {
@@ -251,7 +267,7 @@ struct DieselEditorView: View {
                         }
                     }
                     LabeledContent("diesel.pricePerGallon.derived") {
-                        Text(derivedPrice.formatted(.currency(code: Formatters.currencyCode).precision(.fractionLength(3))))
+                        Text(Formatters.unitPrice(derivedPrice, system: system))
                     }
                 }
 
@@ -264,6 +280,7 @@ struct DieselEditorView: View {
             }
             .navigationTitle(fill == nil ? "diesel.add" : "diesel.edit")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear(perform: presentOdometer)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("action.save") { save() }
@@ -290,11 +307,11 @@ struct DieselEditorView: View {
             priceText: priceText,
             discountText: discountText
         ) {
-            errorMessage = String(localized: failure.messageKey)
+            errorMessage = String(localized: message(for: failure))
             return
         }
         let repository = appState.financeRepository()
-        let odometer = Int(odometerText.filter(\.isNumber))
+        let odometer = commitOdometer()
         let normalizedState = state.trimmed.isEmpty ? nil : USStates.normalize(state)
         let paid = paidTotal ?? totalCost
         let fileName = storedReceipt()
@@ -358,8 +375,8 @@ struct DieselEditorView: View {
         if let iso = parsed.date { date = dateFromISO(iso) ?? date }
         sourceFileName = "receipt-\(UUID().uuidString.prefix(8)).jpg"
         let summary = [
-            parsed.gallons.map { DieselReceiptExtractor.formatField($0) + " gal" },
-            parsed.pricePerGallon.map { Formatters.moneyPrecise($0) },
+            parsed.gallons.map { Formatters.gallons($0, system: system) },
+            parsed.pricePerGallon.map { Formatters.unitPrice($0, system: system) },
         ].compactMap { $0 }.joined(separator: ", ")
         scanMessage = String(localized: "diesel.scan.found \(summary)")
     }
@@ -371,6 +388,37 @@ struct DieselEditorView: View {
         return receiptFileName
     }
 
+    private func presentOdometer() {
+        guard !didPresentOdometer else { return }
+        didPresentOdometer = true
+        guard let miles = fill?.odometer else { return }
+        let shown = Int(MeasurementUnits.displayDistance(Double(miles), system: system).rounded())
+        odometerText = String(shown)
+    }
+
+    /// Whole miles in storage. An unedited reading of the original odometer is kept.
+    private func commitOdometer() -> Int? {
+        let digits = odometerText.filter(\.isNumber)
+        guard let entered = Int(digits) else { return nil }
+        if let original = fill?.odometer {
+            let shown = Int(MeasurementUnits.displayDistance(Double(original), system: system).rounded())
+            if shown == entered { return original }
+        }
+        return Int(MeasurementUnits.storageDistance(Double(entered), system: system).rounded())
+    }
+
+    private func message(for failure: DieselFormError) -> String.LocalizationValue {
+        switch failure {
+        case .gallons:
+            return system == .kilometers ? "diesel.error.liters" : "diesel.error.gallons"
+        case .price:
+            return system == .kilometers ? "diesel.error.pricePerLiter" : "diesel.error.price"
+        case .discountInvalid: return "diesel.error.discount"
+        case .discountAbovePrice: return "diesel.error.discountHigh"
+        case .amount: return "diesel.error.amount"
+        }
+    }
+
     private func dateFromISO(_ iso: String) -> Date? {
         let pieces = iso.split(separator: "-").compactMap { Int($0) }
         guard pieces.count == 3 else { return nil }
@@ -379,17 +427,5 @@ struct DieselEditorView: View {
         components.month = pieces[1]
         components.day = pieces[2]
         return Calendar.current.date(from: components)
-    }
-}
-
-private extension DieselFormError {
-    var messageKey: String.LocalizationValue {
-        switch self {
-        case .gallons: return "diesel.error.gallons"
-        case .price: return "diesel.error.price"
-        case .discountInvalid: return "diesel.error.discount"
-        case .discountAbovePrice: return "diesel.error.discountHigh"
-        case .amount: return "diesel.error.amount"
-        }
     }
 }

@@ -397,7 +397,12 @@ struct TaxTrackerView: View {
             exportMessage = String(localized: "tax.send.empty")
             return
         }
-        let bytes = AccountantWorkbook.data(input: input, sections: sections, language: exportLanguage)
+        let bytes = AccountantWorkbook.data(
+            input: input,
+            sections: sections,
+            language: exportLanguage,
+            units: appState.settings.measurementSystem
+        )
         let name = AccountantWorkbook.fileName(year: year, sections: sections, calendar: calendar)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         do {

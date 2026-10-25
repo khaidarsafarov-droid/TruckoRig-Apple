@@ -15,6 +15,7 @@ public struct TelegramRouterContext: Equatable, Sendable {
     public var weekLoads: Int
     public var weekGross: Double
     public var weekMiles: Double
+    public var measurementSystem: MeasurementSystem
 
     public init(
         boundChatId: Int64? = nil,
@@ -30,7 +31,8 @@ public struct TelegramRouterContext: Equatable, Sendable {
         totalLoads: Int = 0,
         weekLoads: Int = 0,
         weekGross: Double = 0,
-        weekMiles: Double = 0
+        weekMiles: Double = 0,
+        measurementSystem: MeasurementSystem = .miles
     ) {
         self.boundChatId = boundChatId
         self.hintedChatIds = hintedChatIds
@@ -46,6 +48,7 @@ public struct TelegramRouterContext: Equatable, Sendable {
         self.weekLoads = weekLoads
         self.weekGross = weekGross
         self.weekMiles = weekMiles
+        self.measurementSystem = measurementSystem
     }
 }
 
@@ -260,13 +263,15 @@ public enum TelegramRouter {
     }
 
     public static func stats(_ context: TelegramRouterContext) -> String {
-        TelegramCopy.text(
-            "sync_stats",
+        let shown = MeasurementUnits.displayDistance(context.weekMiles, system: context.measurementSystem)
+        let key = context.measurementSystem == .kilometers ? "sync_stats_km" : "sync_stats"
+        return TelegramCopy.text(
+            key,
             context.language,
             String(context.totalLoads),
             String(context.weekLoads),
             TelegramFigures.plainGrouped(context.weekGross),
-            TelegramFigures.grouped(Int64(context.weekMiles.rounded()))
+            TelegramFigures.grouped(Int64(shown.rounded()))
         )
     }
 

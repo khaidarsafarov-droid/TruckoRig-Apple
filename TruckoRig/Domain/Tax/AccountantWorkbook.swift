@@ -139,10 +139,37 @@ public struct AccountantWorkbookCopy: Equatable, Sendable {
     public var total: String
     public var perDiemDayOne: String
     public var perDiemDayOther: String
+    /// Column captions used only when the workbook is shown in kilometers and liters.
+    public var metricDistance: String
+    public var metricRate: String
+    public var metricVolume: String
+    public var metricPrice: String
+    public var metricDiscountPrice: String
 
     public func perDiemTotal(count: Int) -> String {
         let unit = count == 0 || count == 1 ? perDiemDayOne : perDiemDayOther
         return "\(total) (\(count) \(unit))"
+    }
+
+    public func loadsHeader(units: MeasurementSystem) -> [String] {
+        guard units == .kilometers else { return loadsHeader }
+        var header = loadsHeader
+        if header.count > 5 {
+            header[4] = metricDistance
+            header[5] = metricRate
+        }
+        return header
+    }
+
+    public func dieselHeader(units: MeasurementSystem) -> [String] {
+        guard units == .kilometers else { return dieselHeader }
+        var header = dieselHeader
+        if header.count > 7 {
+            header[5] = metricVolume
+            header[6] = metricPrice
+            header[7] = metricDiscountPrice
+        }
+        return header
     }
 
     public static let russian = AccountantWorkbookCopy(
@@ -174,7 +201,12 @@ public struct AccountantWorkbookCopy: Equatable, Sendable {
         maintenanceHeader: ["Дата ТО", "Услуга", "Описание", "Сумма, USD"],
         total: "ИТОГО",
         perDiemDayOne: "дн.",
-        perDiemDayOther: "дн."
+        perDiemDayOther: "дн.",
+        metricDistance: "Километры",
+        metricRate: "$/км",
+        metricVolume: "Литры",
+        metricPrice: "Цена / л",
+        metricDiscountPrice: "Цена со скидкой / л"
     )
 
     public static let french = AccountantWorkbookCopy(
@@ -206,7 +238,12 @@ public struct AccountantWorkbookCopy: Equatable, Sendable {
         maintenanceHeader: ["Date d'entretien", "Service", "Description", "Montant, USD"],
         total: "TOTAL",
         perDiemDayOne: "jour",
-        perDiemDayOther: "jours"
+        perDiemDayOther: "jours",
+        metricDistance: "Kilomètres",
+        metricRate: "$/km",
+        metricVolume: "Litres",
+        metricPrice: "Prix / L",
+        metricDiscountPrice: "Prix avec rabais / L"
     )
 
     public static func resolve(_ language: AccountantWorkbookLanguage) -> AccountantWorkbookCopy {
@@ -268,16 +305,17 @@ public enum AccountantWorkbook {
     public static func sheets(
         input: AccountantWorkbookInput,
         sections requested: Set<AccountantExportSection>,
-        language: AccountantWorkbookLanguage = .russian
+        language: AccountantWorkbookLanguage = .russian,
+        units: MeasurementSystem = .miles
     ) -> [XlsxSheet] {
         let sections = resolveSections(requested)
         let copy = AccountantWorkbookCopy.resolve(language)
         var sheets = [summarySheet(input, sections: sections, copy: copy)]
         if sections.contains(.loads) {
-            sheets.append(loadsSheet(input, copy: copy))
+            sheets.append(loadsSheet(input, copy: copy, units: units))
         }
         if sections.contains(.diesel) {
-            sheets.append(dieselSheet(input, copy: copy))
+            sheets.append(dieselSheet(input, copy: copy, units: units))
         }
         if sections.contains(.perDiem) {
             sheets.append(perDiemSheet(input, copy: copy))
@@ -291,9 +329,10 @@ public enum AccountantWorkbook {
     public static func data(
         input: AccountantWorkbookInput,
         sections: Set<AccountantExportSection>,
-        language: AccountantWorkbookLanguage = .russian
+        language: AccountantWorkbookLanguage = .russian,
+        units: MeasurementSystem = .miles
     ) -> Data {
-        XlsxWorkbook.data(sheets: sheets(input: input, sections: sections, language: language))
+        XlsxWorkbook.data(sheets: sheets(input: input, sections: sections, language: language, units: units))
     }
 
     /// Dollars saved versus list price, in cents, using Android `UnitPrice.timesGallons` rounding.
@@ -354,27 +393,36 @@ public enum AccountantWorkbook {
         return XlsxSheet(name: copy.summarySheet, rows: rows, headerRow: false)
     }
 
-    private static func loadsSheet(_ input: AccountantWorkbookInput, copy: AccountantWorkbookCopy) -> XlsxSheet {
-        let header = copy.loadsHeader.map {
+    private static func loadsSheet(
+        _ input: AccountantWorkbookInput,
+        copy: AccountantWorkbookCopy,
+        units: MeasurementSystem
+    ) -> XlsxSheet {
+        let header = copy.loadsHeader(units: units).map {
             XlsxCell.text($0)
         }
         let body = input.loads.sorted { $0.date < $1.date }.map { load -> [XlsxCell] in
             let rpm = load.miles > 0 ? load.rate.dollars / load.miles : 0
+            let shownRate = units == .kilometers ? MeasurementUnits.perKilometer(fromPerMile: rpm) : rpm
             return [
                 isoDate(load.date),
                 .text(load.tripId),
                 .text(load.route),
                 money(load.rate),
-                miles(load.miles),
-                rpmCell(rpm),
+                distanceCell(load.miles, units: units),
+                rpmCell(shownRate),
                 integer(load.onDutyDays),
             ]
         }
         return XlsxSheet(name: copy.loadsSheet, rows: [header] + body, headerRow: true)
     }
 
-    private static func dieselSheet(_ input: AccountantWorkbookInput, copy: AccountantWorkbookCopy) -> XlsxSheet {
-        let header = copy.dieselHeader.map { XlsxCell.text($0) }
+    private static func dieselSheet(
+        _ input: AccountantWorkbookInput,
+        copy: AccountantWorkbookCopy,
+        units: MeasurementSystem
+    ) -> XlsxSheet {
+        let header = copy.dieselHeader(units: units).map { XlsxCell.text($0) }
         let body = input.diesel.sorted {
             ($0.year, $0.weekNumber) < ($1.year, $1.weekNumber)
         }.map { fill -> [XlsxCell] in
@@ -389,9 +437,9 @@ public enum AccountantWorkbook {
                 isoDate(fill.weekStartDate),
                 isoDate(fill.weekEndDate),
                 money(fill.totalAmount),
-                gallons(fill.gallons),
-                unitPriceCell(fill.pricePerGallon),
-                unitPriceCell(fill.discountPricePerGallon),
+                volumeCell(fill.gallons, units: units),
+                unitPriceCell(fill.pricePerGallon, units: units),
+                unitPriceCell(fill.discountPricePerGallon, units: units),
                 moneyOrBlank(savings),
                 .text(fill.location),
             ]
@@ -447,21 +495,32 @@ public enum AccountantWorkbook {
         .number(raw: String(value), format: .integer)
     }
 
-    private static func miles(_ value: Double) -> XlsxCell {
-        .number(raw: plain(value, digits: 0), format: .integer)
+    /// Miles stay an integer. Kilometers use two decimals and stay a number, not text.
+    private static func distanceCell(_ miles: Double, units: MeasurementSystem) -> XlsxCell {
+        if units == .kilometers {
+            return .number(raw: plain(MeasurementUnits.kilometers(fromMiles: miles), digits: 2), format: .decimal2)
+        }
+        return .number(raw: plain(miles, digits: 0), format: .integer)
     }
 
     private static func rpmCell(_ value: Double) -> XlsxCell {
         .number(raw: plain(value), format: .decimal2)
     }
 
-    private static func gallons(_ value: Double?) -> XlsxCell {
-        guard let value else { return .blank }
-        return .number(raw: plain(value), format: .decimal2)
+    private static func volumeCell(_ gallons: Double?, units: MeasurementSystem) -> XlsxCell {
+        guard let gallons else { return .blank }
+        let shown = units == .kilometers ? MeasurementUnits.liters(fromGallons: gallons) : gallons
+        return .number(raw: plain(shown), format: .decimal2)
     }
 
-    private static func unitPriceCell(_ dollars: Double?) -> XlsxCell {
-        let raw = unitPrice(dollars)
+    private static func unitPriceCell(_ dollars: Double?, units: MeasurementSystem) -> XlsxCell {
+        let shown: Double?
+        if let dollars, units == .kilometers {
+            shown = MeasurementUnits.pricePerLiter(fromPricePerGallon: dollars)
+        } else {
+            shown = dollars
+        }
+        let raw = unitPrice(shown)
         guard !raw.isEmpty else { return .blank }
         return .number(raw: raw, format: .decimal3)
     }

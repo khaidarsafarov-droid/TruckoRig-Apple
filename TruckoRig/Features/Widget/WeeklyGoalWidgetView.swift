@@ -25,6 +25,11 @@ struct WeeklyGoalWidgetView: View {
 
     private var data: WidgetGoalSnapshot { snapshot ?? .placeholder }
 
+    /// The app publishes the resolved system into the App Group. Miles when it has not yet.
+    private var measurementSystem: MeasurementSystem {
+        UnitPreference.readResolved(UserDefaults(suiteName: WidgetBridge.appGroup))
+    }
+
     var body: some View {
         Group {
             switch family {
@@ -85,7 +90,7 @@ struct WeeklyGoalWidgetView: View {
             }
             if data.rpm > 0 {
                 Link(destination: WidgetDeepLink.url(for: .analytics)) {
-                    Text(String(localized: "widget.rpm.pill \(USMoneyFormat.rpm(data.rpm))"))
+                    Text(String(localized: "widget.rpm.pill \(USMoneyFormat.rpm(MeasurementUnits.displayPerDistance(data.rpm, system: measurementSystem)))"))
                         .font(widgetFont(.bold, 11))
                         .foregroundStyle(Color.forestSuccess)
                         .lineLimit(1)

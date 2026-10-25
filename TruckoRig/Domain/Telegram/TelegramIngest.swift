@@ -111,14 +111,20 @@ public enum TelegramIngest {
         }
     }
 
-    public static func savedLoadReply(_ load: ParsedLoad, added: Bool, language: TelegramLanguage) -> String {
+    public static func savedLoadReply(
+        _ load: ParsedLoad,
+        added: Bool,
+        language: TelegramLanguage,
+        system: MeasurementSystem = .miles
+    ) -> String {
         let headKey = added ? "load_added" : "load_skipped"
         let head = TelegramCopy.text(headKey, language, load.tripId)
         let detail = TelegramLoadReply.detail(
             rate: load.totalRate,
             miles: load.totalMiles,
             origin: load.pointA,
-            destination: load.pointB
+            destination: load.pointB,
+            system: system
         )
         return detail.isEmpty ? head : head + "\n" + detail
     }

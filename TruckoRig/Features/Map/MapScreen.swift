@@ -80,6 +80,7 @@ private struct MapScreenBody: View {
                             snapshot: snapshot,
                             outlines: outlines,
                             locale: locale,
+                            system: system,
                             zoom: MapCamera.cardZoom,
                             showsExpand: true,
                             onSelect: select,
@@ -104,6 +105,7 @@ private struct MapScreenBody: View {
         }
         .fullScreenCover(isPresented: $fullscreen) {
             MapFullscreenCover(
+                system: appState.settings.measurementSystem,
                 snapshot: snapshot,
                 outlines: outlines,
                 locale: locale,
@@ -154,7 +156,7 @@ private struct MapScreenBody: View {
             labeledTitle("mappin.circle", text: String(localized: "map.state.header \(stateName(summary.stateCode)) \(summary.stateCode)"))
             labeledBody(
                 "speedometer",
-                text: String(localized: "map.state.avg \(rpm(summary.avgOutboundRpm.dollars)) \(summary.outboundTrips)")
+                text: stateAverage(summary)
             )
             labeledTitle("clock", text: String(localized: "map.recent.title"))
             if summary.recent.isEmpty {
@@ -179,7 +181,7 @@ private struct MapScreenBody: View {
                     Image(systemName: "truck.box")
                         .font(.caption)
                         .foregroundStyle(Color.forestTextSecondary)
-                    Text(String(localized: "map.lane \(lane.fromState) \(lane.toState) \(rpm(lane.avgRpm.dollars)) \(lane.tripCount)"))
+                    Text(laneText(lane))
                         .font(.appCaption)
                         .foregroundStyle(Color.forestTextSecondary)
                 }
@@ -193,7 +195,7 @@ private struct MapScreenBody: View {
             Image(systemName: "clock")
                 .font(.caption)
                 .foregroundStyle(Color.forestTextSecondary)
-            Text(String(localized: "map.recent \(report.fromState) \(report.toState) \(rpm(report.rpm.dollars)) \(age)"))
+            Text(recentText(report, age: age))
                 .font(.appBody)
                 .foregroundStyle(Color.forestText)
         }
@@ -267,8 +269,35 @@ private struct MapScreenBody: View {
         return USStates.name(code: code) ?? code
     }
 
-    private func rpm(_ dollars: Double) -> String {
-        MapNumberFormat.rpm(dollars, locale: locale)
+    private var system: MeasurementSystem { appState.settings.measurementSystem }
+
+    private func rpm(_ dollarsPerMile: Double) -> String {
+        let shown = MeasurementUnits.displayPerDistance(dollarsPerMile, system: system)
+        return MapNumberFormat.rpm(shown, locale: locale)
+    }
+
+    private func stateAverage(_ summary: CrowdStateSummary) -> String {
+        let value = rpm(summary.avgOutboundRpm.dollars)
+        if system == .kilometers {
+            return String(localized: "map.state.avg.km \(value) \(summary.outboundTrips)")
+        }
+        return String(localized: "map.state.avg \(value) \(summary.outboundTrips)")
+    }
+
+    private func laneText(_ lane: CrowdLaneAggregate) -> String {
+        let value = rpm(lane.avgRpm.dollars)
+        if system == .kilometers {
+            return String(localized: "map.lane.km \(lane.fromState) \(lane.toState) \(value) \(lane.tripCount)")
+        }
+        return String(localized: "map.lane \(lane.fromState) \(lane.toState) \(value) \(lane.tripCount)")
+    }
+
+    private func recentText(_ report: CrowdRateReport, age: String) -> String {
+        let value = rpm(report.rpm.dollars)
+        if system == .kilometers {
+            return String(localized: "map.recent.km \(report.fromState) \(report.toState) \(value) \(age)")
+        }
+        return String(localized: "map.recent \(report.fromState) \(report.toState) \(value) \(age)")
     }
 
     private func periodTitle(_ period: MapPeriod) -> LocalizedStringKey {
@@ -316,6 +345,7 @@ private struct MapFullscreenCover: View {
     var snapshot: MapSnapshot
     var outlines: [StatePolygon]
     var locale: Locale
+    var system: MeasurementSystem = .miles
     var onSelect: (String) -> Void
     var onClose: () -> Void
 
@@ -325,6 +355,7 @@ private struct MapFullscreenCover: View {
                 snapshot: snapshot,
                 outlines: outlines,
                 locale: locale,
+                system: system,
                 zoom: MapCamera.fullscreenZoom,
                 showsExpand: false,
                 onSelect: onSelect,
@@ -350,6 +381,7 @@ private struct MapHeatmapCard: View {
     var snapshot: MapSnapshot
     var outlines: [StatePolygon]
     var locale: Locale
+    var system: MeasurementSystem = .miles
     var zoom: Float
     var showsExpand: Bool
     var onSelect: (String) -> Void
@@ -447,13 +479,16 @@ private struct MapHeatmapCard: View {
 
     private func detail(_ state: USStateMetric) -> some View {
         let name = stateName(state.code)
-        let rpmText = state.trips > 0 ? MapNumberFormat.rpm(state.revenuePerMile, locale: locale) : "—"
+        let shown = MeasurementUnits.displayPerDistance(state.revenuePerMile, system: system)
+        let rpmText = state.trips > 0 ? MapNumberFormat.rpm(shown, locale: locale) : "—"
         let gross = MapNumberFormat.gross(state.revenue, locale: locale)
         return VStack(alignment: .leading, spacing: 4) {
             Text(String(localized: "map.detail.trips \(name) \(state.code) \(state.trips)"))
                 .font(.appBodyMedium)
                 .foregroundStyle(Color.forestText)
-            Text(String(localized: "map.detail.rpm \(rpmText)"))
+            Text(system == .kilometers
+                 ? String(localized: "map.detail.perKilometer \(rpmText)")
+                 : String(localized: "map.detail.rpm \(rpmText)"))
                 .font(.appBody)
                 .foregroundStyle(Color.forestTextSecondary)
             Text(String(localized: "map.detail.gross \(gross)"))

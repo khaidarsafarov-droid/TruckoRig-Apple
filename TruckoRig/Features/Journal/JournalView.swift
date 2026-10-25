@@ -189,7 +189,10 @@ struct JournalView: View {
             guard let start = week.startDate(of: ref), let end = week.endDate(of: ref) else { return progress.weekLabel }
             return SplitWeekRange.homeCaption(start: start, end: end, calendar: week.calendar, locale: .current)
         }()
-        let rpm = progress.totalMiles > 0 ? USMoneyFormat.rpmPerMile(progress.currentGross / progress.totalMiles) : "—"
+        let system = appState.settings.measurementSystem
+        let rpm = progress.totalMiles > 0
+            ? USMoneyFormat.rpmPerMile(progress.currentGross / progress.totalMiles, system: system)
+            : "—"
         return HomeWeekHeroCard(
             weekNumber: ref.weekNumber,
             rangeCaption: caption,
@@ -197,7 +200,8 @@ struct JournalView: View {
             goal: progress.targetAmount,
             percent: progress.progressPercent,
             rpmText: rpm,
-            milesText: USMoneyFormat.number(progress.totalMiles),
+            milesText: USMoneyFormat.number(MeasurementUnits.displayDistance(progress.totalMiles, system: system)),
+            measurementSystem: system,
             loadCount: progress.loadsCount,
             dayLabels: narrowDays(week: week, ref: ref),
             elapsedDays: week.daysElapsed(),

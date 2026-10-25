@@ -16,6 +16,8 @@ struct MaintenanceTaskEditor: View {
     @State private var odometer = ""
     @State private var errorKey: String?
 
+    private var system: MeasurementSystem { appState.settings.measurementSystem }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -26,16 +28,25 @@ struct MaintenanceTaskEditor: View {
                 )
                 DatePicker("maintenance.field.date", selection: $start, displayedComponents: .date)
                 Picker("maintenance.add.task", selection: $reminderType) {
-                    Text("maintenance.byMiles").tag(MaintenanceReminderType.miles)
+                    Text(system == .kilometers ? "maintenance.byKilometers" : "maintenance.byMiles")
+                        .tag(MaintenanceReminderType.miles)
                     Text("maintenance.byDate").tag(MaintenanceReminderType.date)
                 }
                 .pickerStyle(.segmented)
                 if reminderType == .miles {
-                    SoftTextField(title: "maintenance.interval", text: $interval, keyboard: .decimalPad)
+                    SoftTextField(
+                        title: system == .kilometers ? "maintenance.interval.kilometers" : "maintenance.interval",
+                        text: $interval,
+                        keyboard: .decimalPad
+                    )
                 } else {
                     DatePicker("maintenance.dueDate", selection: $due, displayedComponents: .date)
                 }
-                SoftTextField(title: "maintenance.odometer.current", text: $odometer, keyboard: .decimalPad)
+                SoftTextField(
+                    title: system == .kilometers ? "maintenance.odometer.current.kilometers" : "maintenance.odometer.current",
+                    text: $odometer,
+                    keyboard: .decimalPad
+                )
                 if let errorKey {
                     Text(LocalizedStringKey(errorKey))
                         .font(.appCaption)
@@ -61,8 +72,8 @@ struct MaintenanceTaskEditor: View {
             title: title,
             startDate: MaintenanceMileage.isoDay(start, calendar: calendar),
             reminderType: reminderType,
-            intervalMiles: interval,
-            odometerAtStart: odometer,
+            intervalMiles: UnitEntry.storageDistanceText(interval, system: system),
+            odometerAtStart: UnitEntry.storageDistanceText(odometer, system: system),
             dueDate: reminderType == .date ? MaintenanceMileage.isoDay(due, calendar: calendar) : ""
         )
         switch draft.validated(nowMillis: Int64(Date().timeIntervalSince1970 * 1000)) {
@@ -74,7 +85,7 @@ struct MaintenanceTaskEditor: View {
                 errorKey = "maintenance.error.save"
             }
         case .failure(let failure):
-            errorKey = failure.catalogKey
+            errorKey = failure.catalogKey(system: system)
         }
     }
 }
@@ -186,11 +197,13 @@ struct MaintenanceArchiveEditor: View {
 }
 
 extension MaintenanceTaskDraft.Failure {
-    var catalogKey: String {
+    func catalogKey(system: MeasurementSystem) -> String {
         switch self {
         case .emptyTitle: return "maintenance.error.title"
-        case .invalidInterval: return "maintenance.error.interval"
-        case .invalidOdometer: return "maintenance.error.odometer"
+        case .invalidInterval:
+            return system == .kilometers ? "maintenance.error.kilometers" : "maintenance.error.interval"
+        case .invalidOdometer:
+            return system == .kilometers ? "maintenance.error.odometer.kilometers" : "maintenance.error.odometer"
         case .invalidDueDate: return "maintenance.error.due"
         }
     }
