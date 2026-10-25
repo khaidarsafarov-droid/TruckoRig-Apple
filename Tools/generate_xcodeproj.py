@@ -59,6 +59,7 @@ WIDGET_SHARED_SOURCES = [
     "TruckoRig/Domain/Models/RPMBand.swift",
     "TruckoRig/Domain/Models/WeeklyGoalProgress.swift",
     "TruckoRig/Domain/Models/WidgetGoalSnapshot.swift",
+    "TruckoRig/Domain/Units/MeasurementUnits.swift",
     "TruckoRig/Features/Widget/WeeklyGoalWidgetView.swift",
 ]
 

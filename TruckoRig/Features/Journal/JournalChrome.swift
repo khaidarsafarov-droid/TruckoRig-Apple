@@ -89,6 +89,7 @@ struct HomeWeekHeroCard: View {
     let percent: Double
     let rpmText: String
     let milesText: String
+    var measurementSystem: MeasurementSystem = .miles
     let loadCount: Int
     let dayLabels: [String]
     let elapsedDays: Int
@@ -147,9 +148,9 @@ struct HomeWeekHeroCard: View {
             .padding(.top, 14)
 
             HStack(alignment: .top) {
-                heroStat("home.stat.rpm", rpmText)
+                heroStat(measurementSystem == .kilometers ? "home.stat.perKilometer" : "home.stat.rpm", rpmText)
                 Spacer()
-                heroStat("home.stat.miles", milesText)
+                heroStat(measurementSystem == .kilometers ? "home.stat.kilometers" : "home.stat.miles", milesText)
                 Spacer()
                 heroStat("home.stat.loads", "\(loadCount)")
             }
@@ -204,7 +205,10 @@ struct JournalLoadCard: View {
     var onCamera: () -> Void
     var onScan: () -> Void
 
+    @Environment(AppState.self) private var appState
     @Environment(\.locale) private var locale
+
+    private var system: MeasurementSystem { appState.settings.measurementSystem }
 
     private var band: RPMBand {
         RPMCalculator.band(for: load.ratePerMile, thresholds: thresholds)
@@ -274,8 +278,20 @@ struct JournalLoadCard: View {
         return "\(date) · \(trip)"
     }
 
+    private var distanceFact: String {
+        let shown = USMoneyFormat.number(MeasurementUnits.displayDistance(load.totalMiles, system: system))
+        if system == .kilometers {
+            return String(localized: "load.card.kilometers \(shown)")
+        }
+        return String(localized: "load.card.miles \(shown)")
+    }
+
     private var rpmBadge: String {
-        let amount = String(format: "%.2f", locale: Locale(identifier: "en_US"), load.ratePerMile)
+        let shown = MeasurementUnits.displayPerDistance(load.ratePerMile, system: system)
+        let amount = String(format: "%.2f", locale: Locale(identifier: "en_US"), shown)
+        if system == .kilometers {
+            return String(localized: "load.card.perKilometer \(amount)")
+        }
         return String(localized: "load.card.rpm \(amount)")
     }
 
@@ -314,7 +330,7 @@ struct JournalLoadCard: View {
     private var facts: some View {
         let stops = load.stopCount > 0 ? load.stopCount : load.puCount + load.delCount
         return HStack(spacing: 10) {
-            fact("mappin", String(localized: "load.card.miles \(USMoneyFormat.number(load.totalMiles))"), Color.forestPrimary)
+            fact("mappin", distanceFact, Color.forestPrimary)
             if stops > 0 {
                 fact("flag", stopsPhrase(stops, locale: locale), Color.forestWarning)
             }

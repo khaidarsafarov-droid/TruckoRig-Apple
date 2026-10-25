@@ -95,6 +95,38 @@ struct SettingsView: View {
                         Text(language.displayName).tag(language)
                     }
                 }
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("settings.units")
+                        .font(.appBodyMedium)
+                        .foregroundStyle(Color.forestText)
+                    HStack(spacing: 8) {
+                        ForEach(MeasurementSystem.allCases, id: \.self) { system in
+                            Button {
+                                settings.chooseMeasurementSystem(system)
+                            } label: {
+                                Text(system == .kilometers ? "settings.units.kilometers" : "settings.units.miles")
+                                    .font(.appCaptionMedium)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.7)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 4)
+                                    .foregroundStyle(settings.measurementSystem == system ? Color.forestOnPrimary : Color.forestText)
+                                    .background(
+                                        settings.measurementSystem == system
+                                            ? AnyShapeStyle(Color.forestPrimary)
+                                            : AnyShapeStyle(Color.forestSurfaceMuted),
+                                        in: Capsule()
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityAddTraits(settings.measurementSystem == system ? .isSelected : AccessibilityTraits())
+                        }
+                    }
+                    Text("settings.units.hint")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
                 Picker("settings.weekStart", selection: $settings.weekStart) {
                     ForEach(WeekStartDay.allCases, id: \.self) { day in
                         Text(weekdayName(day)).tag(day)
@@ -137,9 +169,15 @@ struct SettingsView: View {
             .onChange(of: settings.quietStartHour) { appState.scheduleReminders() }
             .onChange(of: settings.quietEndHour) { appState.scheduleReminders() }
 
-            Section("settings.rpm") {
-                SoftNumberField(title: "settings.rpm.min", value: $settings.rpmMinProfit)
-                SoftNumberField(title: "settings.rpm.target", value: $settings.rpmTargetProfit)
+            Section(settings.measurementSystem == .kilometers ? "settings.rpm.perKilometer" : "settings.rpm") {
+                SoftNumberField(
+                    title: "settings.rpm.min",
+                    value: UnitEntry.perDistance(stored: $settings.rpmMinProfit, system: settings.measurementSystem)
+                )
+                SoftNumberField(
+                    title: "settings.rpm.target",
+                    value: UnitEntry.perDistance(stored: $settings.rpmTargetProfit, system: settings.measurementSystem)
+                )
                 if let failure = settings.rpmThresholds.validationFailure {
                     Text(failure.localizedMessage)
                         .font(.appCaption)

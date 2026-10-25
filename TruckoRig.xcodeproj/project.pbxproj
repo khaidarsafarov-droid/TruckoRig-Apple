@@ -69,6 +69,7 @@
 		40721081B2854BE9A2DB0B99 /* LocationProvider.swift */ = {isa = PBXBuildFile; fileRef = 96504B9424D3E602FA85310E /* LocationProvider.swift */; };
 		B3DEF67D94C5A632591B98CD /* OCRService.swift */ = {isa = PBXBuildFile; fileRef = E2B035AF781CC96577EF33A1 /* OCRService.swift */; };
 		553B8278C13DBCED044A9B21 /* StringUtils.swift */ = {isa = PBXBuildFile; fileRef = C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */; };
+		98AC20431B9137A089548D73 /* UnitEntry.swift */ = {isa = PBXBuildFile; fileRef = F0CED976358B2E52FCED5382 /* UnitEntry.swift */; };
 		4E35DF5735EA9DB8D6C09EC1 /* BackupAccount.swift */ = {isa = PBXBuildFile; fileRef = 085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */; };
 		FE9FBDC58450BA99FCAFCAA2 /* BackupData.swift */ = {isa = PBXBuildFile; fileRef = 92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */; };
 		306760269278F232415BDE90 /* BackupRestoreParser.swift */ = {isa = PBXBuildFile; fileRef = 0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */; };
@@ -146,6 +147,7 @@
 		C288365A2FB5732B5CB82B21 /* TelegramIngest.swift */ = {isa = PBXBuildFile; fileRef = 265AC9773540258462A8600C /* TelegramIngest.swift */; };
 		DE71D13A285D11E6AB76E54B /* TelegramRouter.swift */ = {isa = PBXBuildFile; fileRef = AB0FAE50F5588FF5A602096D /* TelegramRouter.swift */; };
 		C1B6ED0423C2D778FE6AA316 /* TelegramRules.swift */ = {isa = PBXBuildFile; fileRef = 47227EDBF85F0CF4CBE27DA1 /* TelegramRules.swift */; };
+		7CB1D16384BC1C97AD73E4C2 /* MeasurementUnits.swift */ = {isa = PBXBuildFile; fileRef = 95D3018275DEA547F3A5389A /* MeasurementUnits.swift */; };
 		41337E43A160A90A9FD098A5 /* AboutView.swift */ = {isa = PBXBuildFile; fileRef = A416561E153F0B243AB7601D /* AboutView.swift */; };
 		78B4F2FBB9371868A4306A97 /* AddLoadView.swift */ = {isa = PBXBuildFile; fileRef = A1D9BAE2B452EE01F7DB96E6 /* AddLoadView.swift */; };
 		C2F9C74AC31F4EB6834C1C5A /* AddLoadViewModel.swift */ = {isa = PBXBuildFile; fileRef = 2696B59F74FCB1C606B87648 /* AddLoadViewModel.swift */; };
@@ -219,6 +221,7 @@
 		F1F19CEEDC02C02E3D379573 /* RPMBand.swift */ = {isa = PBXBuildFile; fileRef = 889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */; };
 		B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
 		5D875C6DBAA11918AC1FFA99 /* WidgetGoalSnapshot.swift */ = {isa = PBXBuildFile; fileRef = EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */; };
+		1DA7064EEABB37888088B409 /* MeasurementUnits.swift */ = {isa = PBXBuildFile; fileRef = 95D3018275DEA547F3A5389A /* MeasurementUnits.swift */; };
 		6AE33D0C5FDC3718A2913E73 /* WeeklyGoalWidgetView.swift */ = {isa = PBXBuildFile; fileRef = 524C870A8264FB24502BC989 /* WeeklyGoalWidgetView.swift */; };
 		20CED632B344F7FD0AC29D72 /* Localizable.xcstrings */ = {isa = PBXBuildFile; fileRef = 1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */; };
 		35C174882C15655AD79B9FF7 /* DMSans-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 18B296FD6E5CBD2A9AECE31B /* DMSans-Bold.ttf */; };
@@ -237,6 +240,7 @@
 		73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */ = {isa = PBXBuildFile; fileRef = 275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */; };
 		9C8948936BC8981F577782E7 /* ThemeSettingsTests.swift */ = {isa = PBXBuildFile; fileRef = C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */; };
 		43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */ = {isa = PBXBuildFile; fileRef = F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */; };
+		E2C87B3C6FEE89C6DC18615F /* UnitSettingsTests.swift */ = {isa = PBXBuildFile; fileRef = F5B65FB147624C2CD30BA9F4 /* UnitSettingsTests.swift */; };
 		8C92BA158F040C1659892D89 /* WidgetLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */; };
 		B0CBF53E11D3FEA8B2A90041 /* AddLoadNotesUITests.swift */ = {isa = PBXBuildFile; fileRef = 47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */; };
 		109E7A66906193EF84584997 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 1B12FA89457B475550D08A7A /* GRDB */; };
@@ -346,6 +350,7 @@
 		96504B9424D3E602FA85310E /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationProvider.swift"; sourceTree = "<group>"; };
 		E2B035AF781CC96577EF33A1 /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCRService.swift"; sourceTree = "<group>"; };
 		C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringUtils.swift"; sourceTree = "<group>"; };
+		F0CED976358B2E52FCED5382 /* UnitEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnitEntry.swift"; sourceTree = "<group>"; };
 		085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupAccount.swift"; sourceTree = "<group>"; };
 		92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupData.swift"; sourceTree = "<group>"; };
 		0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreParser.swift"; sourceTree = "<group>"; };
@@ -423,6 +428,7 @@
 		265AC9773540258462A8600C /* TelegramIngest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramIngest.swift"; sourceTree = "<group>"; };
 		AB0FAE50F5588FF5A602096D /* TelegramRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramRouter.swift"; sourceTree = "<group>"; };
 		47227EDBF85F0CF4CBE27DA1 /* TelegramRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramRules.swift"; sourceTree = "<group>"; };
+		95D3018275DEA547F3A5389A /* MeasurementUnits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MeasurementUnits.swift"; sourceTree = "<group>"; };
 		A416561E153F0B243AB7601D /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AboutView.swift"; sourceTree = "<group>"; };
 		A1D9BAE2B452EE01F7DB96E6 /* AddLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddLoadView.swift"; sourceTree = "<group>"; };
 		2696B59F74FCB1C606B87648 /* AddLoadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddLoadViewModel.swift"; sourceTree = "<group>"; };
@@ -499,6 +505,7 @@
 		275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramTokenStoreTests.swift"; sourceTree = "<group>"; };
 		C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeSettingsTests.swift"; sourceTree = "<group>"; };
 		F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderControllerTests.swift"; sourceTree = "<group>"; };
+		F5B65FB147624C2CD30BA9F4 /* UnitSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnitSettingsTests.swift"; sourceTree = "<group>"; };
 		C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetLayoutTests.swift"; sourceTree = "<group>"; };
 		47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddLoadNotesUITests.swift"; sourceTree = "<group>"; };
 		3D08B4495962CCBD862A7377 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
@@ -733,6 +740,7 @@
 				96504B9424D3E602FA85310E /* LocationProvider.swift */,
 				E2B035AF781CC96577EF33A1 /* OCRService.swift */,
 				C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */,
+				F0CED976358B2E52FCED5382 /* UnitEntry.swift */,
 			);
 			path = "Utils";
 			sourceTree = "<group>";
@@ -758,6 +766,7 @@
 				5C8093349FAB4075D9514D72 /* Receipts */,
 				FDED2F2045248E329691F51E /* Tax */,
 				B1F5FEDB0865207E1E84621B /* Telegram */,
+				A3A7D16827AB33799B159C1E /* Units */,
 			);
 			path = "Domain";
 			sourceTree = "<group>";
@@ -963,6 +972,14 @@
 				47227EDBF85F0CF4CBE27DA1 /* TelegramRules.swift */,
 			);
 			path = "Telegram";
+			sourceTree = "<group>";
+		};
+		A3A7D16827AB33799B159C1E /* Units */ = {
+			isa = PBXGroup;
+			children = (
+				95D3018275DEA547F3A5389A /* MeasurementUnits.swift */,
+			);
+			path = "Units";
 			sourceTree = "<group>";
 		};
 		DADD039E2BF8E6C203E078B8 /* Features */ = {
@@ -1273,6 +1290,7 @@
 				275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */,
 				C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */,
 				F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */,
+				F5B65FB147624C2CD30BA9F4 /* UnitSettingsTests.swift */,
 				C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */,
 			);
 			path = "TruckoRigTests";
@@ -1544,6 +1562,7 @@
 				40721081B2854BE9A2DB0B99 /* LocationProvider.swift */,
 				B3DEF67D94C5A632591B98CD /* OCRService.swift */,
 				553B8278C13DBCED044A9B21 /* StringUtils.swift */,
+				98AC20431B9137A089548D73 /* UnitEntry.swift */,
 				4E35DF5735EA9DB8D6C09EC1 /* BackupAccount.swift */,
 				FE9FBDC58450BA99FCAFCAA2 /* BackupData.swift */,
 				306760269278F232415BDE90 /* BackupRestoreParser.swift */,
@@ -1621,6 +1640,7 @@
 				C288365A2FB5732B5CB82B21 /* TelegramIngest.swift */,
 				DE71D13A285D11E6AB76E54B /* TelegramRouter.swift */,
 				C1B6ED0423C2D778FE6AA316 /* TelegramRules.swift */,
+				7CB1D16384BC1C97AD73E4C2 /* MeasurementUnits.swift */,
 				41337E43A160A90A9FD098A5 /* AboutView.swift */,
 				78B4F2FBB9371868A4306A97 /* AddLoadView.swift */,
 				C2F9C74AC31F4EB6834C1C5A /* AddLoadViewModel.swift */,
@@ -1690,6 +1710,7 @@
 				F1F19CEEDC02C02E3D379573 /* RPMBand.swift */,
 				B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */,
 				5D875C6DBAA11918AC1FFA99 /* WidgetGoalSnapshot.swift */,
+				1DA7064EEABB37888088B409 /* MeasurementUnits.swift */,
 				6AE33D0C5FDC3718A2913E73 /* WeeklyGoalWidgetView.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1707,6 +1728,7 @@
 				73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */,
 				9C8948936BC8981F577782E7 /* ThemeSettingsTests.swift */,
 				43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */,
+				E2C87B3C6FEE89C6DC18615F /* UnitSettingsTests.swift */,
 				8C92BA158F040C1659892D89 /* WidgetLayoutTests.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

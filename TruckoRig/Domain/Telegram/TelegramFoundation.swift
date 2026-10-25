@@ -222,9 +222,17 @@ public struct TelegramLoadReply: Equatable, Sendable {
         return to
     }
 
-    public static func detail(rate: Double, miles: Double, origin: String, destination: String) -> String {
+    public static func detail(
+        rate: Double,
+        miles: Double,
+        origin: String,
+        destination: String,
+        system: MeasurementSystem = .miles
+    ) -> String {
         let money = rate > 0 ? TelegramFigures.dollars(Int64((rate * 100).rounded())) : ""
-        let milesText = miles > 0 ? "\(TelegramFigures.miles(miles)) mi" : ""
+        let shown = MeasurementUnits.displayDistance(miles, system: system)
+        let suffix = system == .kilometers ? "km" : "mi"
+        let milesText = miles > 0 ? "\(TelegramFigures.miles(shown)) \(suffix)" : ""
         let figures = [money, milesText].filter { !$0.isEmpty }.joined(separator: " · ")
         let route = route(origin: origin, destination: destination)
         return [figures, route].filter { !$0.isEmpty }.joined(separator: "\n")

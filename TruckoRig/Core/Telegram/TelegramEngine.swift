@@ -226,7 +226,8 @@ final class TelegramEngine {
             totalLoads: graph.loads.count,
             weekLoads: weekLoads.count,
             weekGross: weekLoads.reduce(0) { $0 + $1.totalRate },
-            weekMiles: weekLoads.reduce(0) { $0 + $1.totalMiles }
+            weekMiles: weekLoads.reduce(0) { $0 + $1.totalMiles },
+            measurementSystem: settings.measurementSystem
         )
     }
 
@@ -305,7 +306,7 @@ final class TelegramEngine {
                 let saved = try repository.create(draft)
                 prefs.lastLoadId = saved.id.uuidString
                 prefs.lastLoadTrip = saved.tripId
-                lines.append(TelegramIngest.savedLoadReply(load, added: true, language: language))
+                lines.append(TelegramIngest.savedLoadReply(load, added: true, language: language, system: settings.measurementSystem))
             } catch LoadRepositoryError.duplicateTripId {
                 lines.append(TelegramIngest.duplicateReply(load.tripId, language))
             } catch {
@@ -356,13 +357,16 @@ final class TelegramEngine {
         }
         let loads = LoadMessageParser.parseAll(text, reference: reference)
         if loads.isEmpty { return TelegramCopy.text("sync_restore_manual_not_load", language) }
+        let system = settings.measurementSystem
+        let distance = MeasurementUnits.displayDistance(loads[0].totalMiles, system: system)
+        let addedKey = system == .kilometers ? "sync_restore_manual_added_km" : "sync_restore_manual_added"
         return saveLoads(loads, raw: text).replacingOccurrences(
             of: TelegramCopy.text("load_added", language, loads[0].tripId),
             with: TelegramCopy.text(
-                "sync_restore_manual_added",
+                addedKey,
                 language,
                 loads[0].tripId,
-                TelegramFigures.miles(loads[0].totalMiles),
+                TelegramFigures.miles(distance),
                 TelegramFigures.plainGrouped(loads[0].totalRate)
             )
         )
@@ -392,7 +396,13 @@ final class TelegramEngine {
         load.refreshDerivedFields(week: week)
         try? database.save(load)
         onJournalChanged?()
-        let detail = TelegramLoadReply.detail(rate: load.totalRate, miles: load.totalMiles, origin: load.pointA ?? "", destination: load.pointB ?? "")
+        let detail = TelegramLoadReply.detail(
+            rate: load.totalRate,
+            miles: load.totalMiles,
+            origin: load.pointA ?? "",
+            destination: load.pointB ?? "",
+            system: settings.measurementSystem
+        )
         return TelegramCopy.text("sync_load_rate_updated", language, load.tripId, detail)
     }
 

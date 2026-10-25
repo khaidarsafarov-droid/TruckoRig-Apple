@@ -119,6 +119,60 @@ final class AccountantWorkbookTests: XCTestCase {
         XCTAssertEqual(AccountantWorkbook.fileLabel([.maintenance]), "Maintenance")
     }
 
+    func testKilometerCaptionsConvertNumbersAndKeepSheetShape() throws {
+        let miles = try unzip(AccountantWorkbook.data(input: sampleInput(), sections: [.all]))
+        let kilometers = try unzip(
+            AccountantWorkbook.data(input: sampleInput(), sections: [.all], units: .kilometers)
+        )
+        let french = try unzip(
+            AccountantWorkbook.data(input: sampleInput(), sections: [.all], language: .french, units: .kilometers)
+        )
+        let mileNames = try sheetNames(in: miles)
+        let kilometerNames = try sheetNames(in: kilometers)
+        let frenchNames = try sheetNames(in: french)
+        XCTAssertEqual(kilometerNames, mileNames)
+        XCTAssertEqual(frenchNames, ["Sommaire", "Voyages", "Diesel", "Indemnité", "Entretien"])
+
+        let mileLoads = try rows(named: "Грузы", names: mileNames, files: miles)
+        let kilometerLoads = try rows(named: "Грузы", names: kilometerNames, files: kilometers)
+        XCTAssertEqual(kilometerLoads[0].count, mileLoads[0].count)
+        XCTAssertEqual(
+            kilometerLoads[0],
+            ["Дата", "Trip ID", "Маршрут", "Ставка, USD", "Километры", "$/км", "Дней на рейсе"]
+        )
+        XCTAssertEqual(kilometerLoads[1][3], "1000.00")
+        XCTAssertEqual(kilometerLoads[1][4], plain(400 * 1.609344))
+        XCTAssertEqual(kilometerLoads[1][5], plain(2.50 / 1.609344))
+        XCTAssertEqual(kilometerLoads[2][3], "2500.00")
+        XCTAssertEqual(kilometerLoads[2][4], plain(500 * 1.609344))
+        XCTAssertEqual(mileLoads[1][4], "400")
+
+        let kilometerDiesel = try rows(named: "Дизель", names: kilometerNames, files: kilometers)
+        XCTAssertEqual(kilometerDiesel[0].count, 10)
+        XCTAssertEqual(
+            kilometerDiesel[0],
+            ["Неделя", "Год", "Начало недели", "Конец недели", "Сумма, USD", "Литры", "Цена / л", "Цена со скидкой / л", "Экономия, USD", "Место"]
+        )
+        XCTAssertEqual(kilometerDiesel[1][4], "120.50")
+        XCTAssertEqual(kilometerDiesel[1][5], plain(40 * 3.785411784))
+        XCTAssertEqual(kilometerDiesel[1][6], pricePerLiter(3.5))
+
+        let frenchLoads = try rows(named: "Voyages", names: frenchNames, files: french)
+        XCTAssertEqual(frenchLoads[0].count, kilometerLoads[0].count)
+        XCTAssertEqual(frenchLoads[0][4], "Kilomètres")
+        XCTAssertEqual(frenchLoads[0][5], "$/km")
+        XCTAssertEqual(Array(frenchLoads.dropFirst()), Array(kilometerLoads.dropFirst()))
+        let frenchDiesel = try rows(named: "Diesel", names: frenchNames, files: french)
+        XCTAssertEqual(frenchDiesel[0][5], "Litres")
+        XCTAssertEqual(frenchDiesel[0][6], "Prix / L")
+        XCTAssertEqual(frenchDiesel[0][7], "Prix avec rabais / L")
+        XCTAssertEqual(Array(frenchDiesel.dropFirst()), Array(kilometerDiesel.dropFirst()))
+
+        let typed = try typedRows(named: "Грузы", names: kilometerNames, files: kilometers)
+        XCTAssertEqual(typed[1][4].kind, .number)
+        XCTAssertEqual(typed[1][3].kind, .number)
+    }
+
     func testNumericCellsDatesStylesAndTotals() throws {
         XCTAssertEqual(XlsxWorkbook.excelSerial(iso: "2026-03-02"), 46083)
         XCTAssertEqual(XlsxWorkbook.excelSerial(iso: "1900-03-01"), 61)
@@ -430,6 +484,15 @@ final class AccountantWorkbookTests: XCTestCase {
             ],
             grossIncome: 50_000
         )
+    }
+
+    private func plain(_ value: Double) -> String {
+        String(format: "%.2f", locale: Locale(identifier: "en_US_POSIX"), value)
+    }
+
+    private func pricePerLiter(_ perGallon: Double) -> String {
+        let perLiter = perGallon / 3.785411784
+        return UnitPricePlain.formatPlain(thousandths: UnitPricePlain.thousandths(from: perLiter))
     }
 
     private func unzip(_ data: Data) throws -> [String: Data] {

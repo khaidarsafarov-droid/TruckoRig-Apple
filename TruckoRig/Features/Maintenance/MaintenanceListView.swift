@@ -203,9 +203,10 @@ struct MaintenanceListView: View {
 
     @ViewBuilder
     private func milesBody(_ item: MaintenanceProgress, urgent: Bool) -> some View {
-        let driven = USMoneyFormat.number(item.milesDrivenSinceStart)
-        let remaining = USMoneyFormat.number(max(0, item.milesRemaining ?? 0))
-        Text(milesProgress(driven: driven, loads: item.loadsCounted, remaining: remaining))
+        let system = appState.settings.measurementSystem
+        let driven = USMoneyFormat.number(MeasurementUnits.displayDistance(item.milesDrivenSinceStart, system: system))
+        let remaining = USMoneyFormat.number(MeasurementUnits.displayDistance(max(0, item.milesRemaining ?? 0), system: system))
+        Text(milesProgress(driven: driven, loads: item.loadsCounted, remaining: remaining, system: system))
             .font(.appBody)
             .foregroundStyle(urgent ? Color.forestError : Color.forestText)
         if urgent {
@@ -213,7 +214,7 @@ struct MaintenanceListView: View {
                 .font(.appCallout)
                 .foregroundStyle(Color.forestError)
         }
-        Text(odometerLine(item))
+        Text(odometerLine(item, system: appState.settings.measurementSystem))
             .font(.appCaption)
             .foregroundStyle(Color.forestTextSecondary)
         ProgressView(value: min(1, max(0, item.progressFraction)))
@@ -380,13 +381,19 @@ private func serviceDate(_ iso: String) -> String {
     String(localized: "maintenance.serviceDate \(iso)")
 }
 
-private func milesProgress(driven: String, loads: Int, remaining: String) -> String {
-    String(localized: "maintenance.miles.progress \(driven) \(loads) \(remaining)")
+private func milesProgress(driven: String, loads: Int, remaining: String, system: MeasurementSystem) -> String {
+    if system == .kilometers {
+        return String(localized: "maintenance.kilometers.progress \(driven) \(loads) \(remaining)")
+    }
+    return String(localized: "maintenance.miles.progress \(driven) \(loads) \(remaining)")
 }
 
-private func odometerLine(_ item: MaintenanceProgress) -> String {
-    let estimated = USMoneyFormat.number(item.estimatedOdometer ?? 0)
-    let target = USMoneyFormat.number(item.targetOdometer ?? 0)
+private func odometerLine(_ item: MaintenanceProgress, system: MeasurementSystem) -> String {
+    let estimated = USMoneyFormat.number(MeasurementUnits.displayDistance(item.estimatedOdometer ?? 0, system: system))
+    let target = USMoneyFormat.number(MeasurementUnits.displayDistance(item.targetOdometer ?? 0, system: system))
+    if system == .kilometers {
+        return String(localized: "maintenance.odometer.estimate.km \(estimated) \(target)")
+    }
     return String(localized: "maintenance.odometer.estimate \(estimated) \(target)")
 }
 

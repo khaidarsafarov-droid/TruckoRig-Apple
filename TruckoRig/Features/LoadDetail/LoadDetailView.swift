@@ -76,8 +76,15 @@ struct LoadDetailView: View {
 
             HStack {
                 StatTile(title: "stat.gross", value: Formatters.moneyPrecise(load.totalRate))
-                StatTile(title: "stat.miles", value: Formatters.miles(load.totalMiles))
-                StatTile(title: "stat.rpm", value: Formatters.ratePerMile(load.ratePerMile), tint: band.tint)
+                StatTile(
+                    title: appState.settings.measurementSystem == .kilometers ? "stat.kilometers" : "stat.miles",
+                    value: Formatters.miles(load.totalMiles, system: appState.settings.measurementSystem)
+                )
+                StatTile(
+                    title: "stat.rpm",
+                    value: Formatters.ratePerMile(load.ratePerMile, system: appState.settings.measurementSystem),
+                    tint: band.tint
+                )
             }
 
             HStack {
