@@ -57,9 +57,18 @@ struct ICloudBackupSection: View {
 
     @ViewBuilder
     private func available(_ icloud: ICloudBackupController) -> some View {
-        Text("settings.icloud.hint")
-            .font(.appCaption)
-            .foregroundStyle(Color.forestTextSecondary)
+        if icloud.mediaEnabled {
+            Text("settings.icloud.media.hint")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+            Text("settings.icloud.media.kept")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        } else {
+            Text("settings.icloud.hint")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        }
         Toggle(
             "settings.icloud.auto",
             isOn: Binding(
@@ -67,6 +76,44 @@ struct ICloudBackupSection: View {
                 set: { icloud.setAutoSync($0) }
             )
         )
+        .tint(Color.forestPrimary)
+        Toggle(
+            "settings.icloud.media",
+            isOn: Binding(
+                get: { icloud.mediaEnabled },
+                set: { icloud.setMediaEnabled($0) }
+            )
+        )
+        .tint(Color.forestPrimary)
+        Toggle(
+            "settings.icloud.wifi",
+            isOn: Binding(
+                get: { icloud.wifiOnly },
+                set: { icloud.setWifiOnly($0) }
+            )
+        )
+        .tint(Color.forestPrimary)
+        if icloud.mediaEnabled {
+            Text("settings.icloud.media.power")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        }
+        if icloud.displayedMediaBytes > 0 {
+            Text(String(localized: "settings.icloud.media.size \(Self.byteText(icloud.displayedMediaBytes))"))
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+                .monospacedDigit()
+        }
+        if icloud.lastMediaUploadAt > 0 {
+            Text(String(localized: "settings.icloud.media.uploaded \(ICloudCopyPresentation.dateText(icloud.lastMediaUploadAt))"))
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        } else if icloud.mediaEnabled && icloud.displayedMediaBytes == 0 {
+            Text("settings.icloud.media.none")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        }
+        mediaNotice(icloud.mediaNotice)
         if icloud.lastSyncAt > 0 {
             Text(String(localized: "settings.icloud.lastSync \(ICloudCopyPresentation.dateText(icloud.lastSyncAt))"))
                 .font(.appCaption)
@@ -88,6 +135,38 @@ struct ICloudBackupSection: View {
             }
         } else if icloud.notice != .downloading && icloud.notice != .schemaTooNew {
             Text("settings.icloud.empty")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        }
+    }
+
+    private static func byteText(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
+    }
+
+    @ViewBuilder
+    private func mediaNotice(_ notice: ICloudBackupController.MediaNotice) -> some View {
+        switch notice {
+        case .none, .saved:
+            EmptyView()
+        case .waitingForWifi:
+            Text("settings.icloud.media.wifiWait")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        case .waitingForPower:
+            EmptyView()
+        case .downloading:
+            Text("settings.icloud.media.downloading")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        case .failed:
+            Text("settings.icloud.failed")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestError)
+        case .unsupported:
+            Text("settings.icloud.media.unsupported")
                 .font(.appCaption)
                 .foregroundStyle(Color.forestTextSecondary)
         }
@@ -156,9 +235,23 @@ struct ICloudRestoreView: View {
                         .font(.appCaption)
                         .foregroundStyle(Color.forestTextSecondary)
                 }
+                if let progress = icloud.mediaProgress, progress.total > 0 {
+                    ProgressView(value: Double(progress.completed), total: Double(progress.total))
+                        .tint(Color.forestPrimary)
+                    Text(String(localized: "settings.icloud.media.progress \(progress.completed) \(progress.total)"))
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                        .monospacedDigit()
+                }
+                if icloud.mediaNotice == .downloading {
+                    Text("settings.icloud.media.downloading")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
                 Button("settings.icloud.restoreAction", role: .destructive) {
                     confirm = true
                 }
+                .disabled(icloud.busy)
             } else {
                 Text("settings.icloud.empty")
                     .font(.appCaption)
@@ -194,11 +287,26 @@ struct ICloudRestoreView: View {
     }
 
     private func performRestore() {
+        Task { await performRestoreAsync() }
+    }
+
+    private func performRestoreAsync() async {
         do {
-            let report = try appState.icloud.restore(confirmed: true)
-            doneMessage = String(
-                localized: "settings.backup.success \(report.loads) \(report.paychecks) \(report.diesel)"
-            )
+            let outcome = try await appState.icloud.restoreConfirmed()
+            if outcome.media.unsupported {
+                doneMessage = String(localized: "settings.icloud.media.unsupported")
+            } else if outcome.media.manifestNotReady {
+                doneMessage = String(localized: "settings.icloud.media.downloading")
+            } else if !outcome.media.unavailable.isEmpty {
+                doneMessage = String(
+                    localized: "settings.icloud.media.partial \(outcome.media.unavailable.count)"
+                )
+            } else {
+                let report = outcome.journal
+                doneMessage = String(
+                    localized: "settings.backup.success \(report.loads) \(report.paychecks) \(report.diesel)"
+                )
+            }
         } catch let error as BackupService.Failure {
             errorMessage = BackupService.userMessage(for: error)
         } catch {

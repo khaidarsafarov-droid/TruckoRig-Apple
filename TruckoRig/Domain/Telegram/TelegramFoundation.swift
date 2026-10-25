@@ -102,7 +102,11 @@ public enum TelegramSHA256 {
     }
 
     public static func hex(_ text: String) -> String {
-        digest(Array(text.utf8)).map { String(format: "%02x", $0) }.joined()
+        hex(Array(text.utf8))
+    }
+
+    public static func hex(_ bytes: [UInt8]) -> String {
+        digest(bytes).map { String(format: "%02x", $0) }.joined()
     }
 
     /// First 8 bytes, the stamp Android stores so branding runs once per bot.

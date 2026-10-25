@@ -184,6 +184,7 @@ final class ICloudBackupTests: XCTestCase {
         }
         let identifiers = host?.object(forInfoDictionaryKey: "BGTaskSchedulerPermittedIdentifiers") as? [String]
         XCTAssertTrue(identifiers?.contains(ICloudBackupPolicy.backgroundTaskIdentifier) == true)
+        XCTAssertTrue(identifiers?.contains(ICloudMediaPolicy.backgroundTaskIdentifier) == true)
         let containers = host?.object(forInfoDictionaryKey: "NSUbiquitousContainers") as? [String: Any]
         XCTAssertNotNil(containers?[ICloudBackupPolicy.containerIdentifier])
     }

@@ -18,12 +18,19 @@ final class ICloudDriveStore {
         case readFailed
         case writeFailed
         case notDownloaded
+        case missing
         case tooLarge
+        case refusedSecret
     }
 
     let probe: Probe
     private let fileManager: FileManager
     private var cachedContainerURL: URL?
+    /// Test hook. These relative paths behave as ubiquity items that are not on disk yet.
+    var notDownloadedRelativePaths: Set<String> = []
+    private(set) var downloadRequests: [String] = []
+    private(set) var mediaWrites: [String] = []
+    private(set) var manifestWriteCount = 0
 
     init(probe: Probe = .system, fileManager: FileManager = .default) {
         self.probe = probe
@@ -95,6 +102,7 @@ final class ICloudDriveStore {
             throw Failure.unavailable
         }
         if data.count > BackupSchedule.maxRestoreBytes { throw Failure.tooLarge }
+        if ICloudMediaPolicy.documentIsSecret(Array(data)) { throw Failure.refusedSecret }
         guard let documents = documentsURL() else { throw Failure.unavailable }
         do {
             try fileManager.createDirectory(at: documents, withIntermediateDirectories: true)
@@ -104,6 +112,102 @@ final class ICloudDriveStore {
         let exists = fileManager.fileExists(atPath: url.path)
         try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
         _ = try? resolveConflicts(at: url)
+    }
+
+    func mediaRoot(accountId: String) -> URL? {
+        documentsURL()?
+            .appendingPathComponent(ICloudMediaPolicy.folderName, isDirectory: true)
+            .appendingPathComponent(BackupAccount.sanitizeFilePart(accountId), isDirectory: true)
+    }
+
+    func manifestURL(accountId: String) -> URL? {
+        mediaRoot(accountId: accountId)?
+            .appendingPathComponent(ICloudMediaPolicy.manifestFileName, isDirectory: false)
+    }
+
+    /// `nil` when this account has no manifest yet.
+    func readManifest(accountId: String) throws -> Data? {
+        guard availability() == .available, let url = manifestURL(accountId: accountId) else {
+            throw Failure.unavailable
+        }
+        if notDownloadedRelativePaths.contains(ICloudMediaPolicy.manifestFileName) || isWaitingForDownload(url) {
+            demandDownload(url, relativePath: ICloudMediaPolicy.manifestFileName)
+            throw Failure.notDownloaded
+        }
+        guard fileManager.fileExists(atPath: url.path) else { return nil }
+        return try coordinatedRead(url)
+    }
+
+    func writeManifest(_ data: Data, accountId: String) throws {
+        guard availability() == .available, let url = manifestURL(accountId: accountId) else {
+            throw Failure.unavailable
+        }
+        if ICloudMediaPolicy.documentIsSecret(Array(data)) { throw Failure.refusedSecret }
+        try createParent(of: url)
+        let exists = fileManager.fileExists(atPath: url.path)
+        try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
+        manifestWriteCount += 1
+    }
+
+    /// Reads one media file. A not-yet-local ubiquity item starts downloading and throws
+    /// `notDownloaded`. A path that was never uploaded throws `missing`. Neither deletes anything.
+    func readMedia(accountId: String, relativePath: String) throws -> Data {
+        guard availability() == .available,
+              let url = mediaFileURL(accountId: accountId, relativePath: relativePath)
+        else { throw Failure.unavailable }
+        if notDownloadedRelativePaths.contains(relativePath) || isWaitingForDownload(url) {
+            demandDownload(url, relativePath: relativePath)
+            throw Failure.notDownloaded
+        }
+        guard fileManager.fileExists(atPath: url.path) else { throw Failure.missing }
+        return try coordinatedRead(url)
+    }
+
+    func writeMedia(_ data: Data, accountId: String, relativePath: String) throws {
+        guard availability() == .available,
+              let url = mediaFileURL(accountId: accountId, relativePath: relativePath)
+        else { throw Failure.unavailable }
+        if data.count > ICloudMediaPolicy.maxFileBytes { throw Failure.tooLarge }
+        if ICloudMediaPolicy.fileIsSecret(Array(data)) { throw Failure.refusedSecret }
+        try createParent(of: url)
+        let exists = fileManager.fileExists(atPath: url.path)
+        try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
+        mediaWrites.append(relativePath)
+    }
+
+    private func mediaFileURL(accountId: String, relativePath: String) -> URL? {
+        guard let root = mediaRoot(accountId: accountId) else { return nil }
+        let parts = relativePath.split(separator: "/").map(String.init)
+        guard parts.count == 2,
+              parts[0] == ICloudMediaPolicy.photoDirectory || parts[0] == ICloudMediaPolicy.scanDirectory,
+              ICloudMediaPolicy.canonicalRelativePath(
+                kind: parts[0] == ICloudMediaPolicy.photoDirectory
+                    ? ICloudMediaPolicy.Kind.photo
+                    : ICloudMediaPolicy.Kind.scan,
+                fileName: parts[1]
+              ) == relativePath
+        else { return nil }
+        let url = root.appendingPathComponent(parts[0], isDirectory: true).appendingPathComponent(parts[1])
+        let rootPath = root.standardizedFileURL.path
+        let filePath = url.standardizedFileURL.path
+        guard filePath.hasPrefix(rootPath + "/") else { return nil }
+        return url
+    }
+
+    private func createParent(of url: URL) throws {
+        do {
+            try fileManager.createDirectory(
+                at: url.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+        } catch {
+            throw Failure.writeFailed
+        }
+    }
+
+    private func demandDownload(_ url: URL, relativePath: String) {
+        downloadRequests.append(relativePath)
+        try? fileManager.startDownloadingUbiquitousItem(at: url)
     }
 
     private func isWaitingForDownload(_ url: URL) -> Bool {
@@ -210,10 +314,15 @@ final class ICloudMetadataWatcher: NSObject {
     private var started = false
 
     func start(fileName: String, onUpdate: @escaping () -> Void) {
+        start(fileNames: [fileName], onUpdate: onUpdate)
+    }
+
+    func start(fileNames: [String], onUpdate: @escaping () -> Void) {
         stop()
         self.onUpdate = onUpdate
         query.searchScopes = [ICloudMetadataQueryPlan.ubiquitousDocumentsScope]
-        query.predicate = ICloudMetadataQueryPlan.predicate(fileName: fileName)
+        let predicates = fileNames.map { ICloudMetadataQueryPlan.predicate(fileName: $0) }
+        query.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
         query.notificationBatchingInterval = 1
         NotificationCenter.default.addObserver(
             self,
