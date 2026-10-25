@@ -65,7 +65,7 @@ struct ICloudRemoteSnapshot: Equatable, Sendable {
     var unbound: Bool
 }
 
-enum ICloudSyncOutcome: Equatable, Sendable {
+enum ICloudSyncOutcome: Error, Equatable, Sendable {
     case uploaded(Int64)
     case keepRemote(Int64)
     case inSync
