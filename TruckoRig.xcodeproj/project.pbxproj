@@ -174,6 +174,7 @@
 		C3FBCE5BCEEFAC78F83EEE47 /* MapScreen.swift */ = {isa = PBXBuildFile; fileRef = CD2A03EDAA28854A389520B6 /* MapScreen.swift */; };
 		D7E7E9B18E913D35E8FC16CB /* OnboardingView.swift */ = {isa = PBXBuildFile; fileRef = F96F953B32AD6DF231A43D0B /* OnboardingView.swift */; };
 		A95929A891E1CF9C4859174E /* PaycheckListView.swift */ = {isa = PBXBuildFile; fileRef = 76FD5DAD989FF972EC630913 /* PaycheckListView.swift */; };
+		4A3388731DD30DDD4BACFA2F /* PaywallFeatureList.swift */ = {isa = PBXBuildFile; fileRef = 2FDB7928D4BA566C604C6252 /* PaywallFeatureList.swift */; };
 		2D3672F813B7FB59D8DDFBDE /* PaywallView.swift */ = {isa = PBXBuildFile; fileRef = E6F6385037EBC6925ABF5B23 /* PaywallView.swift */; };
 		15247D5697CC3848FA27C74F /* PremiumFirstRunOffer.swift */ = {isa = PBXBuildFile; fileRef = 029899EC67D9FD842A110C9A /* PremiumFirstRunOffer.swift */; };
 		9FA7DCF58924CE102D93233A /* SettingsPremiumSection.swift */ = {isa = PBXBuildFile; fileRef = 33C057DFBF51F53B533AA866 /* SettingsPremiumSection.swift */; };
@@ -231,6 +232,7 @@
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
 		1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */ = {isa = PBXBuildFile; fileRef = 95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */; };
 		A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */ = {isa = PBXBuildFile; fileRef = CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */; };
+		1E927A95D6A9FACC9A0457FF /* PaywallFeatureListTests.swift */ = {isa = PBXBuildFile; fileRef = 5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */; };
 		2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = 7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */; };
 		73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */ = {isa = PBXBuildFile; fileRef = 275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */; };
 		9C8948936BC8981F577782E7 /* ThemeSettingsTests.swift */ = {isa = PBXBuildFile; fileRef = C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */; };
@@ -449,6 +451,7 @@
 		CD2A03EDAA28854A389520B6 /* MapScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapScreen.swift"; sourceTree = "<group>"; };
 		F96F953B32AD6DF231A43D0B /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OnboardingView.swift"; sourceTree = "<group>"; };
 		76FD5DAD989FF972EC630913 /* PaycheckListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaycheckListView.swift"; sourceTree = "<group>"; };
+		2FDB7928D4BA566C604C6252 /* PaywallFeatureList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallFeatureList.swift"; sourceTree = "<group>"; };
 		E6F6385037EBC6925ABF5B23 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallView.swift"; sourceTree = "<group>"; };
 		029899EC67D9FD842A110C9A /* PremiumFirstRunOffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumFirstRunOffer.swift"; sourceTree = "<group>"; };
 		33C057DFBF51F53B533AA866 /* SettingsPremiumSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsPremiumSection.swift"; sourceTree = "<group>"; };
@@ -491,6 +494,7 @@
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
 		95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidanceTests.swift"; sourceTree = "<group>"; };
 		CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaRecordTests.swift"; sourceTree = "<group>"; };
+		5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallFeatureListTests.swift"; sourceTree = "<group>"; };
 		7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallLayoutTests.swift"; sourceTree = "<group>"; };
 		275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramTokenStoreTests.swift"; sourceTree = "<group>"; };
 		C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeSettingsTests.swift"; sourceTree = "<group>"; };
@@ -1127,6 +1131,7 @@
 		5368636FD1A35CDC27B50C0C /* Premium */ = {
 			isa = PBXGroup;
 			children = (
+				2FDB7928D4BA566C604C6252 /* PaywallFeatureList.swift */,
 				E6F6385037EBC6925ABF5B23 /* PaywallView.swift */,
 				029899EC67D9FD842A110C9A /* PremiumFirstRunOffer.swift */,
 				33C057DFBF51F53B533AA866 /* SettingsPremiumSection.swift */,
@@ -1263,6 +1268,7 @@
 				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
 				95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */,
 				CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */,
+				5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */,
 				7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */,
 				275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */,
 				C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */,
@@ -1643,6 +1649,7 @@
 				C3FBCE5BCEEFAC78F83EEE47 /* MapScreen.swift */,
 				D7E7E9B18E913D35E8FC16CB /* OnboardingView.swift */,
 				A95929A891E1CF9C4859174E /* PaycheckListView.swift */,
+				4A3388731DD30DDD4BACFA2F /* PaywallFeatureList.swift */,
 				2D3672F813B7FB59D8DDFBDE /* PaywallView.swift */,
 				15247D5697CC3848FA27C74F /* PremiumFirstRunOffer.swift */,
 				9FA7DCF58924CE102D93233A /* SettingsPremiumSection.swift */,
@@ -1695,6 +1702,7 @@
 				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
 				1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */,
 				A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */,
+				1E927A95D6A9FACC9A0457FF /* PaywallFeatureListTests.swift */,
 				2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */,
 				73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */,
 				9C8948936BC8981F577782E7 /* ThemeSettingsTests.swift */,

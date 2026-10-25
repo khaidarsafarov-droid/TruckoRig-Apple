@@ -4061,25 +4061,721 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The first month is free. After that, the App Store charges the monthly price on the button — $2.99 in the United States. Telegram, analytics, the weekly goal, the map, taxes, scanner, camera, and backup stay on this plan. Loads, diesel, paychecks, and deadhead stay free."
+            "value": "The first month is free. After that, the App Store charges the monthly price on the button — $2.99 in the United States."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El primer mes es gratis. Después, el App Store cobra el precio del botón: 2,99 $ al mes en Estados Unidos. Telegram, analítica, meta semanal, mapa, impuestos, escáner, cámara y el respaldo quedan en este plan. Las cargas, el diésel, los pagos y el deadhead siguen gratis."
+            "value": "El primer mes es gratis. Después, el App Store cobra el precio del botón: 2,99 $ al mes en Estados Unidos."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Первый месяц бесплатно. Дальше App Store списывает цену на кнопке — в США это 2,99 $ в месяц. Telegram, аналитика, недельная цель, карта, налоги, сканер, камера и резервная копия остаются в этой подписке. Грузы, дизель, зарплаты и deadhead остаются бесплатными."
+            "value": "Первый месяц бесплатно. Дальше App Store списывает цену на кнопке — в США это 2,99 $ в месяц."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Le premier mois est gratuit. Ensuite, l'App Store facture le prix mensuel indiqué sur le bouton — 2,99 $ aux États-Unis. Telegram, l'analytique, l'objectif hebdomadaire, la carte, les impôts, le numériseur, la caméra et la sauvegarde restent dans cette offre. Les voyages, le diesel, les paies et le deadhead restent gratuits."
+            "value": "Le premier mois est gratuit. Ensuite, l'App Store facture le prix mensuel indiqué sur le bouton — 2,99 $ aux États-Unis."
+          }
+        }
+      }
+    },
+    "premium.included.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What's included in Premium"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué incluye Premium"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что входит в Premium"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ce qui est inclus dans Premium"
+          }
+        }
+      }
+    },
+    "premium.feature.telegram.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram import"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importación de Telegram"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Импорт из Telegram"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importation Telegram"
+          }
+        }
+      }
+    },
+    "premium.feature.telegram.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Broker messages land in the journal as loads."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los mensajes del broker entran al diario como cargas."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сообщения брокера попадают в журнал как грузы."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les messages du courtier arrivent au journal comme chargements."
+          }
+        }
+      }
+    },
+    "premium.feature.analytics.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analytics"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analítica"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Аналитика"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analyses"
+          }
+        }
+      }
+    },
+    "premium.feature.analytics.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gross, miles, and rate per mile for the period."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bruto, millas y tarifa por milla del período."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гросс, мили и ставка за милю за период."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brut, miles et taux au mile pour la période."
+          }
+        }
+      }
+    },
+    "premium.feature.goal.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly goal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta semanal"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Недельная цель"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objectif hebdomadaire"
+          }
+        }
+      }
+    },
+    "premium.feature.goal.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gross still needed before the week ends."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El bruto que aún te falta antes de cerrar la semana."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сколько гросса ещё нужно до конца недели."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le brut qu'il vous reste avant la fin de la semaine."
+          }
+        }
+      }
+    },
+    "premium.feature.map.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Map"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Карта"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carte"
+          }
+        }
+      }
+    },
+    "premium.feature.map.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Outbound rate per mile by state before you book."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarifa por milla de salida por estado, antes de tomar la carga."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ставка за милю из штата до того, как взять груз."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taux au mile au départ, par État, avant de prendre le chargement."
+          }
+        }
+      }
+    },
+    "premium.feature.tax.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taxes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impuestos"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Налоги"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impôts"
+          }
+        }
+      }
+    },
+    "premium.feature.tax.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quarterly estimate from income, diesel, and per diem."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimación trimestral: ingreso, diésel y per diem."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оценка квартала по доходу, дизелю и per diem."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimation trimestrielle : revenu, diesel et per diem."
+          }
+        }
+      }
+    },
+    "premium.feature.scanner.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanner"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escáner"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сканер"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numériseur"
+          }
+        }
+      }
+    },
+    "premium.feature.scanner.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rate confirmations and receipts filed from the cab."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmaciones de tarifa y recibos desde la cabina."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подтверждения ставки и чеки из кабины."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmations de taux et reçus classés depuis la cabine."
+          }
+        }
+      }
+    },
+    "premium.feature.camera.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cámara"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Камера"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caméra"
+          }
+        }
+      }
+    },
+    "premium.feature.camera.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pickup and delivery photos stamped with the stop location."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotos de recogida y entrega con la ubicación de la parada."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото погрузки и выгрузки с координатами остановки."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos de cueillette et de livraison avec l'emplacement de l'arrêt."
+          }
+        }
+      }
+    },
+    "premium.feature.export.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportación"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Экспорт"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportation"
+          }
+        }
+      }
+    },
+    "premium.feature.export.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The journal downloaded as a CSV."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El diario descargado como CSV."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журнал в файле CSV для отчётности."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le journal téléchargé en CSV."
+          }
+        }
+      }
+    },
+    "premium.feature.backup.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup to file"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respaldo en archivo"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бэкап в файл"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauvegarde dans un fichier"
+          }
+        }
+      }
+    },
+    "premium.feature.backup.benefit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A copy of the log you can restore on Android or iPhone."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una copia del diario que puedes restaurar en Android o iPhone."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Копия журнала, которую можно восстановить на Android и iPhone."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une copie du journal que vous pouvez restaurer sur Android ou iPhone."
+          }
+        }
+      }
+    },
+    "premium.free.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free forever"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gratis para siempre"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бесплатно навсегда"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gratuit pour toujours"
+          }
+        }
+      }
+    },
+    "premium.free.loads": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loads"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargas"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Грузы"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargements"
+          }
+        }
+      }
+    },
+    "premium.free.diesel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diesel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diésel"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дизель"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diesel"
+          }
+        }
+      }
+    },
+    "premium.free.pay": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paychecks"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagos"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зарплаты"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chèques de paie"
+          }
+        }
+      }
+    },
+    "premium.free.deadhead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deadhead"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deadhead"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deadhead"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deadhead"
           }
         }
       }
