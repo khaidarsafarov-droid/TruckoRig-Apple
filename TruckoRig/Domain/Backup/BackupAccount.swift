@@ -3,7 +3,8 @@ import Foundation
 /// Android `AccountIds` for the single on-device journal.
 ///
 /// New Android installs use `local_dev`. File backups write that id so a local Android
-/// install accepts the JSON, and this phone refuses a file tied to a different account.
+/// install accepts the JSON. Android still refuses a different account. iOS shows a warning
+/// and restores only after the driver confirms.
 public enum BackupAccount {
     public static let localDev = "local_dev"
 

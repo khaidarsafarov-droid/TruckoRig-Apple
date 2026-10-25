@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var pendingJSON: String?
     @State private var pendingExportedAt: Int64 = 0
     @State private var pendingUnbound = false
+    @State private var pendingForeign = false
     @State private var statusMessage: String?
     @State private var errorMessage: String?
 
@@ -196,6 +197,8 @@ struct SettingsView: View {
                     .foregroundStyle(Color.forestTextSecondary)
             }
 
+            ICloudBackupSection()
+
             TelegramSettingsSection()
 
             Section {
@@ -270,6 +273,9 @@ struct SettingsView: View {
                 case .unbound:
                     Button("settings.backup.unboundAction") { continueAfterUnbound() }
                     Button("action.cancel", role: .cancel) { pendingJSON = nil }
+                case .foreignAccount:
+                    Button("settings.backup.foreignAction") { continueAfterForeign() }
+                    Button("action.cancel", role: .cancel) { pendingJSON = nil }
                 case .localNewer:
                     Button("settings.backup.restoreAction") { commitPendingRestore() }
                     Button("action.cancel", role: .cancel) { pendingJSON = nil }
@@ -281,6 +287,8 @@ struct SettingsView: View {
                     Text("settings.backup.restoreBody")
                 case .unbound:
                     Text("settings.backup.unbound")
+                case .foreignAccount:
+                    Text("settings.backup.foreignAccount")
                 case .localNewer:
                     Text("settings.backup.localNewer")
                 }
@@ -347,8 +355,13 @@ struct SettingsView: View {
             pendingJSON = preview.json
             pendingExportedAt = preview.exportedAt
             pendingUnbound = preview.unbound
+            pendingForeign = preview.accountMismatch
             if preview.unbound {
                 confirmRestore = .unbound
+                return
+            }
+            if preview.accountMismatch {
+                confirmRestore = .foreignAccount
                 return
             }
             if try BackupService.shouldWarnBeforeRestore(
@@ -358,7 +371,24 @@ struct SettingsView: View {
                 confirmRestore = .localNewer
                 return
             }
-            try commitRestore(allowUnbound: false)
+            try commitRestore(allowUnbound: false, allowForeign: false)
+        } catch let error as BackupService.Failure {
+            errorMessage = BackupService.userMessage(for: error)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func continueAfterForeign() {
+        do {
+            if try BackupService.shouldWarnBeforeRestore(
+                in: appState.persistence.database,
+                backupExportedAt: pendingExportedAt
+            ) {
+                confirmRestore = .localNewer
+                return
+            }
+            try commitRestore(allowUnbound: false, allowForeign: true)
         } catch let error as BackupService.Failure {
             errorMessage = BackupService.userMessage(for: error)
         } catch {
@@ -375,7 +405,7 @@ struct SettingsView: View {
                 confirmRestore = .localNewer
                 return
             }
-            try commitRestore(allowUnbound: true)
+            try commitRestore(allowUnbound: true, allowForeign: pendingForeign)
         } catch let error as BackupService.Failure {
             errorMessage = BackupService.userMessage(for: error)
         } catch {
@@ -385,7 +415,7 @@ struct SettingsView: View {
 
     private func commitPendingRestore() {
         do {
-            try commitRestore(allowUnbound: pendingUnbound)
+            try commitRestore(allowUnbound: pendingUnbound, allowForeign: pendingForeign)
         } catch let error as BackupService.Failure {
             errorMessage = BackupService.userMessage(for: error)
         } catch {
@@ -393,7 +423,7 @@ struct SettingsView: View {
         }
     }
 
-    private func commitRestore(allowUnbound: Bool) throws {
+    private func commitRestore(allowUnbound: Bool, allowForeign: Bool) throws {
         guard let json = pendingJSON else { return }
         let report = try BackupService.restoreBackupJSON(
             json,
@@ -401,10 +431,12 @@ struct SettingsView: View {
             settings: appState.settings,
             identity: BackupIdentityStore.standard(),
             media: MediaStore(scope: appState.persistence.scope),
-            allowUnboundAccount: allowUnbound
+            allowUnboundAccount: allowUnbound,
+            allowForeignAccount: allowForeign
         )
         pendingJSON = nil
         pendingUnbound = false
+        pendingForeign = false
         appState.reloadJournal()
         statusMessage = String(
             localized: "settings.backup.success \(report.loads) \(report.paychecks) \(report.diesel)"
@@ -421,6 +453,7 @@ struct SettingsView: View {
 private enum BackupConfirm: Identifiable {
     case replace
     case unbound
+    case foreignAccount
     case localNewer
 
     var id: Self { self }

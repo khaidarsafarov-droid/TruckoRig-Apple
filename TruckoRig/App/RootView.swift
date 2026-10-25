@@ -41,9 +41,13 @@ struct RootView: View {
             if phase == .active {
                 appState.telegram.resume()
                 TelegramBackgroundRegistrar.submit()
+                ICloudBackgroundRegistrar.submit()
+                appState.icloud.start()
             } else if phase == .background {
                 appState.telegram.pause()
                 TelegramBackgroundRegistrar.submit()
+                ICloudBackgroundRegistrar.submit()
+                appState.icloud.syncOnBackground()
             }
         }
         .fullScreenCover(item: presentation) { route in

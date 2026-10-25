@@ -436,6 +436,10 @@ public struct BackupData: Equatable, Sendable {
     public var maintenanceTasks: [BackupMaintenanceTask]
     public var maintenanceArchive: [BackupMaintenanceArchive]
     public var appSettings: BackupAppSettings?
+    /// Optional. Omitted when empty so a manual export stays byte-compatible with Android Gson.
+    /// iCloud writes the device model and `ios`. Android ignores unknown keys.
+    public var originDevice: String?
+    public var originPlatform: String?
 
     public init(
         schemaVersion: Int = 0,
@@ -447,7 +451,9 @@ public struct BackupData: Equatable, Sendable {
         diesel: [BackupDiesel] = [],
         maintenanceTasks: [BackupMaintenanceTask] = [],
         maintenanceArchive: [BackupMaintenanceArchive] = [],
-        appSettings: BackupAppSettings? = nil
+        appSettings: BackupAppSettings? = nil,
+        originDevice: String? = nil,
+        originPlatform: String? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.version = version
@@ -459,6 +465,8 @@ public struct BackupData: Equatable, Sendable {
         self.maintenanceTasks = maintenanceTasks
         self.maintenanceArchive = maintenanceArchive
         self.appSettings = appSettings
+        self.originDevice = originDevice
+        self.originPlatform = originPlatform
     }
 }
 
@@ -530,6 +538,12 @@ public enum BackupDataCodec {
         if let accountId = backup.accountId {
             fields.append(("accountId", BackupJSON.escape(accountId)))
         }
+        if let originPlatform = nonEmpty(backup.originPlatform) {
+            fields.append(("originPlatform", BackupJSON.escape(originPlatform)))
+        }
+        if let originDevice = nonEmpty(backup.originDevice) {
+            fields.append(("originDevice", BackupJSON.escape(originDevice)))
+        }
         fields.append(("loads", array(backup.loads.map(encodeLoad))))
         fields.append(("paychecks", array(backup.paychecks.map(encodePaycheck))))
         fields.append(("diesel", array(backup.diesel.map(encodeDiesel))))
@@ -574,7 +588,9 @@ public enum BackupDataCodec {
             appSettings: root["appSettings"].flatMap { value -> BackupAppSettings? in
                 if value is NSNull { return nil }
                 return settings(value)
-            }
+            },
+            originDevice: string(root["originDevice"]),
+            originPlatform: string(root["originPlatform"])
         )
     }
 
@@ -587,13 +603,14 @@ public enum BackupDataCodec {
         _ backup: BackupData,
         onto journal: BackupJournal,
         activeAccountId: String,
-        allowUnboundAccount: Bool
+        allowUnboundAccount: Bool,
+        allowForeignAccount: Bool = false
     ) -> BackupRestoreOutcome {
         let account = backup.accountId?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let active = activeAccountId.trimmingCharacters(in: .whitespacesAndNewlines)
         if account.isEmpty {
             if !allowUnboundAccount { return .rejected(.unboundAccount) }
-        } else if !active.isEmpty && account != active {
+        } else if !active.isEmpty && account != active && !allowForeignAccount {
             return .rejected(.wrongAccount)
         }
         var next = journal
@@ -813,6 +830,11 @@ public enum BackupDataCodec {
 
     private static func boxedThousandths(_ thousandths: Int64) -> String {
         object([("thousandths", String(thousandths))])
+    }
+
+    private static func nonEmpty(_ value: String?) -> String? {
+        let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return trimmed.isEmpty ? nil : trimmed
     }
 
     private static func bool(_ value: Bool) -> String { value ? "true" : "false" }

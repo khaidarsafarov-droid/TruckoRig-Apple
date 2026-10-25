@@ -39,6 +39,7 @@ final class AppState {
     let catalog: RecordCatalog
     let premium: PremiumController
     let telegram: TelegramCoordinator
+    let icloud: ICloudBackupController
 
     var selectedTab: MainTab = .journal
 
@@ -75,9 +76,16 @@ final class AppState {
             scope: persistence.scope
         )
         self.telegram = telegram
+        let icloud = ICloudBackupController()
+        icloud.bind(database: persistence.database, settings: resolved, scope: persistence.scope)
+        self.icloud = icloud
         TelegramRuntime.coordinator = telegram
+        ICloudBackupRuntime.controller = icloud
         telegram.isPremium = { [weak controller] in controller?.isActive ?? false }
         telegram.onJournalChanged = { [weak self] in
+            self?.reloadJournal()
+        }
+        icloud.onJournalRestored = { [weak self] in
             self?.reloadJournal()
         }
     }
@@ -88,6 +96,7 @@ final class AppState {
         premium.start()
         telegram.launch()
         TelegramBackgroundRegistrar.submit()
+        icloud.start()
     }
 
     /// Reloads the in-memory journal and refreshes the home-screen widget.
@@ -95,6 +104,7 @@ final class AppState {
         catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
         scheduleReminders()
+        icloud.noteLocalChange()
     }
 
     /// Replaces pending smart reminders. Does not reload the journal.
