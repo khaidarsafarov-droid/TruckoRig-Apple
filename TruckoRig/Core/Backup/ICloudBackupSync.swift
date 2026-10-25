@@ -7,6 +7,10 @@ final class ICloudBackupPrefs {
     private let uploadedKey = "lastUploadedExportedAt"
     private let syncKey = "lastSyncAt"
     private let errorKey = "lastError"
+    private let mediaKey = "mediaEnabled"
+    private let wifiKey = "wifiOnly"
+    private let mediaSyncKey = "lastMediaUploadAt"
+    private let mediaBytesKey = "lastMediaBytes"
 
     init(defaults: UserDefaults) {
         self.defaults = defaults
@@ -33,6 +37,32 @@ final class ICloudBackupPrefs {
     var lastSyncAt: Int64 {
         get { read(syncKey) }
         set { write(syncKey, newValue) }
+    }
+
+    var mediaEnabled: Bool {
+        get {
+            if defaults.object(forKey: mediaKey) == nil { return ICloudMediaPolicy.mediaEnabledByDefault }
+            return defaults.bool(forKey: mediaKey)
+        }
+        set { defaults.set(newValue, forKey: mediaKey) }
+    }
+
+    var wifiOnly: Bool {
+        get {
+            if defaults.object(forKey: wifiKey) == nil { return ICloudMediaPolicy.wifiOnlyByDefault }
+            return defaults.bool(forKey: wifiKey)
+        }
+        set { defaults.set(newValue, forKey: wifiKey) }
+    }
+
+    var lastMediaUploadAt: Int64 {
+        get { read(mediaSyncKey) }
+        set { write(mediaSyncKey, newValue) }
+    }
+
+    var lastMediaBytes: Int64 {
+        get { read(mediaBytesKey) }
+        set { write(mediaBytesKey, newValue) }
     }
 
     var lastError: String? {
@@ -77,6 +107,7 @@ enum ICloudSyncOutcome: Error, Equatable, Sendable {
     case notDownloaded
     case remoteSchemaTooNew(Int)
     case failed
+    case refusedSecret
 }
 
 struct ICloudSyncRequest: Equatable, Sendable {
@@ -147,8 +178,15 @@ final class ICloudSyncEngine {
         switch action {
         case .upload:
             guard let payload = request.payload else { return .nothingToUpload }
+            if ICloudMediaPolicy.documentIsSecret(Array(payload)) {
+                prefs.lastError = "icloud_secret_refused"
+                return .refusedSecret
+            }
             do {
                 try store.write(payload, accountId: request.accountId)
+            } catch ICloudDriveStore.Failure.refusedSecret {
+                prefs.lastError = "icloud_secret_refused"
+                return .refusedSecret
             } catch {
                 prefs.lastError = "icloud_write_failed"
                 return .failed

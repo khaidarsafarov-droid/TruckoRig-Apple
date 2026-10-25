@@ -61,6 +61,7 @@
 	<array>
 		<string>com.truckorig.telegram-sync</string>
 		<string>com.truckorig.icloud-sync</string>
+		<string>com.truckorig.icloud-media</string>
 	</array>
 	<key>NSUbiquitousContainers</key>
 	<dict>

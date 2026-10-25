@@ -24,6 +24,32 @@ final class ICloudBackupController {
     private(set) var notice: Notice = .none
     private(set) var busy = false
     var autoSyncEnabled: Bool
+    var mediaEnabled: Bool
+    var wifiOnly: Bool
+    /// Directory-backed tests start on Wi-Fi. A live container waits for the path monitor.
+    var onWifi: Bool
+    var lowPowerModeOverride: Bool?
+    var mediaStoreOverride: MediaStore?
+    private(set) var mediaByteCount: Int64 = 0
+    private(set) var mediaBytesKnown = false
+    private(set) var mediaProgress: ICloudMediaPolicy.Progress?
+    private(set) var mediaNotice: MediaNotice = .none
+
+    enum MediaNotice: Equatable {
+        case none
+        case waitingForWifi
+        case waitingForPower
+        case downloading
+        case saved
+        case failed
+        case unsupported
+    }
+
+    var lastMediaUploadAt: Int64 { prefs.lastMediaUploadAt }
+
+    var displayedMediaBytes: Int64 {
+        mediaBytesKnown ? mediaByteCount : prefs.lastMediaBytes
+    }
 
     /// Reloads the journal after a confirmed restore.
     var onJournalRestored: (() -> Void)?
@@ -31,7 +57,10 @@ final class ICloudBackupController {
     @ObservationIgnored private let store: ICloudDriveStore
     @ObservationIgnored private let prefs: ICloudBackupPrefs
     @ObservationIgnored private let engine: ICloudSyncEngine
+    @ObservationIgnored private let mediaEngine: ICloudMediaEngine
+    @ObservationIgnored private let pathMonitor = ICloudPathMonitor()
     @ObservationIgnored private let watcher = ICloudMetadataWatcher()
+    @ObservationIgnored private var didScheduleMedia = false
     @ObservationIgnored private var database: AppDatabase?
     @ObservationIgnored private var settings: AppSettings?
     @ObservationIgnored private var scope: AccountScope = .local
@@ -49,8 +78,12 @@ final class ICloudBackupController {
         self.store = store
         self.prefs = prefs
         self.engine = ICloudSyncEngine(store: store, prefs: prefs)
+        self.mediaEngine = ICloudMediaEngine(store: store)
         self.accountId = accountId
         self.autoSyncEnabled = prefs.autoSyncEnabled
+        self.mediaEnabled = prefs.mediaEnabled
+        self.wifiOnly = prefs.wifiOnly
+        self.onWifi = !store.monitorsUbiquity
     }
 
     func bind(database: AppDatabase, settings: AppSettings, scope: AccountScope) {
@@ -68,6 +101,30 @@ final class ICloudBackupController {
         if !UITestLaunch.suppressesSystemPrompts {
             ICloudBackgroundRegistrar.submit()
         }
+        if store.monitorsUbiquity && !UITestLaunch.suppressesSystemPrompts {
+            pathMonitor.start { [weak self] wifi in
+                Task { @MainActor in
+                    self?.noteWifi(wifi)
+                }
+            }
+        }
+        if !didScheduleMedia {
+            didScheduleMedia = true
+            scheduleMediaBackup(after: ICloudMediaPolicy.backgroundDelayAfterChange)
+        }
+    }
+
+    func setMediaEnabled(_ enabled: Bool) {
+        mediaEnabled = enabled
+        prefs.mediaEnabled = enabled
+        if enabled {
+            scheduleMediaBackup(after: ICloudMediaPolicy.backgroundDelayAfterChange)
+        }
+    }
+
+    func setWifiOnly(_ enabled: Bool) {
+        wifiOnly = enabled
+        prefs.wifiOnly = enabled
     }
 
     func setAutoSync(_ enabled: Bool) {
@@ -88,6 +145,7 @@ final class ICloudBackupController {
             guard let self, !Task.isCancelled, self.generation == token else { return }
             await self.sync(debounceElapsed: true)
         }
+        scheduleMediaBackup(after: ICloudMediaPolicy.backgroundDelayAfterChange)
     }
 
     func syncOnBackground() {
@@ -95,10 +153,12 @@ final class ICloudBackupController {
         debounceTask?.cancel()
         generation += 1
         Task { await self.sync(debounceElapsed: true) }
+        scheduleMediaBackup(after: 30)
     }
 
     func syncNow() async {
         await sync(debounceElapsed: true, manual: true)
+        await uploadMedia(userRequested: true, backgroundTask: false)
     }
 
     /// Reads the container without uploading. Used before a confirmed restore.
@@ -157,7 +217,7 @@ final class ICloudBackupController {
             into: database,
             settings: settings,
             identity: BackupIdentityStore.standard(accountId: accountId),
-            media: MediaStore(scope: scope),
+            media: makeMediaStore(),
             activeAccountId: accountId,
             allowUnboundAccount: true,
             allowForeignAccount: true
@@ -168,6 +228,48 @@ final class ICloudBackupController {
         notice = .none
         onJournalRestored?()
         return report
+    }
+
+    /// Journal first, then photos and scans. A missing file is skipped.
+    func restoreConfirmed() async throws -> ICloudRestoreOutcome {
+        busy = true
+        defer {
+            busy = false
+            mediaProgress = nil
+        }
+        let report = try restore(confirmed: true)
+        let media = await restoreMediaBody()
+        return ICloudRestoreOutcome(journal: report, media: media.payload, applied: media.applied)
+    }
+
+    func restoreMedia() async -> ICloudMediaApplyResult {
+        let ownsBusy = !busy
+        if ownsBusy { busy = true }
+        defer {
+            if ownsBusy {
+                busy = false
+                mediaProgress = nil
+            }
+        }
+        return await restoreMediaBody()
+    }
+
+    /// Background processing task for photos and scans. A missing network retries.
+    /// Wi-Fi and low power reschedule instead of uploading.
+    func performMediaBackground() async -> Bool {
+        let outcome = await uploadMedia(userRequested: false, backgroundTask: true)
+        switch outcome {
+        case .failed, .notDownloaded:
+            return false
+        case .skipWifi, .skipLowPower:
+            ICloudMediaBackground.submit(after: ICloudMediaPolicy.backgroundRetryDelay)
+            return true
+        case .uploaded, .unchanged:
+            ICloudMediaBackground.submit(after: ICloudBackupPolicy.periodicInterval)
+            return true
+        case .disabled, .unavailable, .unsupported, .deferred:
+            return true
+        }
     }
 
     @discardableResult
@@ -211,8 +313,10 @@ final class ICloudBackupController {
 
     private func startWatcherIfNeeded() {
         guard store.monitorsUbiquity, availability == .available else { return }
-        let name = ICloudBackupPolicy.containerFileName(accountId: accountId)
-        watcher.start(fileName: name) { [weak self] in
+        watcher.start(fileNames: [
+            ICloudBackupPolicy.containerFileName(accountId: accountId),
+            ICloudMediaPolicy.manifestFileName,
+        ]) { [weak self] in
             Task { @MainActor in
                 self?.refreshSnapshot()
             }
@@ -235,6 +339,7 @@ final class ICloudBackupController {
         case .failure:
             remote = nil
         }
+        refreshMediaSummary()
     }
 
     private func apply(_ outcome: ICloudSyncOutcome) {
@@ -243,6 +348,8 @@ final class ICloudBackupController {
             notice = .saved
         case .failed, .metadataUnavailable:
             notice = .failed
+        case .refusedSecret:
+            break
         case .notDownloaded:
             notice = .downloading
         case .remoteSchemaTooNew:
@@ -251,6 +358,160 @@ final class ICloudBackupController {
             if notice == .schemaTooNew || notice == .downloading { return }
             if notice == .failed { notice = .none }
         case .unavailable, .autoOff, .nothingToUpload, .waitingForDebounce:
+            break
+        }
+    }
+
+    private func makeMediaStore() -> MediaStore {
+        mediaStoreOverride ?? MediaStore(scope: scope)
+    }
+
+    private func scheduleMediaBackup(after delay: TimeInterval) {
+        guard mediaEnabled else { return }
+        ICloudMediaBackground.submit(after: delay)
+    }
+
+    private func noteWifi(_ wifi: Bool) {
+        let was = onWifi
+        onWifi = wifi
+        if wifi && !was {
+            scheduleMediaBackup(after: ICloudMediaPolicy.backgroundDelayAfterChange)
+        }
+    }
+
+    private enum MediaUploadResult {
+        case uploaded
+        case unchanged
+        case notDownloaded
+        case failed
+        case skipWifi
+        case skipLowPower
+        case disabled
+        case unavailable
+        case unsupported
+        case deferred
+    }
+
+    @discardableResult
+    private func uploadMedia(userRequested: Bool, backgroundTask: Bool) async -> MediaUploadResult {
+        let ownsBusy = !busy
+        if ownsBusy { busy = true }
+        defer { if ownsBusy { busy = false } }
+        await refreshAvailability()
+        let decision = ICloudMediaPolicy.gate(ICloudMediaPolicy.Conditions(
+            availability: availability,
+            mediaEnabled: mediaEnabled,
+            wifiOnly: wifiOnly,
+            onWifi: onWifi,
+            lowPowerMode: lowPowerModeOverride ?? ProcessInfo.processInfo.isLowPowerModeEnabled,
+            userRequested: userRequested,
+            backgroundTask: backgroundTask
+        ))
+        switch decision {
+        case .unavailable:
+            mediaNotice = .none
+            return .unavailable
+        case .skipDisabled:
+            return .disabled
+        case .skipWifi:
+            mediaNotice = .waitingForWifi
+            if !backgroundTask {
+                ICloudMediaBackground.submit(after: ICloudMediaPolicy.backgroundRetryDelay)
+            }
+            return .skipWifi
+        case .skipLowPower:
+            mediaNotice = .waitingForPower
+            if !backgroundTask {
+                ICloudMediaBackground.submit(after: ICloudMediaPolicy.backgroundRetryDelay)
+            }
+            return .skipLowPower
+        case .deferToBackground:
+            mediaNotice = .waitingForPower
+            ICloudMediaBackground.submit(after: ICloudMediaPolicy.backgroundDelayAfterChange)
+            return .deferred
+        case .uploadNow:
+            break
+        }
+        guard let database else { return .unchanged }
+        let graph: AppDatabase.StoredGraph
+        do {
+            graph = try database.fetchGraph()
+        } catch {
+            mediaNotice = .failed
+            return .failed
+        }
+        let snapshot = ICloudMediaLibrary.snapshot(graph: graph, store: makeMediaStore())
+        let report = mediaEngine.upload(
+            accountId: accountId,
+            items: snapshot.items,
+            bytes: snapshot.bytes,
+            now: Self.nowMillis()
+        )
+        switch report.outcome {
+        case .uploaded:
+            mediaNotice = .saved
+            prefs.lastMediaUploadAt = Self.nowMillis()
+            prefs.lastError = nil
+        case .unchanged:
+            if mediaNotice == .waitingForWifi || mediaNotice == .waitingForPower || mediaNotice == .failed {
+                mediaNotice = .none
+            }
+        case .notDownloaded:
+            mediaNotice = .downloading
+        case .unsupported:
+            mediaNotice = .unsupported
+        case .failed:
+            mediaNotice = .failed
+            prefs.lastError = "icloud_media_failed"
+        }
+        refreshMediaSummary()
+        switch report.outcome {
+        case .uploaded: return .uploaded
+        case .unchanged: return .unchanged
+        case .notDownloaded: return .notDownloaded
+        case .unsupported: return .unsupported
+        case .failed: return .failed
+        }
+    }
+
+    private func restoreMediaBody() async -> ICloudMediaApplyResult {
+        guard let database else {
+            return ICloudMediaApplyResult(
+                payload: ICloudMediaRestorePayload(
+                    files: [], bytes: [:], unavailable: [], unsupported: false, manifestNotReady: false
+                ),
+                applied: ICloudMediaLibrary.Applied(restored: 0, recordIds: [])
+            )
+        }
+        let payload = await mediaEngine.restore(accountId: accountId) { [weak self] progress in
+            self?.mediaProgress = progress
+        }
+        if payload.unsupported {
+            mediaNotice = .unsupported
+        } else if payload.manifestNotReady {
+            mediaNotice = .downloading
+        }
+        let loads = (try? database.fetchGraph().loads) ?? []
+        let applied = ICloudMediaLibrary.apply(payload, to: database, media: makeMediaStore(), loads: loads)
+        return ICloudMediaApplyResult(payload: payload, applied: applied)
+    }
+
+    private func refreshMediaSummary() {
+        switch mediaEngine.inspect(accountId: accountId) {
+        case .ready(let manifest):
+            mediaByteCount = ICloudMediaPolicy.totalBytes(manifest.items)
+            mediaBytesKnown = true
+            prefs.lastMediaBytes = mediaByteCount
+            if mediaNotice == .downloading { mediaNotice = .none }
+        case .missing:
+            mediaByteCount = 0
+            mediaBytesKnown = true
+            prefs.lastMediaBytes = 0
+        case .notDownloaded:
+            if mediaNotice == .none || mediaNotice == .saved { mediaNotice = .downloading }
+        case .unsupported:
+            mediaNotice = .unsupported
+        case .failed:
             break
         }
     }
@@ -295,7 +556,7 @@ extension ICloudSyncOutcome {
         case .failed, .metadataUnavailable, .notDownloaded:
             return true
         case .uploaded, .keepRemote, .inSync, .unavailable, .autoOff, .nothingToUpload,
-             .waitingForDebounce, .remoteSchemaTooNew:
+             .waitingForDebounce, .remoteSchemaTooNew, .refusedSecret:
             return false
         }
     }
@@ -314,6 +575,20 @@ enum ICloudBackgroundRegistrar {
                 let ok = await ICloudBackupRuntime.performBackgroundSync()
                 task.setTaskCompleted(success: ok)
                 submit()
+            }
+            task.expirationHandler = {
+                work.cancel()
+                task.setTaskCompleted(success: false)
+            }
+        }
+        BGTaskScheduler.shared.register(
+            forTaskWithIdentifier: ICloudMediaPolicy.backgroundTaskIdentifier,
+            using: nil
+        ) { task in
+            guard let task = task as? BGProcessingTask else { return }
+            let work = Task { @MainActor in
+                let ok = await ICloudBackupRuntime.performMediaSync()
+                task.setTaskCompleted(success: ok)
             }
             task.expirationHandler = {
                 work.cancel()
@@ -344,5 +619,16 @@ enum ICloudBackupRuntime {
         let controller = ICloudBackupController()
         controller.bind(database: persistence.database, settings: settings, scope: .local)
         return await controller.performPeriodic()
+    }
+
+    @MainActor
+    static func performMediaSync() async -> Bool {
+        if UITestLaunch.suppressesSystemPrompts { return true }
+        if let controller { return await controller.performMediaBackground() }
+        let persistence = PersistenceController(scope: .local)
+        let settings = AppSettings(scope: .local)
+        let controller = ICloudBackupController()
+        controller.bind(database: persistence.database, settings: settings, scope: .local)
+        return await controller.performMediaBackground()
     }
 }

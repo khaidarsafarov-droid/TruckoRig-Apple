@@ -568,6 +568,10 @@ public enum BackupDataCodec {
         } catch {
             throw BackupDecodeError.corrupted
         }
+        // The media manifest sits beside this file. It is not a journal and must not restore as one.
+        if (root["kind"] as? String) == ICloudMediaPolicy.manifestKind {
+            throw BackupDecodeError.invalidFormat
+        }
         let schema = BackupSchema.resolve(
             schemaVersion: int(root["schemaVersion"]) ?? 0,
             version: int(root["version"]) ?? 0

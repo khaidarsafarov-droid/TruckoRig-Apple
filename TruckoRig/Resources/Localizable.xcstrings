@@ -7286,6 +7286,354 @@
         }
       }
     },
+    "settings.icloud.media": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos and scans in iCloud"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotos y escaneos en iCloud"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото и сканы в iCloud"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos et numérisations dans iCloud"
+          }
+        }
+      }
+    },
+    "settings.icloud.media.downloading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos and scans are still downloading from iCloud."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las fotos y los escaneos todavía se están descargando de iCloud."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото и сканы ещё скачиваются из iCloud."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les photos et les numérisations sont encore en téléchargement depuis iCloud."
+          }
+        }
+      }
+    },
+    "settings.icloud.media.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos and scans are saved as files next to the JSON backup. Location and other photo details stay with the file. The Telegram token is not uploaded."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las fotos y los escaneos se guardan como archivos junto a la copia JSON. La ubicación y los datos de la foto se quedan con el archivo. El token de Telegram no se sube."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото и сканы сохраняются отдельными файлами рядом с JSON-копией. Геолокация и данные снимка остаются с файлом. Токен Telegram не выгружается."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les photos et les numérisations sont enregistrées comme fichiers à côté de la copie JSON. La position et les détails de la photo restent avec le fichier. Le jeton Telegram n'est pas envoyé."
+          }
+        }
+      }
+    },
+    "settings.icloud.media.kept": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A photo or scan you remove on this phone stays in iCloud until you delete it in the Files app. A restore downloads it again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una foto o un escaneo que quites en este teléfono permanece en iCloud hasta que lo borres en la app Archivos. Una restauración lo descarga de nuevo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото или скан, удалённые на этом телефоне, остаются в iCloud, пока вы не удалите их в приложении «Файлы». Восстановление скачает их снова."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une photo ou une numérisation que vous retirez de cet appareil reste dans iCloud jusqu'à ce que vous la supprimiez dans l'app Fichiers. Une restauration la télécharge de nouveau."
+          }
+        }
+      }
+    },
+    "settings.icloud.media.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No photos or scans in iCloud yet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía no hay fotos ni escaneos en iCloud."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В iCloud пока нет фото и сканов."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune photo ni numérisation dans iCloud pour le moment."
+          }
+        }
+      }
+    },
+    "settings.icloud.media.partial %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restored. Files skipped because they were not available: %lld."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurado. Archivos omitidos porque no estaban disponibles: %lld."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Восстановлено. Пропущено недоступных файлов: %lld."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restauration terminée. Fichiers ignorés parce qu'ils n'étaient pas disponibles : %lld."
+          }
+        }
+      }
+    },
+    "settings.icloud.media.power": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos and scans upload in the background while the device is charging."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las fotos y los escaneos se suben en segundo plano mientras el dispositivo se carga."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото и сканы выгружаются в фоне, когда устройство на зарядке."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les photos et les numérisations partent en arrière-plan pendant que l'appareil est en charge."
+          }
+        }
+      }
+    },
+    "settings.icloud.media.progress %lld %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld de %lld"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld из %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld sur %lld"
+          }
+        }
+      }
+    },
+    "settings.icloud.media.size %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In iCloud: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En iCloud: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "В iCloud: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dans iCloud : %@"
+          }
+        }
+      }
+    },
+    "settings.icloud.media.unsupported": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The photo list was saved by a newer TruckoRig. The journal was restored. Photos were left in iCloud."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La lista de fotos la guardó una versión más nueva de TruckoRig. El diario se restauró. Las fotos se quedaron en iCloud."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Список фото сохранён более новой версией TruckoRig. Журнал восстановлен. Фото оставлены в iCloud."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La liste de photos a été enregistrée par une version plus récente de TruckoRig. Le journal a été restauré. Les photos sont restées dans iCloud."
+          }
+        }
+      }
+    },
+    "settings.icloud.media.uploaded %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last photo upload: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Última subida de fotos: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Последняя выгрузка фото: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dernier envoi des photos : %@"
+          }
+        }
+      }
+    },
+    "settings.icloud.media.wifiWait": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos and scans wait for Wi-Fi."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las fotos y los escaneos esperan al Wi-Fi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото и сканы ждут Wi-Fi."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les photos et les numérisations attendent le Wi-Fi."
+          }
+        }
+      }
+    },
     "settings.icloud.lastSync %@": {
       "extractionState": "manual",
       "localizations": {
@@ -7659,6 +8007,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "Non indiqué"
+          }
+        }
+      }
+    },
+    "settings.icloud.wifi": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wi-Fi only"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo por Wi-Fi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только по Wi‑Fi"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wi-Fi seulement"
           }
         }
       }
