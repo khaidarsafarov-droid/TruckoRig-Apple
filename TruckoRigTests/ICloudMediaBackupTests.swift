@@ -17,7 +17,7 @@ final class ICloudMediaBackupTests: XCTestCase {
     }
 
     func testIncrementalUploadRetainsADeletedFileAndDoesNotTouchTheJson() async throws {
-        let fixture = try makeFixture()
+        let fixture = try await makeFixture()
         let jsonAfterFirst = try XCTUnwrap(try fixture.store.read(accountId: BackupAccount.localDev))
         let decoded = try BackupDataCodec.decode(String(decoding: jsonAfterFirst, as: UTF8.self))
         XCTAssertEqual(decoded.schemaVersion, BackupSchema.v2)
@@ -68,7 +68,7 @@ final class ICloudMediaBackupTests: XCTestCase {
     }
 
     func testRestoreKeepsGeolocationAndSkipsAFileThatIsNotLocalYet() async throws {
-        let fixture = try makeFixture()
+        let fixture = try await makeFixture()
         var manifest = try ICloudMediaPolicy.decode(
             String(decoding: try XCTUnwrap(try fixture.store.readManifest(accountId: BackupAccount.localDev)), as: UTF8.self)
         )
