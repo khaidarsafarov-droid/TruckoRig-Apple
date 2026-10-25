@@ -247,12 +247,11 @@ final class ICloudBackupController {
             notice = .downloading
         case .remoteSchemaTooNew:
             notice = .schemaTooNew
-        case .keepRemote, .inSync, .unavailable, .autoOff, .nothingToUpload, .waitingForDebounce:
+        case .keepRemote, .inSync:
             if notice == .schemaTooNew || notice == .downloading { return }
-            if outcome != .keepRemote && outcome != .inSync {
-                return
-            }
             if notice == .failed { notice = .none }
+        case .unavailable, .autoOff, .nothingToUpload, .waitingForDebounce:
+            break
         }
     }
 
