@@ -96,6 +96,9 @@ struct AddLoadView: View {
 /// Trip ID, money and date fields shared by add and edit.
 struct LoadFormFields: View {
     @Binding var draft: LoadDraft
+    @Environment(AppState.self) private var appState
+
+    private var system: MeasurementSystem { appState.settings.measurementSystem }
 
     var body: some View {
         Section("load.details") {
@@ -106,11 +109,14 @@ struct LoadFormFields: View {
                 autocapitalization: .characters
             )
             SoftNumberField(title: "load.totalRate", value: $draft.totalRate)
-            SoftNumberField(title: "load.totalMiles", value: $draft.totalMiles)
+            SoftNumberField(
+                title: system == .kilometers ? "load.totalKilometers" : "load.totalMiles",
+                value: UnitEntry.distance(stored: $draft.totalMiles, system: system)
+            )
             DatePicker("load.date", selection: $draft.date, displayedComponents: .date)
 
             LabeledContent("stat.rpm") {
-                Text(Formatters.ratePerMile(draft.ratePerMile))
+                Text(Formatters.ratePerMile(draft.ratePerMile, system: system))
                     .font(.appCaptionMedium)
                     .foregroundStyle(RPMCalculator.band(for: draft.ratePerMile).tint)
             }

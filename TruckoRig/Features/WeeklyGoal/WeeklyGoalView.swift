@@ -268,7 +268,10 @@ struct WeeklyGoalView: View {
             SectionHeader(title: "goal.week")
             HStack {
                 StatTile(title: "stat.loads", value: "\(progress.loadsCount)")
-                StatTile(title: "stat.miles", value: Formatters.miles(progress.totalMiles))
+                StatTile(
+                    title: appState.settings.measurementSystem == .kilometers ? "stat.kilometers" : "stat.miles",
+                    value: Formatters.miles(progress.totalMiles, system: appState.settings.measurementSystem)
+                )
                 StatTile(title: "stat.daysActive", value: progress.totalActiveDays.formatted(.number.precision(.fractionLength(1))))
             }
             HStack {

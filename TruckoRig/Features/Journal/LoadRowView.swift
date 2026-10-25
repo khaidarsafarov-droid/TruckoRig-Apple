@@ -5,6 +5,10 @@ struct LoadRowView: View {
     let load: Load
     var thresholds: RPMThresholds = .default
 
+    @Environment(AppState.self) private var appState
+
+    private var system: MeasurementSystem { appState.settings.measurementSystem }
+
     private var band: RPMBand {
         RPMCalculator.band(for: load.ratePerMile, thresholds: thresholds)
     }
@@ -37,13 +41,13 @@ struct LoadRowView: View {
                     .font(.appNumber)
                     .foregroundStyle(Color.forestText)
 
-                Text(Formatters.miles(load.totalMiles))
+                Text(Formatters.miles(load.totalMiles, system: system))
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
 
                 Spacer()
 
-                Text(Formatters.ratePerMile(load.ratePerMile))
+                Text(Formatters.ratePerMile(load.ratePerMile, system: system))
                     .font(.appCaptionMedium)
                     .foregroundStyle(band.tint)
                     .padding(.horizontal, 10)
@@ -61,7 +65,7 @@ struct LoadRowView: View {
             load.tripId,
             load.route,
             Formatters.moneyPrecise(load.totalRate),
-            Formatters.ratePerMile(load.ratePerMile),
+            Formatters.ratePerMile(load.ratePerMile, system: system),
         ]
         return pieces.filter { !$0.isEmpty }.joined(separator: ", ")
     }
@@ -72,7 +76,10 @@ struct LoadRowView: View {
 struct WeekHeaderView: View {
     let section: JournalSection
 
+    @Environment(AppState.self) private var appState
+
     var body: some View {
+        let system = appState.settings.measurementSystem
         VStack(alignment: .leading, spacing: 6) {
             if let monthMarker = section.monthMarker {
                 Text(monthMarker)
@@ -86,7 +93,7 @@ struct WeekHeaderView: View {
                     Text(section.label)
                         .font(.appCaptionMedium)
                         .foregroundStyle(Color.forestText)
-                    Text("journal.week.summary \(section.loads.count) \(Formatters.miles(section.totals.totalMiles))")
+                    Text("journal.week.summary \(section.loads.count) \(Formatters.miles(section.totals.totalMiles, system: system))")
                         .font(.appCaption)
                         .foregroundStyle(Color.forestTextSecondary)
                 }

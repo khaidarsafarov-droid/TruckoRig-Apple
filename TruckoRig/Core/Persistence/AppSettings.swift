@@ -40,7 +40,12 @@ final class AppSettings {
         if UITestLaunch.isEnabled {
             self.onboardingComplete = true
         }
+        self.explicitMeasurementSystem = UnitPreferenceStore(
+            defaults: widgetDefaults ?? defaults,
+            explicitKey: Self.explicitUnitKey(scope)
+        ).explicit
         mirrorThemeToWidget(reloadWidget: false)
+        publishResolvedMeasurementSystem(reloadWidget: false)
     }
 
     // MARK: - Values
@@ -55,7 +60,14 @@ final class AppSettings {
     }
     /// Android `oled_dark`. Kept when Light is selected; applied only while the cabin is dark.
     var oledDark: Bool { didSet { write(.oledDark, oledDark) } }
-    var language: AppLanguage { didSet { write(.language, language.rawValue) } }
+    var language: AppLanguage {
+        didSet {
+            write(.language, language.rawValue)
+            publishResolvedMeasurementSystem(reloadWidget: true)
+        }
+    }
+    /// Set only when the driver taps Miles or Kilometers. `nil` follows the language.
+    private(set) var explicitMeasurementSystem: MeasurementSystem?
     var weekStart: WeekStartDay { didSet { write(.weekStart, weekStart.rawValue) } }
     var rpmMinProfit: Double { didSet { write(.rpmMinProfit, rpmMinProfit) } }
     var rpmTargetProfit: Double { didSet { write(.rpmTargetProfit, rpmTargetProfit) } }
@@ -89,6 +101,40 @@ final class AppSettings {
 
     var truckingWeek: TruckingWeek {
         TruckingWeek(weekStart: weekStart)
+    }
+
+    /// Miles unless the driver picked a unit, or has not picked one and the language is French.
+    var measurementSystem: MeasurementSystem {
+        UnitPreference.resolve(explicit: explicitMeasurementSystem, languageCode: activeLanguageCode)
+    }
+
+    /// Records a manual choice in the App Group. Language changes do not clear it.
+    func chooseMeasurementSystem(_ system: MeasurementSystem) {
+        explicitMeasurementSystem = system
+        UnitPreferenceStore(
+            defaults: widgetDefaults ?? defaults,
+            explicitKey: Self.explicitUnitKey(scope)
+        ).setExplicit(system)
+        publishResolvedMeasurementSystem(reloadWidget: true)
+    }
+
+    private var activeLanguageCode: String {
+        UnitPreference.languageCode(
+            appLanguageRaw: language.rawValue,
+            preferredLanguages: Locale.preferredLanguages
+        )
+    }
+
+    static func explicitUnitKey(_ scope: AccountScope) -> String {
+        "truckorig.\(scope.storeKey).unit.explicit"
+    }
+
+    private func publishResolvedMeasurementSystem(reloadWidget: Bool) {
+        let resolved = measurementSystem
+        (widgetDefaults ?? defaults).set(resolved.rawValue, forKey: UnitPreference.resolvedKey)
+        if reloadWidget {
+            WidgetCenter.shared.reloadTimelines(ofKind: WidgetBridge.kind)
+        }
     }
 
     var hasStoredThemeMode: Bool {

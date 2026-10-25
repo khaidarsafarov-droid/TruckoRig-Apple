@@ -69,6 +69,7 @@ struct AnalyticsView: View {
 
     private var financeCard: some View {
         let finance = page.finance
+        let system = appState.settings.measurementSystem
         return card {
             Text("analytics.finance.title")
                 .font(.appHeadline)
@@ -93,12 +94,14 @@ struct AnalyticsView: View {
                 if finance.dieselGallons > 0 {
                     HStack(alignment: .top, spacing: 12) {
                         financeStat(
-                            USMoneyFormat.number(finance.dieselGallons),
-                            "analytics.finance.gallons"
+                            USMoneyFormat.number(MeasurementUnits.displayVolume(finance.dieselGallons, system: system)),
+                            system == .kilometers ? "analytics.finance.liters" : "analytics.finance.gallons"
                         )
                         financeStat(
-                            finance.avgPricePerGallon.map { USMoneyFormat.rpm($0) } ?? "—",
-                            "analytics.finance.price"
+                            finance.avgPricePerGallon.map {
+                                USMoneyFormat.rpm(MeasurementUnits.displayUnitPrice($0, system: system))
+                            } ?? "—",
+                            system == .kilometers ? "analytics.finance.pricePerLiter" : "analytics.finance.price"
                         )
                     }
                 }
@@ -250,9 +253,10 @@ struct AnalyticsView: View {
     }
 
     private func routeDetail(_ route: RouteStat) -> String {
+        let system = appState.settings.measurementSystem
         let gross = USMoneyFormat.currency(route.gross)
-        let miles = USMoneyFormat.miles(route.miles)
-        let rpm = route.miles > 0 ? USMoneyFormat.rpmPerMile(route.ratePerMile) : "—"
+        let miles = USMoneyFormat.miles(route.miles, system: system)
+        let rpm = route.miles > 0 ? USMoneyFormat.rpmPerMile(route.ratePerMile, system: system) : "—"
         return "\(gross) · \(miles) · \(rpm)"
     }
 
