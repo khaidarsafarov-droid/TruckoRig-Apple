@@ -105,10 +105,10 @@ private struct MapScreenBody: View {
         }
         .fullScreenCover(isPresented: $fullscreen) {
             MapFullscreenCover(
-                system: appState.settings.measurementSystem,
                 snapshot: snapshot,
                 outlines: outlines,
                 locale: locale,
+                system: appState.settings.measurementSystem,
                 onSelect: select,
                 onClose: { fullscreen = false }
             )
