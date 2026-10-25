@@ -14,6 +14,9 @@
 		02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */ = {isa = PBXBuildFile; fileRef = A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */; };
 		5A9BCDF30C20AD26B24C47F4 /* BackupIdentity.swift */ = {isa = PBXBuildFile; fileRef = E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */; };
 		8B5A088FC7272F60C4AE8CC9 /* BackupJournalMapper.swift */ = {isa = PBXBuildFile; fileRef = 4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */; };
+		3F896985C84EB47E4D48BE10 /* ICloudBackupController.swift */ = {isa = PBXBuildFile; fileRef = B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */; };
+		4974FB1BBA7336ABA2F45C25 /* ICloudBackupSync.swift */ = {isa = PBXBuildFile; fileRef = 21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */; };
+		BF8ADDD0C055C6967BBC8C46 /* ICloudDriveStore.swift */ = {isa = PBXBuildFile; fileRef = 812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */; };
 		C78C50B770CA1364F83346A7 /* PhotoGeotag.swift */ = {isa = PBXBuildFile; fileRef = BA43F40BD4128397C998180D /* PhotoGeotag.swift */; };
 		AEEC91520189FE6F0DD49FEA /* PhotoImageWriter.swift */ = {isa = PBXBuildFile; fileRef = 50F6DD627F0878086019F5D8 /* PhotoImageWriter.swift */; };
 		6775E55DDA8AA0C55EA89B78 /* ScanPDFWriter.swift */ = {isa = PBXBuildFile; fileRef = 5F1B83CDEAB0E4DC52F1C802 /* ScanPDFWriter.swift */; };
@@ -75,6 +78,7 @@
 		306760269278F232415BDE90 /* BackupRestoreParser.swift */ = {isa = PBXBuildFile; fileRef = 0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */; };
 		B7F6B8FBA41296AAF6C6F7A9 /* BackupSchedule.swift */ = {isa = PBXBuildFile; fileRef = 9EC8965324449551C656D14D /* BackupSchedule.swift */; };
 		98B6530A722C47BDDAE9841A /* BackupSyncPolicy.swift */ = {isa = PBXBuildFile; fileRef = C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */; };
+		9E78766E42AD96F871B06E6B /* ICloudBackupPolicy.swift */ = {isa = PBXBuildFile; fileRef = 7F129C433867C02F18FD644D /* ICloudBackupPolicy.swift */; };
 		CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */ = {isa = PBXBuildFile; fileRef = 2875D2376898F097057DD656 /* AnalyticsCalculator.swift */; };
 		A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */ = {isa = PBXBuildFile; fileRef = 9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */; };
 		B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */ = {isa = PBXBuildFile; fileRef = 6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */; };
@@ -183,6 +187,7 @@
 		A6BA626E0C65B68CD84F2610 /* PrivacyView.swift */ = {isa = PBXBuildFile; fileRef = 8B4F45F160AE48F03A3BF4B8 /* PrivacyView.swift */; };
 		F8DE66E3C688B334B7EBDE76 /* ProfileView.swift */ = {isa = PBXBuildFile; fileRef = 42D25AE24CEB99D7943D1DDF /* ProfileView.swift */; };
 		0E6682067DBA3801417D8711 /* ScannerView.swift */ = {isa = PBXBuildFile; fileRef = C6D31BCFC3156C00E82B3F68 /* ScannerView.swift */; };
+		94FDF637C222F4123077FF52 /* ICloudBackupSection.swift */ = {isa = PBXBuildFile; fileRef = 1A7F6F930C5BEFF9A96CBDFD /* ICloudBackupSection.swift */; };
 		C1AFBE27692193C5FEF14A69 /* SettingsView.swift */ = {isa = PBXBuildFile; fileRef = B569DDAA030C4217F07077AF /* SettingsView.swift */; };
 		4CDF01DE94B9F44F70777678 /* TelegramSettingsSection.swift */ = {isa = PBXBuildFile; fileRef = 82764F490E37BC1688993580 /* TelegramSettingsSection.swift */; };
 		8B4ED60A785176648990FAB6 /* TaxTrackerView.swift */ = {isa = PBXBuildFile; fileRef = EEC971AF7240CF20B136736B /* TaxTrackerView.swift */; };
@@ -233,6 +238,7 @@
 		C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
 		330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */ = {isa = PBXBuildFile; fileRef = 366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */; };
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
+		1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */; };
 		1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */ = {isa = PBXBuildFile; fileRef = 95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */; };
 		A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */ = {isa = PBXBuildFile; fileRef = CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */; };
 		1E927A95D6A9FACC9A0457FF /* PaywallFeatureListTests.swift */ = {isa = PBXBuildFile; fileRef = 5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */; };
@@ -295,6 +301,9 @@
 		A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestLaunch.swift"; sourceTree = "<group>"; };
 		E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupIdentity.swift"; sourceTree = "<group>"; };
 		4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupJournalMapper.swift"; sourceTree = "<group>"; };
+		B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupController.swift"; sourceTree = "<group>"; };
+		21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupSync.swift"; sourceTree = "<group>"; };
+		812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudDriveStore.swift"; sourceTree = "<group>"; };
 		BA43F40BD4128397C998180D /* PhotoGeotag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoGeotag.swift"; sourceTree = "<group>"; };
 		50F6DD627F0878086019F5D8 /* PhotoImageWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoImageWriter.swift"; sourceTree = "<group>"; };
 		5F1B83CDEAB0E4DC52F1C802 /* ScanPDFWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScanPDFWriter.swift"; sourceTree = "<group>"; };
@@ -356,6 +365,7 @@
 		0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreParser.swift"; sourceTree = "<group>"; };
 		9EC8965324449551C656D14D /* BackupSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupSchedule.swift"; sourceTree = "<group>"; };
 		C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupSyncPolicy.swift"; sourceTree = "<group>"; };
+		7F129C433867C02F18FD644D /* ICloudBackupPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupPolicy.swift"; sourceTree = "<group>"; };
 		2875D2376898F097057DD656 /* AnalyticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCalculator.swift"; sourceTree = "<group>"; };
 		9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoalMoneyMath.swift"; sourceTree = "<group>"; };
 		6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadYieldCalculator.swift"; sourceTree = "<group>"; };
@@ -464,6 +474,7 @@
 		8B4F45F160AE48F03A3BF4B8 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PrivacyView.swift"; sourceTree = "<group>"; };
 		42D25AE24CEB99D7943D1DDF /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileView.swift"; sourceTree = "<group>"; };
 		C6D31BCFC3156C00E82B3F68 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScannerView.swift"; sourceTree = "<group>"; };
+		1A7F6F930C5BEFF9A96CBDFD /* ICloudBackupSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupSection.swift"; sourceTree = "<group>"; };
 		B569DDAA030C4217F07077AF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsView.swift"; sourceTree = "<group>"; };
 		82764F490E37BC1688993580 /* TelegramSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramSettingsSection.swift"; sourceTree = "<group>"; };
 		EEC971AF7240CF20B136736B /* TaxTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxTrackerView.swift"; sourceTree = "<group>"; };
@@ -498,6 +509,7 @@
 		E9A91E3DC8256945501586BD /* SoftTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftTextField.swift"; sourceTree = "<group>"; };
 		366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreTests.swift"; sourceTree = "<group>"; };
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
+		6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupTests.swift"; sourceTree = "<group>"; };
 		95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidanceTests.swift"; sourceTree = "<group>"; };
 		CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaRecordTests.swift"; sourceTree = "<group>"; };
 		5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallFeatureListTests.swift"; sourceTree = "<group>"; };
@@ -629,6 +641,9 @@
 			children = (
 				E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */,
 				4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */,
+				B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */,
+				21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */,
+				812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */,
 			);
 			path = "Backup";
 			sourceTree = "<group>";
@@ -779,6 +794,7 @@
 				0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */,
 				9EC8965324449551C656D14D /* BackupSchedule.swift */,
 				C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */,
+				7F129C433867C02F18FD644D /* ICloudBackupPolicy.swift */,
 			);
 			path = "Backup";
 			sourceTree = "<group>";
@@ -1183,6 +1199,7 @@
 		6BDE0CF79E8A192A3E6B8639 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				1A7F6F930C5BEFF9A96CBDFD /* ICloudBackupSection.swift */,
 				B569DDAA030C4217F07077AF /* SettingsView.swift */,
 				82764F490E37BC1688993580 /* TelegramSettingsSection.swift */,
 			);
@@ -1283,6 +1300,7 @@
 			children = (
 				366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */,
 				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
+				6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */,
 				95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */,
 				CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */,
 				5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */,
@@ -1507,6 +1525,9 @@
 				02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */,
 				5A9BCDF30C20AD26B24C47F4 /* BackupIdentity.swift */,
 				8B5A088FC7272F60C4AE8CC9 /* BackupJournalMapper.swift */,
+				3F896985C84EB47E4D48BE10 /* ICloudBackupController.swift */,
+				4974FB1BBA7336ABA2F45C25 /* ICloudBackupSync.swift */,
+				BF8ADDD0C055C6967BBC8C46 /* ICloudDriveStore.swift */,
 				C78C50B770CA1364F83346A7 /* PhotoGeotag.swift */,
 				AEEC91520189FE6F0DD49FEA /* PhotoImageWriter.swift */,
 				6775E55DDA8AA0C55EA89B78 /* ScanPDFWriter.swift */,
@@ -1568,6 +1589,7 @@
 				306760269278F232415BDE90 /* BackupRestoreParser.swift */,
 				B7F6B8FBA41296AAF6C6F7A9 /* BackupSchedule.swift */,
 				98B6530A722C47BDDAE9841A /* BackupSyncPolicy.swift */,
+				9E78766E42AD96F871B06E6B /* ICloudBackupPolicy.swift */,
 				CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */,
 				A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */,
 				B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */,
@@ -1676,6 +1698,7 @@
 				A6BA626E0C65B68CD84F2610 /* PrivacyView.swift */,
 				F8DE66E3C688B334B7EBDE76 /* ProfileView.swift */,
 				0E6682067DBA3801417D8711 /* ScannerView.swift */,
+				94FDF637C222F4123077FF52 /* ICloudBackupSection.swift */,
 				C1AFBE27692193C5FEF14A69 /* SettingsView.swift */,
 				4CDF01DE94B9F44F70777678 /* TelegramSettingsSection.swift */,
 				8B4ED60A785176648990FAB6 /* TaxTrackerView.swift */,
@@ -1721,6 +1744,7 @@
 			files = (
 				330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */,
 				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
+				1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */,
 				1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */,
 				A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */,
 				1E927A95D6A9FACC9A0457FF /* PaywallFeatureListTests.swift */,

@@ -5,6 +5,8 @@ import Foundation
 /// The file name matches Android `BackupSchema.jsonFileName`. Restore is a full replace
 /// (`BackupService.restoreBackupJson`): schema newer than v2 is rejected, a leading UTF-8 BOM
 /// is ignored, and a journal newer than the file asks for confirmation first.
+/// A different `accountId` (an Android sign-in, for example) is a warning the driver confirms,
+/// not a hard refusal. The Telegram token is never part of this file.
 enum BackupService {
 
     struct ExportFile: Equatable {
@@ -17,6 +19,9 @@ enum BackupService {
         var json: String
         var exportedAt: Int64
         var unbound: Bool
+        var accountMismatch: Bool
+        var originDevice: String?
+        var originPlatform: String?
     }
 
     struct Report: Equatable {
@@ -42,15 +47,19 @@ enum BackupService {
         settings: AppSettings,
         identity: BackupIdentityStore,
         accountId: String = BackupAccount.localDev,
-        exportedAt: Int64 = nowMillis()
+        exportedAt: Int64 = nowMillis(),
+        originDevice: String? = nil,
+        originPlatform: String? = nil
     ) throws -> ExportFile {
-        let backup = BackupJournalMapper.export(
+        var backup = BackupJournalMapper.export(
             graph: try database.fetchGraph(),
             settings: settings,
             identity: identity,
             accountId: accountId,
             exportedAt: exportedAt
         )
+        backup.originDevice = originDevice
+        backup.originPlatform = originPlatform
         guard BackupDataCodec.hasExportableContent(backup) else { throw Failure.empty }
         let json = BackupDataCodec.encode(backup)
         return ExportFile(
@@ -68,10 +77,16 @@ enum BackupService {
         )
     }
 
-    static func shouldWarnBeforeRestore(in database: AppDatabase, backupExportedAt: Int64) throws -> Bool {
+    static func newestLoadMillis(in database: AppDatabase) throws -> Int64 {
         let loads = try database.fetchGraph().loads
-        let newest = loads.map { max(millis($0.updatedAt), millis($0.parsedAt)) }.max() ?? 0
-        return shouldWarnBeforeRestore(localNewestMillis: newest, backupExportedAt: backupExportedAt)
+        return loads.map { max(millis($0.updatedAt), millis($0.parsedAt)) }.max() ?? 0
+    }
+
+    static func shouldWarnBeforeRestore(in database: AppDatabase, backupExportedAt: Int64) throws -> Bool {
+        try shouldWarnBeforeRestore(
+            localNewestMillis: newestLoadMillis(in: database),
+            backupExportedAt: backupExportedAt
+        )
     }
 
     static func preview(data: Data, activeAccountId: String = BackupAccount.localDev) throws -> Preview {
@@ -80,10 +95,15 @@ enum BackupService {
         let backup = try decode(json)
         let account = backup.accountId?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let active = activeAccountId.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !account.isEmpty && !active.isEmpty && account != active {
-            throw Failure.wrongAccount
-        }
-        return Preview(json: json, exportedAt: backup.exportedAt, unbound: account.isEmpty)
+        let mismatch = !account.isEmpty && !active.isEmpty && account != active
+        return Preview(
+            json: json,
+            exportedAt: backup.exportedAt,
+            unbound: account.isEmpty,
+            accountMismatch: mismatch,
+            originDevice: backup.originDevice,
+            originPlatform: backup.originPlatform
+        )
     }
 
     static func read(url: URL) throws -> Data {
@@ -115,7 +135,8 @@ enum BackupService {
         identity: BackupIdentityStore,
         media: MediaStore,
         activeAccountId: String = BackupAccount.localDev,
-        allowUnboundAccount: Bool
+        allowUnboundAccount: Bool,
+        allowForeignAccount: Bool = false
     ) throws -> Report {
         if json.utf8.count > BackupSchedule.maxRestoreBytes { throw Failure.tooLarge }
         let backup = try decode(json)
@@ -123,7 +144,7 @@ enum BackupService {
         let active = activeAccountId.trimmingCharacters(in: .whitespacesAndNewlines)
         if account.isEmpty {
             if !allowUnboundAccount { throw Failure.unboundAccount }
-        } else if !active.isEmpty && account != active {
+        } else if !active.isEmpty && account != active && !allowForeignAccount {
             throw Failure.wrongAccount
         }
         let previousWeek = settings.weekStart
