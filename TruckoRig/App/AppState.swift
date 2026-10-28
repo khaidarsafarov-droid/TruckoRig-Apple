@@ -92,6 +92,7 @@ final class AppState {
 
     func bootstrap() {
         ensureProfileExists()
+        hydrateImportedLoadFields()
         reloadJournal()
         premium.start()
         telegram.launch()
@@ -242,6 +243,36 @@ final class AppState {
     }
 
     /// Exactly one profile row; created lazily on first launch.
+    /// Copies equipment, deadhead and dispute flags that older restores kept only in the backup book.
+    private func hydrateImportedLoadFields() {
+        let book = BackupIdentityStore.standard().load()
+        guard !book.loadExtras.isEmpty else { return }
+        guard let loads = try? persistence.database.loads() else { return }
+        for load in loads {
+            guard let extra = book.loadExtras[load.id.uuidString] else { continue }
+            var changed = false
+            if load.equipmentType == nil, let type = extra.equipmentType {
+                load.equipmentType = type
+                changed = true
+            }
+            if load.deadheadMiles == 0, extra.deadheadMiles > 0 {
+                load.deadheadMiles = extra.deadheadMiles
+                changed = true
+            }
+            if !load.disputeApplyToLoad, extra.disputeApplyToLoad {
+                load.disputeApplyToLoad = true
+                changed = true
+            }
+            if !load.disputeAmountApplied, extra.disputeAmountApplied {
+                load.disputeAmountApplied = true
+                changed = true
+            }
+            if changed {
+                try? persistence.database.save(load)
+            }
+        }
+    }
+
     private func ensureProfileExists() {
         catalog.reload(from: persistence.database)
         guard catalog.profile == nil else { return }

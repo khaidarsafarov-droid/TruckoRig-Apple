@@ -32,6 +32,8 @@ struct JournalView: View {
     @State private var cameraLoad: Load?
     @State private var scannerLoad: Load?
     @State private var syncNotice: String?
+    @State private var selectedLoadID: UUID?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var sections: [JournalSection] {
         viewModel.sections(from: loads, week: appState.settings.truckingWeek)
@@ -42,9 +44,30 @@ struct JournalView: View {
     }
 
     var body: some View {
+        if horizontalSizeClass == .regular {
+            NavigationSplitView {
+                journalList
+            } detail: {
+                if let selectedLoadID, let load = loads.first(where: { $0.id == selectedLoadID }) {
+                    LoadDetailView(load: load)
+                } else {
+                    ContentUnavailableView {
+                        Label("journal.select.title", systemImage: "list.bullet.rectangle")
+                    } description: {
+                        Text("journal.select.message")
+                    }
+                }
+            }
+            .navigationSplitViewStyle(.balanced)
+        } else {
+            journalList
+        }
+    }
+
+    private var journalList: some View {
         @Bindable var model = viewModel
 
-        List {
+        return List {
             Section {
                 JournalHomeHeader(
                     name: appState.catalog.profile?.name ?? "",
@@ -67,14 +90,7 @@ struct JournalView: View {
             ForEach(sections) { section in
                 Section {
                     ForEach(section.loads) { load in
-                        NavigationLink(value: load) {
-                            JournalLoadCard(
-                                load: load,
-                                thresholds: appState.settings.rpmThresholds,
-                                onCamera: { cameraLoad = load },
-                                onScan: { scannerLoad = load }
-                            )
-                        }
+                        loadLink(load)
                         .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                         .listRowSeparator(.hidden)
@@ -133,6 +149,7 @@ struct JournalView: View {
         .sheet(isPresented: $showMenu) {
             JournalMenuSheet(
                 filter: $model.filter,
+                selectedDay: $model.selectedDay,
                 onAdd: {
                     showMenu = false
                     isAddingLoad = true
@@ -264,6 +281,23 @@ struct JournalView: View {
         .listRowSeparator(.hidden)
     }
 
+    private func loadLink(_ load: Load) -> some View {
+        let card = JournalLoadCard(
+            load: load,
+            thresholds: appState.settings.rpmThresholds,
+            onCamera: { cameraLoad = load },
+            onScan: { scannerLoad = load }
+        )
+        return Group {
+            if horizontalSizeClass == .regular {
+                Button { selectedLoadID = load.id } label: { card }
+            } else {
+                NavigationLink(value: load) { card }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
     private func deletePending() {
         guard let load = viewModel.loadPendingDeletion else { return }
         viewModel.loadPendingDeletion = nil
@@ -278,6 +312,7 @@ struct JournalView: View {
 
 private struct JournalMenuSheet: View {
     @Binding var filter: JournalViewModel.Filter
+    @Binding var selectedDay: Date
     var onAdd: () -> Void
     var onSelect: (HomeDestination) -> Void
 
@@ -290,6 +325,9 @@ private struct JournalMenuSheet: View {
                     ForEach(JournalViewModel.Filter.allCases) { item in
                         Text(item.title).tag(item)
                     }
+                }
+                if filter == .onDate || filter == .calendarWeek {
+                    DatePicker("journal.filter.pickDate", selection: $selectedDay, displayedComponents: .date)
                 }
 
                 Button(action: onAdd) {

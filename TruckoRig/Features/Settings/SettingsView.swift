@@ -137,6 +137,18 @@ struct SettingsView: View {
                 Text("settings.weekStart.hint")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
+                Picker("settings.dieselWeekStart", selection: $settings.dieselWeekStart) {
+                    ForEach(WeekStartDay.allCases, id: \.self) { day in
+                        Text(weekdayName(day)).tag(day)
+                    }
+                }
+                Text("settings.dieselWeekStart.hint")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
+                Toggle("settings.reduceMotion", isOn: $settings.reduceMotion)
+                Text("settings.reduceMotion.hint")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestTextSecondary)
             }
 
             Section {
@@ -191,6 +203,7 @@ struct SettingsView: View {
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
                 Button("settings.backup.export") { exportBackup() }
+                SettingsJournalExport()
                 Button("settings.backup.import") { confirmRestore = .replace }
                 Text("settings.backup.restoreHint")
                     .font(.appCaption)

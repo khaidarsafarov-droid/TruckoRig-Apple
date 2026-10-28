@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Sheet for adding a trip, either by pasting Relay text or by typing it in.
 struct AddLoadView: View {
@@ -9,6 +10,8 @@ struct AddLoadView: View {
     @State private var viewModel = AddLoadViewModel()
     @State private var editingStop: StopEditTarget?
     @State private var relayFocused = false
+    @State private var isImportingDocument = false
+    @State private var documentMessage: String?
 
     var body: some View {
         @Bindable var model = viewModel
@@ -27,7 +30,17 @@ struct AddLoadView: View {
                         )
                     }
 
+                    Section {
+                        Button("load.document.import") { isImportingDocument = true }
+                        if let documentMessage {
+                            Text(documentMessage)
+                                .font(.appCaption)
+                                .foregroundStyle(Color.forestTextSecondary)
+                        }
+                    }
+
                     LoadFormFields(draft: $model.draft)
+                    LoadExtraFields(draft: $model.draft)
 
                     StopsSection(
                         stops: $model.draft.stops,
@@ -59,6 +72,13 @@ struct AddLoadView: View {
                 }
             }
             .keyboardDone()
+            .fileImporter(
+                isPresented: $isImportingDocument,
+                allowedContentTypes: Self.documentTypes,
+                allowsMultipleSelection: false
+            ) { result in
+                importDocument(result)
+            }
             .navigationTitle("journal.addLoad")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -82,6 +102,30 @@ struct AddLoadView: View {
                 message: { Text("load.duplicate.message \(viewModel.duplicateTripId ?? "")") }
             )
             .loadingOverlay(viewModel.isSaving, message: "status.saving")
+        }
+    }
+
+    private static var documentTypes: [UTType] {
+        var types: [UTType] = [.pdf, .plainText, .text]
+        if let docx = UTType(filenameExtension: "docx") { types.append(docx) }
+        if let xlsx = UTType(filenameExtension: "xlsx") { types.append(xlsx) }
+        return types
+    }
+
+    private func importDocument(_ result: Result<[URL], Error>) {
+        switch result {
+        case .failure(let error):
+            documentMessage = error.localizedDescription
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            do {
+                let text = try LoadDocumentText.read(url: url)
+                viewModel.relayText = text
+                viewModel.parseRelayText()
+                documentMessage = String(localized: "load.document.imported")
+            } catch {
+                documentMessage = String(localized: "load.document.empty")
+            }
         }
     }
 

@@ -101,7 +101,13 @@ enum BackupJournalMapper {
         usedPenalties: inout Set<Int>
     ) -> BackupLoad {
         let androidID = androidLoadID(load.id, book: &book)
-        let extra = book.loadExtras[load.id.uuidString] ?? BackupLoadExtra()
+        let extra = BackupLoadExtra(
+            equipmentType: load.equipmentType,
+            deadheadMiles: load.deadheadMiles,
+            disputeApplyToLoad: load.disputeApplyToLoad,
+            disputeAmountApplied: load.disputeAmountApplied
+        )
+        book.loadExtras[load.id.uuidString] = extra
         let stops = (load.stops ?? []).sorted { $0.stopNumber < $1.stopNumber }
         let pickups = stops.filter { $0.type == .pickup }
         let deliveries = stops.filter { $0.type == .delivery }
@@ -238,7 +244,11 @@ enum BackupJournalMapper {
             disputeResponseDate: load.disputeResponseDate.flatMap { noon($0) },
             disputeAmount: load.disputeAmountCents.map { Double($0) / 100 },
             actualFinishDate: load.actualFinishDate.flatMap(parseFinish),
-            durationDays: load.durationDays
+            durationDays: load.durationDays,
+            disputeApplyToLoad: load.disputeApplyToLoad,
+            disputeAmountApplied: load.disputeAmountApplied,
+            equipmentType: load.equipmentType,
+            deadheadMiles: load.deadheadMiles
         )
         imported.stops = load.stops.map { importStop($0, loadID: id, book: &book) }
         imported.penalties = load.penalties.map { importPenalty($0, loadID: id, fallback: date, book: &book) }
@@ -312,7 +322,7 @@ enum BackupJournalMapper {
         var extra = book.paycheckExtras[paycheck.id.uuidString] ?? BackupPaycheckExtra()
         extra.company = paycheck.company
         extra.notes = paycheck.notes
-        let range = weekRange(for: paycheck.date, settings: settings)
+        let range = weekRange(for: paycheck.date, week: settings.truckingWeek)
         let label = extra.weekLabel ?? weekLabel(start: range.start, end: range.end)
         let start = extra.weekStartDate ?? DateUtils.isoDay(range.start)
         let end = extra.weekEndDate ?? DateUtils.isoDay(range.end)
@@ -384,7 +394,7 @@ enum BackupJournalMapper {
         extra.state = fill.state
         extra.odometer = fill.odometer
         extra.receiptFileName = fill.receiptFileName
-        let range = weekRange(for: fill.date, settings: settings)
+        let range = weekRange(for: fill.date, week: settings.dieselWeek)
         let label = extra.weekLabel ?? weekLabel(start: range.start, end: range.end)
         let start = extra.weekStartDate ?? DateUtils.isoDay(range.start)
         let end = extra.weekEndDate ?? DateUtils.isoDay(range.end)
@@ -396,7 +406,7 @@ enum BackupJournalMapper {
         book.dieselUUIDByAndroid[String(androidID)] = fill.id.uuidString
         let price = thousandths(fill.pricePerGallon)
         let discount = fill.discountPricePerGallon.map(thousandths)
-        let ref = settings.truckingWeek.week(for: fill.date)
+        let ref = settings.dieselWeek.week(for: fill.date)
         return BackupDiesel(
             id: androidID,
             weekNumber: ref.weekNumber,
@@ -538,7 +548,9 @@ enum BackupJournalMapper {
         case .russian:
             language = 0
         case .english:
-            language = extra.preservedLanguageOrdinal == 2 ? 2 : 1
+            language = 1
+        case .spanish:
+            language = 2
         case .french:
             language = 3
         }
@@ -547,7 +559,7 @@ enum BackupJournalMapper {
         return BackupAppSettings(
             themeModeOrdinal: settings.themeMode.rawValue,
             languageOrdinal: language,
-            reduceMotion: extra.reduceMotion,
+            reduceMotion: settings.reduceMotion,
             oledDark: settings.oledDark,
             dynamicColor: extra.dynamicColor,
             parserAutoUpdate: extra.parserAutoUpdate,
@@ -562,7 +574,7 @@ enum BackupJournalMapper {
             rpmMinProfit: settings.rpmMinProfit,
             rpmTargetProfit: settings.rpmTargetProfit,
             loadWeekStartDay: week,
-            dieselWeekStartDay: week
+            dieselWeekStartDay: settings.dieselWeekStart.calendarWeekday
         )
     }
 
@@ -597,11 +609,9 @@ enum BackupJournalMapper {
                 settings.language = .english
                 extra.preservedLanguageOrdinal = nil
             case 2:
-                settings.language = .english
-                extra.preservedLanguageOrdinal = 2
+                settings.language = .spanish
             case 3:
                 settings.language = .french
-                extra.preservedLanguageOrdinal = nil
             default:
                 break
             }
@@ -611,8 +621,12 @@ enum BackupJournalMapper {
         }
         if let day = incoming.loadWeekStartDay, let start = weekStart(day) {
             settings.weekStart = start
-        } else if let day = incoming.dieselWeekStartDay, let start = weekStart(day) {
-            settings.weekStart = start
+        }
+        if let day = incoming.dieselWeekStartDay, let start = weekStart(day) {
+            settings.dieselWeekStart = start
+        }
+        if let reduce = incoming.reduceMotion {
+            settings.reduceMotion = reduce
         }
         if let quiet = incoming.quietHoursEnabled { settings.quietHoursEnabled = quiet }
         if let start = incoming.quietHoursStart { settings.quietStartHour = start }
@@ -659,8 +673,7 @@ enum BackupJournalMapper {
         WeekStartDay.allCases.first { $0.calendarWeekday == calendarDay }
     }
 
-    private static func weekRange(for date: Date, settings: AppSettings) -> (start: Date, end: Date) {
-        let week = settings.truckingWeek
+    private static func weekRange(for date: Date, week: TruckingWeek) -> (start: Date, end: Date) {
         let ref = week.week(for: date)
         let start = week.startDate(of: ref) ?? date
         let end = week.endDate(of: ref) ?? date

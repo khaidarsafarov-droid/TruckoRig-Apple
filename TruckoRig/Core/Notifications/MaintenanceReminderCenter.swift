@@ -108,7 +108,7 @@ enum MaintenanceReminderCenter {
     static func prefersRussian(_ language: AppLanguage) -> Bool {
         switch language {
         case .russian: return true
-        case .english, .french: return false
+        case .english, .french, .spanish: return false
         case .system:
             return Locale.preferredLanguages.first?.hasPrefix("ru") == true
         }
@@ -117,7 +117,7 @@ enum MaintenanceReminderCenter {
     static func prefersFrench(_ language: AppLanguage) -> Bool {
         switch language {
         case .french: return true
-        case .russian, .english: return false
+        case .russian, .english, .spanish: return false
         case .system:
             return Locale.preferredLanguages.first?.hasPrefix("fr") == true
         }

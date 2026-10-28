@@ -24,6 +24,8 @@ final class AppSettings {
         self.weeklyGoal = Self.read(defaults, scope, .weeklyGoal, default: 0)
         self.language = Self.readEnum(defaults, scope, .language, default: .system)
         self.weekStart = Self.readEnum(defaults, scope, .weekStart, default: .sunday)
+        self.dieselWeekStart = Self.readEnum(defaults, scope, .dieselWeekStart, default: .sunday)
+        self.reduceMotion = Self.read(defaults, scope, .reduceMotion, default: false)
         self.themeMode = Self.readThemeMode(defaults, scope)
         self.oledDark = Self.read(defaults, scope, .oledDark, default: false)
         self.rpmMinProfit = Self.read(defaults, scope, .rpmMinProfit, default: RPMThresholds.default.minProfit)
@@ -69,6 +71,10 @@ final class AppSettings {
     /// Set only when the driver taps Miles or Kilometers. `nil` follows the language.
     private(set) var explicitMeasurementSystem: MeasurementSystem?
     var weekStart: WeekStartDay { didSet { write(.weekStart, weekStart.rawValue) } }
+    /// Android `diesel_week_start_day`. Defaults to Sunday, separate from the load week.
+    var dieselWeekStart: WeekStartDay { didSet { write(.dieselWeekStart, dieselWeekStart.rawValue) } }
+    /// Skips decorative motion. Combined with the system Reduce Motion setting.
+    var reduceMotion: Bool { didSet { write(.reduceMotion, reduceMotion) } }
     var rpmMinProfit: Double { didSet { write(.rpmMinProfit, rpmMinProfit) } }
     var rpmTargetProfit: Double { didSet { write(.rpmTargetProfit, rpmTargetProfit) } }
     var onboardingComplete: Bool { didSet { write(.onboardingComplete, onboardingComplete) } }
@@ -101,6 +107,10 @@ final class AppSettings {
 
     var truckingWeek: TruckingWeek {
         TruckingWeek(weekStart: weekStart)
+    }
+
+    var dieselWeek: TruckingWeek {
+        TruckingWeek(weekStart: dieselWeekStart)
     }
 
     /// Miles unless the driver picked a unit, or has not picked one and the language is French.
@@ -153,6 +163,8 @@ final class AppSettings {
         case oledDark = "oled_dark"
         case language
         case weekStart
+        case dieselWeekStart = "diesel_week_start_day"
+        case reduceMotion = "reduce_motion"
         case rpmMinProfit
         case rpmTargetProfit
         case notifyMissingWeek

@@ -29,6 +29,7 @@ struct WeeklyGoalView: View {
             .padding(Spacing.standard)
         }
         .forestBackground()
+        .premiumGated("premium.locked.goal")
         .navigationTitle("tab.goal")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -285,6 +286,7 @@ struct WeeklyGoalView: View {
 /// Progress ring with a marker showing where an even pace would be.
 struct GoalProgressRing: View {
     let progress: WeeklyGoalProgress
+    @Environment(\.cabinReduceMotion) private var reduceMotion
 
     private var expectedFraction: Double {
         guard progress.targetAmount > 0 else { return 0 }
@@ -300,7 +302,7 @@ struct GoalProgressRing: View {
                 .trim(from: 0, to: progress.progressFraction)
                 .stroke(progress.paceStatus.tint, style: StrokeStyle(lineWidth: 14, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .animation(.easeOut(duration: 0.4), value: progress.progressFraction)
+                .animation(reduceMotion ? nil : .easeOut(duration: 0.4), value: progress.progressFraction)
 
             Circle()
                 .trim(from: max(0, expectedFraction - 0.004), to: min(1, expectedFraction + 0.004))

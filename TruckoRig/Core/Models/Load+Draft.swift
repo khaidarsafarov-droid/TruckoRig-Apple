@@ -14,6 +14,10 @@ extension LoadDraft {
             disputeCompleted: load.disputeCompleted,
             disputeResponseDate: load.disputeResponseDate,
             disputeAmount: load.disputeAmount,
+            disputeApplyToLoad: load.disputeApplyToLoad,
+            disputeAmountApplied: load.disputeAmountApplied,
+            equipmentType: load.equipmentType,
+            deadheadMiles: load.deadheadMiles,
             rawMessage: load.rawMessage
         )
     }

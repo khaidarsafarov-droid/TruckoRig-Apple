@@ -15,6 +15,10 @@ public struct LoadDraft: Equatable, Sendable {
     public var disputeCompleted: Bool
     public var disputeResponseDate: Date?
     public var disputeAmount: Double?
+    public var disputeApplyToLoad: Bool
+    public var disputeAmountApplied: Bool
+    public var equipmentType: String?
+    public var deadheadMiles: Double
     public var rawMessage: String?
 
     public init(
@@ -28,6 +32,10 @@ public struct LoadDraft: Equatable, Sendable {
         disputeCompleted: Bool = false,
         disputeResponseDate: Date? = nil,
         disputeAmount: Double? = nil,
+        disputeApplyToLoad: Bool = false,
+        disputeAmountApplied: Bool = false,
+        equipmentType: String? = nil,
+        deadheadMiles: Double = 0,
         rawMessage: String? = nil
     ) {
         self.tripId = tripId
@@ -40,8 +48,14 @@ public struct LoadDraft: Equatable, Sendable {
         self.disputeCompleted = disputeCompleted
         self.disputeResponseDate = disputeResponseDate
         self.disputeAmount = disputeAmount
+        self.disputeApplyToLoad = disputeApplyToLoad
+        self.disputeAmountApplied = disputeAmountApplied
+        self.equipmentType = equipmentType
+        self.deadheadMiles = deadheadMiles
         self.rawMessage = rawMessage
     }
+
+    public var drivenMiles: Double { totalMiles + max(0, deadheadMiles) }
 
     public init(parsed: ParsedLoad, fallbackDate: Date = Date()) {
         self.init(
@@ -60,7 +74,7 @@ public struct LoadDraft: Equatable, Sendable {
     public var deliveries: [StopDraft] { stops.filter { $0.type == .delivery } }
     public var pointA: String { pickups.first?.cityState ?? "" }
     public var pointB: String { deliveries.last?.cityState ?? "" }
-    public var ratePerMile: Double { RPMCalculator.ratePerMile(rate: totalRate, miles: totalMiles) }
+    public var ratePerMile: Double { RPMCalculator.ratePerMile(rate: totalRate, miles: drivenMiles) }
 
     /// Stops renumbered from 1 in their current order.
     public var normalizedStops: [StopDraft] {
@@ -89,7 +103,7 @@ public struct LoadDraft: Equatable, Sendable {
         var errors: [ValidationError] = []
         if !TripID.isValid(tripId) { errors.append(.missingTripId) }
         if totalRate <= 0 { errors.append(.nonPositiveRate) }
-        if totalMiles < 0 { errors.append(.negativeMiles) }
+        if totalMiles < 0 || deadheadMiles < 0 { errors.append(.negativeMiles) }
         if let finish = actualFinishDate,
            let start = pickups.compactMap(\.scheduledTime).min(),
            finish < start {

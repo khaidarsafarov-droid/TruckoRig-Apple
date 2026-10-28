@@ -33,6 +33,7 @@ struct AnalyticsView: View {
             .padding(.bottom, 24)
         }
         .forestBackground()
+        .premiumGated("premium.locked.analytics")
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
     }

@@ -75,15 +75,20 @@ struct LoadRepository {
             parsedAt: now,
             updatedAt: now,
             isDispute: draft.isDispute,
-            disputeCompleted: draft.disputeCompleted,
+            disputeCompleted: false,
             disputeResponseDate: draft.disputeResponseDate,
             disputeAmount: draft.disputeAmount,
+            disputeApplyToLoad: draft.disputeApplyToLoad,
+            equipmentType: draft.equipmentType,
+            deadheadMiles: draft.deadheadMiles,
             actualFinishDate: draft.actualFinishDate
         )
+        applyDispute(to: load, draft: draft, previousRate: draft.totalRate, previousApplied: false, now: now)
         load.stops = draft.normalizedStops.map(Stop.init(draft:))
         load.refreshDerivedFields(week: week)
 
         try persist(load)
+        PickupAlarmCenter.schedule(for: load)
         return load
     }
 
@@ -120,15 +125,27 @@ struct LoadRepository {
             throw LoadRepositoryError.duplicateTripId(tripId)
         }
 
+        let previousRate = load.totalRate
+        let previousApplied = load.disputeAmountApplied
+        let previousCompleted = load.disputeCompleted
+        let previousUpdated = load.updatedAt
         load.tripId = tripId
         load.date = draft.date
-        load.totalRate = draft.totalRate
         load.totalMiles = draft.totalMiles
         load.actualFinishDate = draft.actualFinishDate
+        load.equipmentType = draft.equipmentType
+        load.deadheadMiles = draft.deadheadMiles
         load.isDispute = draft.isDispute
-        load.disputeCompleted = draft.disputeCompleted
         load.disputeResponseDate = draft.disputeResponseDate
-        load.disputeAmount = draft.disputeAmount
+        applyDispute(
+            to: load,
+            draft: draft,
+            previousRate: previousRate,
+            previousApplied: previousApplied,
+            previousCompleted: previousCompleted,
+            previousUpdated: previousUpdated,
+            now: Date()
+        )
 
         load.stops = draft.normalizedStops.map(Stop.init(draft:))
 
@@ -138,6 +155,42 @@ struct LoadRepository {
         load.refreshDerivedFields(week: week)
 
         try persist(load)
+        PickupAlarmCenter.schedule(for: load)
+    }
+
+    /// Applies Android `DisputePayout` using the rate that was already stored.
+    private func applyDispute(
+        to load: Load,
+        draft: LoadDraft,
+        previousRate: Double,
+        previousApplied: Bool,
+        previousCompleted: Bool = false,
+        previousUpdated: Date = .distantPast,
+        now: Date
+    ) {
+        let previous = DisputeSnapshot(
+            totalRate: previousRate,
+            disputeCompleted: previousCompleted,
+            disputeApplyToLoad: load.disputeApplyToLoad,
+            disputeAmountApplied: previousApplied,
+            disputeAmount: load.disputeAmount,
+            updatedAt: previousUpdated
+        )
+        let incoming = DisputeSnapshot(
+            totalRate: draft.totalRate,
+            disputeCompleted: draft.disputeCompleted,
+            disputeApplyToLoad: draft.disputeApplyToLoad,
+            disputeAmountApplied: draft.disputeAmountApplied,
+            disputeAmount: draft.disputeAmount,
+            updatedAt: now
+        )
+        let merged = DisputePayout.merge(previous: previous, incoming: incoming)
+        let settled = DisputePayout.settle(previous: previous, next: merged)
+        load.totalRate = settled.totalRate
+        load.disputeCompleted = settled.disputeCompleted
+        load.disputeApplyToLoad = settled.disputeApplyToLoad
+        load.disputeAmountApplied = settled.disputeAmountApplied
+        load.disputeAmount = settled.disputeAmount
     }
 
     func setDispute(_ load: Load, isDispute: Bool, completed: Bool, amount: Double?, responseDate: Date?) throws {
@@ -170,6 +223,7 @@ struct LoadRepository {
 
     func delete(_ load: Load, mediaStore: MediaStore? = nil) throws {
         let removed = try database.delete(load)
+        PickupAlarmCenter.cancel(loadID: load.id)
         if let mediaStore {
             for photo in removed.photos {
                 mediaStore.delete(fileName: photo.fileName, filePath: photo.filePath, kind: .photo)

@@ -27,6 +27,7 @@ struct EditLoadView: View {
         NavigationStack {
             Form {
                 LoadFormFields(draft: $draft)
+                LoadExtraFields(draft: $draft)
 
                 Section("load.finish") {
                     Toggle("load.finish.override", isOn: $hasFinishOverride)
@@ -92,6 +93,7 @@ struct EditLoadView: View {
             Toggle("load.dispute.open", isOn: $draft.isDispute)
             if draft.isDispute {
                 Toggle("load.dispute.completed", isOn: $draft.disputeCompleted)
+                Toggle("load.dispute.apply", isOn: $draft.disputeApplyToLoad)
                 SoftNumberField(title: "load.dispute.amount", value: disputeAmountBinding)
                 DatePicker("load.dispute.responseDate", selection: disputeDateBinding, displayedComponents: .date)
             }

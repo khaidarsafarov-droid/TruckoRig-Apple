@@ -74,6 +74,7 @@ struct ScannerView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .forestBackground()
+        .premiumGated("premium.locked.scanner")
         .navigationTitle(pending == nil ? "scanner.title" : "scanner.results")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

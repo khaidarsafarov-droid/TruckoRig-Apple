@@ -7,6 +7,7 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable {
     case russian
     case english
     case french
+    case spanish
 
     var id: String { rawValue }
 
@@ -17,6 +18,7 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable {
         case .russian: return "ru"
         case .english: return "en"
         case .french: return "fr"
+        case .spanish: return "es"
         }
     }
 
@@ -26,6 +28,7 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable {
         case .russian: return "Русский"
         case .english: return "English"
         case .french: return "Français"
+        case .spanish: return "Español"
         }
     }
 }
@@ -42,6 +45,11 @@ final class DriverProfile: Identifiable {
     var homeState: String?
     /// `ownerOperator`, `hiredDriver` or `dispatcher`. Empty until onboarding picks one.
     var role: String?
+    var cdlNumber: String?
+    var experienceYears: Int?
+    var phoneNumber: String?
+    var telegramUsername: String?
+    var avatarFileName: String?
     var preferredLanguage: AppLanguage
     var weeklyGoal: Double
     var updatedAt: Date
@@ -55,6 +63,11 @@ final class DriverProfile: Identifiable {
         licensePlate: String? = nil,
         homeState: String? = nil,
         role: String? = nil,
+        cdlNumber: String? = nil,
+        experienceYears: Int? = nil,
+        phoneNumber: String? = nil,
+        telegramUsername: String? = nil,
+        avatarFileName: String? = nil,
         preferredLanguage: AppLanguage = .system,
         weeklyGoal: Double = 0,
         updatedAt: Date = Date()
@@ -67,6 +80,11 @@ final class DriverProfile: Identifiable {
         self.licensePlate = licensePlate
         self.homeState = homeState
         self.role = role
+        self.cdlNumber = cdlNumber
+        self.experienceYears = experienceYears
+        self.phoneNumber = phoneNumber
+        self.telegramUsername = telegramUsername
+        self.avatarFileName = avatarFileName
         self.preferredLanguage = preferredLanguage
         self.weeklyGoal = weeklyGoal
         self.updatedAt = updatedAt
