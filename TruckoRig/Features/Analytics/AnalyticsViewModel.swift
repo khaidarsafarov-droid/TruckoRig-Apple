@@ -1,14 +1,28 @@
 import Foundation
 import Observation
+import SwiftUI
 
-/// Money, routes and charts for «Мои цифры».
-///
-/// The window is the last eight reporting weeks, which is what the approved stats mockup draws
-/// (W36–W43). Paycheck and diesel stay separate: the screen never subtracts them.
+/// «Мои цифры». Windows match Android `AnalyticsPeriod`: 12 weeks, 6 months, all time.
 @Observable
 final class AnalyticsViewModel {
 
-    static let weekCount = 8
+    enum Period: String, CaseIterable, Identifiable {
+        case twelveWeeks
+        case sixMonths
+        case allTime
+
+        var id: String { rawValue }
+
+        var title: LocalizedStringKey {
+            switch self {
+            case .twelveWeeks: return "analytics.period.12"
+            case .sixMonths: return "analytics.period.6"
+            case .allTime: return "analytics.period.all"
+            }
+        }
+    }
+
+    var period: Period = .twelveWeeks
 
     func page(
         loads: [Load],
@@ -18,13 +32,14 @@ final class AnalyticsViewModel {
         now: Date = Date()
     ) -> AnalyticsPage {
         let summaries = loads.map(\.summary)
+        let count = weekCount(summaries: summaries, calendar: calendar, now: now)
         let weeks = AnalyticsCalculator.weeklySeries(
             loads: summaries,
-            weeks: Self.weekCount,
+            weeks: count,
             calendar: calendar,
             now: now
         )
-        let start = weeks.compactMap { calendar.startDate(of: $0.week) }.min()
+        let start = period == .allTime ? nil : weeks.compactMap { calendar.startDate(of: $0.week) }.min()
         let end = calendar.dateRange(of: calendar.currentWeek(now: now))?.upperBound ?? now
         let range: Range<Date>? = start.map { $0..<end }
         let inWindow = summaries.filter { summary in
@@ -42,11 +57,12 @@ final class AnalyticsViewModel {
                         updatedAt: $0.updatedAt
                     )
                 },
-                diesel: diesel.map {
+                        diesel: diesel.map {
                     DieselSlice(
                         gallons: $0.gallons,
                         totalCost: $0.totalCost,
                         pricePerGallon: $0.pricePerGallon,
+                        discountPricePerGallon: $0.discountPricePerGallon,
                         date: $0.date
                     )
                 },
@@ -56,6 +72,24 @@ final class AnalyticsViewModel {
             daily: AnalyticsCalculator.dailyDistribution(loads: inWindow, calendar: calendar),
             weeks: weeks
         )
+    }
+
+    private func weekCount(summaries: [LoadSummary], calendar: TruckingWeek, now: Date) -> Int {
+        switch period {
+        case .twelveWeeks: return 12
+        case .sixMonths: return 26
+        case .allTime:
+            let current = calendar.currentWeek(now: now)
+            guard let earliest = summaries.compactMap(\.chartDate).min() else { return 12 }
+            var cursor = current
+            var count = 1
+            let start = calendar.week(for: earliest)
+            while cursor > start, count < 260 {
+                cursor = calendar.shift(cursor, by: -1)
+                count += 1
+            }
+            return count
+        }
     }
 }
 

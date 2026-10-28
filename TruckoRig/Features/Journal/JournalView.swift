@@ -32,7 +32,8 @@ struct JournalView: View {
     @State private var cameraLoad: Load?
     @State private var scannerLoad: Load?
     @State private var syncNotice: String?
-    @State private var selectedLoadID: UUID?
+    @State private var showSurveyPaywall = false
+    @State private var showSurvey = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var sections: [JournalSection] {
@@ -85,6 +86,36 @@ struct JournalView: View {
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                 }
+            }
+
+            if loads.isEmpty {
+                ActivationChecklistCard(
+                    profileComplete: !(appState.catalog.profile?.name ?? "").trimmingCharacters(in: .whitespaces).isEmpty,
+                    hasGoal: appState.settings.weeklyGoal > 0,
+                    hasDiesel: !appState.catalog.diesel.isEmpty,
+                    onProfile: { destination = .profile },
+                    onAddLoad: { isAddingLoad = true },
+                    onGoal: { destination = .goal },
+                    onDiesel: { destination = .diesel }
+                )
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+            }
+
+            if showSurvey {
+                Day7SurveyBanner(
+                    onSubscribe: { showSurveyPaywall = true },
+                    onEnough: {
+                        var record = Day7SurveyStore(scope: appState.persistence.scope).load(now: Date())
+                        record = Day7SurveyPolicy.optOut(record)
+                        Day7SurveyStore(scope: appState.persistence.scope).save(record)
+                        showSurvey = false
+                    }
+                )
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             }
 
             ForEach(sections) { section in
@@ -191,6 +222,20 @@ struct JournalView: View {
             actions: { Button("action.ok") {} },
             message: { Text(viewModel.errorMessage ?? "") }
         )
+        .sheet(isPresented: $showSurveyPaywall) {
+            PremiumPaywallSheet(onClose: { showSurveyPaywall = false })
+                .environment(appState)
+        }
+        .task {
+            let store = Day7SurveyStore(scope: appState.persistence.scope)
+            var record = store.load(now: Date())
+            let due = Day7SurveyPolicy.shouldShow(record, now: Date(), premiumActive: appState.premium.isActive)
+            if due {
+                record = Day7SurveyPolicy.recordDisplay(record, now: Date())
+                store.save(record)
+            }
+            showSurvey = due
+        }
     }
 
     private var weekHero: some View {

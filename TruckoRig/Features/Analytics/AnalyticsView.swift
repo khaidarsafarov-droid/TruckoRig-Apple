@@ -39,7 +39,8 @@ struct AnalyticsView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        @Bindable var model = viewModel
+        return VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .center, spacing: 8) {
                 if showsBackButton {
                     Button { dismiss() } label: {
@@ -60,6 +61,12 @@ struct AnalyticsView: View {
                 .font(.appCallout)
                 .foregroundStyle(Color.heroTextMuted)
                 .fixedSize(horizontal: false, vertical: true)
+            Picker("analytics.period", selection: $model.period) {
+                ForEach(AnalyticsViewModel.Period.allCases) { period in
+                    Text(period.title).tag(period)
+                }
+            }
+            .pickerStyle(.segmented)
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)

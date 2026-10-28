@@ -380,6 +380,8 @@ public struct BackupAppSettings: Equatable, Sendable {
     public var telegramChatId: Int64?
     public var loadWeekStartDay: Int?
     public var dieselWeekStartDay: Int?
+    /// Android `distanceUnit`: `mi` or `km`. Absent means the driver has not picked a unit.
+    public var distanceUnit: String?
 
     public init(
         themeModeOrdinal: Int? = nil,
@@ -400,7 +402,8 @@ public struct BackupAppSettings: Equatable, Sendable {
         rpmTargetProfit: Double? = nil,
         telegramChatId: Int64? = nil,
         loadWeekStartDay: Int? = nil,
-        dieselWeekStartDay: Int? = nil
+        dieselWeekStartDay: Int? = nil,
+        distanceUnit: String? = nil
     ) {
         self.themeModeOrdinal = themeModeOrdinal
         self.languageOrdinal = languageOrdinal
@@ -421,6 +424,7 @@ public struct BackupAppSettings: Equatable, Sendable {
         self.telegramChatId = telegramChatId
         self.loadWeekStartDay = loadWeekStartDay
         self.dieselWeekStartDay = dieselWeekStartDay
+        self.distanceUnit = distanceUnit
     }
 }
 
@@ -825,6 +829,9 @@ public enum BackupDataCodec {
         // telegramChatId is intentionally never written.
         intField("loadWeekStartDay", settings.loadWeekStartDay)
         intField("dieselWeekStartDay", settings.dieselWeekStartDay)
+        if let distanceUnit = settings.distanceUnit {
+            fields.append(("distanceUnit", BackupJSON.escape(distanceUnit)))
+        }
         return object(fields)
     }
 
@@ -1030,7 +1037,8 @@ public enum BackupDataCodec {
             rpmTargetProfit: double(row["rpmTargetProfit"]),
             telegramChatId: int64(row["telegramChatId"]),
             loadWeekStartDay: int(row["loadWeekStartDay"]),
-            dieselWeekStartDay: int(row["dieselWeekStartDay"])
+            dieselWeekStartDay: int(row["dieselWeekStartDay"]),
+            distanceUnit: string(row["distanceUnit"])
         )
     }
 

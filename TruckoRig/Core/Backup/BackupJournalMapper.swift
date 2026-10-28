@@ -574,7 +574,8 @@ enum BackupJournalMapper {
             rpmMinProfit: settings.rpmMinProfit,
             rpmTargetProfit: settings.rpmTargetProfit,
             loadWeekStartDay: week,
-            dieselWeekStartDay: settings.dieselWeekStart.calendarWeekday
+            dieselWeekStartDay: settings.dieselWeekStart.calendarWeekday,
+            distanceUnit: settings.explicitMeasurementSystem.map { $0 == .kilometers ? "km" : "mi" }
         )
     }
 
@@ -627,6 +628,13 @@ enum BackupJournalMapper {
         }
         if let reduce = incoming.reduceMotion {
             settings.reduceMotion = reduce
+        }
+        if let unit = incoming.distanceUnit?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+            switch unit {
+            case "km": settings.chooseMeasurementSystem(.kilometers)
+            case "mi": settings.chooseMeasurementSystem(.miles)
+            default: break
+            }
         }
         if let quiet = incoming.quietHoursEnabled { settings.quietHoursEnabled = quiet }
         if let start = incoming.quietHoursStart { settings.quietStartHour = start }

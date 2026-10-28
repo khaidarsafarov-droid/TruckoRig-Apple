@@ -78,7 +78,7 @@ struct LoadDetailView: View {
                 StatTile(title: "stat.gross", value: Formatters.moneyPrecise(load.totalRate))
                 StatTile(
                     title: appState.settings.measurementSystem == .kilometers ? "stat.kilometers" : "stat.miles",
-                    value: Formatters.miles(load.totalMiles, system: appState.settings.measurementSystem)
+                    value: Formatters.miles(load.drivenMiles, system: appState.settings.measurementSystem)
                 )
                 StatTile(
                     title: "stat.rpm",
@@ -95,6 +95,31 @@ struct LoadDetailView: View {
                 )
                 StatTile(title: "stat.stops", value: "\(load.stopCount)")
             }
+            if load.deadheadMiles > 0 || load.equipmentType != nil {
+                if load.deadheadMiles > 0 {
+                    LabeledContent("load.deadhead") {
+                        Text(Formatters.miles(load.deadheadMiles, system: appState.settings.measurementSystem))
+                    }
+                }
+                if let equipment = load.equipmentType, let type = EquipmentType.fromStorage(equipment) {
+                    LabeledContent("load.equipment") {
+                        Text(equipmentTitle(type))
+                    }
+                }
+            }
+        }
+    }
+
+    private func equipmentTitle(_ type: EquipmentType) -> LocalizedStringKey {
+        switch type {
+        case .dryVan: return "load.equipment.dryVan"
+        case .reefer: return "load.equipment.reefer"
+        case .flatbed: return "load.equipment.flatbed"
+        case .powerOnly: return "load.equipment.powerOnly"
+        case .amazonRelay: return "load.equipment.amazonRelay"
+        case .boxTruck: return "load.equipment.boxTruck"
+        case .cargoVan: return "load.equipment.cargoVan"
+        case .other: return "load.equipment.other"
         }
     }
 
