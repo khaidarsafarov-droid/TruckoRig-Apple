@@ -243,12 +243,12 @@ enum BackupJournalMapper {
             disputeCompleted: load.disputeCompleted,
             disputeResponseDate: load.disputeResponseDate.flatMap { noon($0) },
             disputeAmount: load.disputeAmountCents.map { Double($0) / 100 },
-            actualFinishDate: load.actualFinishDate.flatMap(parseFinish),
-            durationDays: load.durationDays,
             disputeApplyToLoad: load.disputeApplyToLoad,
             disputeAmountApplied: load.disputeAmountApplied,
             equipmentType: load.equipmentType,
-            deadheadMiles: load.deadheadMiles
+            deadheadMiles: load.deadheadMiles,
+            actualFinishDate: load.actualFinishDate.flatMap(parseFinish),
+            durationDays: load.durationDays
         )
         imported.stops = load.stops.map { importStop($0, loadID: id, book: &book) }
         imported.penalties = load.penalties.map { importPenalty($0, loadID: id, fallback: date, book: &book) }

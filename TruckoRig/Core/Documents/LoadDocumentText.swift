@@ -59,7 +59,7 @@ enum ZipArchive {
             let nameStart = offset + 46
             guard nameStart + nameLength <= bytes.count else { break }
             let name = String(bytes: bytes[nameStart..<(nameStart + nameLength)], encoding: .utf8) ?? ""
-            if let payload = inflateLocal(bytes, localHeader: local, method: method, compressedSize: compressed),
+            if let payload = inflateLocal(bytes, localHeader: local, method: Int(method), compressedSize: compressed),
                let text = String(data: payload, encoding: .utf8) {
                 found.append(Entry(name: name, text: text))
             }
