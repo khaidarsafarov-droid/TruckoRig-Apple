@@ -3,29 +3,26 @@ import SwiftUI
 /// Scrolling home header: brand, greeting, and the on-device badge.
 struct JournalHomeHeader: View {
     let name: String
-    var onMenu: () -> Void
+    var showsTools = false
+    var onAdd: () -> Void
     var onSearch: () -> Void
-    var onProfile: () -> Void
+    var onTool: (JournalTool) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 4) {
-                headerButton("line.3.horizontal", label: "home.cd.menu", identifier: "uitest.menu", action: onMenu)
+                headerButton("plus", label: "journal.addLoad", identifier: "journal.addLoad", action: onAdd)
                 Spacer()
-                headerButton("magnifyingglass", label: "home.cd.search", action: onSearch)
-                Button(action: onProfile) {
-                    Text(avatar)
-                        .font(.appCaptionMedium)
-                        .foregroundStyle(Color.forestSecondary)
-                        .frame(width: 36, height: 36)
-                        .background(Color.forestSurfaceMuted, in: Circle())
+                if showsTools {
+                    JournalToolsMenu(onTool: onTool)
                 }
-                .accessibilityLabel("tab.profile")
+                headerButton("magnifyingglass", label: "home.cd.search", action: onSearch)
             }
 
             Text("home.brand")
                 .font(.appLargeTitle)
                 .foregroundStyle(Color.forestText)
+                .allowsHitTesting(false)
 
             Text(greeting)
                 .font(.appBody)
@@ -39,11 +36,6 @@ struct JournalHomeHeader: View {
                 .background(Color.forestSurfaceMuted, in: Capsule())
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var avatar: String {
-        let initials = name.initials
-        return initials.isEmpty ? "A" : String(initials.prefix(1))
     }
 
     private var greeting: String {
@@ -93,7 +85,6 @@ struct HomeWeekHeroCard: View {
     let loadCount: Int
     let dayLabels: [String]
     let elapsedDays: Int
-    var onOpenGoal: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -112,21 +103,12 @@ struct HomeWeekHeroCard: View {
                         Text(String(localized: "home.week.ofGoal \(USMoneyFormat.currency(goal))"))
                             .font(.appCallout)
                             .foregroundStyle(Color.heroTextMuted)
-                    } else if gross > 0 {
-                        Button(action: onOpenGoal) {
-                            Text("home.setGoal")
-                                .font(.appCallout)
-                                .foregroundStyle(Color.heroText)
-                        }
                     }
                 }
                 Spacer(minLength: 8)
                 if goal > 0 {
-                    Button(action: onOpenGoal) {
-                        goalRing
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(String(localized: "home.goal.percent \(Int(percent.rounded()))"))
+                    goalRing
+                        .accessibilityLabel(String(localized: "home.goal.percent \(Int(percent.rounded()))"))
                 }
             }
             .padding(.top, 8)
@@ -273,7 +255,7 @@ struct JournalLoadCard: View {
     }
 
     private var headerText: String {
-        let date = journalDate(load.effectiveFinishDate, locale: locale)
+        let date = journalDate(load.date, locale: locale)
         let trip = load.tripId.hasPrefix("#") ? load.tripId : "#\(load.tripId)"
         return "\(date) · \(trip)"
     }
@@ -393,14 +375,13 @@ struct JournalLoadCard: View {
 
 private func journalDate(_ date: Date, locale: Locale) -> String {
     let formatter = DateFormatter()
-    formatter.locale = locale.language.languageCode?.identifier == "fr" ? locale : .current
+    formatter.locale = locale
     formatter.setLocalizedDateFormatFromTemplate("EEEMMMd")
     return formatter.string(from: date)
 }
 
 private func stopsPhrase(_ count: Int, locale: Locale) -> String {
-    // French agrees on 0/1 versus the rest. English and Russian keep the existing
-    // one/few/many split, so "21 stop" / "21 остановка" stay exactly as they are.
+    // French agrees on 0/1 versus the rest. English and Russian keep the one/few/many split.
     if locale.language.languageCode?.identifier == "fr" {
         if count == 0 || count == 1 {
             return String(localized: "load.card.stops.one \(count)", locale: locale)
@@ -410,10 +391,10 @@ private func stopsPhrase(_ count: Int, locale: Locale) -> String {
     let mod10 = count % 10
     let mod100 = count % 100
     if mod10 == 1 && mod100 != 11 {
-        return String(localized: "load.card.stops.one \(count)")
+        return String(localized: "load.card.stops.one \(count)", locale: locale)
     }
     if (2...4).contains(mod10) && !(12...14).contains(mod100) {
-        return String(localized: "load.card.stops.few \(count)")
+        return String(localized: "load.card.stops.few \(count)", locale: locale)
     }
-    return String(localized: "load.card.stops.many \(count)")
+    return String(localized: "load.card.stops.many \(count)", locale: locale)
 }

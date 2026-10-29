@@ -38,7 +38,7 @@ final class WeeklyGoalViewModel {
         loads: [Load],
         target: Double,
         calendar: TruckingWeek,
-        locale: Locale = .current,
+        locale: Locale = AppLocale.locale,
         now: Date = Date()
     ) -> WeeklyGoalProgress {
         let week = week(in: calendar, now: now)
@@ -49,5 +49,36 @@ final class WeeklyGoalViewModel {
             for: week,
             now: now
         )
+    }
+
+    /// Day rows for the goal card. Booked gross includes loads that have not finished yet.
+    func dayPlan(
+        loads: [Load],
+        progress: WeeklyGoalProgress,
+        calendar: TruckingWeek
+    ) -> (rows: [DayPlanRow], dailyNeeded: Double) {
+        let ref = WeekRef(weekNumber: progress.weekNumber, year: progress.year)
+        guard let start = calendar.startDate(of: ref) else { return ([], 0) }
+        let buckets = WeekDayGross.centsBySqliteWeekday(
+            loads: self.loads(loads, in: ref).map {
+                AttributedLoad(pickup: $0.date, finish: $0.effectiveFinishDate, rate: $0.totalRate)
+            },
+            week: calendar,
+            ref: ref
+        )
+        let booked = WeekDayGross.bookedDollars(buckets)
+        let needed = GoalMoneyMath.dailyTarget(
+            goal: progress.targetAmount,
+            totalGross: booked,
+            daysRemaining: progress.daysRemainingInWeek
+        )
+        let rows = WeeklyDayPlan.rows(
+            weekStart: start,
+            today: Date(),
+            grossCentsBySqliteWeekday: buckets,
+            dailyNeeded: MoneyCents.fromDollars(needed),
+            calendar: calendar.calendar
+        )
+        return (rows, needed)
     }
 }

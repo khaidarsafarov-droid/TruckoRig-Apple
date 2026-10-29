@@ -1,22 +1,5 @@
 import SwiftUI
 
-/// Where the home menu pushes.
-enum HomeDestination: Hashable {
-    case analytics
-    case goal
-    case paycheck
-    case diesel
-    case maintenance
-    case map
-    case gallery
-    case settings
-    case profile
-    case tax
-    case expenses
-    case about
-    case privacy
-}
-
 /// Home screen: week card, then every trip, newest week first.
 struct JournalView: View {
 
@@ -27,8 +10,7 @@ struct JournalView: View {
     @State private var viewModel = JournalViewModel()
     @State private var isAddingLoad = false
     @State private var isSearching = false
-    @State private var showMenu = false
-    @State private var destination: HomeDestination?
+    @State private var tool: JournalTool?
     @State private var cameraLoad: Load?
     @State private var scannerLoad: Load?
     @State private var syncNotice: String?
@@ -39,7 +21,7 @@ struct JournalView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var sections: [JournalSection] {
-        viewModel.sections(from: loads, week: appState.settings.truckingWeek)
+        viewModel.sections(from: loads, week: appState.settings.truckingWeek, locale: AppLocale.locale)
     }
 
     private var currentWeek: WeekRef {
@@ -74,9 +56,13 @@ struct JournalView: View {
             Section {
                 JournalHomeHeader(
                     name: appState.catalog.profile?.name ?? "",
-                    onMenu: { showMenu = true },
-                    onSearch: { isSearching = true },
-                    onProfile: { destination = .profile }
+                    showsTools: horizontalSizeClass != .regular,
+                    onAdd: { isAddingLoad = true },
+                    onSearch: {
+                        isSearching.toggle()
+                        if !isSearching { viewModel.searchText = "" }
+                    },
+                    onTool: { tool = $0 }
                 )
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 4, trailing: 12))
                 .listRowSeparator(.hidden)
@@ -94,11 +80,7 @@ struct JournalView: View {
                 ActivationChecklistCard(
                     profileComplete: !(appState.catalog.profile?.name ?? "").trimmingCharacters(in: .whitespaces).isEmpty,
                     hasGoal: appState.settings.weeklyGoal > 0,
-                    hasDiesel: !appState.catalog.diesel.isEmpty,
-                    onProfile: { destination = .profile },
-                    onAddLoad: { isAddingLoad = true },
-                    onGoal: { destination = .goal },
-                    onDiesel: { destination = .diesel }
+                    hasDiesel: !appState.catalog.diesel.isEmpty
                 )
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 .listRowSeparator(.hidden)
@@ -119,6 +101,18 @@ struct JournalView: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
             }
+
+            if isSearching {
+                journalSearch
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+            }
+
+            journalFilter
+                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
 
             ForEach(sections) { section in
                 Section {
@@ -171,28 +165,12 @@ struct JournalView: View {
             }
         }
         .navigationTitle("")
-        .toolbar(isSearching ? .visible : .hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(for: Load.self) { load in
             LoadDetailView(load: load)
         }
-        .navigationDestination(item: $destination) { dest in
-            destinationView(dest)
-        }
-        .searchable(text: $model.searchText, isPresented: $isSearching, prompt: Text("journal.search.prompt"))
-        .sheet(isPresented: $showMenu) {
-            JournalMenuSheet(
-                filter: $model.filter,
-                selectedDay: $model.selectedDay,
-                onAdd: {
-                    showMenu = false
-                    isAddingLoad = true
-                },
-                onSelect: { dest in
-                    showMenu = false
-                    destination = dest
-                }
-            )
-            .environment(appState)
+        .navigationDestination(item: $tool) { tool in
+            JournalToolScreen(tool: tool)
         }
         .sheet(isPresented: $isAddingLoad) {
             AddLoadView()
@@ -244,14 +222,15 @@ struct JournalView: View {
         let week = appState.settings.truckingWeek
         let ref = currentWeek
         let weekLoads = loads.filter { $0.weekNumber == ref.weekNumber && $0.year == ref.year }
-        let progress = WeeklyGoalCalculator(week: week, locale: .current).calculate(
+        let locale = AppLocale.locale
+        let progress = WeeklyGoalCalculator(week: week, locale: locale).calculate(
             target: appState.settings.weeklyGoal,
             loads: weekLoads.map(\.summary),
             for: ref
         )
         let caption: String = {
             guard let start = week.startDate(of: ref), let end = week.endDate(of: ref) else { return progress.weekLabel }
-            return SplitWeekRange.homeCaption(start: start, end: end, calendar: week.calendar, locale: .current)
+            return SplitWeekRange.homeCaption(start: start, end: end, calendar: week.calendar, locale: locale)
         }()
         let system = appState.settings.measurementSystem
         let rpm = progress.totalMiles > 0
@@ -268,15 +247,14 @@ struct JournalView: View {
             measurementSystem: system,
             loadCount: progress.loadsCount,
             dayLabels: narrowDays(week: week, ref: ref),
-            elapsedDays: week.daysElapsed(),
-            onOpenGoal: { destination = .goal }
+            elapsedDays: week.daysElapsed()
         )
     }
 
     private func narrowDays(week: TruckingWeek, ref: WeekRef) -> [String] {
         guard let start = week.startDate(of: ref) else { return [] }
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = AppLocale.locale
         formatter.calendar = week.calendar
         formatter.timeZone = week.calendar.timeZone
         formatter.dateFormat = "EEEEE"
@@ -286,23 +264,78 @@ struct JournalView: View {
         }
     }
 
-    @ViewBuilder
-    private func destinationView(_ destination: HomeDestination) -> some View {
-        switch destination {
-        case .analytics: AnalyticsView()
-        case .goal: WeeklyGoalView()
-        case .paycheck: PaycheckListView()
-        case .diesel: DieselListView()
-        case .maintenance: MaintenanceListView()
-        case .map: MapScreen()
-        case .gallery: GalleryView()
-        case .settings: SettingsView()
-        case .profile: ProfileView()
-        case .tax: TaxTrackerView()
-        case .expenses: MiscExpenseListView()
-        case .about: AboutView()
-        case .privacy: PrivacyView()
+    private var journalFilter: some View {
+        @Bindable var model = viewModel
+        return VStack(alignment: .leading, spacing: 8) {
+            Picker("journal.filter", selection: $model.filter) {
+                ForEach(JournalViewModel.Filter.allCases) { item in
+                    Text(item.title).tag(item)
+                }
+            }
+            .pickerStyle(.menu)
+            .font(.appCaptionMedium)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    dateChip("journal.filter.all", .all)
+                    dateChip("journal.filter.today", .today)
+                    dateChip("journal.filter.thisWeek", .thisWeek)
+                    dateChip("journal.filter.onDate", .onDate)
+                    dateChip("journal.filter.range", .dateRange)
+                }
+            }
+            if model.filter == .onDate || model.filter == .calendarWeek {
+                DatePicker("journal.filter.pickDate", selection: $model.selectedDay, displayedComponents: .date)
+            }
+            if model.filter == .dateRange {
+                DatePicker("journal.filter.from", selection: $model.rangeStart, displayedComponents: .date)
+                DatePicker("journal.filter.to", selection: $model.rangeEnd, in: model.rangeStart..., displayedComponents: .date)
+            }
         }
+    }
+
+    private func dateChip(_ key: LocalizedStringKey, _ filter: JournalViewModel.Filter) -> some View {
+        let selected = viewModel.filter == filter
+        return Button {
+            viewModel.filter = filter
+            if filter == .today { viewModel.selectedDay = Date() }
+        } label: {
+            Text(key)
+                .font(.appCaptionMedium)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .foregroundStyle(selected ? Color.forestOnPrimary : Color.forestText)
+                .background(selected ? AnyShapeStyle(Color.forestPrimary) : AnyShapeStyle(Color.forestSurfaceMuted), in: Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var journalSearch: some View {
+        @Bindable var model = viewModel
+        return HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(Color.forestTextSecondary)
+            TextField("journal.search.prompt", text: $model.searchText)
+                .font(.appBody)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+            if !model.searchText.isEmpty {
+                Button {
+                    model.searchText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
+                .accessibilityLabel("action.clear")
+            }
+            Button("action.cancel") {
+                model.searchText = ""
+                isSearching = false
+            }
+            .font(.appCaptionMedium)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(Color.forestSurfaceMuted, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     private var emptyState: some View {
@@ -311,8 +344,7 @@ struct JournalView: View {
             title: "journal.empty.title",
             message: "journal.empty.message",
             actionTitle: "journal.addLoad",
-            action: { isAddingLoad = true },
-            actionIdentifier: "journal.addLoad"
+            action: { isAddingLoad = true }
         )
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
@@ -357,61 +389,7 @@ struct JournalView: View {
     }
 }
 
-private struct JournalMenuSheet: View {
-    @Binding var filter: JournalViewModel.Filter
-    @Binding var selectedDay: Date
-    var onAdd: () -> Void
-    var onSelect: (HomeDestination) -> Void
-
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            List {
-                Picker("journal.filter", selection: $filter) {
-                    ForEach(JournalViewModel.Filter.allCases) { item in
-                        Text(item.title).tag(item)
-                    }
-                }
-                if filter == .onDate || filter == .calendarWeek {
-                    DatePicker("journal.filter.pickDate", selection: $selectedDay, displayedComponents: .date)
-                }
-
-                Button(action: onAdd) {
-                    Label("journal.addLoad", systemImage: "plus")
-                }
-                .accessibilityIdentifier("journal.addLoad")
-
-                menuRow(.analytics, "screen.analytics", "chart.bar")
-                menuRow(.goal, "tab.goal", "target")
-                menuRow(.paycheck, "screen.paycheck", "dollarsign.circle")
-                menuRow(.diesel, "screen.diesel", "fuelpump")
-                menuRow(.expenses, "screen.expenses", "receipt")
-                menuRow(.tax, "screen.tax", "percent")
-                menuRow(.maintenance, "screen.maintenance", "wrench.and.screwdriver")
-                menuRow(.map, "screen.map", "map")
-                menuRow(.gallery, "screen.gallery", "photo.on.rectangle")
-                menuRow(.settings, "screen.settings", "gearshape")
-                menuRow(.profile, "tab.profile", "person.crop.circle")
-            }
-            .navigationTitle("app.name")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("action.cancel") { dismiss() }
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
-    }
-
-    private func menuRow(_ destination: HomeDestination, _ title: LocalizedStringKey, _ symbol: String) -> some View {
-        Button { onSelect(destination) } label: {
-            Label(title, systemImage: symbol)
-        }
-    }
-}
-
+#if DEBUG
 #Preview {
     PreviewHost {
         NavigationStack {
@@ -419,3 +397,4 @@ private struct JournalMenuSheet: View {
         }
     }
 }
+#endif

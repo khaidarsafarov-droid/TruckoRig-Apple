@@ -6,8 +6,10 @@ struct TruckoRigApp: App {
     @State private var appState = AppState()
 
     init() {
+        AppLocale.install()
         TelegramBackgroundRegistrar.register()
         ICloudBackgroundRegistrar.register()
+        _appState.wrappedValue.installNotificationHandling()
     }
 
     var body: some Scene {
@@ -27,9 +29,9 @@ struct TruckoRigApp: App {
         }
     }
 
-    /// Honours the in-app language picker; `.system` falls through to the device setting.
+    /// Reads the setting so a language change republishes `\.locale` in the same update.
     private var resolvedLocale: Locale {
-        guard let identifier = appState.settings.language.localeIdentifier else { return .current }
-        return Locale(identifier: identifier)
+        _ = appState.settings.language
+        return AppLocale.locale
     }
 }

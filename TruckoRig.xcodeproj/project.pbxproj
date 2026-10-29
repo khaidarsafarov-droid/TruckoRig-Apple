@@ -20,6 +20,8 @@
 		2C8F4A909B371B552C70F9F1 /* ICloudMediaLibrary.swift */ = {isa = PBXBuildFile; fileRef = 9E1571569165555A420D2106 /* ICloudMediaLibrary.swift */; };
 		3FA5650B7CF9CE6A23F7CBCC /* ICloudMediaSync.swift */ = {isa = PBXBuildFile; fileRef = 26501D41D9586AA99D083417 /* ICloudMediaSync.swift */; };
 		134A7E1A5A97B69C57CB1D06 /* LoadDocumentText.swift */ = {isa = PBXBuildFile; fileRef = E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */; };
+		0DBAAC2A642A1D5AC7EA84C6 /* AppLanguage.swift */ = {isa = PBXBuildFile; fileRef = 9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */; };
+		AB5896F4057BA37FEE44208D /* AppLocale.swift */ = {isa = PBXBuildFile; fileRef = 203C0259857B749C5803EE78 /* AppLocale.swift */; };
 		C78C50B770CA1364F83346A7 /* PhotoGeotag.swift */ = {isa = PBXBuildFile; fileRef = BA43F40BD4128397C998180D /* PhotoGeotag.swift */; };
 		AEEC91520189FE6F0DD49FEA /* PhotoImageWriter.swift */ = {isa = PBXBuildFile; fileRef = 50F6DD627F0878086019F5D8 /* PhotoImageWriter.swift */; };
 		6775E55DDA8AA0C55EA89B78 /* ScanPDFWriter.swift */ = {isa = PBXBuildFile; fileRef = 5F1B83CDEAB0E4DC52F1C802 /* ScanPDFWriter.swift */; };
@@ -35,6 +37,7 @@
 		1654D96F28037987D0458F80 /* Scan.swift */ = {isa = PBXBuildFile; fileRef = B904A08B51E6EA1DE2D02909 /* Scan.swift */; };
 		F58E092E92A6BF4E747EBA6E /* Stop.swift */ = {isa = PBXBuildFile; fileRef = 37D55A7EEAEF2EDB8431BA56 /* Stop.swift */; };
 		3FE8E5CD0716B06823E46388 /* Day7SurveyStore.swift */ = {isa = PBXBuildFile; fileRef = 586D369752FB8BE5D228DECE /* Day7SurveyStore.swift */; };
+		DA2162316E2389A1ECB42C5E /* MaintenanceAlertPoster.swift */ = {isa = PBXBuildFile; fileRef = A5D2073737BEC105B66CD0D5 /* MaintenanceAlertPoster.swift */; };
 		876D32D16C300C963E91750E /* MaintenanceReminderCenter.swift */ = {isa = PBXBuildFile; fileRef = 849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */; };
 		241F2516253F5004BB467025 /* PickupAlarmCenter.swift */ = {isa = PBXBuildFile; fileRef = 80FFABA1248383F8138ABA6C /* PickupAlarmCenter.swift */; };
 		512D6791792E4032E227341D /* AccountScopedContainer.swift */ = {isa = PBXBuildFile; fileRef = 4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */; };
@@ -92,6 +95,7 @@
 		E35E372B80EE11DC8A2B3F50 /* PeriodFinance.swift */ = {isa = PBXBuildFile; fileRef = AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */; };
 		0A7356272CBC8BF2537671E2 /* RPMCalculator.swift */ = {isa = PBXBuildFile; fileRef = 9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */; };
 		F92A9B93B1F2569FB6D14527 /* TruckingWeek.swift */ = {isa = PBXBuildFile; fileRef = 67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */; };
+		7899EAE34C5EEF4E105CFE5A /* WeekDayGross.swift */ = {isa = PBXBuildFile; fileRef = 2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */; };
 		FC7DF8FB308D1DD6AFF99907 /* WeekLabelFormatter.swift */ = {isa = PBXBuildFile; fileRef = AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */; };
 		9779399E22BD6F05A0D727DE /* WeeklyDayPlan.swift */ = {isa = PBXBuildFile; fileRef = E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */; };
 		ED81EE88286EEE65242D4AB8 /* WeeklyGoalCalculator.swift */ = {isa = PBXBuildFile; fileRef = F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */; };
@@ -134,6 +138,7 @@
 		2B622C76080980852957735F /* WidgetGoalSnapshot.swift */ = {isa = PBXBuildFile; fileRef = EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */; };
 		A8C2A8577BDC4BDA7AA7022C /* MoneyCents.swift */ = {isa = PBXBuildFile; fileRef = 52D8E9B550BD5E2EF23FDB29 /* MoneyCents.swift */; };
 		2A5BC3A4152C6ADFEB9819D5 /* HomeMotivation.swift */ = {isa = PBXBuildFile; fileRef = 2EEE84D2085B196DD9903BD1 /* HomeMotivation.swift */; };
+		C5CCF373B74947F4C092AAE4 /* MaintenanceReminderSchedule.swift */ = {isa = PBXBuildFile; fileRef = 4C8C0075CAFBD5B9B72E24B2 /* MaintenanceReminderSchedule.swift */; };
 		318CE7356EDF251CE6E5B537 /* SmartNotifications.swift */ = {isa = PBXBuildFile; fileRef = D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */; };
 		750F30C12B791B73B6DC0324 /* AddressParser.swift */ = {isa = PBXBuildFile; fileRef = 182585A026C2B15E60AC4276 /* AddressParser.swift */; };
 		72169DFBA3460A7BBBA71BDF /* AmazonRelayParser.swift */ = {isa = PBXBuildFile; fileRef = 752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */; };
@@ -180,12 +185,16 @@
 		8E86BFD10D7C81E7301E8A95 /* EditLoadView.swift */ = {isa = PBXBuildFile; fileRef = 8A5377D6FCE1123C3B6A120C /* EditLoadView.swift */; };
 		687E1F897584F3078383CEF5 /* MiscExpenseListView.swift */ = {isa = PBXBuildFile; fileRef = 0FB162CF6330D87A2E5FA8AA /* MiscExpenseListView.swift */; };
 		B10835F385006D3AF4537303 /* ImprovementFeedbackView.swift */ = {isa = PBXBuildFile; fileRef = 71CBD752D56E1D5396BFB3DF /* ImprovementFeedbackView.swift */; };
+		D4799BF23DDE453ADF86DBC7 /* GalleryBrowser.swift */ = {isa = PBXBuildFile; fileRef = A795D03FFED2964A5B1CFDCA /* GalleryBrowser.swift */; };
+		9351C4D6E08C7FBC384FB102 /* GalleryMediaViewer.swift */ = {isa = PBXBuildFile; fileRef = 681773D10E2F78F3A1F1A62D /* GalleryMediaViewer.swift */; };
 		5908A52DC9B6BA2639CB60A7 /* GalleryView.swift */ = {isa = PBXBuildFile; fileRef = 616261D554818A6FF5F0FA41 /* GalleryView.swift */; };
 		3AA006D26660199C7075BF0A /* JournalChrome.swift */ = {isa = PBXBuildFile; fileRef = 9E28253701629A526101F1B3 /* JournalChrome.swift */; };
 		860EC674B1B6A218C19C8873 /* JournalMotivationCards.swift */ = {isa = PBXBuildFile; fileRef = 8630D4488DA25F2677B972E7 /* JournalMotivationCards.swift */; };
+		7ABF502E1A6D75DC50E0BA55 /* JournalTools.swift */ = {isa = PBXBuildFile; fileRef = FB7F15931B6E046152076371 /* JournalTools.swift */; };
 		723E3ABDFD57587A3ABA0FE6 /* JournalView.swift */ = {isa = PBXBuildFile; fileRef = 4F73830F4A051B167E884420 /* JournalView.swift */; };
 		1072A860C7F70F223C7F30AB /* JournalViewModel.swift */ = {isa = PBXBuildFile; fileRef = C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */; };
 		0102AD36EA83617733301F90 /* LoadRowView.swift */ = {isa = PBXBuildFile; fileRef = D717AEF67461754094A98129 /* LoadRowView.swift */; };
+		D84CBA8F7494E2A888E1C5D1 /* LoadDetailActions.swift */ = {isa = PBXBuildFile; fileRef = D70195CA58DD8E9B9D6C97BB /* LoadDetailActions.swift */; };
 		1374C865E85F31496DDF26D7 /* LoadDetailView.swift */ = {isa = PBXBuildFile; fileRef = DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */; };
 		ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */ = {isa = PBXBuildFile; fileRef = A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */; };
 		90DA2D7AF8C3725CD8BD9AB1 /* MaintenanceListView.swift */ = {isa = PBXBuildFile; fileRef = BC5B7C245920F2DFC117552A /* MaintenanceListView.swift */; };
@@ -230,6 +239,7 @@
 		EF99963BA7F62619A8F9652E /* Roboto-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 1FD1CD9C069F3DB1C83340F4 /* Roboto-Bold.ttf */; };
 		A6E5D49805906D7B7BB440BD /* Roboto-Medium.ttf */ = {isa = PBXBuildFile; fileRef = D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */; };
 		1FC37AFEA5D3361238CCE3B6 /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
+		5C20EE7AB733D9017572E1A9 /* MaintenanceAlert.caf */ = {isa = PBXBuildFile; fileRef = EDE35D11567A416CBE8D45F4 /* MaintenanceAlert.caf */; };
 		80108301C356E1AFDA77AC91 /* Assets.xcassets */ = {isa = PBXBuildFile; fileRef = 25F3017AC1E5A8997BE4CC9E /* Assets.xcassets */; };
 		1AFD346263F287F83DE5C514 /* TruckoRigWidgetBundle.swift */ = {isa = PBXBuildFile; fileRef = 64E195444487F70935880DE1 /* TruckoRigWidgetBundle.swift */; };
 		AF2C0CD82B4242B21A1B98D5 /* WeeklyGoalWidget.swift */ = {isa = PBXBuildFile; fileRef = 5330DB8D8D1B053921AE4256 /* WeeklyGoalWidget.swift */; };
@@ -239,6 +249,8 @@
 		970EEA12307F65AF6AD121FF /* ThemePalette.swift */ = {isa = PBXBuildFile; fileRef = 6FFFC95AA58C3210DBBA4FFB /* ThemePalette.swift */; };
 		FCC2DC6ECDE27BF5317B50A1 /* PaceStatusPresentation.swift */ = {isa = PBXBuildFile; fileRef = 39A32B96B4DB8F339496A559 /* PaceStatusPresentation.swift */; };
 		1055F1E229C6F4E59AC89121 /* StringUtils.swift */ = {isa = PBXBuildFile; fileRef = C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */; };
+		0983EDBBBE69B967C60E805C /* AppLanguage.swift */ = {isa = PBXBuildFile; fileRef = 9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */; };
+		6BF207316B61EC74887D1BBF /* AppLocale.swift */ = {isa = PBXBuildFile; fileRef = 203C0259857B749C5803EE78 /* AppLocale.swift */; };
 		598FE9C7AB2A3D99CAC606D3 /* WidgetDeepLink.swift */ = {isa = PBXBuildFile; fileRef = 3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */; };
 		F1F19CEEDC02C02E3D379573 /* RPMBand.swift */ = {isa = PBXBuildFile; fileRef = 889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */; };
 		B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
@@ -255,6 +267,7 @@
 		48058AA0391FBA5D903BEDBE /* Roboto-Medium.ttf */ = {isa = PBXBuildFile; fileRef = D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */; };
 		C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
 		330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */ = {isa = PBXBuildFile; fileRef = 366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */; };
+		6247BB683169494C6B36A700 /* EditLoadRoundTripTests.swift */ = {isa = PBXBuildFile; fileRef = A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */; };
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
 		1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */; };
 		4642AF0070CC137D07B08CE0 /* ICloudMediaBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */; };
@@ -326,6 +339,8 @@
 		9E1571569165555A420D2106 /* ICloudMediaLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaLibrary.swift"; sourceTree = "<group>"; };
 		26501D41D9586AA99D083417 /* ICloudMediaSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaSync.swift"; sourceTree = "<group>"; };
 		E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDocumentText.swift"; sourceTree = "<group>"; };
+		9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLanguage.swift"; sourceTree = "<group>"; };
+		203C0259857B749C5803EE78 /* AppLocale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLocale.swift"; sourceTree = "<group>"; };
 		BA43F40BD4128397C998180D /* PhotoGeotag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoGeotag.swift"; sourceTree = "<group>"; };
 		50F6DD627F0878086019F5D8 /* PhotoImageWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoImageWriter.swift"; sourceTree = "<group>"; };
 		5F1B83CDEAB0E4DC52F1C802 /* ScanPDFWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScanPDFWriter.swift"; sourceTree = "<group>"; };
@@ -341,6 +356,7 @@
 		B904A08B51E6EA1DE2D02909 /* Scan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scan.swift"; sourceTree = "<group>"; };
 		37D55A7EEAEF2EDB8431BA56 /* Stop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stop.swift"; sourceTree = "<group>"; };
 		586D369752FB8BE5D228DECE /* Day7SurveyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Day7SurveyStore.swift"; sourceTree = "<group>"; };
+		A5D2073737BEC105B66CD0D5 /* MaintenanceAlertPoster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceAlertPoster.swift"; sourceTree = "<group>"; };
 		849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceReminderCenter.swift"; sourceTree = "<group>"; };
 		80FFABA1248383F8138ABA6C /* PickupAlarmCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PickupAlarmCenter.swift"; sourceTree = "<group>"; };
 		4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountScopedContainer.swift"; sourceTree = "<group>"; };
@@ -398,6 +414,7 @@
 		AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodFinance.swift"; sourceTree = "<group>"; };
 		9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RPMCalculator.swift"; sourceTree = "<group>"; };
 		67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckingWeek.swift"; sourceTree = "<group>"; };
+		2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekDayGross.swift"; sourceTree = "<group>"; };
 		AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekLabelFormatter.swift"; sourceTree = "<group>"; };
 		E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyDayPlan.swift"; sourceTree = "<group>"; };
 		F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalCalculator.swift"; sourceTree = "<group>"; };
@@ -440,6 +457,7 @@
 		EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetGoalSnapshot.swift"; sourceTree = "<group>"; };
 		52D8E9B550BD5E2EF23FDB29 /* MoneyCents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoneyCents.swift"; sourceTree = "<group>"; };
 		2EEE84D2085B196DD9903BD1 /* HomeMotivation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeMotivation.swift"; sourceTree = "<group>"; };
+		4C8C0075CAFBD5B9B72E24B2 /* MaintenanceReminderSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceReminderSchedule.swift"; sourceTree = "<group>"; };
 		D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmartNotifications.swift"; sourceTree = "<group>"; };
 		182585A026C2B15E60AC4276 /* AddressParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressParser.swift"; sourceTree = "<group>"; };
 		752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AmazonRelayParser.swift"; sourceTree = "<group>"; };
@@ -486,12 +504,16 @@
 		8A5377D6FCE1123C3B6A120C /* EditLoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditLoadView.swift"; sourceTree = "<group>"; };
 		0FB162CF6330D87A2E5FA8AA /* MiscExpenseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MiscExpenseListView.swift"; sourceTree = "<group>"; };
 		71CBD752D56E1D5396BFB3DF /* ImprovementFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImprovementFeedbackView.swift"; sourceTree = "<group>"; };
+		A795D03FFED2964A5B1CFDCA /* GalleryBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GalleryBrowser.swift"; sourceTree = "<group>"; };
+		681773D10E2F78F3A1F1A62D /* GalleryMediaViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GalleryMediaViewer.swift"; sourceTree = "<group>"; };
 		616261D554818A6FF5F0FA41 /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GalleryView.swift"; sourceTree = "<group>"; };
 		9E28253701629A526101F1B3 /* JournalChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalChrome.swift"; sourceTree = "<group>"; };
 		8630D4488DA25F2677B972E7 /* JournalMotivationCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalMotivationCards.swift"; sourceTree = "<group>"; };
+		FB7F15931B6E046152076371 /* JournalTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalTools.swift"; sourceTree = "<group>"; };
 		4F73830F4A051B167E884420 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalView.swift"; sourceTree = "<group>"; };
 		C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalViewModel.swift"; sourceTree = "<group>"; };
 		D717AEF67461754094A98129 /* LoadRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadRowView.swift"; sourceTree = "<group>"; };
+		D70195CA58DD8E9B9D6C97BB /* LoadDetailActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDetailActions.swift"; sourceTree = "<group>"; };
 		DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDetailView.swift"; sourceTree = "<group>"; };
 		A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceEditors.swift"; sourceTree = "<group>"; };
 		BC5B7C245920F2DFC117552A /* MaintenanceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceListView.swift"; sourceTree = "<group>"; };
@@ -528,10 +550,13 @@
 		BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		532AF507B6EBE044E9E6ECDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "InfoPlist.xcstrings"; sourceTree = "<group>"; };
+		B74F4A0AF8A5CFC3584B28DC /* InfoSideload.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "InfoSideload.plist"; sourceTree = "<group>"; };
 		1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
 		B40BD3D131438FCD5F734D0C /* Premium.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Premium.storekit"; sourceTree = "<group>"; };
 		CFD68C6799186F96E8741EEB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		EDE35D11567A416CBE8D45F4 /* MaintenanceAlert.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MaintenanceAlert.caf"; sourceTree = "<group>"; };
 		135A264B50C225848871ED7D /* TruckoRig.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRig.entitlements"; sourceTree = "<group>"; };
+		409F8FDE5F56AC0B93971607 /* TruckoRigSideload.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRigSideload.entitlements"; sourceTree = "<group>"; };
 		CCB54446952969CD381EB575 /* us_states.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "us_states.json"; sourceTree = "<group>"; };
 		810ABF68C96DF0850D97653E /* Bindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bindings.swift"; sourceTree = "<group>"; };
 		D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DomainMessages.swift"; sourceTree = "<group>"; };
@@ -544,6 +569,7 @@
 		9A0E18B200B7FA69FB005B28 /* SoftCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftCard.swift"; sourceTree = "<group>"; };
 		E9A91E3DC8256945501586BD /* SoftTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftTextField.swift"; sourceTree = "<group>"; };
 		366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreTests.swift"; sourceTree = "<group>"; };
+		A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditLoadRoundTripTests.swift"; sourceTree = "<group>"; };
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
 		6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupTests.swift"; sourceTree = "<group>"; };
 		9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaBackupTests.swift"; sourceTree = "<group>"; };
@@ -663,6 +689,7 @@
 			children = (
 				711DCD7B1C389CA57D3C1A1F /* Backup */,
 				06A2C546F804DD14AA685E72 /* Documents */,
+				CE8BEEE2EF490FF44D3F4018 /* Localization */,
 				7B46438A6EE8560A29A047FC /* Media */,
 				FEFCE8C6556E50EF09698C6E /* Models */,
 				6A663B7AF52D5502F21E175A /* Motivation */,
@@ -696,6 +723,15 @@
 				E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */,
 			);
 			path = "Documents";
+			sourceTree = "<group>";
+		};
+		CE8BEEE2EF490FF44D3F4018 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */,
+				203C0259857B749C5803EE78 /* AppLocale.swift */,
+			);
+			path = "Localization";
 			sourceTree = "<group>";
 		};
 		7B46438A6EE8560A29A047FC /* Media */ = {
@@ -737,6 +773,7 @@
 		7286F81711A383D0B6A2BF46 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				A5D2073737BEC105B66CD0D5 /* MaintenanceAlertPoster.swift */,
 				849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */,
 				80FFABA1248383F8138ABA6C /* PickupAlarmCenter.swift */,
 			);
@@ -872,6 +909,7 @@
 				AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */,
 				9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */,
 				67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */,
+				2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */,
 				AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */,
 				E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */,
 				F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */,
@@ -1005,6 +1043,7 @@
 		9CC53B5E694E7834C93D7E32 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				4C8C0075CAFBD5B9B72E24B2 /* MaintenanceReminderSchedule.swift */,
 				D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */,
 			);
 			path = "Notifications";
@@ -1193,6 +1232,8 @@
 		E0C89C90A14522249F58A220 /* Gallery */ = {
 			isa = PBXGroup;
 			children = (
+				A795D03FFED2964A5B1CFDCA /* GalleryBrowser.swift */,
+				681773D10E2F78F3A1F1A62D /* GalleryMediaViewer.swift */,
 				616261D554818A6FF5F0FA41 /* GalleryView.swift */,
 			);
 			path = "Gallery";
@@ -1203,6 +1244,7 @@
 			children = (
 				9E28253701629A526101F1B3 /* JournalChrome.swift */,
 				8630D4488DA25F2677B972E7 /* JournalMotivationCards.swift */,
+				FB7F15931B6E046152076371 /* JournalTools.swift */,
 				4F73830F4A051B167E884420 /* JournalView.swift */,
 				C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */,
 				D717AEF67461754094A98129 /* LoadRowView.swift */,
@@ -1213,6 +1255,7 @@
 		51A9D6C0CD2165D7235B9E53 /* LoadDetail */ = {
 			isa = PBXGroup;
 			children = (
+				D70195CA58DD8E9B9D6C97BB /* LoadDetailActions.swift */,
 				DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */,
 			);
 			path = "LoadDetail";
@@ -1330,12 +1373,15 @@
 				25F3017AC1E5A8997BE4CC9E /* Assets.xcassets */,
 				B3F95451D5F06AFDF040781F /* DM-Sans */,
 				745272E958C4DF8C5ABE228D /* Fonts */,
+				BA90E2AFF9AB11989F6AB1F9 /* Sounds */,
 				532AF507B6EBE044E9E6ECDB /* Info.plist */,
 				5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */,
+				B74F4A0AF8A5CFC3584B28DC /* InfoSideload.plist */,
 				1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */,
 				B40BD3D131438FCD5F734D0C /* Premium.storekit */,
 				CFD68C6799186F96E8741EEB /* PrivacyInfo.xcprivacy */,
 				135A264B50C225848871ED7D /* TruckoRig.entitlements */,
+				409F8FDE5F56AC0B93971607 /* TruckoRigSideload.entitlements */,
 				CCB54446952969CD381EB575 /* us_states.json */,
 			);
 			path = "Resources";
@@ -1363,6 +1409,14 @@
 				BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */,
 			);
 			path = "Fonts";
+			sourceTree = "<group>";
+		};
+		BA90E2AFF9AB11989F6AB1F9 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				EDE35D11567A416CBE8D45F4 /* MaintenanceAlert.caf */,
+			);
+			path = "Sounds";
 			sourceTree = "<group>";
 		};
 		DE724CF1504AA6A2F6D86458 /* Shared */ = {
@@ -1394,6 +1448,7 @@
 			isa = PBXGroup;
 			children = (
 				366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */,
+				A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */,
 				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
 				6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */,
 				9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */,
@@ -1441,6 +1496,7 @@
 				FD408E19B6EF845E93EC4E96 /* Frameworks */,
 				851F3183EF610546A033D2DE /* Resources */,
 				90769E3777782F31183BC486 /* Embed Foundation Extensions */,
+				5BCA025080C70C8CF7ABC9AE /* Strip widget for sideload */,
 			);
 			buildRules = (
 			);
@@ -1577,6 +1633,7 @@
 				EF99963BA7F62619A8F9652E /* Roboto-Bold.ttf */,
 				A6E5D49805906D7B7BB440BD /* Roboto-Medium.ttf */,
 				1FC37AFEA5D3361238CCE3B6 /* Roboto-Regular.ttf */,
+				5C20EE7AB733D9017572E1A9 /* MaintenanceAlert.caf */,
 				80108301C356E1AFDA77AC91 /* Assets.xcassets */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1630,6 +1687,8 @@
 				2C8F4A909B371B552C70F9F1 /* ICloudMediaLibrary.swift */,
 				3FA5650B7CF9CE6A23F7CBCC /* ICloudMediaSync.swift */,
 				134A7E1A5A97B69C57CB1D06 /* LoadDocumentText.swift */,
+				0DBAAC2A642A1D5AC7EA84C6 /* AppLanguage.swift */,
+				AB5896F4057BA37FEE44208D /* AppLocale.swift */,
 				C78C50B770CA1364F83346A7 /* PhotoGeotag.swift */,
 				AEEC91520189FE6F0DD49FEA /* PhotoImageWriter.swift */,
 				6775E55DDA8AA0C55EA89B78 /* ScanPDFWriter.swift */,
@@ -1645,6 +1704,7 @@
 				1654D96F28037987D0458F80 /* Scan.swift */,
 				F58E092E92A6BF4E747EBA6E /* Stop.swift */,
 				3FE8E5CD0716B06823E46388 /* Day7SurveyStore.swift */,
+				DA2162316E2389A1ECB42C5E /* MaintenanceAlertPoster.swift */,
 				876D32D16C300C963E91750E /* MaintenanceReminderCenter.swift */,
 				241F2516253F5004BB467025 /* PickupAlarmCenter.swift */,
 				512D6791792E4032E227341D /* AccountScopedContainer.swift */,
@@ -1702,6 +1762,7 @@
 				E35E372B80EE11DC8A2B3F50 /* PeriodFinance.swift */,
 				0A7356272CBC8BF2537671E2 /* RPMCalculator.swift */,
 				F92A9B93B1F2569FB6D14527 /* TruckingWeek.swift */,
+				7899EAE34C5EEF4E105CFE5A /* WeekDayGross.swift */,
 				FC7DF8FB308D1DD6AFF99907 /* WeekLabelFormatter.swift */,
 				9779399E22BD6F05A0D727DE /* WeeklyDayPlan.swift */,
 				ED81EE88286EEE65242D4AB8 /* WeeklyGoalCalculator.swift */,
@@ -1744,6 +1805,7 @@
 				2B622C76080980852957735F /* WidgetGoalSnapshot.swift */,
 				A8C2A8577BDC4BDA7AA7022C /* MoneyCents.swift */,
 				2A5BC3A4152C6ADFEB9819D5 /* HomeMotivation.swift */,
+				C5CCF373B74947F4C092AAE4 /* MaintenanceReminderSchedule.swift */,
 				318CE7356EDF251CE6E5B537 /* SmartNotifications.swift */,
 				750F30C12B791B73B6DC0324 /* AddressParser.swift */,
 				72169DFBA3460A7BBBA71BDF /* AmazonRelayParser.swift */,
@@ -1790,12 +1852,16 @@
 				8E86BFD10D7C81E7301E8A95 /* EditLoadView.swift */,
 				687E1F897584F3078383CEF5 /* MiscExpenseListView.swift */,
 				B10835F385006D3AF4537303 /* ImprovementFeedbackView.swift */,
+				D4799BF23DDE453ADF86DBC7 /* GalleryBrowser.swift */,
+				9351C4D6E08C7FBC384FB102 /* GalleryMediaViewer.swift */,
 				5908A52DC9B6BA2639CB60A7 /* GalleryView.swift */,
 				3AA006D26660199C7075BF0A /* JournalChrome.swift */,
 				860EC674B1B6A218C19C8873 /* JournalMotivationCards.swift */,
+				7ABF502E1A6D75DC50E0BA55 /* JournalTools.swift */,
 				723E3ABDFD57587A3ABA0FE6 /* JournalView.swift */,
 				1072A860C7F70F223C7F30AB /* JournalViewModel.swift */,
 				0102AD36EA83617733301F90 /* LoadRowView.swift */,
+				D84CBA8F7494E2A888E1C5D1 /* LoadDetailActions.swift */,
 				1374C865E85F31496DDF26D7 /* LoadDetailView.swift */,
 				ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */,
 				90DA2D7AF8C3725CD8BD9AB1 /* MaintenanceListView.swift */,
@@ -1844,6 +1910,8 @@
 				970EEA12307F65AF6AD121FF /* ThemePalette.swift */,
 				FCC2DC6ECDE27BF5317B50A1 /* PaceStatusPresentation.swift */,
 				1055F1E229C6F4E59AC89121 /* StringUtils.swift */,
+				0983EDBBBE69B967C60E805C /* AppLanguage.swift */,
+				6BF207316B61EC74887D1BBF /* AppLocale.swift */,
 				598FE9C7AB2A3D99CAC606D3 /* WidgetDeepLink.swift */,
 				F1F19CEEDC02C02E3D379573 /* RPMBand.swift */,
 				B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */,
@@ -1858,6 +1926,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */,
+				6247BB683169494C6B36A700 /* EditLoadRoundTripTests.swift */,
 				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
 				1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */,
 				4642AF0070CC137D07B08CE0 /* ICloudMediaBackupTests.swift */,
@@ -1882,6 +1951,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5BCA025080C70C8CF7ABC9AE /* Strip widget for sideload */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			enableUserScriptSandboxing = 0;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Strip widget for sideload";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CONFIGURATION\" = \"Sideload\" ]; then\n  rm -rf \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/PlugIns\" || true\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		584C342C1866B10AB5FF7DA3 /* PBXTargetDependency */ = {
@@ -1951,6 +2043,29 @@
 			};
 			name = Release;
 		};
+		7D36B7B56F0707254E40144C /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = NO;
+			};
+			name = Sideload;
+		};
 		CC0E0193F4281B4DA5C369FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D68807FED8449A70B846E60D /* Maps.xcconfig */;
@@ -1999,6 +2114,35 @@
 			};
 			name = Release;
 		};
+		F736A59B91681B4FA969C387 /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D68807FED8449A70B846E60D /* Maps.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TruckoRig/Resources/TruckoRigSideload.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TruckoRig/Resources/InfoSideload.plist;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "$(inherited) -ObjC";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SIDELOAD";
+				VALIDATE_PRODUCT = NO;
+			};
+			name = Sideload;
+		};
 		297D4155EEB86AAF4470A4B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2041,6 +2185,30 @@
 			};
 			name = Release;
 		};
+		D31B0A79E9A68B0367C8D1A2 /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TruckoRigWidget/TruckoRigWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TruckoRigWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+			};
+			name = Sideload;
+		};
 		21B179F8F9DFCE51ACDF5546 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2073,6 +2241,22 @@
 			};
 			name = Release;
 		};
+		4D5EB8D675F961D63552917E /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TruckoRig.app/TruckoRig";
+			};
+			name = Sideload;
+		};
 		30040E5A9253E3504C585F9E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2101,6 +2285,20 @@
 			};
 			name = Release;
 		};
+		D1E4D88935A32B0CE28E387F /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TruckoRig;
+			};
+			name = Sideload;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2109,6 +2307,7 @@
 			buildConfigurations = (
 				80AD23622D27585898614512 /* Debug */,
 				8EFA71F5CA3208395CCDE41A /* Release */,
+				7D36B7B56F0707254E40144C /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2118,6 +2317,7 @@
 			buildConfigurations = (
 				CC0E0193F4281B4DA5C369FC /* Debug */,
 				12ACBD0672F76C7DFF9F6BD9 /* Release */,
+				F736A59B91681B4FA969C387 /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2127,6 +2327,7 @@
 			buildConfigurations = (
 				297D4155EEB86AAF4470A4B9 /* Debug */,
 				B54244056D086D3B2AB1A5FD /* Release */,
+				D31B0A79E9A68B0367C8D1A2 /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2136,6 +2337,7 @@
 			buildConfigurations = (
 				21B179F8F9DFCE51ACDF5546 /* Debug */,
 				D51FFD02ED4B7183F937B969 /* Release */,
+				4D5EB8D675F961D63552917E /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2145,6 +2347,7 @@
 			buildConfigurations = (
 				30040E5A9253E3504C585F9E /* Debug */,
 				3FC42F4C5A371EBBE0E26807 /* Release */,
+				D1E4D88935A32B0CE28E387F /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

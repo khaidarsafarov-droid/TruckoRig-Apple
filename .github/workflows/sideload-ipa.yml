@@ -1,0 +1,107 @@
+name: Sideload IPA
+
+# Unsigned device build for Sideloadly and a free Apple ID.
+# Push to main publishes a fresh ipa. Run workflow rebuilds it.
+# Pull requests build it too, so a broken sideload package cannot land on main.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: sideload-ipa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ipa:
+    name: Unsigned device ipa
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select the latest stable Xcode
+        run: |
+          set -euo pipefail
+          developer_dir="$(python3 - <<'PY'
+          import pathlib
+          import plistlib
+          import sys
+          found = []
+          for app in pathlib.Path("/Applications").glob("Xcode*.app"):
+              label = app.name.lower()
+              if "beta" in label or "-rc" in label or "release candidate" in label:
+                  continue
+              version_plist = app / "Contents" / "version.plist"
+              if not version_plist.exists():
+                  continue
+              with version_plist.open("rb") as handle:
+                  info = plistlib.load(handle)
+              short = str(info.get("CFBundleShortVersionString", "0"))
+              parts = []
+              for piece in short.split("."):
+                  digits = "".join(ch for ch in piece if ch.isdigit())
+                  parts.append(int(digits) if digits else 0)
+              found.append((tuple(parts), short, app))
+          if not found:
+              raise SystemExit("No stable Xcode is installed on this runner")
+          found.sort()
+          _, short, chosen = found[-1]
+          print(f"Using {chosen.name} ({short})", file=sys.stderr)
+          print(chosen / "Contents" / "Developer")
+          PY
+          )"
+          sudo xcode-select -s "$developer_dir"
+          xcodebuild -version
+
+      - name: Build the sideload configuration
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project TruckoRig.xcodeproj \
+            -scheme TruckoRig \
+            -configuration Sideload \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/sideload" \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=-
+
+      - name: Package the unsigned ipa
+        run: |
+          set -euo pipefail
+          app="$RUNNER_TEMP/sideload/Build/Products/Release-iphoneos/TruckoRig.app"
+          # Sideload uses the Release product dir only when the configuration is named Release.
+          # The Sideload configuration writes next to it under its own name.
+          if [ ! -d "$app" ]; then
+            app="$RUNNER_TEMP/sideload/Build/Products/Sideload-iphoneos/TruckoRig.app"
+          fi
+          test -d "$app"
+          # The embed phase copies the widget, then the Sideload script removes it.
+          # Remove it again so a free Apple ID never has to sign an extension.
+          rm -rf "$app/PlugIns" "$app/_CodeSignature" "$app/embedded.mobileprovision"
+          info="$app/Info.plist"
+          if plutil -extract NSUbiquitousContainers xml1 -o - "$info" >/dev/null 2>&1; then
+            echo "Sideload Info.plist still contains an iCloud container" >&2
+            exit 1
+          fi
+          if find "$app" -name '*.appex' -print | grep -q .; then
+            echo "Sideload app still contains an app extension" >&2
+            exit 1
+          fi
+          stage="$RUNNER_TEMP/ipa"
+          rm -rf "$stage"
+          mkdir -p "$stage/Payload"
+          cp -R "$app" "$stage/Payload/TruckoRig.app"
+          rm -f "$GITHUB_WORKSPACE/TruckoRig-unsigned.ipa"
+          (cd "$stage" && zip -r -y "$GITHUB_WORKSPACE/TruckoRig-unsigned.ipa" Payload)
+          unzip -l "$GITHUB_WORKSPACE/TruckoRig-unsigned.ipa" | grep -q 'Payload/TruckoRig.app/Info.plist'
+
+      - name: Upload the unsigned ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: TruckoRig-unsigned-ipa
+          path: TruckoRig-unsigned.ipa
+          if-no-files-found: error

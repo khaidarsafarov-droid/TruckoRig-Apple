@@ -6,7 +6,7 @@ compares the two directly:
 
   * every key used in Swift exists in Localizable.xcstrings
   * every key in the catalog is still used somewhere
-  * every key has English, Russian and French, and none is blank
+  * every key has English, Russian, French and Spanish, and none is blank
   * the number of format specifiers matches between the key and each language
   * French plural variations include `one` and `other`, and the singular/plural
     wording agrees where the catalog uses those forms
@@ -195,19 +195,10 @@ def main() -> int:
 
     for key, entry in sorted(strings.items()):
         localizations = entry.get("localizations", {})
-        for language in ("en", "ru", "fr"):
+        for language in ("en", "ru", "fr", "es"):
             check_language(key, localizations.get(language), language, problems)
         if "fr" in localizations:
             check_french_plurals(key, localizations["fr"], problems)
-
-        if "es" in localizations:
-            spanish = localizations.get("es", {})
-            if "stringUnit" in spanish:
-                value = spanish.get("stringUnit", {}).get("value", "")
-                if not value.strip():
-                    problems.append(f"{key}: missing or blank es")
-                elif argument_count(value) != argument_count(key):
-                    problems.append(f"{key}: es has a different number of format specifiers")
 
         expected = used.get(base(key))
         if expected is not None and expected != argument_count(key):
@@ -223,7 +214,7 @@ def main() -> int:
             print(f"error: {problem}")
         return 1
 
-    print(f"Localizable.xcstrings OK — {len(strings)} keys, en + ru + fr, specifiers consistent")
+    print(f"Localizable.xcstrings OK — {len(strings)} keys, en + ru + fr + es, specifiers consistent")
     return 0
 
 

@@ -266,7 +266,6 @@ enum LegacySwiftDataReader {
         return DriverProfile(
             id: id,
             name: text(field(row, "name")),
-            carrier: text(field(row, "carrier")),
             truckModel: text(field(row, "truckModel")),
             truckYear: int(field(row, "truckYear")),
             licensePlate: text(field(row, "licensePlate")),

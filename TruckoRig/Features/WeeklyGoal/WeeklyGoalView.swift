@@ -11,7 +11,7 @@ struct WeeklyGoalView: View {
     private var calendar: TruckingWeek { appState.settings.truckingWeek }
 
     private var progress: WeeklyGoalProgress {
-        viewModel.progress(loads: loads, target: appState.settings.weeklyGoal, calendar: calendar)
+        viewModel.progress(loads: loads, target: appState.settings.weeklyGoal, calendar: calendar, locale: AppLocale.locale)
     }
 
     var body: some View {
@@ -146,7 +146,7 @@ struct WeeklyGoalView: View {
     }
 
     private func dayPlanCard(_ progress: WeeklyGoalProgress) -> some View {
-        let rows = dayPlan(for: progress)
+        let plan = viewModel.dayPlan(loads: loads, progress: progress, calendar: calendar)
         return SoftCard {
             HStack {
                 Text("goal.day.plan")
@@ -157,19 +157,25 @@ struct WeeklyGoalView: View {
                     .font(.appCaptionMedium)
                     .foregroundStyle(Color.forestPrimary)
             }
-            ForEach(rows, id: \.date) { row in
-                dayPlanRow(row, needed: progress.dailyTargetNeeded)
+            ForEach(plan.rows, id: \.date) { row in
+                dayPlanRow(row, needed: plan.dailyNeeded)
             }
         }
     }
 
     private func dayPlanRow(_ row: DayPlanRow, needed: Double) -> some View {
         let future = row.status == .future
+        let booked = future && row.gross.cents > 0
         let today = row.status == .today
-        let amount = future ? USMoneyFormat.currency(needed) : USMoneyFormat.currency(row.gross.dollars)
-        let caption = future
-            ? String(localized: "goal.day.needed")
-            : String(localized: "goal.day.fact \(row.planPercent)")
+        let amount = USMoneyFormat.currency(booked || !future ? row.gross.dollars : needed)
+        let caption: String
+        if booked {
+            caption = String(localized: "goal.day.planned")
+        } else if future {
+            caption = String(localized: "goal.day.needed")
+        } else {
+            caption = String(localized: "goal.day.fact \(row.planPercent)")
+        }
         return HStack(spacing: 12) {
             dayMark(row)
             VStack(alignment: .leading, spacing: 2) {
@@ -216,27 +222,6 @@ struct WeeklyGoalView: View {
         }
     }
 
-    private func dayPlan(for progress: WeeklyGoalProgress) -> [DayPlanRow] {
-        let calendar = appState.settings.truckingWeek
-        let ref = WeekRef(weekNumber: progress.weekNumber, year: progress.year)
-        guard let start = calendar.startDate(of: ref), let end = calendar.endDate(of: ref) else { return [] }
-        let endExclusive = calendar.calendar.date(byAdding: .day, value: 1, to: end) ?? end
-        var buckets: [Int: Int64] = [:]
-        for load in loads {
-            guard load.date >= start, load.date < endExclusive else { continue }
-            let weekday = calendar.calendar.component(.weekday, from: load.date)
-            let sqlite = (weekday - 1 + 7) % 7
-            buckets[sqlite, default: 0] += MoneyCents.fromDollars(load.totalRate).cents
-        }
-        return WeeklyDayPlan.rows(
-            weekStart: start,
-            today: Date(),
-            grossCentsBySqliteWeekday: buckets,
-            dailyNeeded: MoneyCents.fromDollars(progress.dailyTargetNeeded),
-            calendar: calendar.calendar
-        )
-    }
-
     private var suggestedGoals: [Double] {
         let calendar = appState.settings.truckingWeek
         let previous = calendar.previousWeek()
@@ -248,7 +233,7 @@ struct WeeklyGoalView: View {
 
     private func dayName(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = AppLocale.locale
         formatter.calendar = appState.settings.truckingWeek.calendar
         formatter.timeZone = appState.settings.truckingWeek.calendar.timeZone
         formatter.dateFormat = "EEEE"
@@ -257,11 +242,11 @@ struct WeeklyGoalView: View {
 
     private func dayDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = AppLocale.locale
         formatter.calendar = appState.settings.truckingWeek.calendar
         formatter.timeZone = appState.settings.truckingWeek.calendar.timeZone
         formatter.dateFormat = "d MMM"
-        return formatter.string(from: date).replacingOccurrences(of: ".", with: "").lowercased()
+        return formatter.string(from: date).replacingOccurrences(of: ".", with: "").lowercased(with: AppLocale.locale)
     }
 
     private func breakdownCard(_ progress: WeeklyGoalProgress) -> some View {
@@ -273,7 +258,7 @@ struct WeeklyGoalView: View {
                     title: appState.settings.measurementSystem == .kilometers ? "stat.kilometers" : "stat.miles",
                     value: Formatters.miles(progress.totalMiles, system: appState.settings.measurementSystem)
                 )
-                StatTile(title: "stat.daysActive", value: progress.totalActiveDays.formatted(.number.precision(.fractionLength(1))))
+                StatTile(title: "stat.daysActive", value: progress.totalActiveDays.formatted(.number.precision(.fractionLength(1)).locale(AppLocale.locale)))
             }
             HStack {
                 StatTile(title: "goal.remaining", value: Formatters.money(progress.remainingAmount))

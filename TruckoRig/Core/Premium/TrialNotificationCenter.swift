@@ -87,7 +87,8 @@ final class SystemTrialNotificationCenter: TrialNotificationCenter {
             intentIdentifiers: [],
             options: []
         )
-        center.setNotificationCategories([category])
+        let existing = await center.notificationCategories()
+        center.setNotificationCategories(existing.union([category]))
         let trigger = TrialNotificationTrigger.calendar(matching: components)
         let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
         try await center.add(request)
@@ -101,13 +102,31 @@ final class SystemTrialNotificationCenter: TrialNotificationCenter {
 /// Opens subscription management when the driver taps the reminder.
 final class TrialNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     var onOpen: () -> Void = {}
+    var onMaintenance: (String, String) -> Void = { _, _ in }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        let id = notification.request.identifier
+        if id.hasPrefix("maint.") {
+            let taskID = String(id.dropFirst("maint.".count))
+            onMaintenance(UNNotificationDefaultActionIdentifier, taskID)
+        }
+        return [.banner, .sound, .badge, .list]
+    }
 
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
         let id = response.notification.request.identifier
-        guard id.hasPrefix("truckorig.trial.") else { return }
-        onOpen()
+        if id.hasPrefix("truckorig.trial.") {
+            onOpen()
+            return
+        }
+        guard id.hasPrefix("maint.") else { return }
+        let taskID = String(id.dropFirst("maint.".count))
+        onMaintenance(response.actionIdentifier, taskID)
     }
 }

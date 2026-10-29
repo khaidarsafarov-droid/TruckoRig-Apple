@@ -25,6 +25,7 @@ final class JournalViewModel {
 
     enum Filter: String, CaseIterable, Identifiable {
         case all
+        case today
         case disputes
         case unfinished
         case yesterday
@@ -33,12 +34,14 @@ final class JournalViewModel {
         case thisMonth
         case calendarWeek
         case onDate
+        case dateRange
 
         var id: String { rawValue }
 
         var title: LocalizedStringKey {
             switch self {
             case .all: return "journal.filter.all"
+            case .today: return "journal.filter.today"
             case .disputes: return "journal.filter.disputes"
             case .unfinished: return "journal.filter.unfinished"
             case .yesterday: return "journal.filter.yesterday"
@@ -47,12 +50,14 @@ final class JournalViewModel {
             case .thisMonth: return "journal.filter.thisMonth"
             case .calendarWeek: return "journal.filter.calendarWeek"
             case .onDate: return "journal.filter.onDate"
+            case .dateRange: return "journal.filter.range"
             }
         }
 
         var slice: JournalSlice {
             switch self {
             case .all: return .all
+            case .today: return .onDate
             case .disputes: return .disputes
             case .unfinished: return .unfinished
             case .yesterday: return .yesterday
@@ -61,6 +66,7 @@ final class JournalViewModel {
             case .thisMonth: return .thisMonth
             case .calendarWeek: return .calendarWeek
             case .onDate: return .onDate
+            case .dateRange: return .dateRange
             }
         }
     }
@@ -68,10 +74,12 @@ final class JournalViewModel {
     var searchText = ""
     var filter: Filter = .all
     var selectedDay = Date()
+    var rangeStart = Date()
+    var rangeEnd = Date()
     var loadPendingDeletion: Load?
     var errorMessage: String?
 
-    func sections(from loads: [Load], week: TruckingWeek, locale: Locale = .current) -> [JournalSection] {
+    func sections(from loads: [Load], week: TruckingWeek, locale: Locale = AppLocale.locale) -> [JournalSection] {
         let formatter = WeekLabelFormatter(week: week, locale: locale)
         let filtered = loads.filter { matches($0, week: week) }
         let grouped = Dictionary(grouping: filtered) { WeekRef(weekNumber: $0.weekNumber, year: $0.year) }
@@ -90,20 +98,46 @@ final class JournalViewModel {
 
     func matches(_ load: Load, week: TruckingWeek, now: Date = Date()) -> Bool {
         let unfinished = load.lastDeliveryAt == nil && load.actualFinishDate == nil
+        let finish = load.effectiveFinishDate
         guard JournalPeriodFilter.includes(
             date: load.date,
             activeDispute: load.isActiveDispute,
             unfinished: unfinished,
             slice: filter.slice,
-            selectedDay: selectedDay,
+            selectedDay: filter == .today ? now : selectedDay,
             week: week,
-            now: now
+            rangeStart: rangeStart,
+            rangeEnd: rangeEnd,
+            now: now,
+            end: finish,
+            reportingWeek: WeekRef(weekNumber: load.weekNumber, year: load.year)
         ) else { return false }
 
-        guard !searchText.trimmed.isEmpty else { return true }
-        return load.tripId.matchesSearch(searchText)
-            || (load.pointA ?? "").matchesSearch(searchText)
-            || (load.pointB ?? "").matchesSearch(searchText)
+        let calendar = week.calendar
+        let days = JournalPeriodFilter.activeDays(from: load.date, through: finish, calendar: calendar)
+        let isoDates = days.map { MaintenanceMileage.isoDay($0, calendar: calendar) }
+        let displayDates = days.flatMap { day -> [String] in
+            let month = calendar.component(.month, from: day)
+            let number = calendar.component(.day, from: day)
+            let year = calendar.component(.year, from: day)
+            return [
+                "\(month)/\(number)",
+                String(format: "%02d.%02d", number, month),
+                String(format: "%02d.%02d.%04d", number, month, year),
+                DateUtils.weekdayShortDay(day),
+                DateUtils.mediumDate(day)
+            ]
+        }
+        let places = [load.pointA, load.pointB].compactMap { $0 } + (load.stops ?? []).flatMap { stop in
+            [stop.city, stop.state, stop.cityState, stop.fullAddress, stop.facility ?? ""]
+        }
+        return JournalSearch.matches(
+            query: searchText,
+            tripId: load.tripId,
+            places: places,
+            isoDates: isoDates,
+            displayDates: displayDates
+        )
     }
 
     /// Totals across everything currently visible, for the header summary.

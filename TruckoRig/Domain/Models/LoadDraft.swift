@@ -113,4 +113,23 @@ public struct LoadDraft: Equatable, Sendable {
     }
 
     public var isValid: Bool { validationErrors.isEmpty }
+
+    /// Edit Load opened and saved with no keystrokes. Money is read back from the field text.
+    public func savingUntouchedForm(locale: Locale = Locale(identifier: "en_US_POSIX")) -> LoadDraft {
+        var copy = self
+        copy.totalRate = MoneyFieldText.commit(
+            text: MoneyFieldText.prefill(dollars: totalRate, locale: locale),
+            original: totalRate,
+            locale: locale
+        )
+        if let disputeAmount {
+            let committed = MoneyFieldText.commit(
+                text: MoneyFieldText.prefill(dollars: disputeAmount, locale: locale),
+                original: disputeAmount,
+                locale: locale
+            )
+            copy.disputeAmount = committed > 0 ? committed : nil
+        }
+        return copy
+    }
 }

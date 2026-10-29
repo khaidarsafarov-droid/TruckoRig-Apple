@@ -8,6 +8,35 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
+        screens
+            .id(appState.settings.language)
+            .onOpenURL { url in
+                appState.open(url)
+            }
+            .onChange(of: appState.settings.language) { _, _ in
+                appState.publishWidgetSnapshot()
+            }
+            .onChange(of: appState.settings.weekStart) { _, _ in
+                appState.publishWidgetSnapshot()
+            }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    appState.scheduleReminders()
+                    appState.telegram.resume()
+                    TelegramBackgroundRegistrar.submit()
+                    ICloudBackgroundRegistrar.submit()
+                    appState.icloud.start()
+                } else if phase == .background {
+                    appState.telegram.pause()
+                    TelegramBackgroundRegistrar.submit()
+                    ICloudBackgroundRegistrar.submit()
+                    appState.icloud.syncOnBackground()
+                }
+            }
+    }
+
+    /// Tabs, onboarding and covers. A new language replaces this whole tree once.
+    private var screens: some View {
         Group {
             if !appState.settings.onboardingComplete {
                 OnboardingView()
@@ -27,28 +56,6 @@ struct RootView: View {
         ) {
             PremiumFirstRunOffer()
                 .environment(appState)
-        }
-        .onOpenURL { url in
-            appState.open(url)
-        }
-        .onChange(of: appState.settings.language) { _, _ in
-            appState.publishWidgetSnapshot()
-        }
-        .onChange(of: appState.settings.weekStart) { _, _ in
-            appState.publishWidgetSnapshot()
-        }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active {
-                appState.telegram.resume()
-                TelegramBackgroundRegistrar.submit()
-                ICloudBackgroundRegistrar.submit()
-                appState.icloud.start()
-            } else if phase == .background {
-                appState.telegram.pause()
-                TelegramBackgroundRegistrar.submit()
-                ICloudBackgroundRegistrar.submit()
-                appState.icloud.syncOnBackground()
-            }
         }
         .fullScreenCover(item: presentation) { route in
             WidgetPresentationCover(route: route)

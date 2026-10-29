@@ -1,6 +1,25 @@
 import SwiftUI
 import UIKit
 
+/// Shown when a ТО reminder exists and notification permission was refused.
+struct MaintenanceNotificationDeniedCard: View {
+    var body: some View {
+        SoftCard {
+            Text("maintenance.notify.denied.title")
+                .font(.appHeadline)
+                .foregroundStyle(Color.forestText)
+            Text("maintenance.notify.denied.body")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+            Button("maintenance.notify.settings") {
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            }
+            .buttonStyle(.softSecondary)
+        }
+    }
+}
+
 /// New mileage or date reminder. Validation matches `MaintenanceTaskDraft`.
 struct MaintenanceTaskEditor: View {
     var onSave: (MaintenanceTask) throws -> Void

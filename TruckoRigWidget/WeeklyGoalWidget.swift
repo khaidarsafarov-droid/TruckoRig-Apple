@@ -9,6 +9,7 @@ struct WeeklyGoalWidget: Widget {
                 .containerBackground(for: .widget) {
                     Color.forestCard
                 }
+                .environment(\.locale, WidgetLocale.current)
                 .preferredColorScheme(AppThemeMode.widgetColorScheme())
         }
         .configurationDisplayName(Text("app.name"))
@@ -34,14 +35,24 @@ struct WeeklyGoalProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (WeeklyGoalEntry) -> Void) {
+        AppLocale.applyStoredWidgetLanguage()
         let snapshot = context.isPreview ? .placeholder : WidgetBridge.load()
         completion(WeeklyGoalEntry(date: Date(), snapshot: snapshot))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<WeeklyGoalEntry>) -> Void) {
+        AppLocale.applyStoredWidgetLanguage()
         let entry = WeeklyGoalEntry(date: Date(), snapshot: WidgetBridge.load())
         let nextRefresh = Date().addingTimeInterval(3600)
         completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
+    }
+}
+
+/// The widget process keeps running across timeline reloads, so the locale is read again here.
+private enum WidgetLocale {
+    static var current: Locale {
+        AppLocale.applyStoredWidgetLanguage()
+        return AppLocale.locale
     }
 }
 

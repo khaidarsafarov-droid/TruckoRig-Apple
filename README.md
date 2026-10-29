@@ -51,6 +51,9 @@ swift test
 подписи (`CODE_SIGNING_ALLOWED=NO`) и `xcodebuild test` только для `TruckoRigTests`. Запуск —
 каждый push и pull request в `main`. Linux-workflow по-прежнему гоняет только доменные тесты.
 
+Установка на iPhone с Windows и бесплатным Apple ID: [docs/SIDELOAD_RU.md](docs/SIDELOAD_RU.md).
+Workflow **Sideload IPA** кладёт неподписанный `.ipa` в артефакт `TruckoRig-unsigned-ipa`.
+
 ## TestFlight
 
 Для выкладки нужен платный [Apple Developer Program](https://developer.apple.com/programs/)
