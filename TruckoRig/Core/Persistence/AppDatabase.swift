@@ -1085,14 +1085,14 @@ final class AppDatabase {
             licensePlate: string(row, "licensePlate"),
             homeState: string(row, "homeState"),
             role: string(row, "role"),
-            preferredLanguage: AppLanguage(rawValue: rawLanguage) ?? .system,
-            weeklyGoal: double(row, "weeklyGoal") ?? 0,
-            updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0),
             cdlNumber: string(row, "cdlNumber"),
             experienceYears: int(row, "experienceYears"),
             phoneNumber: string(row, "phoneNumber"),
             telegramUsername: string(row, "telegramUsername"),
-            avatarFileName: string(row, "avatarFileName")
+            avatarFileName: string(row, "avatarFileName"),
+            preferredLanguage: AppLanguage(rawValue: rawLanguage) ?? .system,
+            weeklyGoal: double(row, "weeklyGoal") ?? 0,
+            updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)
         )
     }
 
