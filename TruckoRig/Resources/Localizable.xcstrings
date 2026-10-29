@@ -1868,35 +1868,6 @@
         }
       }
     },
-    "home.cd.menu": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Menu"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Menú"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Меню"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Menu"
-          }
-        }
-      }
-    },
     "home.cd.search": {
       "extractionState": "manual",
       "localizations": {
@@ -2183,35 +2154,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uniquement sur cet appareil"
-          }
-        }
-      }
-    },
-    "home.setGoal": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Set a weekly goal"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fijar una meta semanal"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Задать цель недели"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fixer un objectif hebdomadaire"
           }
         }
       }

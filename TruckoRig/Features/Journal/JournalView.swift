@@ -1,22 +1,5 @@
 import SwiftUI
 
-/// Where the home menu pushes.
-enum HomeDestination: Hashable {
-    case analytics
-    case goal
-    case paycheck
-    case diesel
-    case maintenance
-    case map
-    case gallery
-    case settings
-    case profile
-    case tax
-    case expenses
-    case about
-    case privacy
-}
-
 /// Home screen: week card, then every trip, newest week first.
 struct JournalView: View {
 
@@ -27,8 +10,6 @@ struct JournalView: View {
     @State private var viewModel = JournalViewModel()
     @State private var isAddingLoad = false
     @State private var isSearching = false
-    @State private var showMenu = false
-    @State private var destination: HomeDestination?
     @State private var cameraLoad: Load?
     @State private var scannerLoad: Load?
     @State private var syncNotice: String?
@@ -74,9 +55,8 @@ struct JournalView: View {
             Section {
                 JournalHomeHeader(
                     name: appState.catalog.profile?.name ?? "",
-                    onMenu: { showMenu = true },
-                    onSearch: { isSearching = true },
-                    onProfile: { destination = .profile }
+                    onAdd: { isAddingLoad = true },
+                    onSearch: { isSearching = true }
                 )
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 4, trailing: 12))
                 .listRowSeparator(.hidden)
@@ -94,11 +74,7 @@ struct JournalView: View {
                 ActivationChecklistCard(
                     profileComplete: !(appState.catalog.profile?.name ?? "").trimmingCharacters(in: .whitespaces).isEmpty,
                     hasGoal: appState.settings.weeklyGoal > 0,
-                    hasDiesel: !appState.catalog.diesel.isEmpty,
-                    onProfile: { destination = .profile },
-                    onAddLoad: { isAddingLoad = true },
-                    onGoal: { destination = .goal },
-                    onDiesel: { destination = .diesel }
+                    hasDiesel: !appState.catalog.diesel.isEmpty
                 )
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 .listRowSeparator(.hidden)
@@ -119,6 +95,11 @@ struct JournalView: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
             }
+
+            journalFilter
+                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
 
             ForEach(sections) { section in
                 Section {
@@ -175,25 +156,7 @@ struct JournalView: View {
         .navigationDestination(for: Load.self) { load in
             LoadDetailView(load: load)
         }
-        .navigationDestination(item: $destination) { dest in
-            destinationView(dest)
-        }
         .searchable(text: $model.searchText, isPresented: $isSearching, prompt: Text("journal.search.prompt"))
-        .sheet(isPresented: $showMenu) {
-            JournalMenuSheet(
-                filter: $model.filter,
-                selectedDay: $model.selectedDay,
-                onAdd: {
-                    showMenu = false
-                    isAddingLoad = true
-                },
-                onSelect: { dest in
-                    showMenu = false
-                    destination = dest
-                }
-            )
-            .environment(appState)
-        }
         .sheet(isPresented: $isAddingLoad) {
             AddLoadView()
                 .presentationDetents([.large])
@@ -268,8 +231,7 @@ struct JournalView: View {
             measurementSystem: system,
             loadCount: progress.loadsCount,
             dayLabels: narrowDays(week: week, ref: ref),
-            elapsedDays: week.daysElapsed(),
-            onOpenGoal: { destination = .goal }
+            elapsedDays: week.daysElapsed()
         )
     }
 
@@ -286,22 +248,19 @@ struct JournalView: View {
         }
     }
 
-    @ViewBuilder
-    private func destinationView(_ destination: HomeDestination) -> some View {
-        switch destination {
-        case .analytics: AnalyticsView()
-        case .goal: WeeklyGoalView()
-        case .paycheck: PaycheckListView()
-        case .diesel: DieselListView()
-        case .maintenance: MaintenanceListView()
-        case .map: MapScreen()
-        case .gallery: GalleryView()
-        case .settings: SettingsView()
-        case .profile: ProfileView()
-        case .tax: TaxTrackerView()
-        case .expenses: MiscExpenseListView()
-        case .about: AboutView()
-        case .privacy: PrivacyView()
+    private var journalFilter: some View {
+        @Bindable var model = viewModel
+        return VStack(alignment: .leading, spacing: 8) {
+            Picker("journal.filter", selection: $model.filter) {
+                ForEach(JournalViewModel.Filter.allCases) { item in
+                    Text(item.title).tag(item)
+                }
+            }
+            .pickerStyle(.menu)
+            .font(.appCaptionMedium)
+            if model.filter == .onDate || model.filter == .calendarWeek {
+                DatePicker("journal.filter.pickDate", selection: $model.selectedDay, displayedComponents: .date)
+            }
         }
     }
 
@@ -311,8 +270,7 @@ struct JournalView: View {
             title: "journal.empty.title",
             message: "journal.empty.message",
             actionTitle: "journal.addLoad",
-            action: { isAddingLoad = true },
-            actionIdentifier: "journal.addLoad"
+            action: { isAddingLoad = true }
         )
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
@@ -353,61 +311,6 @@ struct JournalView: View {
             try repository.delete(load, mediaStore: MediaStore(scope: appState.persistence.scope))
         } catch {
             viewModel.errorMessage = error.localizedDescription
-        }
-    }
-}
-
-private struct JournalMenuSheet: View {
-    @Binding var filter: JournalViewModel.Filter
-    @Binding var selectedDay: Date
-    var onAdd: () -> Void
-    var onSelect: (HomeDestination) -> Void
-
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            List {
-                Picker("journal.filter", selection: $filter) {
-                    ForEach(JournalViewModel.Filter.allCases) { item in
-                        Text(item.title).tag(item)
-                    }
-                }
-                if filter == .onDate || filter == .calendarWeek {
-                    DatePicker("journal.filter.pickDate", selection: $selectedDay, displayedComponents: .date)
-                }
-
-                Button(action: onAdd) {
-                    Label("journal.addLoad", systemImage: "plus")
-                }
-                .accessibilityIdentifier("journal.addLoad")
-
-                menuRow(.analytics, "screen.analytics", "chart.bar")
-                menuRow(.goal, "tab.goal", "target")
-                menuRow(.paycheck, "screen.paycheck", "dollarsign.circle")
-                menuRow(.diesel, "screen.diesel", "fuelpump")
-                menuRow(.expenses, "screen.expenses", "receipt")
-                menuRow(.tax, "screen.tax", "percent")
-                menuRow(.maintenance, "screen.maintenance", "wrench.and.screwdriver")
-                menuRow(.map, "screen.map", "map")
-                menuRow(.gallery, "screen.gallery", "photo.on.rectangle")
-                menuRow(.settings, "screen.settings", "gearshape")
-                menuRow(.profile, "tab.profile", "person.crop.circle")
-            }
-            .navigationTitle("app.name")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("action.cancel") { dismiss() }
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
-    }
-
-    private func menuRow(_ destination: HomeDestination, _ title: LocalizedStringKey, _ symbol: String) -> some View {
-        Button { onSelect(destination) } label: {
-            Label(title, systemImage: symbol)
         }
     }
 }

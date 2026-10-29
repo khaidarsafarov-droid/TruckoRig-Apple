@@ -4,6 +4,7 @@ import SwiftUI
 struct ProfileView: View {
 
     @Environment(AppState.self) private var appState
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var isEditing = false
 
@@ -27,40 +28,38 @@ struct ProfileView: View {
             }
             .listRowBackground(Color.forestCard)
 
-            Section("profile.records") {
-                NavigationLink { AnalyticsView() } label: {
-                    Label("screen.analytics", systemImage: "chart.bar")
+            if horizontalSizeClass != .regular {
+                Section("profile.records") {
+                    NavigationLink { AnalyticsView() } label: {
+                        Label("screen.analytics", systemImage: "chart.bar")
+                    }
+                    NavigationLink { PaycheckListView() } label: {
+                        Label("screen.paycheck", systemImage: "dollarsign.circle")
+                    }
+                    NavigationLink { DieselListView() } label: {
+                        Label("screen.diesel", systemImage: "fuelpump")
+                    }
+                    NavigationLink { MiscExpenseListView() } label: {
+                        Label("screen.expenses", systemImage: "receipt")
+                    }
+                    NavigationLink { TaxTrackerView() } label: {
+                        Label("screen.tax", systemImage: "percent")
+                    }
+                    NavigationLink { MaintenanceListView() } label: {
+                        Label("screen.maintenance", systemImage: "wrench.and.screwdriver")
+                    }
+                    NavigationLink { GalleryView() } label: {
+                        Label("screen.gallery", systemImage: "photo.on.rectangle")
+                    }
+                    NavigationLink { MapScreen() } label: {
+                        Label("screen.map", systemImage: "map")
+                    }
+                    NavigationLink { SettingsView() } label: {
+                        Label("screen.settings", systemImage: "gearshape")
+                    }
                 }
-                NavigationLink { PaycheckListView() } label: {
-                    Label("screen.paycheck", systemImage: "dollarsign.circle")
-                }
-                NavigationLink { DieselListView() } label: {
-                    Label("screen.diesel", systemImage: "fuelpump")
-                }
-                NavigationLink { MiscExpenseListView() } label: {
-                    Label("screen.expenses", systemImage: "receipt")
-                }
-                NavigationLink { TaxTrackerView() } label: {
-                    Label("screen.tax", systemImage: "percent")
-                }
-                NavigationLink { MaintenanceListView() } label: {
-                    Label("screen.maintenance", systemImage: "wrench.and.screwdriver")
-                }
-                NavigationLink { GalleryView() } label: {
-                    Label("screen.gallery", systemImage: "photo.on.rectangle")
-                }
-                NavigationLink { MapScreen() } label: {
-                    Label("screen.map", systemImage: "map")
-                }
+                .listRowBackground(Color.forestCard)
             }
-            .listRowBackground(Color.forestCard)
-
-            Section {
-                NavigationLink { SettingsView() } label: {
-                    Label("screen.settings", systemImage: "gearshape")
-                }
-            }
-            .listRowBackground(Color.forestCard)
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)

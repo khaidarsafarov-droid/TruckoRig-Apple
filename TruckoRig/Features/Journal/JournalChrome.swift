@@ -3,29 +3,21 @@ import SwiftUI
 /// Scrolling home header: brand, greeting, and the on-device badge.
 struct JournalHomeHeader: View {
     let name: String
-    var onMenu: () -> Void
+    var onAdd: () -> Void
     var onSearch: () -> Void
-    var onProfile: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 4) {
-                headerButton("line.3.horizontal", label: "home.cd.menu", identifier: "uitest.menu", action: onMenu)
+                headerButton("plus", label: "journal.addLoad", identifier: "journal.addLoad", action: onAdd)
                 Spacer()
                 headerButton("magnifyingglass", label: "home.cd.search", action: onSearch)
-                Button(action: onProfile) {
-                    Text(avatar)
-                        .font(.appCaptionMedium)
-                        .foregroundStyle(Color.forestSecondary)
-                        .frame(width: 36, height: 36)
-                        .background(Color.forestSurfaceMuted, in: Circle())
-                }
-                .accessibilityLabel("tab.profile")
             }
 
             Text("home.brand")
                 .font(.appLargeTitle)
                 .foregroundStyle(Color.forestText)
+                .allowsHitTesting(false)
 
             Text(greeting)
                 .font(.appBody)
@@ -39,11 +31,6 @@ struct JournalHomeHeader: View {
                 .background(Color.forestSurfaceMuted, in: Capsule())
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var avatar: String {
-        let initials = name.initials
-        return initials.isEmpty ? "A" : String(initials.prefix(1))
     }
 
     private var greeting: String {
@@ -93,7 +80,6 @@ struct HomeWeekHeroCard: View {
     let loadCount: Int
     let dayLabels: [String]
     let elapsedDays: Int
-    var onOpenGoal: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -112,21 +98,12 @@ struct HomeWeekHeroCard: View {
                         Text(String(localized: "home.week.ofGoal \(USMoneyFormat.currency(goal))"))
                             .font(.appCallout)
                             .foregroundStyle(Color.heroTextMuted)
-                    } else if gross > 0 {
-                        Button(action: onOpenGoal) {
-                            Text("home.setGoal")
-                                .font(.appCallout)
-                                .foregroundStyle(Color.heroText)
-                        }
                     }
                 }
                 Spacer(minLength: 8)
                 if goal > 0 {
-                    Button(action: onOpenGoal) {
-                        goalRing
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(String(localized: "home.goal.percent \(Int(percent.rounded()))"))
+                    goalRing
+                        .accessibilityLabel(String(localized: "home.goal.percent \(Int(percent.rounded()))"))
                 }
             }
             .padding(.top, 8)

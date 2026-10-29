@@ -7,10 +7,6 @@ struct ActivationChecklistCard: View {
     var profileComplete: Bool
     var hasGoal: Bool
     var hasDiesel: Bool
-    var onProfile: () -> Void
-    var onAddLoad: () -> Void
-    var onGoal: () -> Void
-    var onDiesel: () -> Void
 
     private var checklist: ActivationChecklist {
         ActivationChecklist.build(
@@ -28,16 +24,10 @@ struct ActivationChecklistCard: View {
             ProgressView(value: checklist.progress)
                 .tint(Color.forestPrimary)
             ForEach(Array(checklist.steps.enumerated()), id: \.offset) { _, item in
-                Button {
-                    open(item.step)
-                } label: {
-                    Label(title(item.step), systemImage: item.done ? "checkmark.circle.fill" : "circle")
-                        .font(.appBody)
-                        .foregroundStyle(item.done ? Color.forestSuccess : Color.forestText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.plain)
-                .disabled(item.done || item.step == .account)
+                Label(title(item.step), systemImage: item.done ? "checkmark.circle.fill" : "circle")
+                    .font(.appBody)
+                    .foregroundStyle(item.done ? Color.forestSuccess : Color.forestText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .padding(Spacing.standard)
@@ -54,15 +44,6 @@ struct ActivationChecklistCard: View {
         }
     }
 
-    private func open(_ step: ActivationChecklist.Step) {
-        switch step {
-        case .account: break
-        case .profile: onProfile()
-        case .firstLoad: onAddLoad()
-        case .weeklyGoal: onGoal()
-        case .firstDiesel: onDiesel()
-        }
-    }
 }
 
 /// Free-version prompt after seven days. Android `Day7SurveyBanner`.

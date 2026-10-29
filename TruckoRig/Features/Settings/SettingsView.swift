@@ -223,8 +223,6 @@ struct SettingsView: View {
             }
 
             Section("settings.more") {
-                NavigationLink { TaxTrackerView() } label: { Label("screen.tax", systemImage: "percent") }
-                NavigationLink { MiscExpenseListView() } label: { Label("screen.expenses", systemImage: "receipt") }
                 NavigationLink { PrivacyView() } label: { Label("screen.privacy", systemImage: "lock") }
                 NavigationLink { AboutView() } label: { Label("screen.about", systemImage: "info.circle") }
                 NavigationLink { ImprovementFeedbackView() } label: { Label("improve.title", systemImage: "envelope") }
