@@ -149,6 +149,36 @@ final class AppDatabase {
                 table.add(column: "avatarFileName", .text)
             }
         }
+        migrator.registerMigration("v6_profile_name_only") { db in
+            // Copy the columns the app still uses, then drop the old table. Existing names and
+            // truck fields stay. Role, carrier, CDL, experience, phone, Telegram and the photo
+            // file name are left behind.
+            try db.execute(sql: """
+                CREATE TABLE profile_name_only (
+                    id TEXT PRIMARY KEY NOT NULL,
+                    name TEXT,
+                    truckModel TEXT,
+                    truckYear INTEGER,
+                    licensePlate TEXT,
+                    homeState TEXT,
+                    preferredLanguage TEXT NOT NULL,
+                    weeklyGoal DOUBLE NOT NULL,
+                    updatedAt DOUBLE NOT NULL
+                )
+                """)
+            try db.execute(sql: """
+                INSERT INTO profile_name_only (
+                    id, name, truckModel, truckYear, licensePlate, homeState,
+                    preferredLanguage, weeklyGoal, updatedAt
+                )
+                SELECT
+                    id, name, truckModel, truckYear, licensePlate, homeState,
+                    preferredLanguage, weeklyGoal, updatedAt
+                FROM profile
+                """)
+            try db.execute(sql: "DROP TABLE profile")
+            try db.execute(sql: "ALTER TABLE profile_name_only RENAME TO profile")
+        }
         try migrator.migrate(queue)
     }
 
@@ -872,23 +902,18 @@ final class AppDatabase {
     private static func upsert(_ db: Database, _ profile: DriverProfile) throws {
         try execute(db, """
         INSERT INTO profile (
-            id, name, carrier, truckModel, truckYear, licensePlate, homeState, preferredLanguage,
-            weeklyGoal, updatedAt, role, cdlNumber, experienceYears, phoneNumber, telegramUsername, avatarFileName
-        ) VALUES (\(marks(16)))
+            id, name, truckModel, truckYear, licensePlate, homeState, preferredLanguage,
+            weeklyGoal, updatedAt
+        ) VALUES (\(marks(9)))
         ON CONFLICT(id) DO UPDATE SET
-            name = excluded.name, carrier = excluded.carrier, truckModel = excluded.truckModel,
+            name = excluded.name, truckModel = excluded.truckModel,
             truckYear = excluded.truckYear, licensePlate = excluded.licensePlate, homeState = excluded.homeState,
             preferredLanguage = excluded.preferredLanguage, weeklyGoal = excluded.weeklyGoal,
-            updatedAt = excluded.updatedAt, role = excluded.role,
-            cdlNumber = excluded.cdlNumber, experienceYears = excluded.experienceYears,
-            phoneNumber = excluded.phoneNumber, telegramUsername = excluded.telegramUsername,
-            avatarFileName = excluded.avatarFileName
+            updatedAt = excluded.updatedAt
         """, [
-            profile.id.uuidString, profile.name, profile.carrier, profile.truckModel, profile.truckYear,
+            profile.id.uuidString, profile.name, profile.truckModel, profile.truckYear,
             profile.licensePlate, profile.homeState, profile.preferredLanguage.rawValue, profile.weeklyGoal,
-            profile.updatedAt.timeIntervalSince1970, profile.role,
-            profile.cdlNumber, profile.experienceYears, profile.phoneNumber, profile.telegramUsername,
-            profile.avatarFileName,
+            profile.updatedAt.timeIntervalSince1970,
         ])
     }
 
@@ -1079,17 +1104,10 @@ final class AppDatabase {
         return DriverProfile(
             id: uuid(row, "id") ?? UUID(),
             name: string(row, "name"),
-            carrier: string(row, "carrier"),
             truckModel: string(row, "truckModel"),
             truckYear: int(row, "truckYear"),
             licensePlate: string(row, "licensePlate"),
             homeState: string(row, "homeState"),
-            role: string(row, "role"),
-            cdlNumber: string(row, "cdlNumber"),
-            experienceYears: int(row, "experienceYears"),
-            phoneNumber: string(row, "phoneNumber"),
-            telegramUsername: string(row, "telegramUsername"),
-            avatarFileName: string(row, "avatarFileName"),
             preferredLanguage: AppLanguage(rawValue: rawLanguage) ?? .system,
             weeklyGoal: double(row, "weeklyGoal") ?? 0,
             updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)

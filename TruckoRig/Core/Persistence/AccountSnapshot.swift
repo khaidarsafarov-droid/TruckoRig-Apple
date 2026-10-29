@@ -223,14 +223,12 @@ struct MaintenanceArchiveDTO: Equatable {
 struct ProfileDTO: Codable, Equatable {
     var id: UUID
     var name: String?
-    var carrier: String?
     var truckModel: String?
     var truckYear: Int?
     var licensePlate: String?
     var homeState: String?
     var weeklyGoal: Double
     var updatedAt: Date
-    var role: String?
 }
 
 extension AccountSnapshot: Codable {

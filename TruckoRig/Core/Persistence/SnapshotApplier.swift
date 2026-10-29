@@ -151,12 +151,10 @@ enum SnapshotApplier {
         if let remoteProfile = snapshot.profile {
             if let local = graph.profile, remoteProfile.updatedAt > local.updatedAt {
                 local.name = remoteProfile.name
-                local.carrier = remoteProfile.carrier
                 local.truckModel = remoteProfile.truckModel
                 local.truckYear = remoteProfile.truckYear
                 local.licensePlate = remoteProfile.licensePlate
                 local.homeState = remoteProfile.homeState
-                local.role = remoteProfile.role
                 local.weeklyGoal = remoteProfile.weeklyGoal
                 local.updatedAt = remoteProfile.updatedAt
                 try database.save(local)
@@ -165,12 +163,10 @@ enum SnapshotApplier {
                 try database.save(DriverProfile(
                     id: remoteProfile.id,
                     name: remoteProfile.name,
-                    carrier: remoteProfile.carrier,
                     truckModel: remoteProfile.truckModel,
                     truckYear: remoteProfile.truckYear,
                     licensePlate: remoteProfile.licensePlate,
                     homeState: remoteProfile.homeState,
-                    role: remoteProfile.role,
                     weeklyGoal: remoteProfile.weeklyGoal,
                     updatedAt: remoteProfile.updatedAt
                 ))
