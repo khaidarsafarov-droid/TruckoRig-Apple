@@ -528,10 +528,12 @@
 		BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		532AF507B6EBE044E9E6ECDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "InfoPlist.xcstrings"; sourceTree = "<group>"; };
+		B74F4A0AF8A5CFC3584B28DC /* InfoSideload.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "InfoSideload.plist"; sourceTree = "<group>"; };
 		1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
 		B40BD3D131438FCD5F734D0C /* Premium.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Premium.storekit"; sourceTree = "<group>"; };
 		CFD68C6799186F96E8741EEB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
 		135A264B50C225848871ED7D /* TruckoRig.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRig.entitlements"; sourceTree = "<group>"; };
+		409F8FDE5F56AC0B93971607 /* TruckoRigSideload.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRigSideload.entitlements"; sourceTree = "<group>"; };
 		CCB54446952969CD381EB575 /* us_states.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "us_states.json"; sourceTree = "<group>"; };
 		810ABF68C96DF0850D97653E /* Bindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bindings.swift"; sourceTree = "<group>"; };
 		D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DomainMessages.swift"; sourceTree = "<group>"; };
@@ -1332,10 +1334,12 @@
 				745272E958C4DF8C5ABE228D /* Fonts */,
 				532AF507B6EBE044E9E6ECDB /* Info.plist */,
 				5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */,
+				B74F4A0AF8A5CFC3584B28DC /* InfoSideload.plist */,
 				1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */,
 				B40BD3D131438FCD5F734D0C /* Premium.storekit */,
 				CFD68C6799186F96E8741EEB /* PrivacyInfo.xcprivacy */,
 				135A264B50C225848871ED7D /* TruckoRig.entitlements */,
+				409F8FDE5F56AC0B93971607 /* TruckoRigSideload.entitlements */,
 				CCB54446952969CD381EB575 /* us_states.json */,
 			);
 			path = "Resources";
@@ -1441,6 +1445,7 @@
 				FD408E19B6EF845E93EC4E96 /* Frameworks */,
 				851F3183EF610546A033D2DE /* Resources */,
 				90769E3777782F31183BC486 /* Embed Foundation Extensions */,
+				5BCA025080C70C8CF7ABC9AE /* Strip widget for sideload */,
 			);
 			buildRules = (
 			);
@@ -1883,6 +1888,28 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		5BCA025080C70C8CF7ABC9AE /* Strip widget for sideload */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Strip widget for sideload";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CONFIGURATION\" = \"Sideload\" ]; then\n  rm -rf \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/PlugIns\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXTargetDependency section */
 		584C342C1866B10AB5FF7DA3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1951,6 +1978,29 @@
 			};
 			name = Release;
 		};
+		7D36B7B56F0707254E40144C /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = NO;
+			};
+			name = Sideload;
+		};
 		CC0E0193F4281B4DA5C369FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D68807FED8449A70B846E60D /* Maps.xcconfig */;
@@ -1999,6 +2049,35 @@
 			};
 			name = Release;
 		};
+		F736A59B91681B4FA969C387 /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D68807FED8449A70B846E60D /* Maps.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TruckoRig/Resources/TruckoRigSideload.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TruckoRig/Resources/InfoSideload.plist;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "$(inherited) -ObjC";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SIDELOAD";
+				VALIDATE_PRODUCT = NO;
+			};
+			name = Sideload;
+		};
 		297D4155EEB86AAF4470A4B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2041,6 +2120,30 @@
 			};
 			name = Release;
 		};
+		D31B0A79E9A68B0367C8D1A2 /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TruckoRigWidget/TruckoRigWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TruckoRigWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+			};
+			name = Sideload;
+		};
 		21B179F8F9DFCE51ACDF5546 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2073,6 +2176,22 @@
 			};
 			name = Release;
 		};
+		4D5EB8D675F961D63552917E /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TruckoRig.app/TruckoRig";
+			};
+			name = Sideload;
+		};
 		30040E5A9253E3504C585F9E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2101,6 +2220,20 @@
 			};
 			name = Release;
 		};
+		D1E4D88935A32B0CE28E387F /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TruckoRig;
+			};
+			name = Sideload;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2109,6 +2242,7 @@
 			buildConfigurations = (
 				80AD23622D27585898614512 /* Debug */,
 				8EFA71F5CA3208395CCDE41A /* Release */,
+				7D36B7B56F0707254E40144C /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2118,6 +2252,7 @@
 			buildConfigurations = (
 				CC0E0193F4281B4DA5C369FC /* Debug */,
 				12ACBD0672F76C7DFF9F6BD9 /* Release */,
+				F736A59B91681B4FA969C387 /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2127,6 +2262,7 @@
 			buildConfigurations = (
 				297D4155EEB86AAF4470A4B9 /* Debug */,
 				B54244056D086D3B2AB1A5FD /* Release */,
+				D31B0A79E9A68B0367C8D1A2 /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2136,6 +2272,7 @@
 			buildConfigurations = (
 				21B179F8F9DFCE51ACDF5546 /* Debug */,
 				D51FFD02ED4B7183F937B969 /* Release */,
+				4D5EB8D675F961D63552917E /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2145,6 +2282,7 @@
 			buildConfigurations = (
 				30040E5A9253E3504C585F9E /* Debug */,
 				3FC42F4C5A371EBBE0E26807 /* Release */,
+				D1E4D88935A32B0CE28E387F /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -210,7 +210,9 @@ struct SettingsView: View {
                     .foregroundStyle(Color.forestTextSecondary)
             }
 
+            #if !SIDELOAD
             ICloudBackupSection()
+            #endif
 
             TelegramSettingsSection()
 

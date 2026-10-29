@@ -27,7 +27,11 @@ final class PremiumController {
     private let notificationDelegate = TrialNotificationDelegate()
     private var listen: Task<Void, Never>?
 
+    #if SIDELOAD
+    private(set) var isActive = true
+    #else
     private(set) var isActive = false
+    #endif
     private(set) var didRefresh = false
     private(set) var catalog = PremiumCatalog(displayPrice: nil, includesFreeMonth: true)
     private(set) var purchaseError: String?
@@ -126,6 +130,13 @@ final class PremiumController {
     }
 
     func apply(entitlement: PremiumEntitlement?, catalog: PremiumCatalog, now: Date) async {
+        #if SIDELOAD
+        self.catalog = catalog
+        didRefresh = true
+        isActive = true
+        revision += 1
+        return
+        #else
         self.catalog = catalog
         didRefresh = true
         let price = catalog.displayPrice ?? entitlement?.displayPrice
@@ -146,6 +157,7 @@ final class PremiumController {
         }
         revision += 1
         await syncReminder(now: now)
+        #endif
     }
 
     func purchase() async {
