@@ -2977,25 +2977,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trip ID, city or state"
+            "value": "Trip ID, city, or date"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "ID de viaje, ciudad o estado"
+            "value": "Trip ID, ciudad o fecha"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trip ID, город или штат"
+            "value": "Trip ID, город или дата"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trip ID, ville ou État"
+            "value": "Trip ID, ville ou date"
           }
         }
       }
@@ -24353,6 +24353,122 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sélectionner"
+          }
+        }
+      }
+    },
+    "journal.filter.today": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сегодня"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aujourd'hui"
+          }
+        }
+      }
+    },
+    "journal.filter.range": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dates"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fechas"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Период"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Période"
+          }
+        }
+      }
+    },
+    "journal.filter.from": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desde"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "С"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du"
+          }
+        }
+      }
+    },
+    "journal.filter.to": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hasta"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Au"
           }
         }
       }

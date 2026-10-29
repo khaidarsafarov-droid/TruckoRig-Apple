@@ -10,6 +10,7 @@ struct JournalView: View {
     @State private var viewModel = JournalViewModel()
     @State private var isAddingLoad = false
     @State private var isSearching = false
+    @State private var tool: JournalTool?
     @State private var cameraLoad: Load?
     @State private var scannerLoad: Load?
     @State private var syncNotice: String?
@@ -55,8 +56,13 @@ struct JournalView: View {
             Section {
                 JournalHomeHeader(
                     name: appState.catalog.profile?.name ?? "",
+                    showsTools: horizontalSizeClass != .regular,
                     onAdd: { isAddingLoad = true },
-                    onSearch: { isSearching = true }
+                    onSearch: {
+                        isSearching.toggle()
+                        if !isSearching { viewModel.searchText = "" }
+                    },
+                    onTool: { tool = $0 }
                 )
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 4, trailing: 12))
                 .listRowSeparator(.hidden)
@@ -94,6 +100,13 @@ struct JournalView: View {
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
+            }
+
+            if isSearching {
+                journalSearch
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
             }
 
             journalFilter
@@ -152,11 +165,13 @@ struct JournalView: View {
             }
         }
         .navigationTitle("")
-        .toolbar(isSearching ? .visible : .hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(for: Load.self) { load in
             LoadDetailView(load: load)
         }
-        .searchable(text: $model.searchText, isPresented: $isSearching, prompt: Text("journal.search.prompt"))
+        .navigationDestination(item: $tool) { tool in
+            JournalToolScreen(tool: tool)
+        }
         .sheet(isPresented: $isAddingLoad) {
             AddLoadView()
                 .presentationDetents([.large])
@@ -259,10 +274,68 @@ struct JournalView: View {
             }
             .pickerStyle(.menu)
             .font(.appCaptionMedium)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    dateChip("journal.filter.all", .all)
+                    dateChip("journal.filter.today", .today)
+                    dateChip("journal.filter.thisWeek", .thisWeek)
+                    dateChip("journal.filter.onDate", .onDate)
+                    dateChip("journal.filter.range", .dateRange)
+                }
+            }
             if model.filter == .onDate || model.filter == .calendarWeek {
                 DatePicker("journal.filter.pickDate", selection: $model.selectedDay, displayedComponents: .date)
             }
+            if model.filter == .dateRange {
+                DatePicker("journal.filter.from", selection: $model.rangeStart, displayedComponents: .date)
+                DatePicker("journal.filter.to", selection: $model.rangeEnd, in: model.rangeStart..., displayedComponents: .date)
+            }
         }
+    }
+
+    private func dateChip(_ key: LocalizedStringKey, _ filter: JournalViewModel.Filter) -> some View {
+        let selected = viewModel.filter == filter
+        return Button {
+            viewModel.filter = filter
+            if filter == .today { viewModel.selectedDay = Date() }
+        } label: {
+            Text(key)
+                .font(.appCaptionMedium)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .foregroundStyle(selected ? Color.forestOnPrimary : Color.forestText)
+                .background(selected ? AnyShapeStyle(Color.forestPrimary) : AnyShapeStyle(Color.forestSurfaceMuted), in: Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var journalSearch: some View {
+        @Bindable var model = viewModel
+        return HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(Color.forestTextSecondary)
+            TextField("journal.search.prompt", text: $model.searchText)
+                .font(.appBody)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+            if !model.searchText.isEmpty {
+                Button {
+                    model.searchText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(Color.forestTextSecondary)
+                }
+                .accessibilityLabel("action.clear")
+            }
+            Button("action.cancel") {
+                model.searchText = ""
+                isSearching = false
+            }
+            .font(.appCaptionMedium)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(Color.forestSurfaceMuted, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     private var emptyState: some View {

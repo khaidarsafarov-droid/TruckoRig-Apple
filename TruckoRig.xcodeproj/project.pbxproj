@@ -190,6 +190,7 @@
 		5908A52DC9B6BA2639CB60A7 /* GalleryView.swift */ = {isa = PBXBuildFile; fileRef = 616261D554818A6FF5F0FA41 /* GalleryView.swift */; };
 		3AA006D26660199C7075BF0A /* JournalChrome.swift */ = {isa = PBXBuildFile; fileRef = 9E28253701629A526101F1B3 /* JournalChrome.swift */; };
 		860EC674B1B6A218C19C8873 /* JournalMotivationCards.swift */ = {isa = PBXBuildFile; fileRef = 8630D4488DA25F2677B972E7 /* JournalMotivationCards.swift */; };
+		7ABF502E1A6D75DC50E0BA55 /* JournalTools.swift */ = {isa = PBXBuildFile; fileRef = FB7F15931B6E046152076371 /* JournalTools.swift */; };
 		723E3ABDFD57587A3ABA0FE6 /* JournalView.swift */ = {isa = PBXBuildFile; fileRef = 4F73830F4A051B167E884420 /* JournalView.swift */; };
 		1072A860C7F70F223C7F30AB /* JournalViewModel.swift */ = {isa = PBXBuildFile; fileRef = C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */; };
 		0102AD36EA83617733301F90 /* LoadRowView.swift */ = {isa = PBXBuildFile; fileRef = D717AEF67461754094A98129 /* LoadRowView.swift */; };
@@ -507,6 +508,7 @@
 		616261D554818A6FF5F0FA41 /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GalleryView.swift"; sourceTree = "<group>"; };
 		9E28253701629A526101F1B3 /* JournalChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalChrome.swift"; sourceTree = "<group>"; };
 		8630D4488DA25F2677B972E7 /* JournalMotivationCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalMotivationCards.swift"; sourceTree = "<group>"; };
+		FB7F15931B6E046152076371 /* JournalTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalTools.swift"; sourceTree = "<group>"; };
 		4F73830F4A051B167E884420 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalView.swift"; sourceTree = "<group>"; };
 		C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalViewModel.swift"; sourceTree = "<group>"; };
 		D717AEF67461754094A98129 /* LoadRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadRowView.swift"; sourceTree = "<group>"; };
@@ -1240,6 +1242,7 @@
 			children = (
 				9E28253701629A526101F1B3 /* JournalChrome.swift */,
 				8630D4488DA25F2677B972E7 /* JournalMotivationCards.swift */,
+				FB7F15931B6E046152076371 /* JournalTools.swift */,
 				4F73830F4A051B167E884420 /* JournalView.swift */,
 				C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */,
 				D717AEF67461754094A98129 /* LoadRowView.swift */,
@@ -1851,6 +1854,7 @@
 				5908A52DC9B6BA2639CB60A7 /* GalleryView.swift */,
 				3AA006D26660199C7075BF0A /* JournalChrome.swift */,
 				860EC674B1B6A218C19C8873 /* JournalMotivationCards.swift */,
+				7ABF502E1A6D75DC50E0BA55 /* JournalTools.swift */,
 				723E3ABDFD57587A3ABA0FE6 /* JournalView.swift */,
 				1072A860C7F70F223C7F30AB /* JournalViewModel.swift */,
 				0102AD36EA83617733301F90 /* LoadRowView.swift */,

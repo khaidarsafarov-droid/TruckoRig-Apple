@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Driver name and truck details, plus the way into every secondary screen.
+/// Driver name, truck, and the link to settings. Load tools live on the journal.
 struct ProfileView: View {
 
     @Environment(AppState.self) private var appState
@@ -29,31 +29,7 @@ struct ProfileView: View {
             .listRowBackground(Color.forestCard)
 
             if horizontalSizeClass != .regular {
-                Section("profile.records") {
-                    NavigationLink { AnalyticsView() } label: {
-                        Label("screen.analytics", systemImage: "chart.bar")
-                    }
-                    NavigationLink { PaycheckListView() } label: {
-                        Label("screen.paycheck", systemImage: "dollarsign.circle")
-                    }
-                    NavigationLink { DieselListView() } label: {
-                        Label("screen.diesel", systemImage: "fuelpump")
-                    }
-                    NavigationLink { MiscExpenseListView() } label: {
-                        Label("screen.expenses", systemImage: "receipt")
-                    }
-                    NavigationLink { TaxTrackerView() } label: {
-                        Label("screen.tax", systemImage: "percent")
-                    }
-                    NavigationLink { MaintenanceListView() } label: {
-                        Label("screen.maintenance", systemImage: "wrench.and.screwdriver")
-                    }
-                    NavigationLink { GalleryView() } label: {
-                        Label("screen.gallery", systemImage: "photo.on.rectangle")
-                    }
-                    NavigationLink { MapScreen() } label: {
-                        Label("screen.map", systemImage: "map")
-                    }
+                Section {
                     NavigationLink { SettingsView() } label: {
                         Label("screen.settings", systemImage: "gearshape")
                     }

@@ -3,14 +3,19 @@ import SwiftUI
 /// Scrolling home header: brand, greeting, and the on-device badge.
 struct JournalHomeHeader: View {
     let name: String
+    var showsTools = false
     var onAdd: () -> Void
     var onSearch: () -> Void
+    var onTool: (JournalTool) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 4) {
                 headerButton("plus", label: "journal.addLoad", identifier: "journal.addLoad", action: onAdd)
                 Spacer()
+                if showsTools {
+                    JournalToolsMenu(onTool: onTool)
+                }
                 headerButton("magnifyingglass", label: "home.cd.search", action: onSearch)
             }
 
@@ -376,8 +381,7 @@ private func journalDate(_ date: Date, locale: Locale) -> String {
 }
 
 private func stopsPhrase(_ count: Int, locale: Locale) -> String {
-    // French agrees on 0/1 versus the rest. English and Russian keep the existing
-    // one/few/many split, so "21 stop" / "21 остановка" stay exactly as they are.
+    // French agrees on 0/1 versus the rest. English and Russian keep the one/few/many split.
     if locale.language.languageCode?.identifier == "fr" {
         if count == 0 || count == 1 {
             return String(localized: "load.card.stops.one \(count)", locale: locale)
