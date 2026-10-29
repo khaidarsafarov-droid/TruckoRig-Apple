@@ -9,6 +9,7 @@ struct TruckoRigApp: App {
         AppLocale.install()
         TelegramBackgroundRegistrar.register()
         ICloudBackgroundRegistrar.register()
+        _appState.wrappedValue.installNotificationHandling()
     }
 
     var body: some Scene {

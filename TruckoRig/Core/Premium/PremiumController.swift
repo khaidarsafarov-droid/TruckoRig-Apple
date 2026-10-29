@@ -111,6 +111,15 @@ final class PremiumController {
         return PremiumCopy.reminderBody(trialEnd: end, price: state.formattedPrice ?? catalog.displayPrice, locale: localeProvider())
     }
 
+    func observeMaintenanceActions(_ handler: @escaping (String, String) -> Void) {
+        notificationDelegate.onMaintenance = handler
+    }
+
+    /// The delegate has to exist before a tap on a notification launches the process.
+    func installNotificationDelegate() {
+        UNUserNotificationCenter.current().delegate = notificationDelegate
+    }
+
     func start() {
         guard listen == nil else { return }
         UNUserNotificationCenter.current().delegate = notificationDelegate

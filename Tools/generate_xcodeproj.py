@@ -86,6 +86,7 @@ FILE_TYPES = {
     ".xcstrings": "text.json.xcstrings",
     ".md": "net.daringfireball.markdown",
     ".png": "image.png",
+    ".caf": "file",
     ".json": "text.json",
     ".ttf": "file",
     ".otf": "file",

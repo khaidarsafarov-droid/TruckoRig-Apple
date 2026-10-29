@@ -37,6 +37,7 @@
 		1654D96F28037987D0458F80 /* Scan.swift */ = {isa = PBXBuildFile; fileRef = B904A08B51E6EA1DE2D02909 /* Scan.swift */; };
 		F58E092E92A6BF4E747EBA6E /* Stop.swift */ = {isa = PBXBuildFile; fileRef = 37D55A7EEAEF2EDB8431BA56 /* Stop.swift */; };
 		3FE8E5CD0716B06823E46388 /* Day7SurveyStore.swift */ = {isa = PBXBuildFile; fileRef = 586D369752FB8BE5D228DECE /* Day7SurveyStore.swift */; };
+		DA2162316E2389A1ECB42C5E /* MaintenanceAlertPoster.swift */ = {isa = PBXBuildFile; fileRef = A5D2073737BEC105B66CD0D5 /* MaintenanceAlertPoster.swift */; };
 		876D32D16C300C963E91750E /* MaintenanceReminderCenter.swift */ = {isa = PBXBuildFile; fileRef = 849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */; };
 		241F2516253F5004BB467025 /* PickupAlarmCenter.swift */ = {isa = PBXBuildFile; fileRef = 80FFABA1248383F8138ABA6C /* PickupAlarmCenter.swift */; };
 		512D6791792E4032E227341D /* AccountScopedContainer.swift */ = {isa = PBXBuildFile; fileRef = 4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */; };
@@ -137,6 +138,7 @@
 		2B622C76080980852957735F /* WidgetGoalSnapshot.swift */ = {isa = PBXBuildFile; fileRef = EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */; };
 		A8C2A8577BDC4BDA7AA7022C /* MoneyCents.swift */ = {isa = PBXBuildFile; fileRef = 52D8E9B550BD5E2EF23FDB29 /* MoneyCents.swift */; };
 		2A5BC3A4152C6ADFEB9819D5 /* HomeMotivation.swift */ = {isa = PBXBuildFile; fileRef = 2EEE84D2085B196DD9903BD1 /* HomeMotivation.swift */; };
+		C5CCF373B74947F4C092AAE4 /* MaintenanceReminderSchedule.swift */ = {isa = PBXBuildFile; fileRef = 4C8C0075CAFBD5B9B72E24B2 /* MaintenanceReminderSchedule.swift */; };
 		318CE7356EDF251CE6E5B537 /* SmartNotifications.swift */ = {isa = PBXBuildFile; fileRef = D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */; };
 		750F30C12B791B73B6DC0324 /* AddressParser.swift */ = {isa = PBXBuildFile; fileRef = 182585A026C2B15E60AC4276 /* AddressParser.swift */; };
 		72169DFBA3460A7BBBA71BDF /* AmazonRelayParser.swift */ = {isa = PBXBuildFile; fileRef = 752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */; };
@@ -234,6 +236,7 @@
 		EF99963BA7F62619A8F9652E /* Roboto-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 1FD1CD9C069F3DB1C83340F4 /* Roboto-Bold.ttf */; };
 		A6E5D49805906D7B7BB440BD /* Roboto-Medium.ttf */ = {isa = PBXBuildFile; fileRef = D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */; };
 		1FC37AFEA5D3361238CCE3B6 /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
+		5C20EE7AB733D9017572E1A9 /* MaintenanceAlert.caf */ = {isa = PBXBuildFile; fileRef = EDE35D11567A416CBE8D45F4 /* MaintenanceAlert.caf */; };
 		80108301C356E1AFDA77AC91 /* Assets.xcassets */ = {isa = PBXBuildFile; fileRef = 25F3017AC1E5A8997BE4CC9E /* Assets.xcassets */; };
 		1AFD346263F287F83DE5C514 /* TruckoRigWidgetBundle.swift */ = {isa = PBXBuildFile; fileRef = 64E195444487F70935880DE1 /* TruckoRigWidgetBundle.swift */; };
 		AF2C0CD82B4242B21A1B98D5 /* WeeklyGoalWidget.swift */ = {isa = PBXBuildFile; fileRef = 5330DB8D8D1B053921AE4256 /* WeeklyGoalWidget.swift */; };
@@ -349,6 +352,7 @@
 		B904A08B51E6EA1DE2D02909 /* Scan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scan.swift"; sourceTree = "<group>"; };
 		37D55A7EEAEF2EDB8431BA56 /* Stop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stop.swift"; sourceTree = "<group>"; };
 		586D369752FB8BE5D228DECE /* Day7SurveyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Day7SurveyStore.swift"; sourceTree = "<group>"; };
+		A5D2073737BEC105B66CD0D5 /* MaintenanceAlertPoster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceAlertPoster.swift"; sourceTree = "<group>"; };
 		849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceReminderCenter.swift"; sourceTree = "<group>"; };
 		80FFABA1248383F8138ABA6C /* PickupAlarmCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PickupAlarmCenter.swift"; sourceTree = "<group>"; };
 		4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountScopedContainer.swift"; sourceTree = "<group>"; };
@@ -449,6 +453,7 @@
 		EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetGoalSnapshot.swift"; sourceTree = "<group>"; };
 		52D8E9B550BD5E2EF23FDB29 /* MoneyCents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoneyCents.swift"; sourceTree = "<group>"; };
 		2EEE84D2085B196DD9903BD1 /* HomeMotivation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeMotivation.swift"; sourceTree = "<group>"; };
+		4C8C0075CAFBD5B9B72E24B2 /* MaintenanceReminderSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceReminderSchedule.swift"; sourceTree = "<group>"; };
 		D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmartNotifications.swift"; sourceTree = "<group>"; };
 		182585A026C2B15E60AC4276 /* AddressParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressParser.swift"; sourceTree = "<group>"; };
 		752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AmazonRelayParser.swift"; sourceTree = "<group>"; };
@@ -542,6 +547,7 @@
 		1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
 		B40BD3D131438FCD5F734D0C /* Premium.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Premium.storekit"; sourceTree = "<group>"; };
 		CFD68C6799186F96E8741EEB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		EDE35D11567A416CBE8D45F4 /* MaintenanceAlert.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MaintenanceAlert.caf"; sourceTree = "<group>"; };
 		135A264B50C225848871ED7D /* TruckoRig.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRig.entitlements"; sourceTree = "<group>"; };
 		409F8FDE5F56AC0B93971607 /* TruckoRigSideload.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRigSideload.entitlements"; sourceTree = "<group>"; };
 		CCB54446952969CD381EB575 /* us_states.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "us_states.json"; sourceTree = "<group>"; };
@@ -759,6 +765,7 @@
 		7286F81711A383D0B6A2BF46 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				A5D2073737BEC105B66CD0D5 /* MaintenanceAlertPoster.swift */,
 				849BAB73D902DDB025E8E1EC /* MaintenanceReminderCenter.swift */,
 				80FFABA1248383F8138ABA6C /* PickupAlarmCenter.swift */,
 			);
@@ -1028,6 +1035,7 @@
 		9CC53B5E694E7834C93D7E32 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				4C8C0075CAFBD5B9B72E24B2 /* MaintenanceReminderSchedule.swift */,
 				D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */,
 			);
 			path = "Notifications";
@@ -1354,6 +1362,7 @@
 				25F3017AC1E5A8997BE4CC9E /* Assets.xcassets */,
 				B3F95451D5F06AFDF040781F /* DM-Sans */,
 				745272E958C4DF8C5ABE228D /* Fonts */,
+				BA90E2AFF9AB11989F6AB1F9 /* Sounds */,
 				532AF507B6EBE044E9E6ECDB /* Info.plist */,
 				5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */,
 				B74F4A0AF8A5CFC3584B28DC /* InfoSideload.plist */,
@@ -1389,6 +1398,14 @@
 				BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */,
 			);
 			path = "Fonts";
+			sourceTree = "<group>";
+		};
+		BA90E2AFF9AB11989F6AB1F9 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				EDE35D11567A416CBE8D45F4 /* MaintenanceAlert.caf */,
+			);
+			path = "Sounds";
 			sourceTree = "<group>";
 		};
 		DE724CF1504AA6A2F6D86458 /* Shared */ = {
@@ -1604,6 +1621,7 @@
 				EF99963BA7F62619A8F9652E /* Roboto-Bold.ttf */,
 				A6E5D49805906D7B7BB440BD /* Roboto-Medium.ttf */,
 				1FC37AFEA5D3361238CCE3B6 /* Roboto-Regular.ttf */,
+				5C20EE7AB733D9017572E1A9 /* MaintenanceAlert.caf */,
 				80108301C356E1AFDA77AC91 /* Assets.xcassets */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1674,6 +1692,7 @@
 				1654D96F28037987D0458F80 /* Scan.swift */,
 				F58E092E92A6BF4E747EBA6E /* Stop.swift */,
 				3FE8E5CD0716B06823E46388 /* Day7SurveyStore.swift */,
+				DA2162316E2389A1ECB42C5E /* MaintenanceAlertPoster.swift */,
 				876D32D16C300C963E91750E /* MaintenanceReminderCenter.swift */,
 				241F2516253F5004BB467025 /* PickupAlarmCenter.swift */,
 				512D6791792E4032E227341D /* AccountScopedContainer.swift */,
@@ -1774,6 +1793,7 @@
 				2B622C76080980852957735F /* WidgetGoalSnapshot.swift */,
 				A8C2A8577BDC4BDA7AA7022C /* MoneyCents.swift */,
 				2A5BC3A4152C6ADFEB9819D5 /* HomeMotivation.swift */,
+				C5CCF373B74947F4C092AAE4 /* MaintenanceReminderSchedule.swift */,
 				318CE7356EDF251CE6E5B537 /* SmartNotifications.swift */,
 				750F30C12B791B73B6DC0324 /* AddressParser.swift */,
 				72169DFBA3460A7BBBA71BDF /* AmazonRelayParser.swift */,

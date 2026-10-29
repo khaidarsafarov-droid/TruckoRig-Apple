@@ -46,6 +46,9 @@ final class AppState {
     /// Screen a widget deep link asked to open. Cleared when the cover dismisses.
     var pendingPresentation: WidgetPresentation?
 
+    /// True after the driver refuses the alert that a ТО reminder asked for.
+    var maintenanceAlertsDenied = false
+
     /// Active App Store subscription, including the free month. StoreKit is the only source.
     var premiumIsActive: Bool { premium.isActive }
 
@@ -91,6 +94,7 @@ final class AppState {
     }
 
     func bootstrap() {
+        installNotificationHandling()
         ensureProfileExists()
         hydrateImportedLoadFields()
         reloadJournal()
@@ -128,6 +132,68 @@ final class AppState {
         }
         catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
+    }
+
+    /// Drops the "already alerted" stamp when a mileage interval is no longer due.
+    func clearMaintenanceNotified(ids: [String], now: Date = Date()) {
+        guard !ids.isEmpty else { return }
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
+        for id in ids {
+            guard var task = catalog.maintenance.first(where: { $0.id == id }) else { continue }
+            task.notifiedAt = nil
+            task.updatedAt = millis
+            try? persistence.database.save(task)
+        }
+        catalog.reload(from: persistence.database)
+    }
+
+    /// Marks the service done and, when it repeats, files the next occurrence.
+    func completeMaintenance(_ task: MaintenanceTask, now: Date = Date()) {
+        let next = MaintenanceReminderSchedule.nextTask(
+            after: task,
+            now: now,
+            calendar: settings.truckingWeek.calendar
+        )
+        MaintenanceSnoozeStore.clear(task.id)
+        let repository = financeRepository()
+        try? repository.complete(task, now: now)
+        if let next {
+            try? repository.addTask(next)
+        }
+    }
+
+    /// Delivers the same alert again tomorrow. Quiet hours still shift the fire time.
+    func snoozeMaintenance(taskID: String, now: Date = Date()) {
+        guard var task = catalog.maintenance.first(where: { $0.id == taskID }) else { return }
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
+        task.notifiedAt = nil
+        task.updatedAt = millis
+        try? persistence.database.save(task)
+        MaintenanceSnoozeStore.set(now.addingTimeInterval(MaintenanceReminderSchedule.snoozeInterval), for: taskID)
+        reloadJournal()
+    }
+
+    func installNotificationHandling() {
+        premium.observeMaintenanceActions { [weak self] action, taskID in
+            self?.handleMaintenanceNotification(action: action, taskID: taskID)
+        }
+        premium.installNotificationDelegate()
+    }
+
+    func handleMaintenanceNotification(action: String, taskID: String) {
+        if catalog.maintenance.contains(where: { $0.id == taskID }) == false {
+            catalog.reload(from: persistence.database)
+        }
+        guard let task = catalog.maintenance.first(where: { $0.id == taskID }) else { return }
+        if action == MaintenanceAlertPoster.doneAction {
+            completeMaintenance(task)
+            return
+        }
+        if action == MaintenanceAlertPoster.snoozeAction {
+            snoozeMaintenance(taskID: taskID)
+            return
+        }
+        markMaintenanceNotified(ids: [taskID])
     }
 
     @ObservationIgnored private var reminderTask: Task<Void, Never>?
