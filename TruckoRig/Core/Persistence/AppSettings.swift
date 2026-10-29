@@ -58,6 +58,7 @@ final class AppSettings {
         ).explicit
         mirrorThemeToWidget(reloadWidget: false)
         publishResolvedMeasurementSystem(reloadWidget: false)
+        AppLocale.apply(language)
     }
 
     // MARK: - Values
@@ -75,6 +76,7 @@ final class AppSettings {
     var language: AppLanguage {
         didSet {
             write(.language, language.rawValue)
+            AppLocale.apply(language)
             publishResolvedMeasurementSystem(reloadWidget: true)
         }
     }

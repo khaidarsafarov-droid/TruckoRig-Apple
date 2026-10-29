@@ -20,6 +20,8 @@
 		2C8F4A909B371B552C70F9F1 /* ICloudMediaLibrary.swift */ = {isa = PBXBuildFile; fileRef = 9E1571569165555A420D2106 /* ICloudMediaLibrary.swift */; };
 		3FA5650B7CF9CE6A23F7CBCC /* ICloudMediaSync.swift */ = {isa = PBXBuildFile; fileRef = 26501D41D9586AA99D083417 /* ICloudMediaSync.swift */; };
 		134A7E1A5A97B69C57CB1D06 /* LoadDocumentText.swift */ = {isa = PBXBuildFile; fileRef = E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */; };
+		0DBAAC2A642A1D5AC7EA84C6 /* AppLanguage.swift */ = {isa = PBXBuildFile; fileRef = 9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */; };
+		AB5896F4057BA37FEE44208D /* AppLocale.swift */ = {isa = PBXBuildFile; fileRef = 203C0259857B749C5803EE78 /* AppLocale.swift */; };
 		C78C50B770CA1364F83346A7 /* PhotoGeotag.swift */ = {isa = PBXBuildFile; fileRef = BA43F40BD4128397C998180D /* PhotoGeotag.swift */; };
 		AEEC91520189FE6F0DD49FEA /* PhotoImageWriter.swift */ = {isa = PBXBuildFile; fileRef = 50F6DD627F0878086019F5D8 /* PhotoImageWriter.swift */; };
 		6775E55DDA8AA0C55EA89B78 /* ScanPDFWriter.swift */ = {isa = PBXBuildFile; fileRef = 5F1B83CDEAB0E4DC52F1C802 /* ScanPDFWriter.swift */; };
@@ -239,6 +241,8 @@
 		970EEA12307F65AF6AD121FF /* ThemePalette.swift */ = {isa = PBXBuildFile; fileRef = 6FFFC95AA58C3210DBBA4FFB /* ThemePalette.swift */; };
 		FCC2DC6ECDE27BF5317B50A1 /* PaceStatusPresentation.swift */ = {isa = PBXBuildFile; fileRef = 39A32B96B4DB8F339496A559 /* PaceStatusPresentation.swift */; };
 		1055F1E229C6F4E59AC89121 /* StringUtils.swift */ = {isa = PBXBuildFile; fileRef = C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */; };
+		0983EDBBBE69B967C60E805C /* AppLanguage.swift */ = {isa = PBXBuildFile; fileRef = 9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */; };
+		6BF207316B61EC74887D1BBF /* AppLocale.swift */ = {isa = PBXBuildFile; fileRef = 203C0259857B749C5803EE78 /* AppLocale.swift */; };
 		598FE9C7AB2A3D99CAC606D3 /* WidgetDeepLink.swift */ = {isa = PBXBuildFile; fileRef = 3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */; };
 		F1F19CEEDC02C02E3D379573 /* RPMBand.swift */ = {isa = PBXBuildFile; fileRef = 889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */; };
 		B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
@@ -326,6 +330,8 @@
 		9E1571569165555A420D2106 /* ICloudMediaLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaLibrary.swift"; sourceTree = "<group>"; };
 		26501D41D9586AA99D083417 /* ICloudMediaSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaSync.swift"; sourceTree = "<group>"; };
 		E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDocumentText.swift"; sourceTree = "<group>"; };
+		9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLanguage.swift"; sourceTree = "<group>"; };
+		203C0259857B749C5803EE78 /* AppLocale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLocale.swift"; sourceTree = "<group>"; };
 		BA43F40BD4128397C998180D /* PhotoGeotag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoGeotag.swift"; sourceTree = "<group>"; };
 		50F6DD627F0878086019F5D8 /* PhotoImageWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoImageWriter.swift"; sourceTree = "<group>"; };
 		5F1B83CDEAB0E4DC52F1C802 /* ScanPDFWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScanPDFWriter.swift"; sourceTree = "<group>"; };
@@ -665,6 +671,7 @@
 			children = (
 				711DCD7B1C389CA57D3C1A1F /* Backup */,
 				06A2C546F804DD14AA685E72 /* Documents */,
+				CE8BEEE2EF490FF44D3F4018 /* Localization */,
 				7B46438A6EE8560A29A047FC /* Media */,
 				FEFCE8C6556E50EF09698C6E /* Models */,
 				6A663B7AF52D5502F21E175A /* Motivation */,
@@ -698,6 +705,15 @@
 				E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */,
 			);
 			path = "Documents";
+			sourceTree = "<group>";
+		};
+		CE8BEEE2EF490FF44D3F4018 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */,
+				203C0259857B749C5803EE78 /* AppLocale.swift */,
+			);
+			path = "Localization";
 			sourceTree = "<group>";
 		};
 		7B46438A6EE8560A29A047FC /* Media */ = {
@@ -1635,6 +1651,8 @@
 				2C8F4A909B371B552C70F9F1 /* ICloudMediaLibrary.swift */,
 				3FA5650B7CF9CE6A23F7CBCC /* ICloudMediaSync.swift */,
 				134A7E1A5A97B69C57CB1D06 /* LoadDocumentText.swift */,
+				0DBAAC2A642A1D5AC7EA84C6 /* AppLanguage.swift */,
+				AB5896F4057BA37FEE44208D /* AppLocale.swift */,
 				C78C50B770CA1364F83346A7 /* PhotoGeotag.swift */,
 				AEEC91520189FE6F0DD49FEA /* PhotoImageWriter.swift */,
 				6775E55DDA8AA0C55EA89B78 /* ScanPDFWriter.swift */,
@@ -1849,6 +1867,8 @@
 				970EEA12307F65AF6AD121FF /* ThemePalette.swift */,
 				FCC2DC6ECDE27BF5317B50A1 /* PaceStatusPresentation.swift */,
 				1055F1E229C6F4E59AC89121 /* StringUtils.swift */,
+				0983EDBBBE69B967C60E805C /* AppLanguage.swift */,
+				6BF207316B61EC74887D1BBF /* AppLocale.swift */,
 				598FE9C7AB2A3D99CAC606D3 /* WidgetDeepLink.swift */,
 				F1F19CEEDC02C02E3D379573 /* RPMBand.swift */,
 				B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */,

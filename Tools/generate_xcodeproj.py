@@ -55,6 +55,8 @@ WIDGET_SHARED_SOURCES = [
     "TruckoRig/Core/Theme/ThemePalette.swift",
     "TruckoRig/Core/Theme/PaceStatusPresentation.swift",
     "TruckoRig/Core/Utils/StringUtils.swift",
+    "TruckoRig/Core/Localization/AppLanguage.swift",
+    "TruckoRig/Core/Localization/AppLocale.swift",
     "TruckoRig/Domain/DeepLink/WidgetDeepLink.swift",
     "TruckoRig/Domain/Models/RPMBand.swift",
     "TruckoRig/Domain/Models/WeeklyGoalProgress.swift",

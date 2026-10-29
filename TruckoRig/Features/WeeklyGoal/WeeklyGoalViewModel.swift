@@ -38,7 +38,7 @@ final class WeeklyGoalViewModel {
         loads: [Load],
         target: Double,
         calendar: TruckingWeek,
-        locale: Locale = .current,
+        locale: Locale = AppLocale.locale,
         now: Date = Date()
     ) -> WeeklyGoalProgress {
         let week = week(in: calendar, now: now)

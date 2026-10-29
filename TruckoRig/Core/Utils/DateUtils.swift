@@ -23,27 +23,27 @@ enum DateUtils {
         }
     }
 
-    static func string(_ date: Date, template: String, locale: Locale = .current) -> String {
+    static func string(_ date: Date, template: String, locale: Locale = AppLocale.locale) -> String {
         cache.formatter(template: template, locale: locale).string(from: date)
     }
 
     /// `Aug 6` — journal rows and week headers.
-    static func shortDay(_ date: Date, locale: Locale = .current) -> String {
+    static func shortDay(_ date: Date, locale: Locale = AppLocale.locale) -> String {
         string(date, template: "MMMd", locale: locale)
     }
 
     /// `Wed, Aug 6` — load detail.
-    static func weekdayShortDay(_ date: Date, locale: Locale = .current) -> String {
+    static func weekdayShortDay(_ date: Date, locale: Locale = AppLocale.locale) -> String {
         string(date, template: "EEEMMMd", locale: locale)
     }
 
     /// `Aug 6, 2025`.
-    static func mediumDate(_ date: Date, locale: Locale = .current) -> String {
+    static func mediumDate(_ date: Date, locale: Locale = AppLocale.locale) -> String {
         string(date, template: "MMMdyyyy", locale: locale)
     }
 
     /// `Aug 6, 08:00`.
-    static func dateTime(_ date: Date, locale: Locale = .current) -> String {
+    static func dateTime(_ date: Date, locale: Locale = AppLocale.locale) -> String {
         string(date, template: "MMMdjm", locale: locale)
     }
 

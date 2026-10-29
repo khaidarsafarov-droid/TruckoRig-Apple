@@ -39,6 +39,12 @@
             "value": "Cancel"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -60,6 +66,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Clear"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Borrar"
           }
         },
         "ru": {
@@ -85,6 +97,12 @@
             "value": "Delete"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -106,6 +124,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Done"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
           }
         },
         "ru": {
@@ -131,6 +155,12 @@
             "value": "Edit"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -154,6 +184,12 @@
             "value": "More"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -172,6 +208,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "OK"
@@ -200,6 +242,12 @@
             "value": "Save"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -221,6 +269,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "See all"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver todo"
           }
         },
         "ru": {
@@ -594,6 +648,12 @@
             "value": "TruckoRig"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -615,6 +675,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Driver"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conductor"
           }
         },
         "ru": {
@@ -640,6 +706,12 @@
             "value": "Take a photo"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hacer una foto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -661,6 +733,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add fill-up"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir repostaje"
           }
         },
         "ru": {
@@ -686,6 +764,12 @@
             "value": "Amounts"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importes"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -707,6 +791,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Date"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha"
           }
         },
         "ru": {
@@ -732,6 +822,12 @@
             "value": "Edit fill-up"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar repostaje"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -753,6 +849,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Track fuel to see cost per gallon and miles per gallon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra el combustible para ver el coste por galón y las millas por galón."
           }
         },
         "ru": {
@@ -778,6 +880,12 @@
             "value": "No fill-ups yet"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay repostajes"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -799,6 +907,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gallons"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Galones"
           }
         },
         "ru": {
@@ -824,6 +938,12 @@
             "value": "Truck stop"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parada de camiones"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -845,6 +965,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fuel economy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consumo"
           }
         },
         "ru": {
@@ -870,6 +996,12 @@
             "value": "Add odometer readings to two or more fill-ups to see fuel economy."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade el odómetro en dos o más repostajes para ver el consumo."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -891,6 +1023,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odometer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odómetro"
           }
         },
         "ru": {
@@ -916,6 +1054,12 @@
             "value": "Price per gallon"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precio por galón"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -937,6 +1081,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Calculated"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calculado"
           }
         },
         "ru": {
@@ -962,6 +1112,12 @@
             "value": "Total cost"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coste total"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -983,6 +1139,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gallons"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Galones"
           }
         },
         "ru": {
@@ -1008,6 +1170,12 @@
             "value": "Fill-up"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repostaje"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1031,6 +1199,12 @@
             "value": "Where and when"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dónde y cuándo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1052,6 +1226,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld days"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días"
           }
         },
         "ru": {
@@ -1089,6 +1269,12 @@
             "value": "Something went wrong"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algo salió mal"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1107,6 +1293,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ gal"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ gal"
@@ -1135,6 +1327,12 @@
             "value": "%@ mi"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ mi"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1153,6 +1351,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ mpg"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ mpg"
@@ -1181,6 +1385,12 @@
             "value": "%@/day"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/día"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1199,6 +1409,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "$%@/mi"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "$%@/mi"
@@ -1227,6 +1443,12 @@
             "value": "Photos and scans you capture appear here."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las fotos y los escaneos que captures aparecen aquí."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1248,6 +1470,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nothing here yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada por aquí"
           }
         },
         "ru": {
@@ -1273,6 +1501,12 @@
             "value": "Photos"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotos"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1294,6 +1528,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scans"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escaneos"
           }
         },
         "ru": {
@@ -1319,6 +1559,12 @@
             "value": "Section"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sección"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1340,6 +1586,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Goal progress %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progreso de la meta %@"
           }
         },
         "ru": {
@@ -1365,6 +1617,12 @@
             "value": "Actual per day"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Real por día"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1386,6 +1644,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Back to this week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a esta semana"
           }
         },
         "ru": {
@@ -1411,6 +1675,12 @@
             "value": "complete"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "completo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1432,6 +1702,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Needed per day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por día"
           }
         },
         "ru": {
@@ -1457,6 +1733,12 @@
             "value": "Days left"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días restantes"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1478,6 +1760,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Set goal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fijar meta"
           }
         },
         "ru": {
@@ -1503,6 +1791,12 @@
             "value": "Even pace by now"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritmo uniforme hasta ahora"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1524,6 +1818,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semana siguiente"
           }
         },
         "ru": {
@@ -1549,6 +1849,12 @@
             "value": "No goal set for this week"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay meta para esta semana"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1570,6 +1876,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "of %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de %@"
           }
         },
         "ru": {
@@ -1595,6 +1907,12 @@
             "value": "Pace"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritmo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1616,6 +1934,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Needed per day spreads the gap over the days left. Actual per day divides gross by days actually in transit."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo necesario por día reparte la diferencia entre los días que quedan. Lo real por día divide el bruto entre los días en ruta."
           }
         },
         "ru": {
@@ -1641,6 +1965,12 @@
             "value": "Previous week"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semana anterior"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1662,6 +1992,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Remaining"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restante"
           }
         },
         "ru": {
@@ -1687,6 +2023,12 @@
             "value": "Ahead of pace"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por delante del ritmo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1708,6 +2050,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Behind pace"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por detrás del ritmo"
           }
         },
         "ru": {
@@ -1733,6 +2081,12 @@
             "value": "Goal met"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta cumplida"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1754,6 +2108,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "On track"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al ritmo"
           }
         },
         "ru": {
@@ -1779,6 +2139,12 @@
             "value": "Weekly gross goal"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta de bruto semanal"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1802,6 +2168,12 @@
             "value": "Gross before expenses. Leave at zero to hide the goal ring."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bruto antes de gastos. Déjalo en cero para ocultar el anillo de la meta."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -1823,6 +2195,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta semana"
           }
         },
         "ru": {
@@ -2312,6 +2690,12 @@
             "value": "Add load"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar carga"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2333,6 +2717,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Delete this load?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar este viaje?"
           }
         },
         "ru": {
@@ -2358,6 +2748,12 @@
             "value": "Paste a trip from Amazon Relay or add one by hand to start your journal."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pega un viaje de Amazon Relay o añádelo a mano para empezar el diario."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2379,6 +2775,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No loads yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay cargas"
           }
         },
         "ru": {
@@ -2404,6 +2806,12 @@
             "value": "Filter"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtro"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2425,6 +2833,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "All loads"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas las cargas"
           }
         },
         "ru": {
@@ -2450,6 +2864,12 @@
             "value": "Open disputes"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disputas abiertas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2471,6 +2891,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not delivered"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin entregar"
           }
         },
         "ru": {
@@ -2496,6 +2922,12 @@
             "value": "Try a different trip ID, city or filter."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prueba con otro ID de viaje, ciudad o filtro."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2517,6 +2949,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nothing matches"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada coincide"
           }
         },
         "ru": {
@@ -2542,6 +2980,12 @@
             "value": "Trip ID, city or state"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID de viaje, ciudad o estado"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2563,6 +3007,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld loads · %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld viajes · %@"
           }
         },
         "ru": {
@@ -2803,6 +3253,12 @@
             "value": "Date"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2824,6 +3280,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Load details"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detalles del viaje"
           }
         },
         "ru": {
@@ -2849,6 +3311,12 @@
             "value": "Dispute"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reclamo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2870,6 +3338,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Claimed amount"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importe reclamado"
           }
         },
         "ru": {
@@ -2895,6 +3369,12 @@
             "value": "Dispute resolved"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disputa resuelta"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2916,6 +3396,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dispute open"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disputa abierta"
           }
         },
         "ru": {
@@ -2941,6 +3427,12 @@
             "value": "Response due"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respuesta prevista"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -2962,6 +3454,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ is already saved. Open it from the journal to edit it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ya está guardado. Ábrelo desde el diario para editarlo."
           }
         },
         "ru": {
@@ -2987,6 +3485,12 @@
             "value": "Trip already in the journal"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El viaje ya está en el diario"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3008,6 +3512,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Edit load"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar carga"
           }
         },
         "ru": {
@@ -3033,6 +3543,12 @@
             "value": "Trip %@ already exists in the journal"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El viaje %@ ya existe en el diario"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3054,6 +3570,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Finish cannot be before the first pickup"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La llegada no puede ser anterior a la primera recogida"
           }
         },
         "ru": {
@@ -3079,6 +3601,12 @@
             "value": "Miles cannot be negative"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las millas no pueden ser negativas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3100,6 +3628,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Total rate must be greater than zero"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tarifa total debe ser mayor que cero"
           }
         },
         "ru": {
@@ -3125,6 +3659,12 @@
             "value": "Enter a trip ID"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introduce un ID de viaje"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3146,6 +3686,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Finish"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fin"
           }
         },
         "ru": {
@@ -3171,6 +3717,12 @@
             "value": "Finished at"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminado a las"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3192,6 +3744,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Use this when you finished earlier or later than the last delivery appointment. It drives the daily pace."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úsalo cuando terminaste antes o después de la cita de la última entrega. Marca el ritmo diario."
           }
         },
         "ru": {
@@ -3217,6 +3775,12 @@
             "value": "Set finish manually"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fijar el fin manualmente"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3238,6 +3802,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Photos and scans"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotos y escaneos"
           }
         },
         "ru": {
@@ -3263,6 +3833,12 @@
             "value": "%lld photos · %lld scans"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld fotos · %lld escaneos"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3284,6 +3860,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nothing attached to this load yet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía no hay nada adjunto a este viaje."
           }
         },
         "ru": {
@@ -3309,6 +3891,12 @@
             "value": "Net after penalties"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neto tras penalizaciones"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3330,6 +3918,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Penalties"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Penalizaciones"
           }
         },
         "ru": {
@@ -3355,6 +3949,12 @@
             "value": "Add penalty"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir penalización"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3376,6 +3976,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Original message"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensaje original"
           }
         },
         "ru": {
@@ -3488,6 +4094,12 @@
             "value": "Stops"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paradas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3509,6 +4121,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Loaded miles"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Millas cargadas"
           }
         },
         "ru": {
@@ -3534,6 +4152,12 @@
             "value": "Total rate"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarifa total"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3552,6 +4176,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trip ID"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Trip ID"
@@ -3580,6 +4210,12 @@
             "value": "Could not open the media folder"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo abrir la carpeta de medios"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3601,6 +4237,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Could not save the image"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo guardar la imagen"
           }
         },
         "ru": {
@@ -3626,6 +4268,12 @@
             "value": "Add paycheck"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar pago"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3647,6 +4295,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Amount"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monto"
           }
         },
         "ru": {
@@ -3672,6 +4326,12 @@
             "value": "Company"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empresa"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3693,6 +4353,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Payments"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagos"
           }
         },
         "ru": {
@@ -3718,6 +4384,12 @@
             "value": "Date"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3739,6 +4411,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Edit paycheck"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar pago"
           }
         },
         "ru": {
@@ -3764,6 +4442,12 @@
             "value": "Record settlements to compare them against your gross."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra las liquidaciones para compararlas con tu bruto."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3785,6 +4469,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No paychecks yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay pagos"
           }
         },
         "ru": {
@@ -3810,6 +4500,12 @@
             "value": "Notes"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3831,6 +4527,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Total received"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total recibido"
           }
         },
         "ru": {
@@ -3856,6 +4558,12 @@
             "value": "Settlement"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liquidación"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3877,6 +4585,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Amount"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monto"
           }
         },
         "ru": {
@@ -3902,6 +4616,12 @@
             "value": "Date"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -3923,6 +4643,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "What happened"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué pasó"
           }
         },
         "ru": {
@@ -5282,6 +6008,12 @@
             "value": "Driver"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conductor"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5303,6 +6035,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Edit profile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar perfil"
           }
         },
         "ru": {
@@ -5328,6 +6066,12 @@
             "value": "Home state"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado de residencia"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5349,6 +6093,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Plate"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matrícula"
           }
         },
         "ru": {
@@ -5374,6 +6124,12 @@
             "value": "Local mode — data stays on this phone"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modo local: los datos se quedan en este teléfono"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5395,6 +6151,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Records"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registros"
           }
         },
         "ru": {
@@ -5420,6 +6182,12 @@
             "value": "Truck"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camión"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5441,6 +6209,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Model"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modelo"
           }
         },
         "ru": {
@@ -5466,6 +6240,12 @@
             "value": "Year"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Año"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5487,6 +6267,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No pickup or delivery address found"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontró dirección de recogida o entrega"
           }
         },
         "ru": {
@@ -5512,6 +6298,12 @@
             "value": "No Total Rate found"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontró Total Rate"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5533,6 +6325,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No Trip ID found"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontró Trip ID"
           }
         },
         "ru": {
@@ -5558,6 +6356,12 @@
             "value": "This text does not look like a load message"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este texto no parece un mensaje de viaje"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5579,6 +6383,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Parsed %lld trips — the rest are imported on save"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se reconocieron %lld viajes; el resto se importa al guardar"
           }
         },
         "ru": {
@@ -5616,6 +6426,12 @@
             "value": "Parsed %@"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reconocido %@"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5637,6 +6453,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy the trip message from Amazon Relay and paste it here. Trip ID, rate, miles and stops are filled in for you."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia el mensaje del viaje desde Amazon Relay y pégalo aquí. El ID, la tarifa, las millas y las paradas se rellenan solos."
           }
         },
         "ru": {
@@ -5662,6 +6484,12 @@
             "value": "Parse"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analizar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5683,6 +6511,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Paste from Relay"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pegar desde Relay"
           }
         },
         "ru": {
@@ -5708,6 +6542,12 @@
             "value": "Scan a BOL or rate confirmation. Text is recognised on the device."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanea un BOL o una confirmación de tarifa. El texto se reconoce en el dispositivo."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5729,6 +6569,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open scanner"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir escáner"
           }
         },
         "ru": {
@@ -5754,6 +6600,12 @@
             "value": "Reading the document…"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leyendo el documento…"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5777,6 +6629,12 @@
             "value": "Recognised text"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Texto reconocido"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5798,6 +6656,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scan a document"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanear un documento"
           }
         },
         "ru": {
@@ -5852,6 +6716,12 @@
             "value": "Camera"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cámara"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5873,6 +6743,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diesel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diésel"
           }
         },
         "ru": {
@@ -5898,6 +6774,12 @@
             "value": "Gallery"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Galería"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5919,6 +6801,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Maintenance"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantenimiento"
           }
         },
         "ru": {
@@ -5944,6 +6832,12 @@
             "value": "Map"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -5965,6 +6859,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Paychecks"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagos"
           }
         },
         "ru": {
@@ -5990,6 +6890,12 @@
             "value": "Scanner"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escáner"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6011,6 +6917,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Settings"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes"
           }
         },
         "ru": {
@@ -6239,6 +7151,12 @@
             "value": "About"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acerca de"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6260,6 +7178,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Database"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Base de datos"
           }
         },
         "ru": {
@@ -6285,6 +7209,12 @@
             "value": "DM Sans is not bundled — using the system font."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DM Sans no está incluido: se usa la fuente del sistema."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6306,6 +7236,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Storage problem: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Problema de almacenamiento: %@"
           }
         },
         "ru": {
@@ -6331,6 +7267,12 @@
             "value": "Version"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versión"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6352,6 +7294,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Backup"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respaldo"
           }
         },
         "ru": {
@@ -6377,6 +7325,12 @@
             "value": "Restore finished"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restauración terminada"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6398,6 +7352,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Create backup file"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear archivo de respaldo"
           }
         },
         "ru": {
@@ -6423,6 +7383,12 @@
             "value": "The JSON file is a full copy of loads, paychecks, and diesel."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo JSON es una copia completa de viajes, nóminas y diésel."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6444,6 +7410,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Restore from file"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar desde archivo"
           }
         },
         "ru": {
@@ -6469,6 +7441,12 @@
             "value": ".json / .tlb file from Downloads/TruckoRig (legacy Loads_….txt still works if it contains JSON)"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivo .json / .tlb de Downloads/TruckoRig (el Loads_….txt antiguo sigue funcionando si contiene JSON)"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6490,6 +7468,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Restore from file?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Restaurar desde archivo?"
           }
         },
         "ru": {
@@ -6515,6 +7499,12 @@
             "value": "Your current journal (loads, paychecks, diesel) will be replaced by the file. Photos and scans linked to removed loads will be deleted; other media on this device will be kept."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu diario actual (cargas, pagos, diésel) se reemplazará por el archivo. Se eliminarán fotos y escaneos vinculados a cargas quitadas; el resto de multimedia en este dispositivo se conservará."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6538,6 +7528,12 @@
             "value": "Restore"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6559,6 +7555,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Backup: %lld loads → %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respaldo: %lld cargas → %@"
           }
         },
         "ru": {
@@ -6596,6 +7598,12 @@
             "value": "Restored: %lld loads, %lld paychecks, %lld diesel entries"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurado: %lld cargas, %lld pagos, %lld registros de diésel"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6617,6 +7625,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Could not create backup file"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo crear el archivo de respaldo"
           }
         },
         "ru": {
@@ -6642,6 +7656,12 @@
             "value": "Could not read file"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo leer el archivo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6663,6 +7683,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Invalid file format"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formato de archivo no válido"
           }
         },
         "ru": {
@@ -6688,6 +7714,12 @@
             "value": "The file is corrupted"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo está dañado"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6709,6 +7741,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This is a load chart note, not a backup file. Create a new backup in Settings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esto es una nota de gráfico de cargas, no un archivo de respaldo. Crea un respaldo nuevo en Ajustes."
           }
         },
         "ru": {
@@ -6734,6 +7772,12 @@
             "value": "This file was created by a newer app version. Please update TruckoRig."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este archivo lo creó una versión más nueva de la app. Actualiza TruckoRig."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6755,6 +7799,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This backup belongs to another account and will not be restored."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este respaldo pertenece a otra cuenta y no se restaurará."
           }
         },
         "ru": {
@@ -6780,6 +7830,12 @@
             "value": "This backup is not tied to an account. Restoring it replaces the journal on this device."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta copia no está vinculada a una cuenta. Restaurarla reemplaza el diario de este dispositivo."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6801,6 +7857,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Replace journal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reemplazar diario"
           }
         },
         "ru": {
@@ -6826,6 +7888,12 @@
             "value": "This backup is too large to restore on the device."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo es demasiado grande para restaurarlo en el dispositivo."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -6847,6 +7915,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This phone’s journal is newer than this file. Restore will overwrite local data."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El diario de este teléfono es más reciente que este archivo. Restaurar sobrescribirá los datos locales."
           }
         },
         "ru": {
@@ -7945,6 +9019,12 @@
             "value": "General"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -7968,6 +9048,12 @@
             "value": "Language"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idioma"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -7989,6 +9075,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "System"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sistema"
           }
         },
         "ru": {
@@ -8072,6 +9164,12 @@
             "value": "Rate per mile"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarifa por milla"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8093,6 +9191,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thresholds cannot be negative"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los umbrales no pueden ser negativos"
           }
         },
         "ru": {
@@ -8118,6 +9222,12 @@
             "value": "Minimum must be below the target"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mínimo debe ser menor que el objetivo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8139,6 +9249,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Minimum acceptable"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mínimo aceptable"
           }
         },
         "ru": {
@@ -8164,6 +9280,12 @@
             "value": "Target"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objetivo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8185,6 +9307,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Week starts on"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La semana empieza el"
           }
         },
         "ru": {
@@ -8210,6 +9338,12 @@
             "value": "Sunday matches Amazon Relay settlement weeks. Changing this refiles every load."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El domingo coincide con las semanas de liquidación de Amazon Relay. Cambiarlo reubica todos los viajes."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8231,6 +9365,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Days in transit"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días en ruta"
           }
         },
         "ru": {
@@ -8256,6 +9396,12 @@
             "value": "Duration"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duración"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8277,6 +9423,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gross"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bruto"
           }
         },
         "ru": {
@@ -8302,6 +9454,12 @@
             "value": "Loads"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8323,6 +9481,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Miles"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Millas"
           }
         },
         "ru": {
@@ -8348,6 +9512,12 @@
             "value": "Pace"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritmo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8366,6 +9536,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RPM"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "RPM"
@@ -8394,6 +9570,12 @@
             "value": "Stops"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paradas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8415,6 +9597,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Saving…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardando…"
           }
         },
         "ru": {
@@ -8440,6 +9628,12 @@
             "value": "Working…"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trabajando…"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8461,6 +9655,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add delivery"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir entrega"
           }
         },
         "ru": {
@@ -8486,6 +9686,12 @@
             "value": "Add pickup"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir recogida"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8507,6 +9713,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "City"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ciudad"
           }
         },
         "ru": {
@@ -8532,6 +9744,12 @@
             "value": "Facility"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalación"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8553,6 +9771,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Has appointment time"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiene hora de cita"
           }
         },
         "ru": {
@@ -8578,6 +9802,12 @@
             "value": "Location"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ubicación"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8599,6 +9829,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Note"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nota"
           }
         },
         "ru": {
@@ -8624,6 +9860,12 @@
             "value": "Notes"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8645,6 +9887,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Schedule"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horario"
           }
         },
         "ru": {
@@ -8670,6 +9918,12 @@
             "value": "Appointment"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cita"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8691,6 +9945,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "State"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado"
           }
         },
         "ru": {
@@ -8716,6 +9976,12 @@
             "value": "Type"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tipo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8737,6 +10003,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Delivery"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrega"
           }
         },
         "ru": {
@@ -8762,6 +10034,12 @@
             "value": "Pickup"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recogida"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8785,6 +10063,12 @@
             "value": "No address"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin dirección"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8803,6 +10087,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZIP"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "ZIP"
@@ -8831,6 +10121,12 @@
             "value": "Goal"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8854,6 +10150,12 @@
             "value": "Journal"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diario"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -8875,6 +10177,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Profile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perfil"
           }
         },
         "ru": {
@@ -9161,6 +10469,12 @@
             "value": "Add more"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar más"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9179,6 +10493,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld"
@@ -9207,6 +10527,12 @@
             "value": "The camera is still saving the previous photo."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La cámara aún está guardando la foto anterior."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9228,6 +10554,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Could not take the photo."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo hacer la foto."
           }
         },
         "ru": {
@@ -9253,6 +10585,12 @@
             "value": "Could not read the photo."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo leer la foto."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9274,6 +10612,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Delete photos"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar fotos"
           }
         },
         "ru": {
@@ -9299,6 +10643,12 @@
             "value": "Photos already attached to this load will be deleted."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se eliminarán las fotos ya adjuntas a este viaje."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9320,6 +10670,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Discard these photos?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Descartar estas fotos?"
           }
         },
         "ru": {
@@ -9345,6 +10701,12 @@
             "value": "Done (%lld)"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo (%lld)"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9366,6 +10728,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Flash automatic"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash automático"
           }
         },
         "ru": {
@@ -9391,6 +10759,12 @@
             "value": "Flash off"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash apagado"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9412,6 +10786,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Flash on"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash encendido"
           }
         },
         "ru": {
@@ -9437,6 +10817,12 @@
             "value": "Continuing without a location."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continúa sin ubicación."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9458,6 +10844,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Photo library"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fototeca"
           }
         },
         "ru": {
@@ -9483,6 +10875,12 @@
             "value": "Saving the photo…"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardando la foto…"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9504,6 +10902,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Save all"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar todas"
           }
         },
         "ru": {
@@ -9529,6 +10933,12 @@
             "value": "Could not save the photo."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo guardar la foto."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9550,6 +10960,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Share"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartir"
           }
         },
         "ru": {
@@ -9575,6 +10991,12 @@
             "value": "Camera unavailable"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cámara no disponible"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9596,6 +11018,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This device has no camera. Choose a photo from the library. The watermark, location and file name stay the same."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este dispositivo no tiene cámara. Elige una foto de la fototeca. La marca de agua, la ubicación y el nombre del archivo no cambian."
           }
         },
         "ru": {
@@ -9621,6 +11049,12 @@
             "value": "The photo file is missing."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falta el archivo de la foto."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9642,6 +11076,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "All"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas"
           }
         },
         "ru": {
@@ -9667,6 +11107,12 @@
             "value": "Any load"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cualquier viaje"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9688,6 +11134,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "By load"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por carga"
           }
         },
         "ru": {
@@ -9713,6 +11165,12 @@
             "value": "Today"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9734,6 +11192,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta semana"
           }
         },
         "ru": {
@@ -9759,6 +11223,12 @@
             "value": "Link to a load"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vincular a un viaje"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9780,6 +11250,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not linked"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin vincular"
           }
         },
         "ru": {
@@ -9805,6 +11281,12 @@
             "value": "Scan another"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanear otro"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9826,6 +11308,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scan cancelled."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escaneo cancelado."
           }
         },
         "ru": {
@@ -9851,6 +11339,12 @@
             "value": "Folder"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carpeta"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9872,6 +11366,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diesel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diésel"
           }
         },
         "ru": {
@@ -9897,6 +11397,12 @@
             "value": "Load"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carga"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9918,6 +11424,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Other"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otro"
           }
         },
         "ru": {
@@ -9943,6 +11455,12 @@
             "value": "Paycheck"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pago"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -9964,6 +11482,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Truck"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camión"
           }
         },
         "ru": {
@@ -9989,6 +11513,12 @@
             "value": "Could not save the scan."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo guardar el escaneo."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10010,6 +11540,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Could not add this scan. The ones already taken are still here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo añadir este escaneo. Los que ya tomaste siguen aquí."
           }
         },
         "ru": {
@@ -10035,6 +11571,12 @@
             "value": "Hide text"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar texto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10056,6 +11598,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "English text"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Texto en inglés"
           }
         },
         "ru": {
@@ -10081,6 +11629,12 @@
             "value": "Mixed text"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Texto mixto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10102,6 +11656,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Russian text"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Texto en ruso"
           }
         },
         "ru": {
@@ -10127,6 +11687,12 @@
             "value": "No text found."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontró texto."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10148,6 +11714,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld pages"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld páginas"
           }
         },
         "ru": {
@@ -10185,6 +11757,12 @@
             "value": "Scan results"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resultados del escaneo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10206,6 +11784,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Save in TruckoRig"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar en TruckoRig"
           }
         },
         "ru": {
@@ -10231,6 +11815,12 @@
             "value": "Save to Files"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar en Archivos"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10252,6 +11842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scan saved."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escaneo guardado."
           }
         },
         "ru": {
@@ -10277,6 +11873,12 @@
             "value": "Share it if you need to, then save it on the load."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compártelo si lo necesitas y luego guárdalo en el viaje."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10298,6 +11900,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld scans in this session"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld escaneos en esta sesión"
           }
         },
         "ru": {
@@ -10335,6 +11943,12 @@
             "value": "Share"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartir"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10358,6 +11972,12 @@
             "value": "Show text"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar texto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10376,6 +11996,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "%@"
@@ -10404,6 +12030,12 @@
             "value": "Scanner unavailable"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escáner no disponible"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10425,6 +12057,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Document scanning is not available here. Pick pages from the photo library instead."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El escaneo de documentos no está disponible aquí. Elige páginas de la fototeca."
           }
         },
         "ru": {
@@ -10450,6 +12088,12 @@
             "value": "Choose a load"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige un viaje"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10471,6 +12115,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "All loads"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas las cargas"
           }
         },
         "ru": {
@@ -10496,6 +12146,12 @@
             "value": "Search"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10517,6 +12173,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nothing matches."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada coincide."
           }
         },
         "ru": {
@@ -10542,6 +12204,12 @@
             "value": "Browse all loads"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver todos los viajes"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10563,6 +12231,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No loads yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay cargas"
           }
         },
         "ru": {
@@ -10588,6 +12262,12 @@
             "value": "Add a load, then attach the photo or scan to it."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade un viaje y luego adjunta la foto o el escaneo."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10609,6 +12289,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No loads this week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay cargas esta semana"
           }
         },
         "ru": {
@@ -10634,6 +12320,12 @@
             "value": "Browse the rest of the journal or add a load."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira el resto del diario o añade un viaje."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10655,6 +12347,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Search by trip, city or date."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Busca por viaje, ciudad o fecha."
           }
         },
         "ru": {
@@ -10680,6 +12378,12 @@
             "value": "The photo will be attached to the load you pick."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La foto se adjuntará al viaje que elijas."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10701,6 +12405,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "The scan will be attached to the load you pick."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El escaneo se adjuntará al viaje que elijas."
           }
         },
         "ru": {
@@ -10726,6 +12436,12 @@
             "value": "Reminders"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorios"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10747,6 +12463,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Completed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completados"
           }
         },
         "ru": {
@@ -10772,6 +12494,12 @@
             "value": "Completed services"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servicios completados"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10793,6 +12521,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add jobs by hand (several lines at once) or photograph a receipt — each service is saved with its own price, plus a total."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agrega trabajos a mano (varias líneas a la vez) o fotografía un recibo: cada servicio se guarda con su precio, más un total."
           }
         },
         "ru": {
@@ -10818,6 +12552,12 @@
             "value": "No reminders yet. Tap + to add one (e.g. oil change)."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay recordatorios. Toca + para agregar uno (p. ej. cambio de aceite)."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10839,6 +12579,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No services yet. Tap + to add completed work."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay servicios. Toca + para agregar trabajo completado."
           }
         },
         "ru": {
@@ -10864,6 +12610,12 @@
             "value": "Reminder"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorio"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10885,6 +12637,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Completed service"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servicio completado"
           }
         },
         "ru": {
@@ -10910,6 +12668,12 @@
             "value": "Review receipt"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revisar recibo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10931,6 +12695,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add jobs and prices. You can photograph a receipt — each line is recognized separately."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agrega trabajos y precios. Puedes fotografiar un recibo: cada línea se reconoce por separado."
           }
         },
         "ru": {
@@ -10956,6 +12726,12 @@
             "value": "Receipt on file"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recibo en archivo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -10977,6 +12753,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "What to do"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué hacer"
           }
         },
         "ru": {
@@ -11002,6 +12784,12 @@
             "value": "e.g. oil change"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p. ej. cambio de aceite"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11023,6 +12811,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Start date"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha de inicio"
           }
         },
         "ru": {
@@ -11048,6 +12842,12 @@
             "value": "By miles"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por millas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11069,6 +12869,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "By date"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por fecha"
           }
         },
         "ru": {
@@ -11094,6 +12900,12 @@
             "value": "Remind after (miles)"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordar después (millas)"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11115,6 +12927,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Current truck odometer (mi)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odómetro actual del camión (mi)"
           }
         },
         "ru": {
@@ -11140,6 +12958,12 @@
             "value": "Remind by date"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordar para una fecha"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11161,6 +12985,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Service date: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha del servicio: %@"
           }
         },
         "ru": {
@@ -11186,6 +13016,12 @@
             "value": "Urgent"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Urgente"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11207,6 +13043,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Service required now!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Se necesita servicio ahora!"
           }
         },
         "ru": {
@@ -11232,6 +13074,12 @@
             "value": "Driven since service: %@ mi (%lld loads) · %@ mi left"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recorrido desde el servicio: %@ mi (%lld cargas) · quedan %@ mi"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11253,6 +13101,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odometer ≈ %@ / target %@ mi"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odómetro ≈ %@ / meta %@ mi"
           }
         },
         "ru": {
@@ -11278,6 +13132,12 @@
             "value": "Due"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vence"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11301,6 +13161,12 @@
             "value": "Due today"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vence hoy"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11322,6 +13188,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld days left"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quedan %lld días"
           }
         },
         "ru": {
@@ -11359,6 +13231,12 @@
             "value": "%lld days overdue"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días de retraso"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11394,6 +13272,12 @@
             "value": "Done"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11415,6 +13299,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reading receipt…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leyendo recibo…"
           }
         },
         "ru": {
@@ -11440,6 +13330,12 @@
             "value": "Choose another photo"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegir otra foto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11461,6 +13357,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scan receipt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanear recibo"
           }
         },
         "ru": {
@@ -11486,6 +13388,12 @@
             "value": "Use the camera or a gallery photo. Text is recognized with ML Kit."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa la cámara o una foto de la galería. El texto se reconoce con ML Kit."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11507,6 +13415,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Receipt photo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto del recibo"
           }
         },
         "ru": {
@@ -11532,6 +13446,12 @@
             "value": "Shop / company"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taller / compañía"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11550,6 +13470,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Love's, TA Truck Service…"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Love's, TA Truck Service…"
@@ -11578,6 +13504,12 @@
             "value": "When"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuándo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11599,6 +13531,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add line"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar línea"
           }
         },
         "ru": {
@@ -11624,6 +13562,12 @@
             "value": "Service"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servicio"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11647,6 +13591,12 @@
             "value": "Price ($)"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precio ($)"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11665,6 +13615,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total: $%@"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Total: $%@"
@@ -11693,6 +13649,12 @@
             "value": "Scan receipt"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanear recibo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11714,6 +13676,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enter a title"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa un título"
           }
         },
         "ru": {
@@ -11739,6 +13707,12 @@
             "value": "Enter miles interval"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa el intervalo de millas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11760,6 +13734,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enter current truck miles"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa las millas actuales del camión"
           }
         },
         "ru": {
@@ -11785,6 +13765,12 @@
             "value": "Enter reminder date"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa la fecha del recordatorio"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11806,6 +13792,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enter what was done"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa qué se hizo"
           }
         },
         "ru": {
@@ -11831,6 +13823,12 @@
             "value": "Enter amount"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa el monto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11852,6 +13850,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add at least one service and price"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agrega al menos un servicio y un precio"
           }
         },
         "ru": {
@@ -11877,6 +13881,12 @@
             "value": "Save failed"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo guardar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11898,6 +13908,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Camera"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cámara"
           }
         },
         "ru": {
@@ -11923,6 +13939,12 @@
             "value": "Choose from gallery"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegir de la galería"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11946,6 +13968,12 @@
             "value": "Day plan"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan por días"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -11967,6 +13995,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld days left"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quedan %lld d."
           }
         },
         "ru": {
@@ -12004,6 +14038,12 @@
             "value": "Today · %@"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy · %@"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12025,6 +14065,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "actual · %lld%% of plan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "real · %lld%% del plan"
           }
         },
         "ru": {
@@ -12050,6 +14096,12 @@
             "value": "needed"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "necesario"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12071,6 +14123,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Today"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
           }
         },
         "ru": {
@@ -12096,6 +14154,12 @@
             "value": "Day met the plan"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día cumplido"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12117,6 +14181,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Day missed the plan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día por debajo del plan"
           }
         },
         "ru": {
@@ -12142,6 +14212,12 @@
             "value": "Day still ahead"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día por venir"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12163,6 +14239,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pick your goal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige tu meta"
           }
         },
         "ru": {
@@ -12188,6 +14270,12 @@
             "value": "Enter a goal amount"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa un monto de meta"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12209,6 +14297,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Last-week reminders"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorios de la semana pasada"
           }
         },
         "ru": {
@@ -12234,6 +14328,12 @@
             "value": "When a week has no loads"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si la semana no tiene cargas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12255,6 +14355,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Maintenance reminders"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorios de mantenimiento"
           }
         },
         "ru": {
@@ -12280,6 +14386,12 @@
             "value": "Service and replacements"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servicio y recambios"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12301,6 +14413,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quiet hours"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horario silencioso"
           }
         },
         "ru": {
@@ -12326,6 +14444,12 @@
             "value": "Smart reminders stay silent during this window"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los recordatorios inteligentes se quedan en silencio en esta ventana"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12347,6 +14471,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Starts"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza"
           }
         },
         "ru": {
@@ -12372,6 +14502,12 @@
             "value": "Ends"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termina"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12395,6 +14531,12 @@
             "value": "Off"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12413,6 +14555,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ – %@"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ – %@"
@@ -12441,6 +14589,12 @@
             "value": "14. Backup"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "14. Respaldo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12462,6 +14616,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "In Settings create a backup file on the phone and restore it when you change devices."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En Ajustes crea un archivo de copia en el teléfono y restáuralo cuando cambies de dispositivo."
           }
         },
         "ru": {
@@ -12487,6 +14647,12 @@
             "value": "5. Diesel"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5. Diésel"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12508,6 +14674,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Menu → Diesel opens the fill journal. Pick all fills or this week. Each card shows date, location, amount, gallons, price, and discount. Photograph the receipt and gallons and price fill in on the device."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menú → Diésel abre el diario de repostajes. Elige todos o esta semana. Cada tarjeta muestra fecha, lugar, importe, galones, precio y descuento. Fotografía el recibo y los galones y el precio se rellenan en el dispositivo."
           }
         },
         "ru": {
@@ -12533,6 +14705,12 @@
             "value": "3. Dispute"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. Reclamo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12554,6 +14732,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "On the load check Dispute and pick a response date. When it is closed, mark it completed."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el viaje marca Disputa y elige una fecha de respuesta. Cuando se cierre, márcala como completada."
           }
         },
         "ru": {
@@ -12579,6 +14763,12 @@
             "value": "10. Documents, camera, and scanner"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10. Documentos, cámara y escáner"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12600,6 +14790,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Documents is the scan gallery. From a load you can take a photo or scan a document and attach it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Documentos es la galería de escaneos. Desde un viaje puedes hacer una foto o escanear un documento y adjuntarlo."
           }
         },
         "ru": {
@@ -12625,6 +14821,12 @@
             "value": "4. Weekly goal"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4. Meta semanal"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12646,6 +14848,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "In the Goal tab set a weekly gross target. The app tracks progress, what is left, and the daily pace you need."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la pestaña Meta fija un bruto semanal. La app sigue el progreso, lo que falta y el ritmo diario que necesitas."
           }
         },
         "ru": {
@@ -12671,6 +14879,12 @@
             "value": "2. Home journal"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. Diario de inicio"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12692,6 +14906,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "The journal lists trips by week. Search by Trip ID, city, or date. Open a card to edit, mark the finish, or attach photos and scans."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El diario lista los viajes por semana. Busca por Trip ID, ciudad o fecha. Abre una tarjeta para editar, marcar el fin o adjuntar fotos y escaneos."
           }
         },
         "ru": {
@@ -12717,6 +14937,12 @@
             "value": "How to use TruckoRig: loads, disputes, weekly goal, diesel, paychecks, taxes, map, reports, widget, and backups. Everything stays on this phone."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo usar TruckoRig: viajes, disputas, meta semanal, diésel, nóminas, impuestos, mapa, informes, widget y copias. Todo se queda en este teléfono."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12738,6 +14964,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1. Add a load"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Agregar una carga"
           }
         },
         "ru": {
@@ -12763,6 +14995,12 @@
             "value": "Tap Add load and paste a message or fill in the form. You need a rate above zero and a pickup or delivery address."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca Añadir viaje y pega un mensaje o rellena el formulario. Necesitas una tarifa mayor que cero y una dirección de recogida o entrega."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12784,6 +15022,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "11. Maintenance"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "11. Mantenimiento"
           }
         },
         "ru": {
@@ -12809,6 +15053,12 @@
             "value": "Menu → Maintenance: reminders by miles or date, and completed services. Photograph a receipt and the app splits each job and the total."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menú → Mantenimiento: recordatorios por millas o fecha, y servicios completados. Fotografía un recibo y la app separa cada trabajo y el total."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12830,6 +15080,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "9. Map"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "9. Mapa"
           }
         },
         "ru": {
@@ -12855,6 +15111,12 @@
             "value": "Menu → Map: your RPM by origin state for the week, month, or year. Tap a state for recent rates and top lanes."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menú → Mapa: tu RPM por estado de origen de la semana, mes o año. Toca un estado para ver tarifas recientes y las mejores lanes."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12876,6 +15138,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "6. Paycheck"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6. Pago"
           }
         },
         "ru": {
@@ -12901,6 +15169,12 @@
             "value": "Menu → Paycheck opens the payout journal. Add a photo or PDF text of the statement and check the net before saving."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menú → Nómina abre el diario de pagos. Añade una foto o el texto del PDF del estado de cuenta y revisa el neto antes de guardar."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12922,6 +15196,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "8. Reports"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8. Informes"
           }
         },
         "ru": {
@@ -12947,6 +15227,12 @@
             "value": "Menu → Reports: weekly and route income, with paycheck and diesel side by side."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menú → Informes: ingresos por semana y ruta, con la nómina y el diésel uno al lado del otro."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -12968,6 +15254,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "15. Settings and profile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15. Ajustes y perfil"
           }
         },
         "ru": {
@@ -12993,6 +15285,12 @@
             "value": "Settings covers language, week start, RPM thresholds, privacy, and backup. Profile holds driver info."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes cubre el idioma, el inicio de semana, los umbrales de RPM, la privacidad y la copia. El perfil guarda los datos del conductor."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13014,6 +15312,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "7. Taxes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7. Impuestos"
           }
         },
         "ru": {
@@ -13039,6 +15343,12 @@
             "value": "Menu → Taxes: a quarterly estimate from paycheck gross, diesel, and per diem ($69/day). It is a guide, not tax advice."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menú → Impuestos: una estimación trimestral a partir del bruto de la nómina, el diésel y el per diem ($69/día). Es una guía, no asesoramiento fiscal."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13062,6 +15372,12 @@
             "value": "Version"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versión"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13080,6 +15396,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12. Widget"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "12. Widget"
@@ -13108,6 +15430,12 @@
             "value": "Add the TruckoRig home-screen widget: weekly gross and goal, plus camera, scanner, and Add diesel."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade el widget de TruckoRig en la pantalla de inicio: bruto y meta de la semana, más cámara, escáner y Añadir diésel."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13129,6 +15457,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Discount price"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precio con descuento"
           }
         },
         "ru": {
@@ -13154,6 +15488,12 @@
             "value": "Enter an amount greater than zero"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa un monto mayor que cero"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13175,6 +15515,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Invalid discount price"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precio con descuento no válido"
           }
         },
         "ru": {
@@ -13200,6 +15546,12 @@
             "value": "Discount price cannot be higher than list price"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El precio con descuento no puede ser mayor que el precio de lista"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13221,6 +15573,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enter gallons"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa los galones"
           }
         },
         "ru": {
@@ -13246,6 +15604,12 @@
             "value": "Enter price per gallon"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa el precio por galón"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13267,6 +15631,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Paid"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagado"
           }
         },
         "ru": {
@@ -13292,6 +15662,12 @@
             "value": "Receipt"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recibo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13313,6 +15689,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Saved %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahorrado %@"
           }
         },
         "ru": {
@@ -13338,6 +15720,12 @@
             "value": "You saved"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahorraste"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13359,6 +15747,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Could not process the photo. Fill the fields yourself."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo procesar la foto. Llena los campos tú."
           }
         },
         "ru": {
@@ -13384,6 +15778,12 @@
             "value": "Read: %@. Check and save."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leído: %@. Revisa y guarda."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13405,6 +15805,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Photograph the receipt or pump. Gallons and price fill in automatically. Leave the rest blank and type them yourself."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotografía el recibo o la bomba. Galones y precio se llenan solos. Deja el resto en blanco y escríbelo tú."
           }
         },
         "ru": {
@@ -13430,6 +15836,12 @@
             "value": "Could not read gallons and price. Fill the fields yourself."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudieron leer galones y precio. Llena los campos tú."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13451,6 +15863,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reading receipt…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leyendo recibo…"
           }
         },
         "ru": {
@@ -13476,6 +15894,12 @@
             "value": "Period"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Período"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13497,6 +15921,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "All"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos"
           }
         },
         "ru": {
@@ -13522,6 +15952,12 @@
             "value": "This week"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta semana"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13543,6 +15979,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add expense"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir gasto"
           }
         },
         "ru": {
@@ -13568,6 +16010,12 @@
             "value": "Amount"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13589,6 +16037,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Date"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha"
           }
         },
         "ru": {
@@ -13614,6 +16068,12 @@
             "value": "This entry will be permanently deleted."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este registro se eliminará de forma permanente."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13635,6 +16095,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Delete expense?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar gasto?"
           }
         },
         "ru": {
@@ -13660,6 +16126,12 @@
             "value": "Description"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descripción"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13681,6 +16153,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Parking, scales, wash…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estacionamiento, báscula, lavado…"
           }
         },
         "ru": {
@@ -13706,6 +16184,12 @@
             "value": "Edit expense"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar gasto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13727,6 +16211,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tolls, scales, and other costs show up here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peajes, básculas y otros gastos aparecen aquí."
           }
         },
         "ru": {
@@ -13752,6 +16242,12 @@
             "value": "No expenses yet"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay gastos"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13773,6 +16269,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enter an amount greater than zero"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa un monto mayor que cero"
           }
         },
         "ru": {
@@ -13798,6 +16300,12 @@
             "value": "Pick a date"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige una fecha"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13819,6 +16327,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add a description"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agrega una descripción"
           }
         },
         "ru": {
@@ -13844,6 +16358,12 @@
             "value": "Tap an expense to edit or delete it. You can attach a receipt photo and send the list as CSV."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca un gasto para editarlo o eliminarlo. Puedes adjuntar una foto del recibo y enviar la lista como CSV."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13865,6 +16385,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Receipt photo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto del recibo"
           }
         },
         "ru": {
@@ -13890,6 +16416,12 @@
             "value": "Receipt attached"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recibo adjunto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13911,6 +16443,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Attach a receipt photo — no scanning, just a file you can send to your company."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adjunta una foto del recibo: sin escanear, solo un archivo que puedes enviar a tu compañía."
           }
         },
         "ru": {
@@ -13936,6 +16474,12 @@
             "value": "Remove"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -13957,6 +16501,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Send data"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar datos"
           }
         },
         "ru": {
@@ -13982,6 +16532,12 @@
             "value": "Nothing to send yet"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay nada que enviar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14000,6 +16556,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total: %@"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Total: %@"
@@ -14028,6 +16590,12 @@
             "value": "Continue"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14049,6 +16617,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Last name"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apellido"
           }
         },
         "ru": {
@@ -14074,6 +16648,12 @@
             "value": "First name"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14095,6 +16675,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "The journal stays on this phone. The name is only for the home screen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El diario se queda en este teléfono. El nombre solo aparece en la pantalla de inicio."
           }
         },
         "ru": {
@@ -14120,6 +16706,12 @@
             "value": "Enter first and last name"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresa nombre y apellido"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14141,6 +16733,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skip"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omitir"
           }
         },
         "ru": {
@@ -14166,6 +16764,12 @@
             "value": "What’s your name?"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Cómo te llamas?"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14187,6 +16791,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Driver"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conductor"
           }
         },
         "ru": {
@@ -14212,6 +16822,12 @@
             "value": "Enter the net amount"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introduce el importe neto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14233,6 +16849,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Statement"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado de cuenta"
           }
         },
         "ru": {
@@ -14258,6 +16880,12 @@
             "value": "Could not read the file. Enter the amount manually."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo leer el archivo. Introduce el importe a mano."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14279,6 +16907,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pick a photo of the statement — the app fills in the total. Nothing is saved until you confirm."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige una foto del estado de cuenta: la app rellena el total. No se guarda nada hasta que confirmes."
           }
         },
         "ru": {
@@ -14304,6 +16938,12 @@
             "value": "The totals on this statement do not match each other. Check the amount before saving."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los totales de este estado de cuenta no coinciden. Revisa el importe antes de guardar."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14325,6 +16965,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No paycheck total found. Enter the total manually."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontró el total de la nómina. Introdúcelo a mano."
           }
         },
         "ru": {
@@ -14350,6 +16996,12 @@
             "value": "Paycheck recognized. Check the amount and week, then tap Save."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pago reconocido. Revisa el monto y la semana, luego toca Guardar."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14373,10 +17025,16 @@
             "value": "Gross"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bruto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gross"
+            "value": "Гросс"
           }
         },
         "fr": {
@@ -14394,6 +17052,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reading file…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leyendo archivo…"
           }
         },
         "ru": {
@@ -14419,6 +17083,12 @@
             "value": "Only on this device"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo en este dispositivo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14440,6 +17110,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your loads and rates"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus cargas y tarifas"
           }
         },
         "ru": {
@@ -14465,6 +17141,12 @@
             "value": "Stored only on this device. There is no account and nothing is sent to a server."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo se guarda en este dispositivo. No hay cuenta y no se envía nada a un servidor."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14486,6 +17168,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not collected"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se recopila"
           }
         },
         "ru": {
@@ -14511,6 +17199,12 @@
             "value": "No analytics, no advertising identifier, no crash reports. OCR runs on the phone."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin analítica, sin identificador de publicidad, sin informes de fallos. El OCR se ejecuta en el teléfono."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14532,6 +17226,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Camera"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cámara"
           }
         },
         "ru": {
@@ -14557,6 +17257,12 @@
             "value": "Gallery"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Galería"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14578,6 +17284,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "About"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acerca de"
           }
         },
         "ru": {
@@ -14603,6 +17315,12 @@
             "value": "Other expenses"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otros gastos"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14624,6 +17342,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Privacy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacidad"
           }
         },
         "ru": {
@@ -14649,6 +17373,12 @@
             "value": "Taxes"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impuestos"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14670,6 +17400,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "More"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más"
           }
         },
         "ru": {
@@ -14695,6 +17431,12 @@
             "value": "Tap a day to turn per diem on or off"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca un día para activar o desactivar el per diem"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14716,6 +17458,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "On-duty days: %lld × $%lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días en servicio: %lld × $%lld"
           }
         },
         "ru": {
@@ -14753,6 +17501,12 @@
             "value": "Per-diem calendar"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendario de per diem"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14774,6 +17528,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Deductions"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deducciones"
           }
         },
         "ru": {
@@ -14799,6 +17559,12 @@
             "value": "Diesel: -%@"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diésel: -%@"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14820,6 +17586,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Estimate only. Not a substitute for professional tax advice."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo un estimado. No sustituye asesoría fiscal profesional."
           }
         },
         "ru": {
@@ -14845,6 +17617,12 @@
             "value": "Federal tax"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impuesto federal"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14866,6 +17644,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "In %lld days"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En %lld días"
           }
         },
         "ru": {
@@ -14903,6 +17687,12 @@
             "value": "Income"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingresos"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14924,6 +17714,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next quarter: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próximo trimestre: %@"
           }
         },
         "ru": {
@@ -14949,6 +17745,12 @@
             "value": "Total owed"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total a pagar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -14970,6 +17772,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per diem (%lld days × $69): -%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per diem (%lld días × $69): -%@"
           }
         },
         "ru": {
@@ -15007,6 +17815,12 @@
             "value": "SE tax (~15.3%)"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impuesto SE (~15,3%)"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15028,6 +17842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Send data"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar datos"
           }
         },
         "ru": {
@@ -15053,6 +17873,12 @@
             "value": "Everything (one file, separate sheets)"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo (un archivo, hojas separadas)"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15074,6 +17900,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diesel only"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo diésel"
           }
         },
         "ru": {
@@ -15099,6 +17931,12 @@
             "value": "Nothing to send for this year"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada que enviar de este año"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15120,6 +17958,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Year %lld — choose what to include"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Año %lld: elige qué incluir"
           }
         },
         "ru": {
@@ -15145,6 +17989,12 @@
             "value": "Loads only"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo cargas"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15166,6 +18016,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Maintenance only"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo mantenimiento"
           }
         },
         "ru": {
@@ -15191,6 +18047,12 @@
             "value": "Per diem only"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo per diem"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15212,6 +18074,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Taxable income"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingreso gravable"
           }
         },
         "ru": {
@@ -15237,6 +18105,12 @@
             "value": "Total deductions: -%@"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deducciones totales: -%@"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15258,6 +18132,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "What to improve"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué mejorar"
           }
         },
         "ru": {
@@ -15283,6 +18163,12 @@
             "value": "Tell us what to add, what to improve, what works, or what is broken. We receive the message by email."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dinos qué agregar, qué mejorar, qué funciona o qué está roto. Recibimos el mensaje por correo."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15304,6 +18190,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Email: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correo: %@"
           }
         },
         "ru": {
@@ -15329,6 +18221,12 @@
             "value": "Topic"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tema"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15350,6 +18248,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar"
           }
         },
         "ru": {
@@ -15375,6 +18279,12 @@
             "value": "Improve"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejorar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15396,6 +18306,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Works"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Funciona"
           }
         },
         "ru": {
@@ -15421,6 +18337,12 @@
             "value": "Broken"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roto"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15442,6 +18364,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Message"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensaje"
           }
         },
         "ru": {
@@ -15467,6 +18395,12 @@
             "value": "Briefly describe what you want changed"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Describe en breve qué quieres cambiar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15488,6 +18422,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Send"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar"
           }
         },
         "ru": {
@@ -15513,6 +18453,12 @@
             "value": "Write a message first"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escribe un mensaje primero"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15534,6 +18480,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open your mail app and tap send"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre tu app de correo y toca enviar"
           }
         },
         "ru": {
@@ -15559,6 +18511,12 @@
             "value": "No mail app found. The text is copied — paste it into an email to %@"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontró app de correo. El texto está copiado: pégalo en un correo a %@"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15580,6 +18538,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thank you for sharing your feedback!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Gracias por compartir tu opinión!"
           }
         },
         "ru": {
@@ -15605,6 +18569,12 @@
             "value": "Your opinion helps us make the app better for drivers."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu opinión nos ayuda a mejorar la app para los conductores."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15628,6 +18598,12 @@
             "value": "Close"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerrar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15646,6 +18622,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "13. Telegram"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "13. Telegram"
@@ -15674,6 +18656,12 @@
             "value": "In Settings add a bot token from @BotFather. The on-device bot reads messages and adds loads, paychecks, and diesel to the journal."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En Ajustes agrega un token de bot de @BotFather. El bot en el dispositivo lee mensajes y agrega cargas, pagos y diésel al diario."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15695,6 +18683,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Or forward the file to the Telegram bot — it also recognizes paychecks and asks before saving."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O reenvía el archivo al bot de Telegram: también reconoce pagos y pregunta antes de guardar."
           }
         },
         "ru": {
@@ -15720,6 +18714,12 @@
             "value": "Telegram sync started"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronización de Telegram iniciada"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15741,6 +18741,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Telegram Bot"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bot de Telegram"
           }
         },
         "ru": {
@@ -15766,6 +18772,12 @@
             "value": "Get a token from @BotFather and tap Add bot. We set the bot name to TruckoRig and use the app photo. The token is stored securely and is not shown on this screen."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtén un token de @BotFather y toca Agregar bot. Ponemos el nombre del bot en TruckoRig y usamos la foto de la app. El token se guarda de forma segura y no se muestra en esta pantalla."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15784,6 +18796,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BOT TOKEN"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "BOT TOKEN"
@@ -15812,6 +18830,12 @@
             "value": "123456789:AAH..."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "123456789:AAH..."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15833,6 +18857,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Token configured (hidden)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token configurado (oculto)"
           }
         },
         "ru": {
@@ -15858,6 +18888,12 @@
             "value": "Test"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15879,6 +18915,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Token saved. Bot named TruckoRig with the app photo."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token guardado. Bot llamado TruckoRig con la foto de la app."
           }
         },
         "ru": {
@@ -15904,6 +18946,12 @@
             "value": "Bot is listening for messages"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El bot está escuchando mensajes"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15925,6 +18973,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bot is not running"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El bot no está en marcha"
           }
         },
         "ru": {
@@ -15950,6 +19004,12 @@
             "value": "✅ Bot @%@ — token is valid"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "✅ Bot @%@ — el token es válido"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -15971,6 +19031,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "❌ Invalid token. Check the token from @BotFather and try again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "❌ Token no válido. Revisa el token de @BotFather e inténtalo de nuevo."
           }
         },
         "ru": {
@@ -15996,6 +19062,12 @@
             "value": "Add bot"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar bot"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16017,6 +19089,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Change"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar"
           }
         },
         "ru": {
@@ -16042,6 +19120,12 @@
             "value": "Telegram bot token"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token del bot de Telegram"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16063,6 +19147,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Paste the token from @BotFather. After saving, the bot is named TruckoRig and uses the app photo."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pega el token de @BotFather. Al guardar, el bot se llama TruckoRig y usa la foto de la app."
           }
         },
         "ru": {
@@ -16088,6 +19178,12 @@
             "value": "Bot token is not set"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El token del bot no está definido"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16109,6 +19205,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Show"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar"
           }
         },
         "ru": {
@@ -16134,6 +19236,12 @@
             "value": "Hide"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16155,6 +19263,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Checking…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verificando…"
           }
         },
         "ru": {
@@ -16180,6 +19294,12 @@
             "value": "Secure storage unavailable — bot tokens are not saved; login is stored with reduced protection"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almacenamiento seguro no disponible: los tokens del bot no se guardan; el inicio de sesión se guarda con menos protección"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16201,6 +19321,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open bot and pair"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir bot y emparejar"
           }
         },
         "ru": {
@@ -16226,6 +19352,12 @@
             "value": "Not paired yet. Press Start in the bot, or send /start %@"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin emparejar. Pulsa Iniciar en el bot o envía /start %@"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16247,6 +19379,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chat unpaired. Pair again with the new code."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat desvinculado. Vuelve a emparejar con el nuevo código."
           }
         },
         "ru": {
@@ -16272,6 +19410,12 @@
             "value": "Unpair chat"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desvincular chat"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16293,6 +19437,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Paired with your Telegram chat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparejado con tu chat de Telegram"
           }
         },
         "ru": {
@@ -16318,6 +19468,12 @@
             "value": "Connect your Telegram bot"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conecta tu bot de Telegram"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16339,6 +19495,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "After you create an account, connect a bot so Telegram messages can be parsed and saved as loads."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Después de crear una cuenta, conecta un bot para que los mensajes de Telegram se analicen y se guarden como cargas."
           }
         },
         "ru": {
@@ -16364,6 +19526,12 @@
             "value": "How to get a token"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo obtener un token"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16385,6 +19553,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1. Tap Open BotFather — Telegram opens @BotFather."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Toca Abrir BotFather: Telegram abre @BotFather."
           }
         },
         "ru": {
@@ -16410,6 +19584,12 @@
             "value": "2. Send /newbot (new bot) or /token (if you already have one)."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. Envía /newbot (bot nuevo) o /token (si ya tienes uno)."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16431,6 +19611,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "3. Copy the token — it looks like 123456789:AAH…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. Copia el token: se ve como 123456789:AAH…"
           }
         },
         "ru": {
@@ -16456,6 +19642,12 @@
             "value": "4. Paste it below and tap Save. The bot is named TruckoRig, gets the app photo, and can receive loads."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4. Pégalo abajo y toca Guardar. El bot se llama TruckoRig, recibe la foto de la app y puede recibir cargas."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16477,6 +19669,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open BotFather"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir BotFather"
           }
         },
         "ru": {
@@ -16502,6 +19700,12 @@
             "value": "Save token"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar token"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16525,6 +19729,12 @@
             "value": "Skip for now"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omitir por ahora"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16546,6 +19756,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "You can add the bot later in Settings → Telegram bot."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puedes agregar el bot después en Ajustes → Bot de Telegram."
           }
         },
         "ru": {
@@ -16600,6 +19816,12 @@
             "value": "Include in the file"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incluir en el archivo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16621,6 +19843,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "After Send, pick an app: Telegram, WhatsApp, email, etc."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Después de Enviar, elige una app: Telegram, WhatsApp, correo, etc."
           }
         },
         "ru": {
@@ -16646,6 +19874,12 @@
             "value": "Preparing file…"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparando archivo…"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16667,6 +19901,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Send"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar"
           }
         },
         "ru": {
@@ -16692,6 +19932,12 @@
             "value": "Report ready: %@"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informe listo: %@"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16713,6 +19959,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Export failed: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falló la exportación: %@"
           }
         },
         "ru": {
@@ -16738,6 +19990,12 @@
             "value": "Geographic efficiency"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eficiencia geográfica"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16759,6 +20017,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open map fullscreen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir mapa a pantalla completa"
           }
         },
         "ru": {
@@ -16784,6 +20048,12 @@
             "value": "Close"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerrar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16805,6 +20075,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zoom in"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acercar"
           }
         },
         "ru": {
@@ -16830,6 +20106,12 @@
             "value": "Zoom out"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alejar"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16851,6 +20133,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Week"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semana"
           }
         },
         "ru": {
@@ -16876,6 +20164,12 @@
             "value": "Month"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mes"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16899,6 +20193,12 @@
             "value": "Year"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Año"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16920,6 +20220,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "My RPM · week · %lld trip(s)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi RPM · semana · %lld viaje(s)"
           }
         },
         "ru": {
@@ -16957,6 +20263,12 @@
             "value": "My RPM · month · %lld trip(s)"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi RPM · mes · %lld viaje(s)"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -16990,6 +20302,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "My RPM · year · %lld trip(s)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi RPM · año · %lld viaje(s)"
           }
         },
         "ru": {
@@ -17027,6 +20345,12 @@
             "value": "Map: avg $/mi outbound by state. Tap a state for recent rates."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa: promedio $/mi de salida por estado. Toca un estado para ver tarifas recientes."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17048,6 +20372,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ (%@) — your outbound"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (%@) — tu salida"
           }
         },
         "ru": {
@@ -17073,6 +20403,12 @@
             "value": "Avg RPM: $%@/mi · %lld trip(s)"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RPM prom.: $%@/mi · %lld viaje(s)"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17094,6 +20430,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Recent rates from this state"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarifas recientes desde este estado"
           }
         },
         "ru": {
@@ -17119,6 +20461,12 @@
             "value": "No loads from this state this week."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay cargas desde este estado esta semana."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17140,6 +20488,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No loads from this state this month."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay cargas desde este estado este mes."
           }
         },
         "ru": {
@@ -17165,6 +20519,12 @@
             "value": "No loads from this state this year."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay cargas desde este estado este año."
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17183,6 +20543,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ → %@ · $%@/mi · %@"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ → %@ · $%@/mi · %@"
@@ -17209,6 +20575,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld min ago"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hace %lld min"
           }
         },
         "ru": {
@@ -17246,6 +20618,12 @@
             "value": "%lld h ago"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hace %lld h"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17279,6 +20657,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld d ago"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hace %lld d"
           }
         },
         "ru": {
@@ -17316,6 +20700,12 @@
             "value": "Top lanes · week"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejores lanes · semana"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17337,6 +20727,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Top lanes · month"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejores lanes · mes"
           }
         },
         "ru": {
@@ -17362,6 +20758,12 @@
             "value": "Top lanes · year"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejores lanes · año"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17383,6 +20785,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ → %@ · $%@/mi · %lld trip(s)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ → %@ · $%@/mi · %lld viaje(s)"
           }
         },
         "ru": {
@@ -17408,6 +20816,12 @@
             "value": "Good"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bueno"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17431,6 +20845,12 @@
             "value": "Low"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bajo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17449,6 +20869,12 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neutral"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Neutral"
@@ -17477,6 +20903,12 @@
             "value": "Poor"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Malo"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17498,6 +20930,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No data"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin datos"
           }
         },
         "ru": {
@@ -17523,6 +20961,12 @@
             "value": "Reset"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restablecer"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17544,6 +20988,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ (%@) • %lld trip(s)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (%@) • %lld viaje(s)"
           }
         },
         "ru": {
@@ -17569,6 +21019,12 @@
             "value": "$%@ / mile"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "$%@ / milla"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17590,6 +21046,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gross: $%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bruto: $%@"
           }
         },
         "ru": {
@@ -17615,6 +21077,12 @@
             "value": "Rating: %@"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calificación: %@"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17636,6 +21104,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Maps key not configured"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clave de mapas no configurada"
           }
         },
         "ru": {
@@ -17690,10 +21164,16 @@
             "value": "W%lld"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S%lld"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "W%lld"
+            "value": "Н%lld"
           }
         },
         "fr": {
@@ -17710,7 +21190,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Неизвестно"
+            "value": "Unknown"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desconocido"
           }
         },
         "ru": {
@@ -17733,7 +21219,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Тема:"
+            "value": "Subject:"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asunto:"
           }
         },
         "ru": {
@@ -17759,6 +21251,12 @@
             "value": "Maintenance reminder"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorio de mantenimiento"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17782,6 +21280,12 @@
             "value": "%@ — time to service the truck"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — es hora de dar servicio al camión"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17803,6 +21307,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld tasks: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld tareas: %@"
           }
         },
         "ru": {
@@ -17840,6 +21350,12 @@
             "value": "Add paycheck"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar pago"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17863,6 +21379,12 @@
             "value": "Add diesel"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar diésel"
+          }
+        },
         "ru": {
           "stringUnit": {
             "state": "translated",
@@ -17884,6 +21406,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No data for week %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay datos de la semana %lld"
           }
         },
         "ru": {

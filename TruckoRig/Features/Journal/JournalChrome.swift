@@ -370,7 +370,7 @@ struct JournalLoadCard: View {
 
 private func journalDate(_ date: Date, locale: Locale) -> String {
     let formatter = DateFormatter()
-    formatter.locale = locale.language.languageCode?.identifier == "fr" ? locale : .current
+    formatter.locale = locale
     formatter.setLocalizedDateFormatFromTemplate("EEEMMMd")
     return formatter.string(from: date)
 }
@@ -387,10 +387,10 @@ private func stopsPhrase(_ count: Int, locale: Locale) -> String {
     let mod10 = count % 10
     let mod100 = count % 100
     if mod10 == 1 && mod100 != 11 {
-        return String(localized: "load.card.stops.one \(count)")
+        return String(localized: "load.card.stops.one \(count)", locale: locale)
     }
     if (2...4).contains(mod10) && !(12...14).contains(mod100) {
-        return String(localized: "load.card.stops.few \(count)")
+        return String(localized: "load.card.stops.few \(count)", locale: locale)
     }
-    return String(localized: "load.card.stops.many \(count)")
+    return String(localized: "load.card.stops.many \(count)", locale: locale)
 }

@@ -89,7 +89,7 @@ struct GalleryView: View {
                 ocrText: scan.ocrText ?? "",
                 tripId: trip,
                 routeLabel: route,
-                dateLabel: ScanListText.dateLabel(timestamp: scan.timestamp),
+                dateLabel: ScanListText.dateLabel(timestamp: scan.timestamp, locale: AppLocale.locale),
                 filter: scanFilter,
                 query: scanQuery
             )
@@ -336,7 +336,7 @@ struct GalleryPreviewView: View {
                     if item.kind == .photo, let photo = currentPhoto {
                         Label(photo.placeLine, systemImage: "mappin.and.ellipse")
                             .font(.appBody)
-                        Label(PhotoMetadataDisplay.dateLine(timestamp: photo.timestamp), systemImage: "calendar")
+                        Label(PhotoMetadataDisplay.dateLine(timestamp: photo.timestamp, locale: AppLocale.locale), systemImage: "calendar")
                             .font(.appCaption)
                             .foregroundStyle(Color.forestTextSecondary)
                         if let latitude = photo.latitude, let longitude = photo.longitude {

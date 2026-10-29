@@ -20,7 +20,7 @@ struct JournalView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var sections: [JournalSection] {
-        viewModel.sections(from: loads, week: appState.settings.truckingWeek)
+        viewModel.sections(from: loads, week: appState.settings.truckingWeek, locale: AppLocale.locale)
     }
 
     private var currentWeek: WeekRef {
@@ -207,14 +207,15 @@ struct JournalView: View {
         let week = appState.settings.truckingWeek
         let ref = currentWeek
         let weekLoads = loads.filter { $0.weekNumber == ref.weekNumber && $0.year == ref.year }
-        let progress = WeeklyGoalCalculator(week: week, locale: .current).calculate(
+        let locale = AppLocale.locale
+        let progress = WeeklyGoalCalculator(week: week, locale: locale).calculate(
             target: appState.settings.weeklyGoal,
             loads: weekLoads.map(\.summary),
             for: ref
         )
         let caption: String = {
             guard let start = week.startDate(of: ref), let end = week.endDate(of: ref) else { return progress.weekLabel }
-            return SplitWeekRange.homeCaption(start: start, end: end, calendar: week.calendar, locale: .current)
+            return SplitWeekRange.homeCaption(start: start, end: end, calendar: week.calendar, locale: locale)
         }()
         let system = appState.settings.measurementSystem
         let rpm = progress.totalMiles > 0
@@ -238,7 +239,7 @@ struct JournalView: View {
     private func narrowDays(week: TruckingWeek, ref: WeekRef) -> [String] {
         guard let start = week.startDate(of: ref) else { return [] }
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = AppLocale.locale
         formatter.calendar = week.calendar
         formatter.timeZone = week.calendar.timeZone
         formatter.dateFormat = "EEEEE"

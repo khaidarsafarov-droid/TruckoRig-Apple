@@ -91,7 +91,7 @@ struct PhotoBatchReviewView: View {
 
     private func caption(_ photo: SessionPhoto) -> String {
         let place = photo.location.cityStateLine
-        let when = PhotoMetadataDisplay.dateLine(timestamp: photo.timestamp)
+        let when = PhotoMetadataDisplay.dateLine(timestamp: photo.timestamp, locale: AppLocale.locale)
         return "\(place) · \(when)"
     }
 }
@@ -128,7 +128,7 @@ private struct SessionPhotoViewer: View {
                 .padding(.top, 8)
                 Spacer()
                 if photos.indices.contains(index) {
-                    Text(photos[index].location.cityStateLine + " · " + PhotoMetadataDisplay.dateLine(timestamp: photos[index].timestamp))
+                    Text(photos[index].location.cityStateLine + " · " + PhotoMetadataDisplay.dateLine(timestamp: photos[index].timestamp, locale: AppLocale.locale))
                         .font(.appCaption)
                         .foregroundStyle(Color.white)
                         .padding(.horizontal, 16)

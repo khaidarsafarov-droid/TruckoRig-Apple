@@ -11,7 +11,7 @@ struct WeeklyGoalView: View {
     private var calendar: TruckingWeek { appState.settings.truckingWeek }
 
     private var progress: WeeklyGoalProgress {
-        viewModel.progress(loads: loads, target: appState.settings.weeklyGoal, calendar: calendar)
+        viewModel.progress(loads: loads, target: appState.settings.weeklyGoal, calendar: calendar, locale: AppLocale.locale)
     }
 
     var body: some View {
@@ -248,7 +248,7 @@ struct WeeklyGoalView: View {
 
     private func dayName(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = AppLocale.locale
         formatter.calendar = appState.settings.truckingWeek.calendar
         formatter.timeZone = appState.settings.truckingWeek.calendar.timeZone
         formatter.dateFormat = "EEEE"
@@ -257,11 +257,11 @@ struct WeeklyGoalView: View {
 
     private func dayDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = AppLocale.locale
         formatter.calendar = appState.settings.truckingWeek.calendar
         formatter.timeZone = appState.settings.truckingWeek.calendar.timeZone
         formatter.dateFormat = "d MMM"
-        return formatter.string(from: date).replacingOccurrences(of: ".", with: "").lowercased()
+        return formatter.string(from: date).replacingOccurrences(of: ".", with: "").lowercased(with: AppLocale.locale)
     }
 
     private func breakdownCard(_ progress: WeeklyGoalProgress) -> some View {
@@ -273,7 +273,7 @@ struct WeeklyGoalView: View {
                     title: appState.settings.measurementSystem == .kilometers ? "stat.kilometers" : "stat.miles",
                     value: Formatters.miles(progress.totalMiles, system: appState.settings.measurementSystem)
                 )
-                StatTile(title: "stat.daysActive", value: progress.totalActiveDays.formatted(.number.precision(.fractionLength(1))))
+                StatTile(title: "stat.daysActive", value: progress.totalActiveDays.formatted(.number.precision(.fractionLength(1)).locale(AppLocale.locale)))
             }
             HStack {
                 StatTile(title: "goal.remaining", value: Formatters.money(progress.remainingAmount))

@@ -29,6 +29,7 @@ final class AnalyticsViewModel {
         paychecks: [Paycheck],
         diesel: [Diesel],
         calendar: TruckingWeek,
+        locale: Locale = AppLocale.locale,
         now: Date = Date()
     ) -> AnalyticsPage {
         let summaries = loads.map(\.summary)
@@ -37,6 +38,7 @@ final class AnalyticsViewModel {
             loads: summaries,
             weeks: count,
             calendar: calendar,
+            locale: locale,
             now: now
         )
         let start = period == .allTime ? nil : weeks.compactMap { calendar.startDate(of: $0.week) }.min()

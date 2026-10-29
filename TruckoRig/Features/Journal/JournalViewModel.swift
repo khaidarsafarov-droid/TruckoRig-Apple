@@ -71,7 +71,7 @@ final class JournalViewModel {
     var loadPendingDeletion: Load?
     var errorMessage: String?
 
-    func sections(from loads: [Load], week: TruckingWeek, locale: Locale = .current) -> [JournalSection] {
+    func sections(from loads: [Load], week: TruckingWeek, locale: Locale = AppLocale.locale) -> [JournalSection] {
         let formatter = WeekLabelFormatter(week: week, locale: locale)
         let filtered = loads.filter { matches($0, week: week) }
         let grouped = Dictionary(grouping: filtered) { WeekRef(weekNumber: $0.weekNumber, year: $0.year) }
