@@ -87,6 +87,7 @@ FILE_TYPES = {
     ".otf": "file",
     ".storekit": "text.json",
     ".xcconfig": "text.xcconfig",
+    ".xcprivacy": "text.plist.xml",
 }
 
 

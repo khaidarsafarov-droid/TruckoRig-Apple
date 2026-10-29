@@ -38,7 +38,7 @@ open TruckoRig.xcodeproj
 swift test
 ```
 
-210 доменных тестов: парсинг реальных сообщений Relay, определение года по истории чата, недельные
+Доменные тесты: парсинг реальных сообщений Relay, определение года по истории чата, недельные
 границы на стыке лет, статусы темпа, дедуп Trip ID, CSV round-trip, напоминание за три дня до конца
 бесплатного месяца, снапшот виджета, deep link `truckorig://`, файл бэкапа в формате Android v2
 (Gson, BOM, отказ от более новой схемы), Telegram Bot API (токен, long poll,
@@ -46,9 +46,49 @@ swift test
 периоды, полигоны GeoJSON).
 
 Шифрование, Keychain и одноразовый перенос из SwiftData проверяются целью `TruckoRigTests` на
-симуляторе iPhone. Это делает workflow `.github/workflows/macos.yml` (macOS 26, Xcode 26.6):
-сборка приложения и виджета без подписи и `xcodebuild test`. Linux-workflow по-прежнему гоняет
-только доменные тесты.
+симуляторе iPhone. Это делает workflow `.github/workflows/macos.yml`: бесплатный раннер
+`macos-latest`, последний стабильный Xcode на этом образе, сборка приложения и виджета без
+подписи (`CODE_SIGNING_ALLOWED=NO`) и `xcodebuild test` только для `TruckoRigTests`. Запуск —
+каждый push и pull request в `main`. Linux-workflow по-прежнему гоняет только доменные тесты.
+
+## TestFlight
+
+Для выкладки нужен платный [Apple Developer Program](https://developer.apple.com/programs/)
+($99 в год). Mac не нужен: сертификат выпускается с Windows через OpenSSL, а архив собирает
+workflow `.github/workflows/testflight.yml`.
+
+Этот workflow **не запускается** на push и pull request. Вкладка Actions → TestFlight → Run
+workflow. Пока секретов нет, job останавливается до подписи и ничего не заливает.
+
+Секреты репозитория (Settings → Secrets and variables → Actions):
+
+| Секрет | Откуда |
+|---|---|
+| `APPLE_TEAM_ID` | 10 символов Team ID, [developer.apple.com/account](https://developer.apple.com/account) → Membership |
+| `APP_STORE_CONNECT_KEY_ID` | App Store Connect → Users and Access → Integrations → App Store Connect API → Key ID |
+| `APP_STORE_CONNECT_ISSUER_ID` | Issuer ID на той же странице |
+| `APP_STORE_CONNECT_KEY_P8` | Содержимое скачанного `AuthKey_XXXX.p8`, целиком, включая строки `BEGIN` и `END`. Ключ скачивается один раз |
+| `IOS_DISTRIBUTION_P12_BASE64` | Distribution-сертификат в `.p12`, затем `base64 -w 0 cert.p12` (на Windows: `certutil -encode` и убрать заголовки, либо OpenSSL) |
+| `IOS_DISTRIBUTION_P12_PASSWORD` | Пароль, заданный при экспорте `.p12` |
+
+Сертификат с Windows:
+
+```bash
+openssl req -new -newkey rsa:2048 -nodes -keyout distribution.key -out distribution.csr -subj "/CN=TruckoRig Distribution/O=TruckoRig"
+```
+
+CSR загружается в Certificates → Apple Distribution. Скачанный `.cer` собирается в `.p12`:
+
+```bash
+openssl x509 -in distribution.cer -inform DER -out distribution.pem
+openssl pkcs12 -export -inkey distribution.key -in distribution.pem -out distribution.p12
+```
+
+В портале заранее создайте App ID `com.truckorig` и `com.truckorig.widget` с App Groups
+(`group.com.truckorig`) и iCloud Documents (`iCloud.com.truckorig`) у приложения. Workflow
+подписывает автоматически (`-allowProvisioningUpdates`) этим API-ключом и заливает `.ipa`
+через `xcrun altool`. Приложение в App Store Connect с bundle id `com.truckorig` должно уже
+существовать, иначе загрузка не к чему привязаться.
 
 ## Структура
 
@@ -212,6 +252,11 @@ python3 Tools/check_strings.py        # ключи в коде против ка
 
 Виджет собирает общий с приложением набор файлов (снапшот цели, deep link, тема, форматтеры) —
 список в `WIDGET_SHARED_SOURCES` в генераторе. SQLCipher в расширение не попадает.
+
+Манифест приватности (`PrivacyInfo.xcprivacy`) лежит в приложении и в виджете: трекинга нет,
+данные разработчику не отправляются. `UserDefaults` объявлен причиной `CA92.1` (только свои
+настройки). Размер файла внутри контейнера приложения — `C617.1`. `ITSAppUsesNonExemptEncryption`
+уже `false`, поэтому при загрузке в App Store Connect вопросник про экспорт шифрования не открывается.
 
 ## Локализация
 

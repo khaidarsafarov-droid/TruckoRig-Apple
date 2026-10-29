@@ -1,6 +1,8 @@
 import SwiftUI
 
 /// Next steps until the first load is saved. Android `HomeUxMotivators`.
+/// The file name is not `HomeMotivation.swift`: Xcode names the object file after the
+/// basename, and the domain file already uses that name.
 struct ActivationChecklistCard: View {
     var profileComplete: Bool
     var hasGoal: Bool
