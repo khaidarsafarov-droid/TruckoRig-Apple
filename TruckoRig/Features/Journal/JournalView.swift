@@ -412,6 +412,7 @@ private struct JournalMenuSheet: View {
     }
 }
 
+#if DEBUG
 #Preview {
     PreviewHost {
         NavigationStack {
@@ -419,3 +420,4 @@ private struct JournalMenuSheet: View {
         }
     }
 }
+#endif

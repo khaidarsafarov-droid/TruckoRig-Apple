@@ -212,8 +212,10 @@ struct StopEditTarget: Identifiable, Hashable {
     var id: Int { index }
 }
 
+#if DEBUG
 #Preview {
     PreviewHost {
         AddLoadView()
     }
 }
+#endif
