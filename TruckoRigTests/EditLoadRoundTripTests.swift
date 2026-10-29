@@ -2,6 +2,7 @@ import XCTest
 @testable import TruckoRig
 
 /// Opening Edit Load and saving without edits must leave the stored trip alone.
+@MainActor
 final class EditLoadRoundTripTests: XCTestCase {
 
     func testSaveWithoutEditsKeepsMoneyMilesDatesStopsAndDispute() throws {
