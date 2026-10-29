@@ -94,6 +94,7 @@
 		E35E372B80EE11DC8A2B3F50 /* PeriodFinance.swift */ = {isa = PBXBuildFile; fileRef = AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */; };
 		0A7356272CBC8BF2537671E2 /* RPMCalculator.swift */ = {isa = PBXBuildFile; fileRef = 9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */; };
 		F92A9B93B1F2569FB6D14527 /* TruckingWeek.swift */ = {isa = PBXBuildFile; fileRef = 67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */; };
+		7899EAE34C5EEF4E105CFE5A /* WeekDayGross.swift */ = {isa = PBXBuildFile; fileRef = 2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */; };
 		FC7DF8FB308D1DD6AFF99907 /* WeekLabelFormatter.swift */ = {isa = PBXBuildFile; fileRef = AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */; };
 		9779399E22BD6F05A0D727DE /* WeeklyDayPlan.swift */ = {isa = PBXBuildFile; fileRef = E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */; };
 		ED81EE88286EEE65242D4AB8 /* WeeklyGoalCalculator.swift */ = {isa = PBXBuildFile; fileRef = F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */; };
@@ -405,6 +406,7 @@
 		AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodFinance.swift"; sourceTree = "<group>"; };
 		9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RPMCalculator.swift"; sourceTree = "<group>"; };
 		67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckingWeek.swift"; sourceTree = "<group>"; };
+		2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekDayGross.swift"; sourceTree = "<group>"; };
 		AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekLabelFormatter.swift"; sourceTree = "<group>"; };
 		E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyDayPlan.swift"; sourceTree = "<group>"; };
 		F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalCalculator.swift"; sourceTree = "<group>"; };
@@ -892,6 +894,7 @@
 				AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */,
 				9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */,
 				67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */,
+				2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */,
 				AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */,
 				E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */,
 				F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */,
@@ -1728,6 +1731,7 @@
 				E35E372B80EE11DC8A2B3F50 /* PeriodFinance.swift */,
 				0A7356272CBC8BF2537671E2 /* RPMCalculator.swift */,
 				F92A9B93B1F2569FB6D14527 /* TruckingWeek.swift */,
+				7899EAE34C5EEF4E105CFE5A /* WeekDayGross.swift */,
 				FC7DF8FB308D1DD6AFF99907 /* WeekLabelFormatter.swift */,
 				9779399E22BD6F05A0D727DE /* WeeklyDayPlan.swift */,
 				ED81EE88286EEE65242D4AB8 /* WeeklyGoalCalculator.swift */,
