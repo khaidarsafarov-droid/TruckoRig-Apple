@@ -171,7 +171,8 @@ final class BackupRestoreTests: XCTestCase {
         XCTAssertEqual(second.maintenanceArchive.map(\.id), first.maintenanceArchive.map(\.id))
         XCTAssertEqual(second.appSettings?.languageOrdinal, 0)
         XCTAssertEqual(second.appSettings?.loadWeekStartDay, 2)
-        XCTAssertEqual(second.appSettings?.dieselWeekStartDay, 2)
+        // Diesel week is separate and still the Sunday default. The test only moved the load week.
+        XCTAssertEqual(second.appSettings?.dieselWeekStartDay, 1)
     }
 
     func testSchemaV1LeavesMaintenanceInPlace() throws {
