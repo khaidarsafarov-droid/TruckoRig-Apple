@@ -114,7 +114,7 @@ struct ProfileEditorView: View {
 
     init(profile: DriverProfile?) {
         self.profile = profile
-        let parts = profile?.givenAndFamilyName ?? ("", "")
+        let parts = profile?.givenAndFamilyName ?? (given: "", family: "")
         _givenName = State(initialValue: parts.given)
         _familyName = State(initialValue: parts.family)
         _truckModel = State(initialValue: profile?.truckModel ?? "")
