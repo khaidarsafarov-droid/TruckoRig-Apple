@@ -475,6 +475,7 @@ def build() -> str:
     add(f"\t\t{object_id('phase-strip', 'app')} /* Strip widget for sideload */ = {{")
     add("\t\t\tisa = PBXShellScriptBuildPhase;")
     add("\t\t\talwaysOutOfDate = 1;")
+    add("\t\t\tenableUserScriptSandboxing = 0;")
     add("\t\t\tbuildActionMask = 2147483647;")
     add("\t\t\tfiles = (")
     add("\t\t\t);")
@@ -491,7 +492,7 @@ def build() -> str:
     add("\t\t\tshellPath = /bin/sh;")
     add(
         '\t\t\tshellScript = "if [ \\"$CONFIGURATION\\" = \\"Sideload\\" ]; then\\n'
-        '  rm -rf \\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/PlugIns\\"\\n'
+        '  rm -rf \\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/PlugIns\\" || true\\n'
         'fi\\n";'
     )
     add("\t\t};")

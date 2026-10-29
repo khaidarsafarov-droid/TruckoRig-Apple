@@ -1892,6 +1892,7 @@
 		5BCA025080C70C8CF7ABC9AE /* Strip widget for sideload */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
+			enableUserScriptSandboxing = 0;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1906,7 +1907,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$CONFIGURATION\" = \"Sideload\" ]; then\n  rm -rf \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/PlugIns\"\nfi\n";
+			shellScript = "if [ \"$CONFIGURATION\" = \"Sideload\" ]; then\n  rm -rf \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/PlugIns\" || true\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
