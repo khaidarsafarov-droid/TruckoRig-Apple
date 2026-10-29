@@ -66,3 +66,29 @@ public struct MoneyCents: Equatable, Sendable, Comparable, Hashable {
         return MoneyCents(cents: sign * cents)
     }
 }
+
+/// Text shown in an amount field, and the value written back if the driver does not edit it.
+///
+/// Android `Money.toString()` printed `Money(cents=211172)` into Total Rate, so validation
+/// rejected a form the driver had not touched. Prefill is always two fraction digits from
+/// whole cents — `2111.72`, `0.05`, `1000000.00` — with the locale's decimal separator and
+/// no thousands grouping. An unchanged field keeps the original `Double`.
+public enum MoneyFieldText {
+    public static func prefill(dollars: Double, locale: Locale = Locale(identifier: "en_US_POSIX")) -> String {
+        let plain = MoneyCents.fromDollars(dollars).formatPlain()
+        let separator = locale.decimalSeparator ?? "."
+        guard separator != "." else { return plain }
+        return plain.replacingOccurrences(of: ".", with: separator)
+    }
+
+    /// Parses the field. The same two-decimal text as `original` returns `original` unchanged.
+    public static func commit(text: String, original: Double, locale: Locale = Locale(identifier: "en_US_POSIX")) -> Double {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty { return 0 }
+        let parsed = NumberParsing.parseMoney(trimmed)
+        if prefill(dollars: original, locale: locale) == prefill(dollars: parsed, locale: locale) {
+            return original
+        }
+        return MoneyCents.fromDollars(parsed).dollars
+    }
+}

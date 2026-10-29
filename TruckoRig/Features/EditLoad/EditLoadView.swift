@@ -163,7 +163,7 @@ struct EditLoadView: View {
             if draft.isDispute {
                 Toggle("load.dispute.completed", isOn: $draft.disputeCompleted)
                 Toggle("load.dispute.apply", isOn: $draft.disputeApplyToLoad)
-                SoftNumberField(title: "load.dispute.amount", value: disputeAmountBinding)
+                SoftNumberField(title: "load.dispute.amount", value: disputeAmountBinding, money: true)
                 DatePicker("load.dispute.responseDate", selection: disputeDateBinding, displayedComponents: .date)
             }
         }
@@ -260,7 +260,7 @@ struct PenaltyEditorView: View {
                 TextField("penalty.summary", text: $summary)
                     .focused($focus, equals: KeyboardField.penaltySummary)
                     .id(KeyboardField.penaltySummary)
-                SoftNumberField(title: "penalty.amount", value: $amount)
+                SoftNumberField(title: "penalty.amount", value: $amount, money: true)
                     .keyboardFocus(KeyboardField.penaltyAmount, in: focusBinding)
                 DatePicker("penalty.date", selection: $date, displayedComponents: .date)
             }

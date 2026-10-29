@@ -267,6 +267,7 @@
 		48058AA0391FBA5D903BEDBE /* Roboto-Medium.ttf */ = {isa = PBXBuildFile; fileRef = D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */; };
 		C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
 		330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */ = {isa = PBXBuildFile; fileRef = 366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */; };
+		6247BB683169494C6B36A700 /* EditLoadRoundTripTests.swift */ = {isa = PBXBuildFile; fileRef = A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */; };
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
 		1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */; };
 		4642AF0070CC137D07B08CE0 /* ICloudMediaBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */; };
@@ -568,6 +569,7 @@
 		9A0E18B200B7FA69FB005B28 /* SoftCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftCard.swift"; sourceTree = "<group>"; };
 		E9A91E3DC8256945501586BD /* SoftTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftTextField.swift"; sourceTree = "<group>"; };
 		366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreTests.swift"; sourceTree = "<group>"; };
+		A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditLoadRoundTripTests.swift"; sourceTree = "<group>"; };
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
 		6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupTests.swift"; sourceTree = "<group>"; };
 		9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaBackupTests.swift"; sourceTree = "<group>"; };
@@ -1446,6 +1448,7 @@
 			isa = PBXGroup;
 			children = (
 				366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */,
+				A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */,
 				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
 				6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */,
 				9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */,
@@ -1923,6 +1926,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */,
+				6247BB683169494C6B36A700 /* EditLoadRoundTripTests.swift */,
 				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
 				1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */,
 				4642AF0070CC137D07B08CE0 /* ICloudMediaBackupTests.swift */,

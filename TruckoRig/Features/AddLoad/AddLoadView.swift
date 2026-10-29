@@ -152,7 +152,7 @@ struct LoadFormFields: View {
                 placeholder: "T-116KYL6KW",
                 autocapitalization: .characters
             )
-            SoftNumberField(title: "load.totalRate", value: $draft.totalRate)
+            SoftNumberField(title: "load.totalRate", value: $draft.totalRate, money: true)
             SoftNumberField(
                 title: system == .kilometers ? "load.totalKilometers" : "load.totalMiles",
                 value: UnitEntry.distance(stored: $draft.totalMiles, system: system)
