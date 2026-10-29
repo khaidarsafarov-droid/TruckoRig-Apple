@@ -27,6 +27,12 @@ final class JournalViewModel {
         case all
         case disputes
         case unfinished
+        case yesterday
+        case thisWeek
+        case lastWeek
+        case thisMonth
+        case calendarWeek
+        case onDate
 
         var id: String { rawValue }
 
@@ -35,18 +41,39 @@ final class JournalViewModel {
             case .all: return "journal.filter.all"
             case .disputes: return "journal.filter.disputes"
             case .unfinished: return "journal.filter.unfinished"
+            case .yesterday: return "journal.filter.yesterday"
+            case .thisWeek: return "journal.filter.thisWeek"
+            case .lastWeek: return "journal.filter.lastWeek"
+            case .thisMonth: return "journal.filter.thisMonth"
+            case .calendarWeek: return "journal.filter.calendarWeek"
+            case .onDate: return "journal.filter.onDate"
+            }
+        }
+
+        var slice: JournalSlice {
+            switch self {
+            case .all: return .all
+            case .disputes: return .disputes
+            case .unfinished: return .unfinished
+            case .yesterday: return .yesterday
+            case .thisWeek: return .thisWeek
+            case .lastWeek: return .lastWeek
+            case .thisMonth: return .thisMonth
+            case .calendarWeek: return .calendarWeek
+            case .onDate: return .onDate
             }
         }
     }
 
     var searchText = ""
     var filter: Filter = .all
+    var selectedDay = Date()
     var loadPendingDeletion: Load?
     var errorMessage: String?
 
     func sections(from loads: [Load], week: TruckingWeek, locale: Locale = .current) -> [JournalSection] {
         let formatter = WeekLabelFormatter(week: week, locale: locale)
-        let filtered = loads.filter(matches)
+        let filtered = loads.filter { matches($0, week: week) }
         let grouped = Dictionary(grouping: filtered) { WeekRef(weekNumber: $0.weekNumber, year: $0.year) }
 
         let orderedWeeks = grouped.keys.sorted(by: >)
@@ -61,13 +88,17 @@ final class JournalViewModel {
         }
     }
 
-    func matches(_ load: Load) -> Bool {
-        switch filter {
-        case .all: break
-        case .disputes where !load.isActiveDispute: return false
-        case .unfinished where load.lastDeliveryAt != nil || load.actualFinishDate != nil: return false
-        default: break
-        }
+    func matches(_ load: Load, week: TruckingWeek, now: Date = Date()) -> Bool {
+        let unfinished = load.lastDeliveryAt == nil && load.actualFinishDate == nil
+        guard JournalPeriodFilter.includes(
+            date: load.date,
+            activeDispute: load.isActiveDispute,
+            unfinished: unfinished,
+            slice: filter.slice,
+            selectedDay: selectedDay,
+            week: week,
+            now: now
+        ) else { return false }
 
         guard !searchText.trimmed.isEmpty else { return true }
         return load.tripId.matchesSearch(searchText)
@@ -76,7 +107,7 @@ final class JournalViewModel {
     }
 
     /// Totals across everything currently visible, for the header summary.
-    func visibleTotals(from loads: [Load]) -> LoadTotals {
-        LoadTotals.of(loads.filter(matches).map(\.summary))
+    func visibleTotals(from loads: [Load], week: TruckingWeek) -> LoadTotals {
+        LoadTotals.of(loads.filter { matches($0, week: week) }.map(\.summary))
     }
 }

@@ -15,14 +15,17 @@ public enum TelegramInbound: Equatable, Sendable {
 /// Same gate as Android `InboundDocumentResolver`: a clear load is saved, a receipt is confirmed.
 public enum TelegramIngest {
     public static func decide(_ text: String, fileName: String? = nil, reference: Date = Date()) -> TelegramInbound {
-        let loads = LoadMessageParser.parseAll(text, reference: reference)
+        let loads = InboundLoadParser.parseAll(text, fileName: fileName, reference: reference)
         let scores = ReceiptKindClassifier.scoreMap(text, fileName: fileName)
         let loadScore = scores[.load] ?? 0
         let paycheckScore = scores[.paycheck] ?? 0
         let fuelScore = max(scores[.diesel] ?? 0, scores[.def] ?? 0)
         let looksLikeLoad = loadScore >= 6 && loadScore > paycheckScore && loadScore >= fuelScore
         let kind = ReceiptKindClassifier.classify(text, fileName: fileName)
-        let autoSave = !loads.isEmpty && paycheckScore < loadScore && (
+        let autoSave = !loads.isEmpty && paycheckScore < loadScore && LoadCandidateRanker.keepDespiteReceipt(
+            kind: kind == .paycheck ? "paycheck" : (kind == .diesel ? "diesel" : "other"),
+            loads: loads
+        ) && (
             kind == .load || kind == .unknown || (loadScore >= 6 && loadScore >= fuelScore)
         )
         if autoSave { return .saveLoads(loads) }

@@ -33,6 +33,14 @@ final class Load: Identifiable, Hashable {
     var disputeCompleted: Bool
     var disputeResponseDate: Date?
     var disputeAmount: Double?
+    /// When completed, add `disputeAmount` to the rate once. Android `disputeApplyToLoad`.
+    var disputeApplyToLoad: Bool
+    /// True after that amount has been added, so a later save does not add it again.
+    var disputeAmountApplied: Bool
+    /// Android equipment enum name, for example `DRY_VAN`.
+    var equipmentType: String?
+    /// Empty miles before the first pickup. Driven miles are loaded miles plus this.
+    var deadheadMiles: Double
 
     /// Driver override for when the load actually ended, used instead of the last delivery.
     var actualFinishDate: Date?
@@ -71,6 +79,10 @@ final class Load: Identifiable, Hashable {
         disputeCompleted: Bool = false,
         disputeResponseDate: Date? = nil,
         disputeAmount: Double? = nil,
+        disputeApplyToLoad: Bool = false,
+        disputeAmountApplied: Bool = false,
+        equipmentType: String? = nil,
+        deadheadMiles: Double = 0,
         actualFinishDate: Date? = nil,
         firstPickupAt: Date? = nil,
         lastDeliveryAt: Date? = nil,
@@ -95,6 +107,10 @@ final class Load: Identifiable, Hashable {
         self.disputeCompleted = disputeCompleted
         self.disputeResponseDate = disputeResponseDate
         self.disputeAmount = disputeAmount
+        self.disputeApplyToLoad = disputeApplyToLoad
+        self.disputeAmountApplied = disputeAmountApplied
+        self.equipmentType = equipmentType
+        self.deadheadMiles = deadheadMiles
         self.actualFinishDate = actualFinishDate
         self.firstPickupAt = firstPickupAt
         self.lastDeliveryAt = lastDeliveryAt

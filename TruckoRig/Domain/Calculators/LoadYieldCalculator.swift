@@ -63,7 +63,8 @@ public enum LoadYieldCalculator {
         }
 
         let ordered = loads.compactMap { load -> (LoadSummary, Date)? in
-            guard let pickup = load.firstPickupAt else { return nil }
+            let pickup = load.firstPickupAt ?? load.filedOn
+            guard let pickup else { return nil }
             return (load, startOfDay(pickup))
         }.sorted { $0.1 < $1.1 }
 

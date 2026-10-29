@@ -59,6 +59,8 @@ public struct MapLoadInput: Equatable, Sendable {
     }
 }
 
+/// Where a lane row came from. The app is local: reports are always `.me`.
+/// `.friend` and `.network` stay so a stray row can be dropped, and are never fetched.
 public enum CrowdRateSource: String, Equatable, Sendable {
     case me
     case friend

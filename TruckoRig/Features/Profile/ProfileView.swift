@@ -1,4 +1,6 @@
+import PhotosUI
 import SwiftUI
+import UIKit
 
 /// Driver and truck details, plus the way into every secondary screen.
 struct ProfileView: View {
@@ -94,6 +96,15 @@ struct ProfileView: View {
                 .foregroundStyle(Color.forestOnPrimary)
                 .frame(width: 60, height: 60)
                 .background(Color.forestPrimary, in: Circle())
+                .overlay {
+                    if let name = profile?.avatarFileName,
+                       let image = MediaStore(scope: appState.persistence.scope).loadImage(named: name, kind: .photo) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                    }
+                }
+                .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(displayName)
@@ -123,6 +134,12 @@ struct ProfileEditorView: View {
     @State private var licensePlate: String
     @State private var homeState: String
     @State private var role: DriverRole
+    @State private var cdlNumber: String
+    @State private var experienceText: String
+    @State private var phoneNumber: String
+    @State private var telegramUsername: String
+    @State private var avatarItem: PhotosPickerItem?
+    @State private var avatarImage: UIImage?
 
     init(profile: DriverProfile?) {
         self.profile = profile
@@ -133,6 +150,10 @@ struct ProfileEditorView: View {
         _licensePlate = State(initialValue: profile?.licensePlate ?? "")
         _homeState = State(initialValue: profile?.homeState ?? "")
         _role = State(initialValue: DriverRole(rawValue: profile?.role ?? "") ?? .ownerOperator)
+        _cdlNumber = State(initialValue: profile?.cdlNumber ?? "")
+        _experienceText = State(initialValue: profile?.experienceYears.map(String.init) ?? "")
+        _phoneNumber = State(initialValue: profile?.phoneNumber ?? "")
+        _telegramUsername = State(initialValue: profile?.telegramUsername ?? "")
     }
 
     var body: some View {
@@ -146,6 +167,16 @@ struct ProfileEditorView: View {
                         }
                     }
                     SoftTextField(title: "profile.carrier", text: $carrier, autocapitalization: .words)
+                    SoftTextField(title: "profile.cdl", text: $cdlNumber, autocapitalization: .characters)
+                    SoftTextField(title: "profile.experience", text: $experienceText, keyboard: .numberPad)
+                    SoftTextField(title: "profile.phone", text: $phoneNumber, keyboard: .phonePad)
+                    SoftTextField(title: "profile.telegram", text: $telegramUsername)
+                    PhotosPicker(selection: $avatarItem, matching: .images) {
+                        Label("profile.avatar", systemImage: "person.crop.circle")
+                    }
+                    .onChange(of: avatarItem) { _, item in
+                        Task { await loadAvatar(item) }
+                    }
                 }
                 Section("profile.truck") {
                     SoftTextField(title: "profile.truckModel", text: $truckModel, autocapitalization: .words)
@@ -180,9 +211,26 @@ struct ProfileEditorView: View {
         target.truckYear = Int(truckYearText.filter(\.isNumber))
         target.licensePlate = licensePlate.nonEmpty
         target.homeState = homeState.nonEmpty.map(USStates.normalize)
+        target.cdlNumber = cdlNumber.nonEmpty
+        target.experienceYears = Int(experienceText.filter(\.isNumber))
+        target.phoneNumber = phoneNumber.nonEmpty
+        target.telegramUsername = telegramUsername.nonEmpty
+        if let avatarImage {
+            let store = MediaStore(scope: appState.persistence.scope)
+            if let fileName = try? store.saveJPEG(avatarImage) {
+                target.avatarFileName = fileName
+            }
+        }
         target.weeklyGoal = appState.settings.weeklyGoal
 
         appState.saveProfile(target)
         dismiss()
+    }
+
+    private func loadAvatar(_ item: PhotosPickerItem?) async {
+        guard let item, let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) else {
+            return
+        }
+        avatarImage = image
     }
 }

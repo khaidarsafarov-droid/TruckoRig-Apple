@@ -134,6 +134,21 @@ final class AppDatabase {
                 table.column("included", .integer).notNull()
             }
         }
+        migrator.registerMigration("v5_load_profile_parity") { db in
+            try db.alter(table: "load") { table in
+                table.add(column: "disputeApplyToLoad", .integer).notNull().defaults(to: 0)
+                table.add(column: "disputeAmountApplied", .integer).notNull().defaults(to: 0)
+                table.add(column: "equipmentType", .text)
+                table.add(column: "deadheadMiles", .double).notNull().defaults(to: 0)
+            }
+            try db.alter(table: "profile") { table in
+                table.add(column: "cdlNumber", .text)
+                table.add(column: "experienceYears", .integer)
+                table.add(column: "phoneNumber", .text)
+                table.add(column: "telegramUsername", .text)
+                table.add(column: "avatarFileName", .text)
+            }
+        }
         try migrator.migrate(queue)
     }
 
@@ -683,8 +698,9 @@ final class AppDatabase {
         INSERT INTO load (
             id, tripId, date, totalRate, totalMiles, pointA, pointB, puCount, delCount, stopCount,
             weekNumber, year, rawMessage, parsedAt, updatedAt, isDispute, disputeCompleted,
-            disputeResponseDate, disputeAmount, actualFinishDate, firstPickupAt, lastDeliveryAt, durationDays
-        ) VALUES (\(marks(23)))
+            disputeResponseDate, disputeAmount, actualFinishDate, firstPickupAt, lastDeliveryAt, durationDays,
+            disputeApplyToLoad, disputeAmountApplied, equipmentType, deadheadMiles
+        ) VALUES (\(marks(27)))
         ON CONFLICT(id) DO UPDATE SET
             tripId = excluded.tripId,
             date = excluded.date,
@@ -707,7 +723,11 @@ final class AppDatabase {
             actualFinishDate = excluded.actualFinishDate,
             firstPickupAt = excluded.firstPickupAt,
             lastDeliveryAt = excluded.lastDeliveryAt,
-            durationDays = excluded.durationDays
+            durationDays = excluded.durationDays,
+            disputeApplyToLoad = excluded.disputeApplyToLoad,
+            disputeAmountApplied = excluded.disputeAmountApplied,
+            equipmentType = excluded.equipmentType,
+            deadheadMiles = excluded.deadheadMiles
         """, [
             load.id.uuidString, load.tripId, load.date.timeIntervalSince1970, load.totalRate, load.totalMiles,
             load.pointA, load.pointB, load.puCount, load.delCount, load.stopCount, load.weekNumber, load.year,
@@ -716,6 +736,8 @@ final class AppDatabase {
             load.disputeResponseDate?.timeIntervalSince1970, load.disputeAmount,
             load.actualFinishDate?.timeIntervalSince1970, load.firstPickupAt?.timeIntervalSince1970,
             load.lastDeliveryAt?.timeIntervalSince1970, load.durationDays,
+            load.disputeApplyToLoad ? 1 : 0, load.disputeAmountApplied ? 1 : 0,
+            load.equipmentType, load.deadheadMiles,
         ])
         try db.execute(sql: "DELETE FROM stop WHERE loadId = ?", arguments: [load.id.uuidString])
         try db.execute(sql: "DELETE FROM penalty WHERE loadId = ?", arguments: [load.id.uuidString])
@@ -851,17 +873,22 @@ final class AppDatabase {
         try execute(db, """
         INSERT INTO profile (
             id, name, carrier, truckModel, truckYear, licensePlate, homeState, preferredLanguage,
-            weeklyGoal, updatedAt, role
-        ) VALUES (\(marks(11)))
+            weeklyGoal, updatedAt, role, cdlNumber, experienceYears, phoneNumber, telegramUsername, avatarFileName
+        ) VALUES (\(marks(16)))
         ON CONFLICT(id) DO UPDATE SET
             name = excluded.name, carrier = excluded.carrier, truckModel = excluded.truckModel,
             truckYear = excluded.truckYear, licensePlate = excluded.licensePlate, homeState = excluded.homeState,
             preferredLanguage = excluded.preferredLanguage, weeklyGoal = excluded.weeklyGoal,
-            updatedAt = excluded.updatedAt, role = excluded.role
+            updatedAt = excluded.updatedAt, role = excluded.role,
+            cdlNumber = excluded.cdlNumber, experienceYears = excluded.experienceYears,
+            phoneNumber = excluded.phoneNumber, telegramUsername = excluded.telegramUsername,
+            avatarFileName = excluded.avatarFileName
         """, [
             profile.id.uuidString, profile.name, profile.carrier, profile.truckModel, profile.truckYear,
             profile.licensePlate, profile.homeState, profile.preferredLanguage.rawValue, profile.weeklyGoal,
             profile.updatedAt.timeIntervalSince1970, profile.role,
+            profile.cdlNumber, profile.experienceYears, profile.phoneNumber, profile.telegramUsername,
+            profile.avatarFileName,
         ])
     }
 
@@ -909,6 +936,10 @@ final class AppDatabase {
             disputeCompleted: bool(row, "disputeCompleted"),
             disputeResponseDate: date(row, "disputeResponseDate"),
             disputeAmount: double(row, "disputeAmount"),
+            disputeApplyToLoad: bool(row, "disputeApplyToLoad"),
+            disputeAmountApplied: bool(row, "disputeAmountApplied"),
+            equipmentType: string(row, "equipmentType"),
+            deadheadMiles: double(row, "deadheadMiles") ?? 0,
             actualFinishDate: date(row, "actualFinishDate"),
             firstPickupAt: date(row, "firstPickupAt"),
             lastDeliveryAt: date(row, "lastDeliveryAt"),
@@ -1054,6 +1085,11 @@ final class AppDatabase {
             licensePlate: string(row, "licensePlate"),
             homeState: string(row, "homeState"),
             role: string(row, "role"),
+            cdlNumber: string(row, "cdlNumber"),
+            experienceYears: int(row, "experienceYears"),
+            phoneNumber: string(row, "phoneNumber"),
+            telegramUsername: string(row, "telegramUsername"),
+            avatarFileName: string(row, "avatarFileName"),
             preferredLanguage: AppLanguage(rawValue: rawLanguage) ?? .system,
             weeklyGoal: double(row, "weeklyGoal") ?? 0,
             updatedAt: date(row, "updatedAt") ?? Date(timeIntervalSince1970: 0)

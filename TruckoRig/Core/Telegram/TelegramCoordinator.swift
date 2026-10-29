@@ -39,7 +39,11 @@ final class TelegramCoordinator {
 
     func resume() {
         refreshLocal()
-        // Android starts the poller when a token is saved. Premium gates the Settings screen, not the poller.
+        // Android `TelegramBotForegroundService.start` returns immediately when Premium is locked.
+        guard isPremium() else {
+            pause()
+            return
+        }
         guard hasToken else {
             pause()
             return
@@ -63,6 +67,7 @@ final class TelegramCoordinator {
     /// Pull to refresh. Returns the Android toast when a token is saved.
     func pullToRefresh() async -> String? {
         refreshLocal()
+        guard isPremium() else { return nil }
         guard hasToken, let token = try? tokens.read() else { return nil }
         let engine = makeEngine()
         _ = await engine.catchUp(token: token)
@@ -72,6 +77,7 @@ final class TelegramCoordinator {
 
     func catchUpInBackground() async -> Bool {
         refreshLocal()
+        guard isPremium() else { return false }
         guard let token = try? tokens.read(), !token.isEmpty else { return false }
         let engine = makeEngine()
         let outcome = await engine.catchUp(token: token)

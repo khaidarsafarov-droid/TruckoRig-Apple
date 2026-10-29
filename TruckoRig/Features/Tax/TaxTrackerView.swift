@@ -130,6 +130,7 @@ struct TaxTrackerView: View {
             .padding(Spacing.standard)
         }
         .forestBackground()
+        .premiumGated("premium.locked.tax")
         .navigationTitle("screen.tax")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

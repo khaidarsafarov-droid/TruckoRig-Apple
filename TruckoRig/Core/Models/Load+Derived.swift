@@ -41,8 +41,11 @@ extension Load {
 
     var isActiveDispute: Bool { isDispute && !disputeCompleted }
 
+    /// Loaded miles plus deadhead. Android `Load.drivenMiles`.
+    var drivenMiles: Double { totalMiles + max(0, deadheadMiles) }
+
     var ratePerMile: Double {
-        RPMCalculator.ratePerMile(rate: totalRate, miles: totalMiles)
+        RPMCalculator.ratePerMile(rate: totalRate, miles: drivenMiles)
     }
 
     /// Projection consumed by the pure calculators.
@@ -51,7 +54,7 @@ extension Load {
             id: id,
             tripId: tripId,
             totalRate: totalRate,
-            totalMiles: totalMiles,
+            totalMiles: drivenMiles,
             firstPickupAt: firstPickupAt,
             lastDeliveryAt: lastDeliveryAt,
             actualFinishAt: actualFinishDate,

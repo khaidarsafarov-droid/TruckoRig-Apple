@@ -48,6 +48,7 @@ struct CameraView: View {
                 unavailable
             }
         }
+        .premiumGated("premium.locked.camera")
         .navigationTitle("camera.title")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

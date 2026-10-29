@@ -11,11 +11,11 @@ enum MapLoadAdapter {
                 pointB: load.pointB ?? "",
                 totalRateDollars: load.totalRate,
                 totalMiles: load.totalMiles,
-                deadheadMiles: extra?.deadheadMiles ?? 0,
+                deadheadMiles: load.deadheadMiles > 0 ? load.deadheadMiles : (extra?.deadheadMiles ?? 0),
                 parsedAtMillis: millis(load.parsedAt),
                 updatedAtMillis: millis(load.updatedAt),
                 filedOnISO: isoDay(load.date),
-                equipmentType: extra?.equipmentType
+                equipmentType: load.equipmentType ?? extra?.equipmentType
             )
         }
     }

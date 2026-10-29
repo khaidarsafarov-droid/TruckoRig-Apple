@@ -57,11 +57,25 @@ extension View {
     }
 }
 
+private struct CabinReduceMotionKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var cabinReduceMotion: Bool {
+        get { self[CabinReduceMotionKey.self] }
+        set { self[CabinReduceMotionKey.self] = newValue }
+    }
+}
+
 /// Applies the saved theme to a screen tree. OLED black is on only when the cabin is dark.
 struct AppCabinTheme: ViewModifier {
     @Environment(\.colorScheme) private var systemScheme
     var mode: AppThemeMode
     var oledDark: Bool
+    var reduceMotion: Bool
+
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
 
     private var oledActive: Bool {
         ThemePalette.oledApplies(mode: mode, oledDark: oledDark, systemIsDark: systemScheme == .dark)
@@ -71,6 +85,7 @@ struct AppCabinTheme: ViewModifier {
         content
             .modifier(OLEDBarChrome(active: oledActive))
             .environment(\.oledDarkActive, oledActive)
+            .environment(\.cabinReduceMotion, reduceMotion || systemReduceMotion)
             .preferredColorScheme(mode.preferredColorScheme)
     }
 }
@@ -95,6 +110,7 @@ private struct OLEDBarChrome: ViewModifier {
 struct SoftPrimaryButtonStyle: ButtonStyle {
     var isDestructive: Bool = false
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.cabinReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -107,14 +123,15 @@ struct SoftPrimaryButtonStyle: ButtonStyle {
                     .opacity(isEnabled ? 1 : 0.4),
                 in: RoundedRectangle(cornerRadius: Spacing.buttonRadius, style: .continuous)
             )
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+            .scaleEffect(reduceMotion ? 1 : (configuration.isPressed ? 0.98 : 1))
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
 
 /// Champagne gold primary action. Espresso label so the text stays readable on the gold.
 struct GoldButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.cabinReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -127,13 +144,14 @@ struct GoldButtonStyle: ButtonStyle {
                     .opacity(isEnabled ? 1 : 0.4),
                 in: RoundedRectangle(cornerRadius: Spacing.buttonRadius, style: .continuous)
             )
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+            .scaleEffect(reduceMotion ? 1 : (configuration.isPressed ? 0.98 : 1))
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
 
 struct SoftSecondaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.cabinReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -145,8 +163,8 @@ struct SoftSecondaryButtonStyle: ButtonStyle {
                 Color.forestSurfaceMuted,
                 in: RoundedRectangle(cornerRadius: Spacing.buttonRadius, style: .continuous)
             )
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+            .scaleEffect(reduceMotion ? 1 : (configuration.isPressed ? 0.98 : 1))
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
 

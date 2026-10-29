@@ -27,7 +27,7 @@ struct DieselListView: View {
 
     private var visibleFills: [Diesel] {
         guard scope == .thisWeek else { return fills }
-        let week = appState.settings.truckingWeek
+        let week = appState.settings.dieselWeek
         let current = week.currentWeek()
         let rows = fills.map { DieselJournalRow(id: $0.id.uuidString, recordedAt: $0.date, sourceFileName: $0.sourceFileName) }
         let kept = Set(DieselJournalFilter.forWeek(rows, weekNumber: current.weekNumber, year: current.year, week: week).map(\.id))
