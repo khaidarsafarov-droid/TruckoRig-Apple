@@ -146,7 +146,7 @@ struct WeeklyGoalView: View {
     }
 
     private func dayPlanCard(_ progress: WeeklyGoalProgress) -> some View {
-        let rows = dayPlan(for: progress)
+        let plan = viewModel.dayPlan(loads: loads, progress: progress, calendar: calendar)
         return SoftCard {
             HStack {
                 Text("goal.day.plan")
@@ -157,19 +157,25 @@ struct WeeklyGoalView: View {
                     .font(.appCaptionMedium)
                     .foregroundStyle(Color.forestPrimary)
             }
-            ForEach(rows, id: \.date) { row in
-                dayPlanRow(row, needed: progress.dailyTargetNeeded)
+            ForEach(plan.rows, id: \.date) { row in
+                dayPlanRow(row, needed: plan.dailyNeeded)
             }
         }
     }
 
     private func dayPlanRow(_ row: DayPlanRow, needed: Double) -> some View {
         let future = row.status == .future
+        let booked = future && row.gross.cents > 0
         let today = row.status == .today
-        let amount = future ? USMoneyFormat.currency(needed) : USMoneyFormat.currency(row.gross.dollars)
-        let caption = future
-            ? String(localized: "goal.day.needed")
-            : String(localized: "goal.day.fact \(row.planPercent)")
+        let amount = USMoneyFormat.currency(booked || !future ? row.gross.dollars : needed)
+        let caption: String
+        if booked {
+            caption = String(localized: "goal.day.planned")
+        } else if future {
+            caption = String(localized: "goal.day.needed")
+        } else {
+            caption = String(localized: "goal.day.fact \(row.planPercent)")
+        }
         return HStack(spacing: 12) {
             dayMark(row)
             VStack(alignment: .leading, spacing: 2) {
@@ -214,27 +220,6 @@ struct WeeklyGoalView: View {
         case .today: return "circle.circle"
         case .future: return "circle"
         }
-    }
-
-    private func dayPlan(for progress: WeeklyGoalProgress) -> [DayPlanRow] {
-        let calendar = appState.settings.truckingWeek
-        let ref = WeekRef(weekNumber: progress.weekNumber, year: progress.year)
-        guard let start = calendar.startDate(of: ref), let end = calendar.endDate(of: ref) else { return [] }
-        let endExclusive = calendar.calendar.date(byAdding: .day, value: 1, to: end) ?? end
-        var buckets: [Int: Int64] = [:]
-        for load in loads {
-            guard load.date >= start, load.date < endExclusive else { continue }
-            let weekday = calendar.calendar.component(.weekday, from: load.date)
-            let sqlite = (weekday - 1 + 7) % 7
-            buckets[sqlite, default: 0] += MoneyCents.fromDollars(load.totalRate).cents
-        }
-        return WeeklyDayPlan.rows(
-            weekStart: start,
-            today: Date(),
-            grossCentsBySqliteWeekday: buckets,
-            dailyNeeded: MoneyCents.fromDollars(progress.dailyTargetNeeded),
-            calendar: calendar.calendar
-        )
     }
 
     private var suggestedGoals: [Double] {

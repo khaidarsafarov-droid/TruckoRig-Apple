@@ -250,7 +250,7 @@ struct JournalLoadCard: View {
     }
 
     private var headerText: String {
-        let date = journalDate(load.effectiveFinishDate, locale: locale)
+        let date = journalDate(load.date, locale: locale)
         let trip = load.tripId.hasPrefix("#") ? load.tripId : "#\(load.tripId)"
         return "\(date) · \(trip)"
     }
