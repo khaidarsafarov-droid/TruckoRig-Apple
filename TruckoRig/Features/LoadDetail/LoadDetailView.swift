@@ -9,6 +9,7 @@ struct LoadDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var isEditing = false
+    @State private var editorFocus: LoadEditorFocus?
     @State private var isConfirmingDelete = false
     @State private var errorMessage: String?
 
@@ -47,6 +48,9 @@ struct LoadDetailView: View {
         }
         .sheet(isPresented: $isEditing) {
             EditLoadView(load: load)
+        }
+        .sheet(item: $editorFocus) { focus in
+            EditLoadView(load: load, focus: focus)
         }
         .confirmationDialog("journal.delete.confirm", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("action.delete", role: .destructive) { delete() }
@@ -107,6 +111,15 @@ struct LoadDetailView: View {
                     }
                 }
             }
+
+            LoadDetailActionChips(
+                load: load,
+                onMiles: { editorFocus = .miles },
+                onDeadhead: { editorFocus = .deadhead },
+                onFinish: { editorFocus = .finish },
+                onDispute: { editorFocus = .dispute }
+            )
+            .padding(.top, 4)
         }
     }
 

@@ -1,9 +1,20 @@
 import SwiftUI
 
+/// Which part of the editor a detail-screen chip opens. `nil` is the full form.
+enum LoadEditorFocus: Identifiable {
+    case miles
+    case deadhead
+    case finish
+    case dispute
+
+    var id: Self { self }
+}
+
 /// Sheet for editing an existing trip: fields, stops, penalties and the dispute state.
 struct EditLoadView: View {
 
     let load: Load
+    var focus: LoadEditorFocus?
 
     @Environment(AppState.self) private var appState
     @Environment(\.dismiss) private var dismiss
@@ -14,51 +25,57 @@ struct EditLoadView: View {
     @State private var finishDate: Date
     @State private var errorMessage: String?
     @State private var isAddingPenalty = false
+    @State private var detent: PresentationDetent
 
-    init(load: Load) {
+    init(load: Load, focus: LoadEditorFocus? = nil) {
         self.load = load
-        let draft = LoadDraft(load: load)
+        self.focus = focus
+        var draft = LoadDraft(load: load)
+        if focus == .dispute, !draft.isDispute {
+            draft.isDispute = true
+        }
         _draft = State(initialValue: draft)
-        _hasFinishOverride = State(initialValue: draft.actualFinishDate != nil)
-        _finishDate = State(initialValue: draft.actualFinishDate ?? load.lastDeliveryAt ?? load.date)
+        _hasFinishOverride = State(initialValue: focus == .finish || draft.actualFinishDate != nil)
+        _finishDate = State(initialValue: draft.actualFinishDate ?? load.lastDeliveryAt ?? Date())
+        _detent = State(initialValue: focus == nil ? .large : .medium)
     }
 
     var body: some View {
         NavigationStack {
             Form {
-                LoadFormFields(draft: $draft)
-                LoadExtraFields(draft: $draft)
-
-                Section("load.finish") {
-                    Toggle("load.finish.override", isOn: $hasFinishOverride)
-                    if hasFinishOverride {
-                        DatePicker("load.finish.date", selection: $finishDate)
-                    }
-                    Text("load.finish.hint")
-                        .font(.appCaption)
-                        .foregroundStyle(Color.forestTextSecondary)
+                switch focus {
+                case .miles:
+                    milesSection
+                case .deadhead:
+                    deadheadSection
+                case .finish:
+                    finishSection
+                case .dispute:
+                    disputeSection
+                case nil:
+                    LoadFormFields(draft: $draft)
+                    LoadExtraFields(draft: $draft)
+                    finishSection
+                    StopsSection(
+                        stops: $draft.stops,
+                        onEdit: { editingStop = StopEditTarget(index: $0) },
+                        onAdd: { draft.stops.append(StopDraft(type: $0, stopNumber: draft.stops.count + 1)) },
+                        onDelete: {
+                            editingStop = nil
+                            draft.stops.remove(atOffsets: $0)
+                            draft.renumberStops()
+                        },
+                        onMove: {
+                            editingStop = nil
+                            draft.stops.move(fromOffsets: $0, toOffset: $1)
+                            draft.renumberStops()
+                        }
+                    )
+                    disputeSection
+                    penaltiesSection
                 }
-
-                StopsSection(
-                    stops: $draft.stops,
-                    onEdit: { editingStop = StopEditTarget(index: $0) },
-                    onAdd: { draft.stops.append(StopDraft(type: $0, stopNumber: draft.stops.count + 1)) },
-                    onDelete: {
-                        editingStop = nil
-                        draft.stops.remove(atOffsets: $0)
-                        draft.renumberStops()
-                    },
-                    onMove: {
-                        editingStop = nil
-                        draft.stops.move(fromOffsets: $0, toOffset: $1)
-                        draft.renumberStops()
-                    }
-                )
-
-                disputeSection
-                penaltiesSection
             }
-            .navigationTitle("load.edit")
+            .navigationTitle(titleKey)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -85,6 +102,58 @@ struct EditLoadView: View {
                 actions: { Button("action.ok") {} },
                 message: { Text(errorMessage ?? "") }
             )
+        }
+        .presentationDetents(focus == nil ? [.large] : [.medium, .large], selection: $detent)
+    }
+
+    private var titleKey: LocalizedStringKey {
+        switch focus {
+        case .miles:
+            return appState.settings.measurementSystem == .kilometers ? "load.totalKilometers" : "load.totalMiles"
+        case .deadhead:
+            return "load.deadhead"
+        case .finish:
+            return "load.chip.finish.add"
+        case .dispute:
+            return "load.dispute"
+        case nil:
+            return "load.edit"
+        }
+    }
+
+    private var milesSection: some View {
+        Section {
+            SoftNumberField(
+                title: appState.settings.measurementSystem == .kilometers ? "load.totalKilometers" : "load.totalMiles",
+                value: UnitEntry.distance(stored: $draft.totalMiles, system: appState.settings.measurementSystem)
+            )
+            Text("load.chip.miles.hint")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        }
+    }
+
+    private var deadheadSection: some View {
+        Section {
+            SoftNumberField(
+                title: "load.deadhead",
+                value: UnitEntry.distance(stored: $draft.deadheadMiles, system: appState.settings.measurementSystem)
+            )
+            Text("load.deadhead.hint")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
+        }
+    }
+
+    private var finishSection: some View {
+        Section("load.finish") {
+            Toggle("load.finish.override", isOn: $hasFinishOverride)
+            if hasFinishOverride {
+                DatePicker("load.finish.date", selection: $finishDate)
+            }
+            Text("load.finish.hint")
+                .font(.appCaption)
+                .foregroundStyle(Color.forestTextSecondary)
         }
     }
 
