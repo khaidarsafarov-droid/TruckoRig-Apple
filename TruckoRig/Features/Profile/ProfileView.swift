@@ -83,13 +83,8 @@ struct ProfileView: View {
                 .frame(width: 60, height: 60)
                 .background(Color.forestPrimary, in: Circle())
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(displayName)
-                    .font(.appHeadline)
-                Text("profile.provider.local")
-                    .font(.appCaption)
-                    .foregroundStyle(Color.forestTextSecondary)
-            }
+            Text(displayName)
+                .font(.appHeadline)
             Spacer()
         }
         .accessibilityElement(children: .combine)

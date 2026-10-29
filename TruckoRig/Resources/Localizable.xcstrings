@@ -6115,35 +6115,6 @@
         }
       }
     },
-    "profile.provider.local": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Local mode — data stays on this phone"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modo local: los datos se quedan en este teléfono"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Локальный режим — данные только на этом телефоне"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mode local — les données restent sur ce téléphone"
-          }
-        }
-      }
-    },
     "profile.records": {
       "extractionState": "manual",
       "localizations": {
