@@ -72,10 +72,10 @@ final class DriverProfile: Identifiable {
     /// Splits a stored `"First Last"` name. A single word stays the given name.
     var givenAndFamilyName: (given: String, family: String) {
         let trimmed = name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        guard let space = trimmed.firstIndex(of: " ") else { return (trimmed, "") }
-        let given = String(trimmed[..<space])
-        let family = String(trimmed[trimmed.index(after: space)...]).trimmingCharacters(in: .whitespaces)
-        return (given, family)
+        guard let space = trimmed.firstIndex(of: " ") else { return (given: trimmed, family: "") }
+        let givenName = String(trimmed[..<space])
+        let familyName = String(trimmed[trimmed.index(after: space)...]).trimmingCharacters(in: .whitespaces)
+        return (given: givenName, family: familyName)
     }
 
     static func fullName(given: String, family: String) -> String? {
