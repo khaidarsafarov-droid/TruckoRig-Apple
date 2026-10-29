@@ -1,11 +1,13 @@
 name: Sideload IPA
 
 # Unsigned device build for Sideloadly and a free Apple ID.
-# Does not run on pull requests. Push to main publishes a fresh ipa; Run workflow rebuilds it.
+# Push to main publishes a fresh ipa. Run workflow rebuilds it.
+# Pull requests build it too, so a broken sideload package cannot land on main.
 on:
   workflow_dispatch:
   push:
     branches: [main]
+  pull_request:
 
 concurrency:
   group: sideload-ipa-${{ github.ref }}
