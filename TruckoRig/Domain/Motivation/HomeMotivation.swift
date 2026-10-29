@@ -2,7 +2,7 @@ import Foundation
 
 /// Newcomer checklist. Android hides it after the first load.
 public struct ActivationChecklist: Equatable, Sendable {
-    public enum Step: String, CaseIterable, Sendable {
+    public enum Step: String, CaseIterable, Equatable, Sendable {
         case account
         case profile
         case firstLoad
@@ -10,9 +10,14 @@ public struct ActivationChecklist: Equatable, Sendable {
         case firstDiesel
     }
 
-    public var steps: [(Step, Bool)]
+    public struct StepState: Equatable, Sendable {
+        public var step: Step
+        public var done: Bool
+    }
 
-    public var completedCount: Int { steps.filter(\.1).count }
+    public var steps: [StepState]
+
+    public var completedCount: Int { steps.filter(\.done).count }
     public var progress: Double {
         guard !steps.isEmpty else { return 0 }
         return Double(completedCount) / Double(steps.count)
@@ -20,11 +25,11 @@ public struct ActivationChecklist: Equatable, Sendable {
 
     public static func build(profileComplete: Bool, hasLoad: Bool, hasWeeklyGoal: Bool, hasDiesel: Bool) -> ActivationChecklist {
         ActivationChecklist(steps: [
-            (.account, true),
-            (.profile, profileComplete),
-            (.firstLoad, hasLoad),
-            (.weeklyGoal, hasWeeklyGoal),
-            (.firstDiesel, hasDiesel),
+            StepState(step: .account, done: true),
+            StepState(step: .profile, done: profileComplete),
+            StepState(step: .firstLoad, done: hasLoad),
+            StepState(step: .weeklyGoal, done: hasWeeklyGoal),
+            StepState(step: .firstDiesel, done: hasDiesel),
         ])
     }
 }

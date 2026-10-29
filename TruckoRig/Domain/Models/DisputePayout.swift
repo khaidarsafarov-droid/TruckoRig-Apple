@@ -53,6 +53,13 @@ public enum DisputePayout {
         return copy
     }
 
+    /// Journal edit. Android `EditLoadViewModel.save` calls `settleFrom` only.
+    /// `merge` guards a stale detail-screen snapshot and must not run on this path:
+    /// when the stored dispute is not completed it replaces the typed rate with the old one.
+    public static func applyEdit(previous: DisputeSnapshot, incoming: DisputeSnapshot) -> DisputeSnapshot {
+        settle(previous: previous, next: incoming)
+    }
+
     public static func settle(previous: DisputeSnapshot, next: DisputeSnapshot) -> DisputeSnapshot {
         if !next.disputeCompleted {
             if previous.disputeAmountApplied {

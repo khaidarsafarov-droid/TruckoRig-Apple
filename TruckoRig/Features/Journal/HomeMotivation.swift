@@ -26,17 +26,16 @@ struct ActivationChecklistCard: View {
             ProgressView(value: checklist.progress)
                 .tint(Color.forestPrimary)
             ForEach(Array(checklist.steps.enumerated()), id: \.offset) { _, item in
-                let done = item.1
                 Button {
-                    open(item.0)
+                    open(item.step)
                 } label: {
-                    Label(title(item.0), systemImage: done ? "checkmark.circle.fill" : "circle")
+                    Label(title(item.step), systemImage: item.done ? "checkmark.circle.fill" : "circle")
                         .font(.appBody)
-                        .foregroundStyle(done ? Color.forestSuccess : Color.forestText)
+                        .foregroundStyle(item.done ? Color.forestSuccess : Color.forestText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .buttonStyle(.plain)
-                .disabled(done || item.0 == .account)
+                .disabled(item.done || item.step == .account)
             }
         }
         .padding(Spacing.standard)

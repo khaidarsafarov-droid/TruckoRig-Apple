@@ -34,6 +34,8 @@ struct JournalView: View {
     @State private var syncNotice: String?
     @State private var showSurveyPaywall = false
     @State private var showSurvey = false
+    /// iPad split view. The phone list uses `NavigationLink` instead.
+    @State private var selectedLoadID: UUID?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var sections: [JournalSection] {

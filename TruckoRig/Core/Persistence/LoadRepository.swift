@@ -184,22 +184,15 @@ struct LoadRepository {
             disputeAmount: draft.disputeAmount,
             updatedAt: now
         )
-        let merged = DisputePayout.merge(previous: previous, incoming: incoming)
-        let settled = DisputePayout.settle(previous: previous, next: merged)
+        // Edit saves are synchronous, same as Android `EditLoadViewModel.save`.
+        // `DisputePayout.merge` is only for a stale in-flight dispute snapshot and would
+        // throw away a normal rate change.
+        let settled = DisputePayout.applyEdit(previous: previous, incoming: incoming)
         load.totalRate = settled.totalRate
         load.disputeCompleted = settled.disputeCompleted
         load.disputeApplyToLoad = settled.disputeApplyToLoad
         load.disputeAmountApplied = settled.disputeAmountApplied
         load.disputeAmount = settled.disputeAmount
-    }
-
-    func setDispute(_ load: Load, isDispute: Bool, completed: Bool, amount: Double?, responseDate: Date?) throws {
-        load.isDispute = isDispute
-        load.disputeCompleted = completed
-        load.disputeAmount = amount
-        load.disputeResponseDate = responseDate
-        load.touch()
-        try persist(load)
     }
 
     func addPenalty(to load: Load, summary: String, amount: Double, date: Date) throws {

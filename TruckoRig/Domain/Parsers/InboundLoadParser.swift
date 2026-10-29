@@ -84,8 +84,8 @@ enum FlexibleLoadText {
             #"All[\s-]?in(?:\s*rate)?\s*[:\s]*\$?\s*([\d.,]+)"#,
             #"(?:Rate|Pay|Оплата|Ставка)\s*[:\s]*\$?\s*([\d.,]+)"#,
         ]), rate > 0 else { return nil }
-        let pickup = first(text, patterns: [#"Pu[\s\-]*address\s*:\s*(.+)"#, #"Pickup(?:\s*(?:Location|City))?\s*:\s*(.+)"#, #"\bFrom\b\s*:\s*(.+)"#, #"Origin\s*:\s*(.+)"#])
-        let delivery = first(text, patterns: [#"Del[\s\-]*address\s*:\s*(.+)"#, #"Delivery(?:\s*(?:Location|City))?\s*:\s*(.+)"#, #"\bTo\b\s*:\s*(.+)"#, #"Destination\s*:\s*(.+)"#])
+        let pickup = firstText(text, patterns: [#"Pu[\s\-]*address\s*:\s*(.+)"#, #"Pickup(?:\s*(?:Location|City))?\s*:\s*(.+)"#, #"\bFrom\b\s*:\s*(.+)"#, #"Origin\s*:\s*(.+)"#])
+        let delivery = firstText(text, patterns: [#"Del[\s\-]*address\s*:\s*(.+)"#, #"Delivery(?:\s*(?:Location|City))?\s*:\s*(.+)"#, #"\bTo\b\s*:\s*(.+)"#, #"Destination\s*:\s*(.+)"#])
         guard pickup != nil || delivery != nil else { return nil }
         let milesRaw = first(text, patterns: [#"Total\s*Loaded\s*Miles\s*[:\s]*([\d.,]+)"#, #"(?:Loaded\s*Miles|Miles|Distance)\s*[:\s]*([\d.,]+)"#]) ?? 0
         let miles = NumberParsing.sanitizeLoadedMiles(milesRaw, totalRate: rate)
@@ -225,13 +225,13 @@ enum JsonLoadText {
     }
 }
 
-func first(_ text: String, patterns: [String]) -> Double? {
+private func first(_ text: String, patterns: [String]) -> Double? {
     guard let raw = firstText(text, patterns: patterns) else { return nil }
     let value = NumberParsing.parseMoney(raw)
     return value > 0 ? value : NumberParsing.parseMiles(raw)
 }
 
-func firstText(_ text: String, patterns: [String]) -> String? {
+private func firstText(_ text: String, patterns: [String]) -> String? {
     for pattern in patterns {
         guard let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) else { continue }
         let range = NSRange(text.startIndex..<text.endIndex, in: text)
@@ -243,14 +243,14 @@ func firstText(_ text: String, patterns: [String]) -> String? {
     return nil
 }
 
-func make(tripId: String, rate: Double, miles: Double, pickup: String?, delivery: String?, raw: String, reference: Date) -> ParsedLoad {
+private func make(tripId: String, rate: Double, miles: Double, pickup: String?, delivery: String?, raw: String, reference: Date) -> ParsedLoad {
     var stops: [StopDraft] = []
     if let pickup { stops.append(addressStop(.pickup, pickup, number: 1)) }
     if let delivery { stops.append(addressStop(.delivery, delivery, number: stops.count + 1)) }
     return ParsedLoad(tripId: tripId, totalRate: rate, totalMiles: miles, date: reference, stops: stops, rawMessage: raw)
 }
 
-func addressStop(_ type: StopType, _ address: String, number: Int) -> StopDraft {
+private func addressStop(_ type: StopType, _ address: String, number: Int) -> StopDraft {
     let parts = address.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
     let city = parts.first ?? address
     let state = parts.dropFirst().first.map { String($0.prefix(2)).uppercased() } ?? ""

@@ -41,6 +41,32 @@ final class DisputePayoutTests: XCTestCase {
         XCTAssertTrue(settled.disputeAmountApplied)
     }
 
+    func testOrdinaryRateEditKeepsTheTypedRate() {
+        let previous = snapshot(rate: 2500)
+        let incoming = snapshot(rate: 3100, updated: 20)
+        let settled = DisputePayout.applyEdit(previous: previous, incoming: incoming)
+
+        XCTAssertEqual(settled.totalRate, 3100, accuracy: 0.001)
+        XCTAssertFalse(settled.disputeAmountApplied)
+    }
+
+    func testRateEditAfterTheClaimWasAppliedKeepsTheTypedRate() {
+        let previous = snapshot(rate: 2700, completed: true, apply: true, applied: true, amount: 200, updated: 10)
+        let incoming = snapshot(rate: 3000, completed: true, apply: true, applied: true, amount: 200, updated: 20)
+        let settled = DisputePayout.applyEdit(previous: previous, incoming: incoming)
+
+        XCTAssertEqual(settled.totalRate, 3000, accuracy: 0.001)
+        XCTAssertTrue(settled.disputeAmountApplied)
+    }
+
+    func testMergeWouldHaveDiscardedThatRateEdit() {
+        let previous = snapshot(rate: 2500)
+        let incoming = snapshot(rate: 3100, updated: 20)
+        let merged = DisputePayout.merge(previous: previous, incoming: incoming)
+
+        XCTAssertEqual(merged.totalRate, 2500, accuracy: 0.001)
+    }
+
     func testTurningTheDisputeOffRemovesTheClaim() {
         let previous = snapshot(rate: 2700, completed: true, apply: true, applied: true, amount: 200, updated: 10)
         let incoming = snapshot(rate: 2700, completed: false, apply: false, amount: 200, updated: 20)
