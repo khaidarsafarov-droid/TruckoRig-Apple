@@ -57,41 +57,16 @@ Workflow **Sideload IPA** кладёт неподписанный `.ipa` в ар
 ## TestFlight
 
 Для выкладки нужен платный [Apple Developer Program](https://developer.apple.com/programs/)
-($99 в год). Mac не нужен: сертификат выпускается с Windows через OpenSSL, а архив собирает
-workflow `.github/workflows/testflight.yml`.
+($99 в год). Mac не нужен. Пошаговый список с Windows, идентификаторы и имена секретов:
+[docs/RELEASE_SECRETS_RU.md](docs/RELEASE_SECRETS_RU.md).
 
-Этот workflow **не запускается** на push и pull request. Вкладка Actions → TestFlight → Run
-workflow. Пока секретов нет, job останавливается до подписи и ничего не заливает.
+Workflow `.github/workflows/testflight.yml` не запускается на pull request. Его стартуют
+вручную или тегом `v*`. Пока секретов нет, job останавливается до подписи и остаётся зелёным.
 
-Секреты репозитория (Settings → Secrets and variables → Actions):
-
-| Секрет | Откуда |
-|---|---|
-| `APPLE_TEAM_ID` | 10 символов Team ID, [developer.apple.com/account](https://developer.apple.com/account) → Membership |
-| `APP_STORE_CONNECT_KEY_ID` | App Store Connect → Users and Access → Integrations → App Store Connect API → Key ID |
-| `APP_STORE_CONNECT_ISSUER_ID` | Issuer ID на той же странице |
-| `APP_STORE_CONNECT_KEY_P8` | Содержимое скачанного `AuthKey_XXXX.p8`, целиком, включая строки `BEGIN` и `END`. Ключ скачивается один раз |
-| `IOS_DISTRIBUTION_P12_BASE64` | Distribution-сертификат в `.p12`, затем `base64 -w 0 cert.p12` (на Windows: `certutil -encode` и убрать заголовки, либо OpenSSL) |
-| `IOS_DISTRIBUTION_P12_PASSWORD` | Пароль, заданный при экспорте `.p12` |
-
-Сертификат с Windows:
-
-```bash
-openssl req -new -newkey rsa:2048 -nodes -keyout distribution.key -out distribution.csr -subj "/CN=TruckoRig Distribution/O=TruckoRig"
-```
-
-CSR загружается в Certificates → Apple Distribution. Скачанный `.cer` собирается в `.p12`:
-
-```bash
-openssl x509 -in distribution.cer -inform DER -out distribution.pem
-openssl pkcs12 -export -inkey distribution.key -in distribution.pem -out distribution.p12
-```
-
-В портале заранее создайте App ID `com.truckorig` и `com.truckorig.widget` с App Groups
-(`group.com.truckorig`) и iCloud Documents (`iCloud.com.truckorig`) у приложения. Workflow
-подписывает автоматически (`-allowProvisioningUpdates`) этим API-ключом и заливает `.ipa`
-через `xcrun altool`. Приложение в App Store Connect с bundle id `com.truckorig` должно уже
-существовать, иначе загрузка не к чему привязаться.
+Release-сборка подписывается Team ID из секрета `APPLE_TEAM_ID` (файл
+`Config/Signing.local.xcconfig`, в git не входит). В ней остаются iCloud Documents
+(`iCloud.com.truckorig`), App Group `group.com.truckorig` и виджет `com.truckorig.widget`.
+Премиум в Release закрыт. Неподписанный Sideload IPA этих возможностей не содержит.
 
 ## Структура
 

@@ -327,6 +327,8 @@
 /* Begin PBXFileReference section */
 		D68807FED8449A70B846E60D /* Maps.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Maps.xcconfig"; sourceTree = "<group>"; };
 		030B18B3E2541435666926E9 /* Secrets.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Secrets.example.xcconfig"; sourceTree = "<group>"; };
+		FDFED0FC9AF95BD43DAD3337 /* Signing.local.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Signing.local.xcconfig.example"; sourceTree = "<group>"; };
+		6C5A99597CD4C624170452B0 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Signing.xcconfig"; sourceTree = "<group>"; };
 		D54B22793ECC643C70585249 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppState.swift"; sourceTree = "<group>"; };
 		CFB51C6271E4645F7DB9D6D1 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
 		2E4E5C1D387990139022C762 /* TruckoRigApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckoRigApp.swift"; sourceTree = "<group>"; };
@@ -656,6 +658,8 @@
 			children = (
 				D68807FED8449A70B846E60D /* Maps.xcconfig */,
 				030B18B3E2541435666926E9 /* Secrets.example.xcconfig */,
+				6C5A99597CD4C624170452B0 /* Signing.xcconfig */,
+				FDFED0FC9AF95BD43DAD3337 /* Signing.local.xcconfig.example */,
 			);
 			path = "Config";
 			sourceTree = "<group>";
@@ -2145,6 +2149,7 @@
 		};
 		297D4155EEB86AAF4470A4B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C5A99597CD4C624170452B0 /* Signing.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TruckoRigWidget/TruckoRigWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -2166,6 +2171,7 @@
 		};
 		B54244056D086D3B2AB1A5FD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C5A99597CD4C624170452B0 /* Signing.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TruckoRigWidget/TruckoRigWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;

@@ -1,0 +1,8 @@
+// Paid-account signing. No Team ID is stored in git.
+//
+// A local archive copies Config/Signing.local.xcconfig.example and fills
+// DEVELOPMENT_TEAM. The TestFlight workflow writes that file from the
+// APPLE_TEAM_ID secret and also passes DEVELOPMENT_TEAM to xcodebuild.
+// The Sideload configuration forces CODE_SIGNING_ALLOWED = NO, so a missing
+// team does not block the unsigned ipa.
+#include? "Signing.local.xcconfig"

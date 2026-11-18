@@ -42,6 +42,8 @@ CONFIG_DIR = "Config"
 CONFIG_FILES = [
     "Config/Maps.xcconfig",
     "Config/Secrets.example.xcconfig",
+    "Config/Signing.xcconfig",
+    "Config/Signing.local.xcconfig.example",
 ]
 MARKETING_VERSION = "1.5.7"
 DEPLOYMENT_TARGET = "17.0"
@@ -537,11 +539,18 @@ def build() -> str:
         for name, settings in target_configurations(key).items():
             add(f"\t\t{object_id(f'config-{key}', name)} /* {name} */ = {{")
             add("\t\t\tisa = XCBuildConfiguration;")
+            # App Debug/Release/Sideload share Maps.xcconfig, which optionally
+            # includes the team id. The widget's signed configs include it directly.
+            # Sideload still forces CODE_SIGNING_ALLOWED = NO in its build settings.
+            base_config = None
             if key == "app":
-                maps_config = "Config/Maps.xcconfig"
+                base_config = "Config/Maps.xcconfig"
+            elif key == "widget" and name != "Sideload":
+                base_config = "Config/Signing.xcconfig"
+            if base_config:
                 add(
-                    f"\t\t\tbaseConfigurationReference = {object_id('fileref', maps_config)} "
-                    "/* Maps.xcconfig */;"
+                    f"\t\t\tbaseConfigurationReference = {object_id('fileref', base_config)} "
+                    f"/* {os.path.basename(base_config)} */;"
                 )
             add("\t\t\tbuildSettings = {")
             for setting, value in settings.items():
