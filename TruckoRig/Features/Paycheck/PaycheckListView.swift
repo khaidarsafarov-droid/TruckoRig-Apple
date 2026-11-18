@@ -82,7 +82,7 @@ struct PaycheckListView: View {
                 Text(paycheck.company ?? String(localized: "paycheck.untitled"))
                     .font(.appBodyMedium)
                     .foregroundStyle(Color.forestText)
-                Text("\(DateUtils.mediumDate(paycheck.date)) · W\(paycheck.weekNumber)" as String)
+                Text("\(DateUtils.mediumDate(paycheck.date)) · \(String(localized: "analytics.weekTick \(paycheck.weekNumber)"))")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
             }

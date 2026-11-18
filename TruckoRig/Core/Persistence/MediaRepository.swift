@@ -30,6 +30,10 @@ struct MediaRepository {
         )
         if let load {
             photo.load = load
+            var attached = load.photos ?? []
+            attached.removeAll { $0.id == photo.id }
+            attached.append(photo)
+            load.photos = attached
         } else if let loadId = fields.loadId {
             photo.loadId = UUID(uuidString: loadId)
         }
@@ -52,6 +56,10 @@ struct MediaRepository {
         )
         if let load {
             scan.load = load
+            var attached = load.scans ?? []
+            attached.removeAll { $0.id == scan.id }
+            attached.append(scan)
+            load.scans = attached
         } else if let loadId = fields.loadId {
             scan.loadId = UUID(uuidString: loadId)
         }

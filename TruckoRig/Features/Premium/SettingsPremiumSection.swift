@@ -49,6 +49,7 @@ struct SettingsPremiumSection: View {
                 Text("premium.active")
                     .font(.appBody)
                     .foregroundStyle(Color.heroText)
+                #if !SIDELOAD
                 Text("settings.premium.renews")
                     .font(.appCaption)
                     .foregroundStyle(Color.heroTextMuted)
@@ -65,6 +66,7 @@ struct SettingsPremiumSection: View {
                     Text("settings.premium.manage")
                 }
                 .buttonStyle(GoldButtonStyle())
+                #endif
             } else {
                 Text("premium.free")
                     .font(.appBody)

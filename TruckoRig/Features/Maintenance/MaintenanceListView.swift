@@ -98,6 +98,9 @@ struct MaintenanceListView: View {
     private var taskSection: some View {
         VStack(alignment: .leading, spacing: Spacing.tight) {
             header("maintenance.active") { showsTaskEditor = true }
+            if appState.maintenanceAlertsDenied && !progress.isEmpty {
+                MaintenanceNotificationDeniedCard()
+            }
             if progress.isEmpty {
                 hint("maintenance.empty.tasks")
             } else {
@@ -192,7 +195,7 @@ struct MaintenanceListView: View {
             }
             HStack {
                 Button("maintenance.mark.done") {
-                    try? appState.financeRepository().complete(item.task)
+                    appState.completeMaintenance(item.task)
                 }
                 .buttonStyle(.softSecondary)
                 Spacer()

@@ -11,12 +11,22 @@ final class AppSettings {
 
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let widgetDefaults: UserDefaults?
+
+    /// App Group suite for the widget. The sideload build has no group entitlement, so settings
+    /// stay in the standard defaults.
+    static var widgetSuite: UserDefaults? {
+        #if SIDELOAD
+        nil
+        #else
+        UserDefaults(suiteName: WidgetBridge.appGroup)
+        #endif
+    }
     private(set) var scope: AccountScope
 
     init(
         scope: AccountScope = .local,
         defaults: UserDefaults = .standard,
-        widgetDefaults: UserDefaults? = UserDefaults(suiteName: WidgetBridge.appGroup)
+        widgetDefaults: UserDefaults? = AppSettings.widgetSuite
     ) {
         self.defaults = defaults
         self.widgetDefaults = widgetDefaults
@@ -48,6 +58,7 @@ final class AppSettings {
         ).explicit
         mirrorThemeToWidget(reloadWidget: false)
         publishResolvedMeasurementSystem(reloadWidget: false)
+        AppLocale.apply(language)
     }
 
     // MARK: - Values
@@ -65,6 +76,7 @@ final class AppSettings {
     var language: AppLanguage {
         didSet {
             write(.language, language.rawValue)
+            AppLocale.apply(language)
             publishResolvedMeasurementSystem(reloadWidget: true)
         }
     }

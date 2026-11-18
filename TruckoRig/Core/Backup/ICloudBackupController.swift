@@ -93,6 +93,10 @@ final class ICloudBackupController {
     }
 
     func start() {
+        #if SIDELOAD
+        availability = .signedOut
+        return
+        #else
         if UITestLaunch.suppressesSystemPrompts && store.monitorsUbiquity {
             availability = .signedOut
             return
@@ -112,6 +116,7 @@ final class ICloudBackupController {
             didScheduleMedia = true
             scheduleMediaBackup(after: ICloudMediaPolicy.backgroundDelayAfterChange)
         }
+        #endif
     }
 
     func setMediaEnabled(_ enabled: Bool) {
@@ -135,6 +140,9 @@ final class ICloudBackupController {
 
     /// Debounced push after a journal edit. Background and the processing task do not wait.
     func noteLocalChange() {
+        #if SIDELOAD
+        return
+        #else
         guard !UITestLaunch.suppressesSystemPrompts || !store.monitorsUbiquity else { return }
         generation += 1
         let token = generation
@@ -146,14 +154,19 @@ final class ICloudBackupController {
             await self.sync(debounceElapsed: true)
         }
         scheduleMediaBackup(after: ICloudMediaPolicy.backgroundDelayAfterChange)
+        #endif
     }
 
     func syncOnBackground() {
+        #if SIDELOAD
+        return
+        #else
         guard !UITestLaunch.suppressesSystemPrompts || !store.monitorsUbiquity else { return }
         debounceTask?.cancel()
         generation += 1
         Task { await self.sync(debounceElapsed: true) }
         scheduleMediaBackup(after: 30)
+        #endif
     }
 
     func syncNow() async {
@@ -567,6 +580,9 @@ enum ICloudBackgroundRegistrar {
     private static var registered = false
 
     static func register() {
+        #if SIDELOAD
+        return
+        #else
         guard !registered else { return }
         registered = true
         BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { task in
@@ -595,15 +611,20 @@ enum ICloudBackgroundRegistrar {
                 task.setTaskCompleted(success: false)
             }
         }
+        #endif
     }
 
     static func submit() {
+        #if SIDELOAD
+        return
+        #else
         guard !UITestLaunch.suppressesSystemPrompts else { return }
         let request = BGProcessingTaskRequest(identifier: identifier)
         request.requiresNetworkConnectivity = ICloudBackupPolicy.requiresNetwork
         request.requiresExternalPower = BackupSchedule.requiresExternalPower
         request.earliestBeginDate = Date(timeIntervalSinceNow: ICloudBackupPolicy.periodicInterval)
         try? BGTaskScheduler.shared.submit(request)
+        #endif
     }
 }
 

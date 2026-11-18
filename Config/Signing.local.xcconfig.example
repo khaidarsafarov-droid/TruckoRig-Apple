@@ -1,0 +1,4 @@
+// Copy to Config/Signing.local.xcconfig. That copy is gitignored.
+// Team ID is the 10-character Membership id on developer.apple.com/account.
+// Leave this blank until the Apple Developer Program is active.
+DEVELOPMENT_TEAM =

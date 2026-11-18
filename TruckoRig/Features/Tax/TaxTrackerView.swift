@@ -203,7 +203,7 @@ struct TaxTrackerView: View {
         let date = calendar.date(from: components) ?? Date()
         let formatter = DateFormatter()
         formatter.calendar = calendar
-        formatter.locale = .current
+        formatter.locale = AppLocale.locale
         formatter.setLocalizedDateFormatFromTemplate("MMMM y")
         return formatter.string(from: date)
     }

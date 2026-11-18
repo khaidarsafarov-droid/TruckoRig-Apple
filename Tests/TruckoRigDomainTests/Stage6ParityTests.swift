@@ -230,14 +230,14 @@ final class Stage6ParityTests: XCTestCase {
             systemName: "Android",
             systemRelease: "14"
         )
-        XCTAssertEqual(draft?.to, "Truckorig@gmail.com")
+        XCTAssertEqual(draft?.to, "truckorig@gmail.com")
         XCTAssertEqual(draft?.subject, "[TruckoRig] Broken")
         XCTAssertTrue(draft?.body.contains("Тема: Broken") == true)
         XCTAssertTrue(draft?.body.contains("Camera fails") == true)
         XCTAssertTrue(draft?.body.contains("TruckoRig 1.5.7 (1)") == true)
         XCTAssertTrue(draft?.body.contains("Android 14") == true)
         let uri = ImprovementFeedbackMail.mailtoURI(draft!)
-        XCTAssertTrue(uri.hasPrefix("mailto:Truckorig@gmail.com?subject="))
+        XCTAssertTrue(uri.hasPrefix("mailto:truckorig@gmail.com?subject="))
         XCTAssertTrue(uri.contains("Camera%20fails"))
         XCTAssertFalse(uri.contains("+"))
     }

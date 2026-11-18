@@ -22,6 +22,11 @@ struct PrivacyView: View {
                     .foregroundStyle(Color.forestTextSecondary)
             }
             .listRowBackground(Color.forestCard)
+
+            Section {
+                SupportContactRow()
+            }
+            .listRowBackground(Color.forestCard)
         }
         .scrollContentBackground(.hidden)
         .forestBackground()

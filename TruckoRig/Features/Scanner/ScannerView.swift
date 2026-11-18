@@ -302,7 +302,7 @@ struct ScanResultView: View {
                     Text("scanner.size \(ScanCapture.formatFileSize(pending.fileSizeBytes))")
                         .font(.appCaption)
                         .foregroundStyle(Color.forestTextSecondary)
-                    Text(PhotoMetadataDisplay.dateLine(timestamp: pending.timestamp))
+                    Text(PhotoMetadataDisplay.dateLine(timestamp: pending.timestamp, locale: AppLocale.locale))
                         .font(.appCaption)
                         .foregroundStyle(Color.forestTextSecondary)
                     if isAttachedToLoad && !pending.savedToDatabase {

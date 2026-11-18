@@ -42,6 +42,8 @@ CONFIG_DIR = "Config"
 CONFIG_FILES = [
     "Config/Maps.xcconfig",
     "Config/Secrets.example.xcconfig",
+    "Config/Signing.xcconfig",
+    "Config/Signing.local.xcconfig.example",
 ]
 MARKETING_VERSION = "1.5.7"
 DEPLOYMENT_TARGET = "17.0"
@@ -55,6 +57,8 @@ WIDGET_SHARED_SOURCES = [
     "TruckoRig/Core/Theme/ThemePalette.swift",
     "TruckoRig/Core/Theme/PaceStatusPresentation.swift",
     "TruckoRig/Core/Utils/StringUtils.swift",
+    "TruckoRig/Core/Localization/AppLanguage.swift",
+    "TruckoRig/Core/Localization/AppLocale.swift",
     "TruckoRig/Domain/DeepLink/WidgetDeepLink.swift",
     "TruckoRig/Domain/Models/RPMBand.swift",
     "TruckoRig/Domain/Models/WeeklyGoalProgress.swift",
@@ -66,7 +70,9 @@ WIDGET_SHARED_SOURCES = [
 # Files that live in the source tree but must not be copied into the bundle.
 NON_BUNDLE_FILES = {
     "Info.plist",
+    "InfoSideload.plist",
     "TruckoRig.entitlements",
+    "TruckoRigSideload.entitlements",
     "TruckoRigWidget.entitlements",
     # Licenses stay in the repository and out of the app bundle.
     "DMSans-OFL.txt",
@@ -82,6 +88,7 @@ FILE_TYPES = {
     ".xcstrings": "text.json.xcstrings",
     ".md": "net.daringfireball.markdown",
     ".png": "image.png",
+    ".caf": "file",
     ".json": "text.json",
     ".ttf": "file",
     ".otf": "file",
@@ -371,6 +378,7 @@ def build() -> str:
         add(f"\t\t\t\t{object_id('phase-resources', key)} /* Resources */,")
         if key == "app":
             add(f"\t\t\t\t{object_id('phase-embed', 'app')} /* Embed Foundation Extensions */,")
+            add(f"\t\t\t\t{object_id('phase-strip', 'app')} /* Strip widget for sideload */,")
         add("\t\t\t);")
         add("\t\t\tbuildRules = (")
         add("\t\t\t);")
@@ -466,6 +474,35 @@ def build() -> str:
         add("\t\t};")
     add("/* End PBXSourcesBuildPhase section */")
 
+    # Removes the widget appex only from the Sideload configuration. Debug and Release keep it.
+    add("")
+    add("/* Begin PBXShellScriptBuildPhase section */")
+    add(f"\t\t{object_id('phase-strip', 'app')} /* Strip widget for sideload */ = {{")
+    add("\t\t\tisa = PBXShellScriptBuildPhase;")
+    add("\t\t\talwaysOutOfDate = 1;")
+    add("\t\t\tenableUserScriptSandboxing = 0;")
+    add("\t\t\tbuildActionMask = 2147483647;")
+    add("\t\t\tfiles = (")
+    add("\t\t\t);")
+    add("\t\t\tinputFileListPaths = (")
+    add("\t\t\t);")
+    add("\t\t\tinputPaths = (")
+    add("\t\t\t);")
+    add('\t\t\tname = "Strip widget for sideload";')
+    add("\t\t\toutputFileListPaths = (")
+    add("\t\t\t);")
+    add("\t\t\toutputPaths = (")
+    add("\t\t\t);")
+    add("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
+    add("\t\t\tshellPath = /bin/sh;")
+    add(
+        '\t\t\tshellScript = "if [ \\"$CONFIGURATION\\" = \\"Sideload\\" ]; then\\n'
+        '  rm -rf \\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/PlugIns\\" || true\\n'
+        'fi\\n";'
+    )
+    add("\t\t};")
+    add("/* End PBXShellScriptBuildPhase section */")
+
     # PBXTargetDependency
     add("")
     add("/* Begin PBXTargetDependency section */")
@@ -502,11 +539,18 @@ def build() -> str:
         for name, settings in target_configurations(key).items():
             add(f"\t\t{object_id(f'config-{key}', name)} /* {name} */ = {{")
             add("\t\t\tisa = XCBuildConfiguration;")
+            # App Debug/Release/Sideload share Maps.xcconfig, which optionally
+            # includes the team id. The widget's signed configs include it directly.
+            # Sideload still forces CODE_SIGNING_ALLOWED = NO in its build settings.
+            base_config = None
             if key == "app":
-                maps_config = "Config/Maps.xcconfig"
+                base_config = "Config/Maps.xcconfig"
+            elif key == "widget" and name != "Sideload":
+                base_config = "Config/Signing.xcconfig"
+            if base_config:
                 add(
-                    f"\t\t\tbaseConfigurationReference = {object_id('fileref', maps_config)} "
-                    "/* Maps.xcconfig */;"
+                    f"\t\t\tbaseConfigurationReference = {object_id('fileref', base_config)} "
+                    f"/* {os.path.basename(base_config)} */;"
                 )
             add("\t\t\tbuildSettings = {")
             for setting, value in settings.items():
@@ -529,7 +573,7 @@ def build() -> str:
         add(f"\t\t{object_id('configlist', key)} /* Build configuration list */ = {{")
         add("\t\t\tisa = XCConfigurationList;")
         add("\t\t\tbuildConfigurations = (")
-        for name in ("Debug", "Release"):
+        for name in ("Debug", "Release", "Sideload"):
             add(f"\t\t\t\t{object_id(role, name)} /* {name} */,")
         add("\t\t\t);")
         add("\t\t\tdefaultConfigurationIsVisible = 0;")
@@ -610,7 +654,10 @@ def project_configurations() -> dict[str, dict[str, str]]:
         "SWIFT_COMPILATION_MODE": "wholemodule",
         "VALIDATE_PRODUCT": "YES",
     })
-    return {"Debug": debug, "Release": release}
+    # Same optimizer settings as Release. The app target turns signing and paid capabilities off.
+    sideload = dict(release)
+    sideload["VALIDATE_PRODUCT"] = "NO"
+    return {"Debug": debug, "Release": release, "Sideload": sideload}
 
 
 def target_configurations(key: str) -> dict[str, dict[str, str]]:
@@ -683,7 +730,27 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "TARGETED_DEVICE_FAMILY": '"1,2"',
             "TEST_HOST": '"$(BUILT_PRODUCTS_DIR)/TruckoRig.app/TruckoRig"',
         }
-    return {"Debug": dict(settings), "Release": dict(settings)}
+    debug = dict(settings)
+    release = dict(settings)
+    sideload = dict(settings)
+    if key == "app":
+        sideload.update({
+            "CODE_SIGN_ENTITLEMENTS": f"{APP_DIR}/Resources/TruckoRigSideload.entitlements",
+            "CODE_SIGN_IDENTITY": '"-"',
+            "CODE_SIGNING_ALLOWED": "NO",
+            "CODE_SIGNING_REQUIRED": "NO",
+            "INFOPLIST_FILE": f"{APP_DIR}/Resources/InfoSideload.plist",
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS": '"SIDELOAD"',
+            "VALIDATE_PRODUCT": "NO",
+        })
+    elif key == "widget":
+        # Still built, because the app target depends on it, then deleted from the Sideload app.
+        sideload.update({
+            "CODE_SIGN_IDENTITY": '"-"',
+            "CODE_SIGNING_ALLOWED": "NO",
+            "CODE_SIGNING_REQUIRED": "NO",
+        })
+    return {"Debug": debug, "Release": release, "Sideload": sideload}
 
 
 SCHEME_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>

@@ -118,14 +118,12 @@ enum SnapshotBuilder {
         ProfileDTO(
             id: profile.id,
             name: profile.name,
-            carrier: profile.carrier,
             truckModel: profile.truckModel,
             truckYear: profile.truckYear,
             licensePlate: profile.licensePlate,
             homeState: profile.homeState,
             weeklyGoal: profile.weeklyGoal,
-            updatedAt: profile.updatedAt,
-            role: profile.role
+            updatedAt: profile.updatedAt
         )
     }
 

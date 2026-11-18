@@ -1,13 +1,12 @@
 import SwiftUI
 
-/// First launch: name, the kind of work, then an optional Telegram bot.
+/// First launch: first and last name, then an optional Telegram bot.
 struct OnboardingView: View {
 
     @Environment(AppState.self) private var appState
     @State private var step = 0
     @State private var givenName = ""
     @State private var familyName = ""
-    @State private var role = DriverRole.ownerOperator
     @State private var token = ""
     @State private var revealed = false
     @State private var errorMessage: String?
@@ -23,8 +22,6 @@ struct OnboardingView: View {
                 VStack(alignment: .leading, spacing: Spacing.section) {
                     if step == 0 {
                         nameStep
-                    } else if step == 1 {
-                        roleStep
                     } else {
                         telegramStep
                     }
@@ -72,36 +69,6 @@ struct OnboardingView: View {
             Button("onboard.skip") { finish(name: nil) }
                 .font(.appCaptionMedium)
                 .foregroundStyle(Color.forestTextSecondary)
-        }
-    }
-
-    private var roleStep: some View {
-        VStack(alignment: .leading, spacing: Spacing.standard) {
-            Text("onboard.roleLabel")
-                .font(.appCaptionMedium)
-                .foregroundStyle(Color.forestTextSecondary)
-            ForEach(DriverRole.allCases) { option in
-                Button {
-                    role = option
-                } label: {
-                    HStack {
-                        Text(option.title)
-                            .font(.appBodyMedium)
-                            .foregroundStyle(Color.forestText)
-                        Spacer()
-                        if role == option {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(Color.forestPrimary)
-                        }
-                    }
-                    .padding(Spacing.standard)
-                    .background(Color.forestCard, in: RoundedRectangle(cornerRadius: Spacing.cardRadius, style: .continuous))
-                }
-                .buttonStyle(.plain)
-            }
-            SoftButton(title: "onboard.next") {
-                step = 2
-            }
         }
     }
 
@@ -160,11 +127,7 @@ struct OnboardingView: View {
     }
 
     private var title: LocalizedStringKey {
-        switch step {
-        case 0: return "onboard.title"
-        case 1: return "onboard.roleTitle"
-        default: return "onboard.telegram.title"
-        }
+        step == 0 ? "onboard.title" : "onboard.telegram.title"
     }
 
     private var enteredName: String? {
@@ -188,26 +151,7 @@ struct OnboardingView: View {
         if let name {
             profile.name = name
         }
-        if step >= 1 {
-            profile.role = role.rawValue
-        }
         appState.saveProfile(profile)
         appState.settings.onboardingComplete = true
-    }
-}
-
-enum DriverRole: String, CaseIterable, Identifiable {
-    case ownerOperator
-    case hiredDriver
-    case dispatcher
-
-    var id: String { rawValue }
-
-    var title: LocalizedStringKey {
-        switch self {
-        case .ownerOperator: return "onboard.role.owner"
-        case .hiredDriver: return "onboard.role.hired"
-        case .dispatcher: return "onboard.role.dispatcher"
-        }
     }
 }

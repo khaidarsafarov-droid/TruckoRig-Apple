@@ -52,6 +52,7 @@ enum MaintenanceReminderCenter {
         if !decision.markNotifiedIDs.isEmpty {
             appState.markMaintenanceNotified(ids: decision.markNotifiedIDs, now: now)
         }
+        await MaintenanceAlertPoster.post(appState, now: now)
     }
 
     static func decide(_ appState: AppState, now: Date = Date()) -> SmartNotificationDecision {
@@ -59,23 +60,6 @@ enum MaintenanceReminderCenter {
         let week = settings.truckingWeek
         let previous = week.previousWeek(now: now)
         let weekKey = "\(previous.year)-W\(previous.weekNumber)"
-        let loads = appState.catalog.loads.map { load in
-            MaintenanceMileage.LoadInput(
-                tripId: load.tripId,
-                id: load.id.uuidString,
-                miles: load.totalMiles,
-                date: MaintenanceMileage.isoDay(load.date, calendar: week.calendar),
-                actualFinishDate: load.actualFinishDate.map {
-                    MaintenanceMileage.isoDay($0, calendar: week.calendar)
-                },
-                lastDeliveryAt: load.lastDeliveryAt
-            )
-        }
-        let due = appState.catalog.maintenance.compactMap { task -> (id: String, title: String)? in
-            let progress = MaintenanceMileage.progress(task: task, loads: loads, today: now, week: week)
-            guard MaintenanceMileage.shouldNotify(progress) else { return nil }
-            return (task.id, task.title)
-        }
         return SmartNotificationEngine.evaluate(SmartNotificationRequest(
             now: now,
             calendar: week.calendar,
@@ -91,7 +75,7 @@ enum MaintenanceReminderCenter {
             dieselEntriesLastWeek: dieselCount(in: previous, week: week, fills: appState.catalog.diesel),
             alreadyNotifiedMissingWeek: settings.missingNotifiedWeek == weekKey,
             missingWeekNumber: previous.weekNumber,
-            maintenanceDue: due,
+            maintenanceDue: [],
             russian: prefersRussian(settings.language),
             french: prefersFrench(settings.language)
         ))

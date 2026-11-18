@@ -112,6 +112,8 @@ struct SoftNumberField: View {
     @Binding var value: Double
     var placeholder: LocalizedStringKey = "0"
     var allowsDecimal = true
+    /// Money keeps two fraction digits from whole cents and the app's decimal separator.
+    var money = false
     var focusTag: String?
     var activeFocus: Binding<String?>?
 
@@ -130,12 +132,12 @@ struct SoftNumberField: View {
             text = value == 0 ? "" : formatted(value)
         }
         .onChange(of: text) {
-            value = NumberParsing.parseMoney(text)
+            value = parsed(text)
         }
         .onChange(of: value) {
-            let parsed = NumberParsing.parseMoney(text)
+            let current = parsed(text)
             // Only rewrite the field when something other than typing changed the value.
-            if abs(parsed - value) > 0.0001 {
+            if abs(current - value) > 0.0001 {
                 text = value == 0 ? "" : formatted(value)
             }
         }
@@ -158,9 +160,19 @@ struct SoftNumberField: View {
     }
 
     private func formatted(_ value: Double) -> String {
-        allowsDecimal && abs(value.rounded() - value) > 0.004
+        if money {
+            return MoneyFieldText.prefill(dollars: value, locale: AppLocale.locale)
+        }
+        return allowsDecimal && abs(value.rounded() - value) > 0.004
             ? String(format: "%.2f", value)
             : String(format: "%.0f", value)
+    }
+
+    private func parsed(_ text: String) -> Double {
+        if money {
+            return MoneyFieldText.commit(text: text, original: value, locale: AppLocale.locale)
+        }
+        return NumberParsing.parseMoney(text)
     }
 }
 

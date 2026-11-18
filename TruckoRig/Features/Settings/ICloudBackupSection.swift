@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Date, device and platform labels for the iCloud copy. Missing fields stay blank-safe.
 enum ICloudCopyPresentation {
-    static func dateText(_ exportedAt: Int64, locale: Locale = .current) -> String {
+    static func dateText(_ exportedAt: Int64, locale: Locale = AppLocale.locale) -> String {
         guard exportedAt > 0 else { return String(localized: "settings.icloud.unknown") }
         let formatter = DateFormatter()
         formatter.locale = locale

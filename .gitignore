@@ -28,3 +28,5 @@ fastlane/screenshots
 
 # Google Maps SDK key. Copy Config/Secrets.example.xcconfig here. Never commit a real key.
 Config/Secrets.xcconfig
+# Apple Team ID. Copy Config/Signing.local.xcconfig.example here. Never commit a team id.
+Config/Signing.local.xcconfig
