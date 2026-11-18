@@ -230,6 +230,7 @@ struct SettingsView: View {
 
             Section("settings.about") {
                 LabeledContent("settings.about.version", value: Self.appVersion)
+                SupportContactRow()
                 LabeledContent("settings.about.account", value: appState.persistence.scope.storeKey)
                 if !AppFont.isBundled {
                     Text("settings.about.fontFallback")

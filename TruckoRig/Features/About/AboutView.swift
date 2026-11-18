@@ -13,6 +13,7 @@ struct AboutView: View {
         List {
             Section {
                 LabeledContent("about.version", value: version)
+                SupportContactRow()
                 Text("about.intro")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
@@ -49,5 +50,17 @@ struct AboutView: View {
             Text(title)
         }
         .listRowBackground(Color.forestCard)
+    }
+}
+
+/// The one support address, opened in the system mail app.
+struct SupportContactRow: View {
+    var body: some View {
+        LabeledContent("about.support") {
+            Link(
+                ImprovementFeedbackMail.supportEmail,
+                destination: URL(string: "mailto:\(ImprovementFeedbackMail.supportEmail)")!
+            )
+        }
     }
 }

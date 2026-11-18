@@ -2,7 +2,7 @@ import Foundation
 
 /// Support email drafted on the device. The app never sends it; the system mail app does.
 public enum ImprovementFeedbackMail {
-    public static let supportEmail = "Truckorig@gmail.com"
+    public static let supportEmail = "truckorig@gmail.com"
     public static let displayName = "TruckoRig"
 
     public enum Topic: String, CaseIterable, Sendable {
