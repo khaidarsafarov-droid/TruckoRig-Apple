@@ -222,6 +222,7 @@
 		A7684195C62FF2176A91D321 /* DomainMessages.swift */ = {isa = PBXBuildFile; fileRef = D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */; };
 		A9B894AA84B9A8078F5989B0 /* KeyboardAvoidance.swift */ = {isa = PBXBuildFile; fileRef = 3DB1BD398F08E7A51783904A /* KeyboardAvoidance.swift */; };
 		FA9CFDDEFD0021546674E465 /* LoadingOverlay.swift */ = {isa = PBXBuildFile; fileRef = B7B65CBC5155685614404CE2 /* LoadingOverlay.swift */; };
+		973E1031778A231194F0E1BF /* PadLayout.swift */ = {isa = PBXBuildFile; fileRef = FDB23B2ECF561262BDFBC981 /* PadLayout.swift */; };
 		6BE30BA79A073B9226AA376D /* PremiumGate.swift */ = {isa = PBXBuildFile; fileRef = 22729993783D1E0CFCF4291F /* PremiumGate.swift */; };
 		F3D1CCDDD150AB05CD0738A8 /* PreviewSupport.swift */ = {isa = PBXBuildFile; fileRef = 2D704C5570DCA9C3B84AC5A3 /* PreviewSupport.swift */; };
 		EE55DC74002387E6380A8B3A /* ReceiptCapture.swift */ = {isa = PBXBuildFile; fileRef = A6D3D3B4F138B59E2479753E /* ReceiptCapture.swift */; };
@@ -564,6 +565,7 @@
 		D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DomainMessages.swift"; sourceTree = "<group>"; };
 		3DB1BD398F08E7A51783904A /* KeyboardAvoidance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidance.swift"; sourceTree = "<group>"; };
 		B7B65CBC5155685614404CE2 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadingOverlay.swift"; sourceTree = "<group>"; };
+		FDB23B2ECF561262BDFBC981 /* PadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PadLayout.swift"; sourceTree = "<group>"; };
 		22729993783D1E0CFCF4291F /* PremiumGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumGate.swift"; sourceTree = "<group>"; };
 		2D704C5570DCA9C3B84AC5A3 /* PreviewSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PreviewSupport.swift"; sourceTree = "<group>"; };
 		A6D3D3B4F138B59E2479753E /* ReceiptCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReceiptCapture.swift"; sourceTree = "<group>"; };
@@ -1438,6 +1440,7 @@
 				D8A30855ADF5A39F6C2B4E1E /* DomainMessages.swift */,
 				3DB1BD398F08E7A51783904A /* KeyboardAvoidance.swift */,
 				B7B65CBC5155685614404CE2 /* LoadingOverlay.swift */,
+				FDB23B2ECF561262BDFBC981 /* PadLayout.swift */,
 				22729993783D1E0CFCF4291F /* PremiumGate.swift */,
 				2D704C5570DCA9C3B84AC5A3 /* PreviewSupport.swift */,
 				A6D3D3B4F138B59E2479753E /* ReceiptCapture.swift */,
@@ -1893,6 +1896,7 @@
 				A7684195C62FF2176A91D321 /* DomainMessages.swift */,
 				A9B894AA84B9A8078F5989B0 /* KeyboardAvoidance.swift */,
 				FA9CFDDEFD0021546674E465 /* LoadingOverlay.swift */,
+				973E1031778A231194F0E1BF /* PadLayout.swift */,
 				6BE30BA79A073B9226AA376D /* PremiumGate.swift */,
 				F3D1CCDDD150AB05CD0738A8 /* PreviewSupport.swift */,
 				EE55DC74002387E6380A8B3A /* ReceiptCapture.swift */,

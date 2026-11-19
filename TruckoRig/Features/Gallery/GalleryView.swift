@@ -52,13 +52,15 @@ struct GalleryView: View {
                         message: "gallery.empty.message"
                     )
                 } else {
-                    ForEach(groups) { group in
-                        NavigationLink {
-                            GalleryLoadGrid(title: group.title, items: group.items, store: store)
-                        } label: {
-                            GalleryLoadCard(group: group, store: store, section: section)
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 280), spacing: 16)], spacing: 16) {
+                        ForEach(groups) { group in
+                            NavigationLink {
+                                GalleryLoadGrid(title: group.title, items: group.items, store: store)
+                            } label: {
+                                GalleryLoadCard(group: group, store: store, section: section)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }

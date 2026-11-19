@@ -23,6 +23,7 @@ FONTS = ROOT / "TruckoRig" / "Resources" / "Fonts"
 SIZES = {
     "iphone-6.9": (1320, 2868),
     "iphone-6.5": (1284, 2778),
+    "ipad-13": (2064, 2752),
 }
 
 SLIDES = (
@@ -221,18 +222,22 @@ def rounded(draw, box, radius: int, fill) -> None:
     draw.rounded_rectangle(box, radius=radius, fill=fill)
 
 
-def phone_chrome(base, draw, box, title: str, subtitle: str, badge: str) -> tuple[int, int, int, int]:
+def phone_chrome(base, draw, box, title: str, subtitle: str, badge: str, pad: bool = False) -> tuple[int, int, int, int]:
     """Draws the device and returns the screen content box (x, y, right, bottom)."""
     x0, y0, x1, y1 = box
-    bezel = max(12, (x1 - x0) // 48)
-    rounded(draw, box, (x1 - x0) // 8, (22, 25, 41))
+    bezel = max(18, (x1 - x0) // 36) if pad else max(12, (x1 - x0) // 48)
+    rounded(draw, box, (x1 - x0) // 14 if pad else (x1 - x0) // 8, (22, 25, 41))
     screen = (x0 + bezel, y0 + bezel, x1 - bezel, y1 - bezel)
-    rounded(draw, screen, (x1 - x0) // 10, PAGE)
+    rounded(draw, screen, (x1 - x0) // 18 if pad else (x1 - x0) // 10, PAGE)
     sx0, sy0, sx1, sy1 = screen
     width = sx1 - sx0
-    notch_w = width // 4
-    notch = (sx0 + (width - notch_w) / 2, sy0 + 10, sx0 + (width + notch_w) / 2, sy0 + 28)
-    draw.rounded_rectangle(notch, radius=10, fill=(11, 13, 28))
+    if pad:
+        cx = (sx0 + sx1) / 2
+        draw.ellipse((cx - 7, sy0 + 16, cx + 7, sy0 + 30), fill=(11, 13, 28))
+    else:
+        notch_w = width // 4
+        notch = (sx0 + (width - notch_w) / 2, sy0 + 10, sx0 + (width + notch_w) / 2, sy0 + 28)
+        draw.rounded_rectangle(notch, radius=10, fill=(11, 13, 28))
     status = font("DMSans-Medium.ttf", max(16, width // 28))
     draw.text((sx0 + 28, sy0 + 18), "9:41", font=status, fill=INK)
     draw.text((sx1 - 90, sy0 + 18), "5G", font=status, fill=INK)
@@ -618,16 +623,19 @@ def render_slide(size: tuple[int, int], slide: str):
     image = gradient(size)
     draw = ImageDraw.Draw(image)
     width, height = size
-    title_face = font("DMSans-Bold.ttf", max(54, width // 16))
-    sub_face = font("DMSans-Medium.ttf", max(28, width // 32))
+    is_pad = width / height > 0.7
+    title_face = font("DMSans-Bold.ttf", 72 if is_pad else max(54, width // 16))
+    sub_face = font("DMSans-Medium.ttf", 36 if is_pad else max(28, width // 32))
     title_key, subtitle_key = CAPTIONS[slide]
     centered(draw, COPY[title_key], title_face, int(height * 0.045), width, WHITE)
     centered(draw, COPY[subtitle_key], sub_face, int(height * 0.045) + int(title_face.size * 1.25), width, GOLD_SOFT)
-    phone_top = int(height * 0.18)
-    phone_width = int(width * 0.78)
+    phone_top = int(height * (0.14 if is_pad else 0.18))
+    phone_width = int(width * (0.9 if is_pad else 0.78))
     phone_left = (width - phone_width) // 2
     phone = (phone_left, phone_top, phone_left + phone_width, height - int(height * 0.028))
-    screen = phone_chrome(image, draw, phone, COPY[title_key], COPY[subtitle_key], COPY["premium_badge"])
+    screen = phone_chrome(
+        image, draw, phone, COPY[title_key], COPY[subtitle_key], COPY["premium_badge"], pad=is_pad
+    )
     drawers = {
         "01_journal": draw_journal,
         "02_load": draw_load,

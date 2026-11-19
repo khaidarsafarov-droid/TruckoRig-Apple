@@ -104,6 +104,8 @@ struct EditLoadView: View {
             )
         }
         .presentationDetents(focus == nil ? [.large] : [.medium, .large], selection: $detent)
+        .presentationDragIndicator(.visible)
+        .presentationCornerRadius(28)
     }
 
     private var titleKey: LocalizedStringKey {
