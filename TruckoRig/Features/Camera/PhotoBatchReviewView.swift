@@ -12,7 +12,7 @@ struct PhotoBatchReviewView: View {
 
     @State private var viewerIndex: Int?
 
-    private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    private let columns = [GridItem(.adaptive(minimum: 104), spacing: 8)]
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.standard) {

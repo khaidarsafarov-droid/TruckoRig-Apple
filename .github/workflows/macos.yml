@@ -14,7 +14,7 @@ jobs:
   ios:
     name: Build and test
     runs-on: macos-latest
-    timeout-minutes: 45
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
 
@@ -53,7 +53,7 @@ jobs:
           sudo xcode-select -s "$developer_dir"
           xcodebuild -version | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: Choose an iPhone simulator
+      - name: Choose simulators
         id: simulator
         run: |
           set -euo pipefail
@@ -62,25 +62,32 @@ jobs:
           import json
           import os
           data = json.load(open("/tmp/sims.json"))
-          phones = []
-          for runtime, entries in data.get("devices", {}).items():
-              if "iOS" not in runtime:
-                  continue
-              for device in entries:
-                  if not device.get("isAvailable", True):
+
+          def pick(prefix):
+              found = []
+              for runtime, entries in data.get("devices", {}).items():
+                  if "iOS" not in runtime:
                       continue
-                  name = device.get("name", "")
-                  if not name.startswith("iPhone"):
-                      continue
-                  phones.append(device)
-          if not phones:
-              raise SystemExit("No available iPhone simulator")
-          phones.sort(key=lambda device: device["name"])
-          chosen = phones[-1]
-          print(f"Using {chosen['name']} ({chosen['udid']})")
+                  for device in entries:
+                      if not device.get("isAvailable", True):
+                          continue
+                      name = device.get("name", "")
+                      if name.startswith(prefix):
+                          found.append(device)
+              if not found:
+                  raise SystemExit(f"No available {prefix} simulator")
+              found.sort(key=lambda device: device["name"])
+              return found[-1]
+
+          phone = pick("iPhone")
+          pad = pick("iPad")
+          print(f"Using {phone['name']} ({phone['udid']})")
+          print(f"Using {pad['name']} ({pad['udid']})")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
-              handle.write(f"udid={chosen['udid']}\n")
-              handle.write(f"name={chosen['name']}\n")
+              handle.write(f"udid={phone['udid']}\n")
+              handle.write(f"name={phone['name']}\n")
+              handle.write(f"ipad_udid={pad['udid']}\n")
+              handle.write(f"ipad_name={pad['name']}\n")
           PY
 
       - name: Build the app and widget, then run unit tests
@@ -90,6 +97,19 @@ jobs:
             -project TruckoRig.xcodeproj \
             -scheme TruckoRig \
             -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}" \
+            -only-testing:TruckoRigTests \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=-
+
+      - name: Build and test on iPad
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -project TruckoRig.xcodeproj \
+            -scheme TruckoRig \
+            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.ipad_udid }}" \
             -only-testing:TruckoRigTests \
             -skipPackagePluginValidation \
             CODE_SIGNING_ALLOWED=NO \

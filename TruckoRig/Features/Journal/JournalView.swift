@@ -19,6 +19,9 @@ struct JournalView: View {
     /// iPad split view. The phone list uses `NavigationLink` instead.
     @State private var selectedLoadID: UUID?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.suppressesJournalSplit) private var suppressesJournalSplit
+
+    private var showsSplit: Bool { horizontalSizeClass == .regular && !suppressesJournalSplit }
 
     private var sections: [JournalSection] {
         viewModel.sections(from: loads, week: appState.settings.truckingWeek, locale: AppLocale.locale)
@@ -29,7 +32,7 @@ struct JournalView: View {
     }
 
     var body: some View {
-        if horizontalSizeClass == .regular {
+        if showsSplit {
             NavigationSplitView {
                 journalList
             } detail: {
@@ -144,6 +147,7 @@ struct JournalView: View {
             }
         }
         .listStyle(.plain)
+        .scrollDismissesKeyboard(.interactively)
         .scrollContentBackground(.hidden)
         .forestBackground()
         .refreshable {
@@ -368,7 +372,7 @@ struct JournalView: View {
             onScan: { scannerLoad = load }
         )
         return Group {
-            if horizontalSizeClass == .regular {
+            if showsSplit {
                 Button { selectedLoadID = load.id } label: { card }
             } else {
                 NavigationLink(value: load) { card }

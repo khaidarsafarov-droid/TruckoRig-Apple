@@ -27,7 +27,7 @@ struct OnboardingView: View {
                     }
                 }
                 .padding(Spacing.section)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .padReadable(maxWidth: 560)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .forestBackground()

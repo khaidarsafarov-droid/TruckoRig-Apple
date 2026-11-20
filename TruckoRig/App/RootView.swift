@@ -46,7 +46,7 @@ struct RootView: View {
                 MainTabView()
             }
         }
-        .fullScreenCover(
+        .padOrPhoneCover(
             isPresented: Binding(
                 get: { appState.premium.shouldShowFirstRun },
                 set: { presented in
@@ -57,10 +57,7 @@ struct RootView: View {
             PremiumFirstRunOffer()
                 .environment(appState)
         }
-        .fullScreenCover(item: presentation) { route in
-            WidgetPresentationCover(route: route)
-                .environment(appState)
-        }
+        .modifier(WidgetRouteCover(route: presentation))
     }
 
     private var presentation: Binding<WidgetPresentation?> {
@@ -80,6 +77,28 @@ enum WidgetPresentation: String, Identifiable {
     case analytics
 
     var id: String { rawValue }
+}
+
+/// Phone keeps a full-screen cover. iPad presents the same route as a sheet.
+private struct WidgetRouteCover: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var size
+    @Environment(AppState.self) private var appState
+    var route: Binding<WidgetPresentation?>
+
+    func body(content: Content) -> some View {
+        if size == .regular {
+            content.sheet(item: route) { route in
+                WidgetPresentationCover(route: route)
+                    .environment(appState)
+                    .presentationDragIndicator(.visible)
+            }
+        } else {
+            content.fullScreenCover(item: route) { route in
+                WidgetPresentationCover(route: route)
+                    .environment(appState)
+            }
+        }
+    }
 }
 
 private struct WidgetPresentationCover: View {
@@ -200,7 +219,9 @@ struct SidebarView: View {
         } detail: {
             NavigationStack {
                 destination(for: selection ?? .journal)
+                    .modifier(SidebarReadable(item: selection ?? .journal))
             }
+            .environment(\.suppressesJournalSplit, true)
         }
     }
 
@@ -221,6 +242,20 @@ struct SidebarView: View {
         case .settings: SettingsView()
         case .privacy: PrivacyView()
         case .about: AboutView()
+        }
+    }
+}
+
+/// Forms stay a readable column. Maps, the journal, gallery and charts use the detail width.
+private struct SidebarReadable: ViewModifier {
+    var item: SidebarView.SidebarItem
+
+    func body(content: Content) -> some View {
+        switch item {
+        case .journal, .analytics, .maintenance, .map, .gallery:
+            content
+        case .goal, .paycheck, .diesel, .expenses, .tax, .profile, .settings, .privacy, .about:
+            content.padReadable()
         }
     }
 }

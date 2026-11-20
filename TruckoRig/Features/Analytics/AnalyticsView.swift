@@ -8,6 +8,7 @@ struct AnalyticsView: View {
 
     @Environment(AppState.self) private var appState
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var viewModel = AnalyticsViewModel()
 
@@ -24,10 +25,22 @@ struct AnalyticsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 header
-                financeCard
-                routesCard
-                dailyCard
-                weeklyCard
+                if horizontalSizeClass == .regular {
+                    LazyVGrid(
+                        columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)],
+                        spacing: 16
+                    ) {
+                        financeCard
+                        routesCard
+                        dailyCard
+                        weeklyCard
+                    }
+                } else {
+                    financeCard
+                    routesCard
+                    dailyCard
+                    weeklyCard
+                }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 24)

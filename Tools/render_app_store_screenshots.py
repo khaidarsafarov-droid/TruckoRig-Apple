@@ -23,6 +23,7 @@ FONTS = ROOT / "TruckoRig" / "Resources" / "Fonts"
 SIZES = {
     "iphone-6.9": (1320, 2868),
     "iphone-6.5": (1284, 2778),
+    "ipad-13": (2752, 2064),
 }
 
 SLIDES = (
@@ -221,19 +222,28 @@ def rounded(draw, box, radius: int, fill) -> None:
     draw.rounded_rectangle(box, radius=radius, fill=fill)
 
 
-def phone_chrome(base, draw, box, title: str, subtitle: str, badge: str) -> tuple[int, int, int, int]:
+def phone_chrome(base, draw, box, title: str, subtitle: str, badge: str, pad: bool = False) -> tuple[int, int, int, int]:
     """Draws the device and returns the screen content box (x, y, right, bottom)."""
     x0, y0, x1, y1 = box
-    bezel = max(12, (x1 - x0) // 48)
-    rounded(draw, box, (x1 - x0) // 8, (22, 25, 41))
+    bezel = max(18, (x1 - x0) // 36) if pad else max(12, (x1 - x0) // 48)
+    rounded(draw, box, (x1 - x0) // 14 if pad else (x1 - x0) // 8, (22, 25, 41))
     screen = (x0 + bezel, y0 + bezel, x1 - bezel, y1 - bezel)
-    rounded(draw, screen, (x1 - x0) // 10, PAGE)
+    rounded(draw, screen, (x1 - x0) // 18 if pad else (x1 - x0) // 10, PAGE)
     sx0, sy0, sx1, sy1 = screen
     width = sx1 - sx0
+    status = font("DMSans-Medium.ttf", max(16, width // 36 if pad else width // 28))
+    if pad:
+        # Keep the clock and the signal inside the straight edge, clear of the corner curve.
+        radius = max(36, (x1 - x0) // 18)
+        safe = int(radius * 0.62)
+        draw.ellipse(((sx0 + sx1) / 2 - 6, sy0 + 22, (sx0 + sx1) / 2 + 6, sy0 + 34), fill=(11, 13, 28))
+        draw.text((sx0 + safe, sy0 + 22), "9:41", font=status, fill=INK)
+        signal = "5G"
+        draw.text((sx1 - safe - text_width(draw, signal, status), sy0 + 22), signal, font=status, fill=INK)
+        return sx0 + 28, sy0 + safe + 36, sx1 - 28, sy1 - 32
     notch_w = width // 4
     notch = (sx0 + (width - notch_w) / 2, sy0 + 10, sx0 + (width + notch_w) / 2, sy0 + 28)
     draw.rounded_rectangle(notch, radius=10, fill=(11, 13, 28))
-    status = font("DMSans-Medium.ttf", max(16, width // 28))
     draw.text((sx0 + 28, sy0 + 18), "9:41", font=status, fill=INK)
     draw.text((sx1 - 90, sy0 + 18), "5G", font=status, fill=INK)
     return sx0 + 8, sy0 + 56, sx1 - 8, sy1 - 16
@@ -284,7 +294,9 @@ def draw_analytics(image, draw, screen) -> None:
     y += int(title.size * 1.35)
     draw.text((sx0 + pad, y), COPY["analytics_sub"], font=sub, fill=MUTED)
     y += int(sub.size * 2.2)
-    card_h = int(width * 0.42)
+    wide = width > (sy1 - sy0)
+    budget = max(0, sy1 - y - 12)
+    card_h = min(int(width * 0.32), max(90, int(budget * 0.30))) if wide else int(width * 0.42)
     card = (sx0 + pad, y, sx1 - pad, y + card_h)
     rounded(draw, card, 28, HERO)
     col = (card[2] - card[0]) / 3
@@ -297,13 +309,17 @@ def draw_analytics(image, draw, screen) -> None:
         cx = card[0] + col * index + 24
         draw.text((cx, card[1] + 28), name, font=label, fill=GOLD_SOFT)
         draw.text((cx, card[1] + 28 + int(label.size * 1.8)), amount, font=value, fill=WHITE)
-    y = card[3] + 22
-    chart_h = int(width * 0.48)
+    y = card[3] + (16 if wide else 22)
+    chart_h = min(int(width * 0.34), max(0, sy1 - y - 120)) if wide else int(width * 0.48)
+    if chart_h < 80:
+        return
     chart = (sx0 + pad, y, sx1 - pad, y + chart_h)
     rounded(draw, chart, 28, CARD)
     draw.text((chart[0] + 24, chart[1] + 18), COPY["weeks"], font=label, fill=INK)
     bars(draw, chart, WEEKS, WEEK_LABELS)
-    y = chart[3] + 22
+    y = chart[3] + (16 if wide else 22)
+    if y >= sy1 - 72:
+        return
     routes = (sx0 + pad, y, sx1 - pad, sy1 - 8)
     rounded(draw, routes, 28, CARD)
     draw.text((routes[0] + 24, routes[1] + 18), COPY["routes"], font=label, fill=INK)
@@ -325,11 +341,17 @@ def draw_analytics(image, draw, screen) -> None:
 
 
 def bars(draw, chart, values: list[int], labels: list[str]) -> None:
-    tick = font("DMSans-Medium.ttf", max(12, (chart[2] - chart[0]) // 42))
+    span_h = chart[3] - chart[1]
+    tick_size = max(12, (chart[2] - chart[0]) // 42)
+    if span_h < tick_size * 8:
+        tick_size = max(12, span_h // 8)
+    tick = font("DMSans-Medium.ttf", tick_size)
     left = chart[0] + 24
     right = chart[2] - 24
     top = chart[1] + int(tick.size * 3.2)
     bottom = chart[3] - int(tick.size * 2.4)
+    if bottom <= top + 8:
+        return
     peak = max(values)
     gap = 10
     span = right - left
@@ -425,7 +447,8 @@ def draw_journal(image, draw, screen) -> None:
     rounded(draw, badge, 16, (232, 231, 226))
     centered_in(draw, COPY["privacy"], small, badge, MUTED)
     y = badge[3] + 16
-    hero_h = int(width * 0.46)
+    wide = width > (sy1 - sy0)
+    hero_h = min(int(width * 0.46), max(160, int((sy1 - y) * 0.38))) if wide else int(width * 0.46)
     hero = (sx0 + pad, y, sx1 - pad, y + hero_h)
     rounded(draw, hero, 28, HERO)
     draw.text((hero[0] + 24, hero[1] + 20), COPY["week_chip"], font=small, fill=GOLD_SOFT)
@@ -455,7 +478,7 @@ def draw_journal(image, draw, screen) -> None:
         (COPY["date_c"], COPY["trip_3"], COPY["route_c"], COPY["rate_c"]),
     )
     remaining = sy1 - y - 8
-    card_h = max(90, remaining // 3 - 10)
+    card_h = max(0, (remaining - 20) // 3) if wide else max(90, remaining // 3 - 10)
     for date, trip, route, rate in cards:
         box = (sx0 + pad, y, sx1 - pad, y + card_h)
         rounded(draw, box, 22, HERO)
@@ -512,7 +535,9 @@ def draw_goal(image, draw, screen) -> None:
     medium = font("DMSans-Medium.ttf", max(16, width // 30))
     big = font("DMSans-Bold.ttf", max(32, width // 14))
     y = screen_heading(draw, screen, COPY["goal_heading"], sy0 + 4)
-    hero = (sx0 + pad, y, sx1 - pad, y + int(width * 0.38))
+    wide = width > (sy1 - sy0)
+    hero_h = min(int(width * 0.34), max(140, int((sy1 - y) * 0.32))) if wide else int(width * 0.38)
+    hero = (sx0 + pad, y, sx1 - pad, y + hero_h)
     rounded(draw, hero, 28, HERO)
     draw.text((hero[0] + 24, hero[1] + 22), COPY["week_chip"], font=small, fill=GOLD_SOFT)
     draw.text((hero[0] + 24, hero[1] + 22 + int(small.size * 2)), COPY["week_gross"], font=big, fill=WHITE)
@@ -530,7 +555,7 @@ def draw_goal(image, draw, screen) -> None:
         ("Sun", "$0", ""),
     )
     remaining = sy1 - y - 8
-    row_h = max(36, remaining // len(days) - 6)
+    row_h = max(0, (remaining - 6 * len(days)) // len(days)) if wide else max(36, remaining // len(days) - 6)
     for name, amount, note in days:
         box = (sx0 + pad, y, sx1 - pad, y + row_h)
         rounded(draw, box, 14, CARD)
@@ -612,22 +637,308 @@ def draw_maintenance(image, draw, screen) -> None:
         y += card_h + 14
 
 
+IPAD_ROWS = (
+    "Journal",
+    "Goal",
+    "Analytics",
+    "Paycheck",
+    "Diesel",
+    "Expenses",
+    "Tax",
+    "Maintenance",
+    "Map",
+    "Gallery",
+    "Profile",
+    "Settings",
+    "Privacy",
+    "About",
+)
+
+IPAD_SELECTION = {
+    "01_journal": "Journal",
+    "02_load": "Journal",
+    "03_goal": "Goal",
+    "04_gallery": "Gallery",
+    "05_maintenance": "Maintenance",
+    "06_premium": "Journal",
+    "07_analytics": "Analytics",
+}
+
+
+def draw_ipad_split(image, draw, screen, slide: str) -> None:
+    """Sidebar plus detail, the same split the iPad app uses."""
+    sx0, sy0, sx1, sy1 = screen
+    width = sx1 - sx0
+    sidebar_w = max(280, min(420, width // 4))
+    sidebar = (sx0, sy0, sx0 + sidebar_w, sy1)
+    draw.rectangle(sidebar, fill=(236, 235, 230))
+    draw.line((sidebar[2], sy0, sidebar[2], sy1), fill=(214, 212, 206), width=2)
+    title = font("DMSans-Bold.ttf", 28)
+    row_face = font("DMSans-Medium.ttf", 22)
+    draw.text((sx0 + 22, sy0 + 8), "TruckoRig", font=title, fill=INK)
+    selected = IPAD_SELECTION[slide]
+    top = sy0 + 56
+    bottom = sy1 - 12
+    row_h = min(48, max(32, (bottom - top) // len(IPAD_ROWS)))
+    for index, label in enumerate(IPAD_ROWS):
+        y = top + index * row_h
+        if y + row_h > bottom:
+            break
+        if label == selected:
+            rounded(draw, (sx0 + 12, y, sx0 + sidebar_w - 12, y + row_h - 6), 12, NAVY)
+            ink = WHITE
+        else:
+            ink = INK
+        draw.text((sx0 + 28, y + 6), label, font=row_face, fill=ink)
+    detail = (sx0 + sidebar_w + 16, sy0, sx1 - 8, sy1)
+    draw_ipad_detail(draw, detail, slide)
+
+
+def draw_ipad_detail(draw, screen, slide: str) -> None:
+    """Detail column sized for a landscape iPad, so nothing runs past the bezel."""
+    sx0, sy0, sx1, sy1 = screen
+    width = sx1 - sx0
+    pad = 28
+    title = font("DMSans-Bold.ttf", 40)
+    body = font("DMSans-Medium.ttf", 22)
+    small = font("Roboto-Regular.ttf", 18)
+    big = font("DMSans-Bold.ttf", 48)
+    left, right = sx0 + pad, sx1 - pad
+
+    def heading(text, y):
+        draw.text((left, y), text, font=title, fill=INK)
+        return y + 52
+
+    if slide == "01_journal":
+        y = heading("TruckoRig", sy0)
+        draw.text((left, y), COPY["greeting"], font=body, fill=MUTED)
+        y += 36
+        badge = (left, y, left + text_width(draw, COPY["privacy"], small) + 28, y + 36)
+        rounded(draw, badge, 14, (232, 231, 226))
+        centered_in(draw, COPY["privacy"], small, badge, MUTED)
+        y = badge[3] + 16
+        hero_bottom = y + 168
+        rounded(draw, (left, y, right, hero_bottom), 24, HERO)
+        draw.text((left + 24, y + 18), COPY["week_chip"], font=small, fill=GOLD_SOFT)
+        draw.text((left + 24, y + 48), COPY["week_gross"], font=big, fill=WHITE)
+        draw.text((left + 24, y + 112), COPY["week_goal"], font=small, fill=GOLD_SOFT)
+        stats = (("RPM", "$2.95"), ("Miles", "2,140"), ("Loads", "3"))
+        for index, (name, amount) in enumerate(stats):
+            sx = left + 420 + index * 220
+            draw.text((sx, y + 52), name, font=small, fill=GOLD_SOFT)
+            draw.text((sx, y + 80), amount, font=body, fill=WHITE)
+        y = hero_bottom + 16
+        y = chip_row(
+            draw, left, y,
+            [
+                (COPY["chip_all"], NAVY, WHITE),
+                (COPY["chip_today"], (232, 231, 226), INK),
+                (COPY["chip_week"], (232, 231, 226), INK),
+                (COPY["chip_day"], (232, 231, 226), INK),
+            ],
+            small, 36, 8, right,
+        ) + 14
+        rows = (
+            (COPY["date_a"], COPY["trip_1"], COPY["route_a"], COPY["rate_a"]),
+            (COPY["date_b"], COPY["trip_2"], COPY["route_b"], COPY["rate_b"]),
+            (COPY["date_c"], COPY["trip_3"], COPY["route_c"], COPY["rate_c"]),
+        )
+        row_h = min(112, max(0, (sy1 - y - 8 - 16) // 3))
+        for date, trip, route, rate in rows:
+            if row_h < 72 or y + row_h > sy1 - 4:
+                break
+            rounded(draw, (left, y, right, y + row_h), 16, HERO)
+            rounded(draw, (left, y + 40, right, y + row_h), 16, CARD)
+            draw.rectangle((left, y + 40, right, y + 56), fill=CARD)
+            draw.text((left + 18, y + 12), f"{date}  ·  {trip}", font=small, fill=WHITE)
+            draw.text((left + 18, y + 56), route, font=body, fill=INK)
+            amount_w = text_width(draw, rate, body)
+            draw.text((right - 18 - amount_w, y + 56), rate, font=body, fill=MUTED)
+            y += row_h + 8
+        return
+
+    if slide == "02_load":
+        y = heading(COPY["trip_1"], sy0)
+        draw.text((left, y), COPY["date_a"], font=body, fill=MUTED)
+        y += 40
+        card_bottom = y + 210
+        rounded(draw, (left, y, right, card_bottom), 24, CARD)
+        draw.text((left + 24, y + 20), COPY["route_a"], font=body, fill=INK)
+        draw.text((left + 24, y + 58), COPY["rate_a"], font=big, fill=INK)
+        chip_row(
+            draw, left + 24, y + 130,
+            [
+                (COPY["miles_chip"], (232, 231, 226), INK),
+                (COPY["deadhead_chip"], (232, 231, 226), INK),
+                (COPY["delivered_chip"], SUCCESS_BG, SUCCESS),
+                (COPY["dispute_chip"], DANGER_BG, DANGER),
+            ],
+            small, 40, 10, right - 24,
+        )
+        y = card_bottom + 16
+        stop_bottom = min(sy1 - 8, y + 150)
+        rounded(draw, (left, y, right, stop_bottom), 24, CARD)
+        draw.text((left + 24, y + 18), COPY["stops"], font=body, fill=INK)
+        draw.text((left + 24, y + 58), COPY["stop_pu"], font=small, fill=INK)
+        draw.text((left + 24, y + 96), COPY["stop_del"], font=small, fill=INK)
+        return
+
+    if slide == "03_goal":
+        y = heading(COPY["goal_heading"], sy0)
+        hero_bottom = y + 140
+        rounded(draw, (left, y, right, hero_bottom), 24, HERO)
+        draw.text((left + 24, y + 18), COPY["week_chip"], font=small, fill=GOLD_SOFT)
+        draw.text((left + 24, y + 50), COPY["week_gross"], font=big, fill=WHITE)
+        draw.text((left + 280, y + 78), COPY["week_goal"], font=small, fill=GOLD_SOFT)
+        y = hero_bottom + 16
+        draw.text((left, y), COPY["goal_needed"], font=body, fill=INK)
+        y += 40
+        days = (
+            ("Mon", "$743.00", ""),
+            ("Tue", "$1,359.00", ""),
+            ("Wed", "$0", ""),
+            ("Thu", "$2,111.72", COPY["planned"]),
+            ("Fri", "$0", ""),
+            ("Sat", "$0", ""),
+            ("Sun", "$0", ""),
+        )
+        row_h = max(0, (sy1 - y - 8 - 8 * len(days)) // len(days))
+        for name, amount, note in days:
+            if row_h < 28 or y + row_h > sy1:
+                break
+            rounded(draw, (left, y, right, y + row_h), 12, CARD)
+            draw.text((left + 16, y + (row_h - 22) / 2), name, font=body, fill=INK)
+            label = amount if not note else f"{amount}  {note}"
+            lw = text_width(draw, label, small)
+            draw.text((right - 16 - lw, y + (row_h - 18) / 2), label, font=small, fill=MUTED if note else INK)
+            y += row_h + 8
+        return
+
+    if slide == "04_gallery":
+        y = heading(COPY["gallery_heading"], sy0)
+        tab_w = 180
+        rounded(draw, (left, y, left + tab_w, y + 40), 12, NAVY)
+        rounded(draw, (left + tab_w + 12, y, left + tab_w * 2 + 12, y + 40), 12, (232, 231, 226))
+        centered_in(draw, COPY["photos_tab"], small, (left, y, left + tab_w, y + 40), WHITE)
+        centered_in(draw, COPY["scans_tab"], small, (left + tab_w + 12, y, left + tab_w * 2 + 12, y + 40), INK)
+        y += 56
+        cards = (
+            (COPY["trip_1"], COPY["route_a"], COPY["date_a"], COPY["photo_count"]),
+            (COPY["trip_2"], COPY["route_b"], COPY["date_b"], COPY["scan_count"]),
+        )
+        gap = 16
+        card_w = (right - left - gap) // 2
+        card_h = min(360, sy1 - y - 8)
+        swatches = ((196, 168, 120), (120, 146, 176), (168, 176, 150), (176, 140, 140))
+        for index, (trip, route, date, count) in enumerate(cards):
+            x = left + index * (card_w + gap)
+            rounded(draw, (x, y, x + card_w, y + card_h), 20, CARD)
+            draw.text((x + 18, y + 18), trip, font=body, fill=INK)
+            draw.text((x + 18, y + 52), route, font=small, fill=INK)
+            draw.text((x + 18, y + 82), f"{date}  ·  {count}", font=small, fill=MUTED)
+            thumb = 72
+            tx = x + 18
+            ty = y + card_h - thumb - 18
+            for color in swatches:
+                if tx + thumb > x + card_w - 12:
+                    break
+                rounded(draw, (tx, ty, tx + thumb, ty + thumb), 10, color)
+                tx += thumb + 8
+        return
+
+    if slide == "05_maintenance":
+        y = heading(COPY["maint_heading"], sy0)
+        rows = (
+            (COPY["oil"], COPY["oil_due"], DANGER),
+            (COPY["tires"], COPY["tires_due"], GOLD_DEEP),
+            (COPY["brakes"], COPY["brakes_due"], SUCCESS),
+        )
+        row_h = min(120, max(0, (sy1 - y - 24) // 3))
+        for name, due, dot in rows:
+            if row_h < 64 or y + row_h > sy1:
+                break
+            rounded(draw, (left, y, right, y + row_h), 20, CARD)
+            draw.ellipse((left + 24, y + 28, left + 42, y + 46), fill=dot)
+            draw.text((left + 60, y + 22), name, font=body, fill=INK)
+            draw.text((left + 60, y + 58), due, font=small, fill=MUTED)
+            y += row_h + 12
+        return
+
+    if slide == "06_premium":
+        y = heading(COPY["paywall_title"], sy0)
+        card_bottom = min(sy1 - 8, y + 420)
+        rounded(draw, (left, y, right, card_bottom), 24, CARD)
+        wrap(draw, COPY["paywall_body"], body, left + 24, y + 24, right - left - 48, INK, 6)
+        button = (left + 24, y + 220, right - 24, y + 280)
+        if button[3] < card_bottom:
+            rounded(draw, button, 18, GOLD)
+            centered_in(draw, COPY["subscribe"], body, button, ON_GOLD)
+            centered_in(draw, COPY["restore"], small, (left + 24, y + 296, right - 24, y + 336), MUTED)
+        return
+
+    y = heading(COPY["analytics_heading"], sy0)
+    draw.text((left, y), COPY["analytics_sub"], font=body, fill=MUTED)
+    y += 40
+    finance_bottom = y + 110
+    rounded(draw, (left, y, right, finance_bottom), 20, HERO)
+    stats = (
+        (COPY["paycheck"], COPY["paycheck_value"]),
+        (COPY["diesel"], COPY["diesel_value"]),
+        (COPY["gallons"], COPY["gallons_value"]),
+    )
+    for index, (name, amount) in enumerate(stats):
+        sx = left + 24 + index * ((right - left) // 3)
+        draw.text((sx, y + 18), name, font=small, fill=GOLD_SOFT)
+        draw.text((sx, y + 48), amount, font=body, fill=WHITE)
+    y = finance_bottom + 16
+    chart_bottom = y + 260
+    if chart_bottom < sy1 - 80:
+        rounded(draw, (left, y, right, chart_bottom), 20, CARD)
+        draw.text((left + 20, y + 12), COPY["weeks"], font=small, fill=INK)
+        bars(draw, (left, y + 28, right, chart_bottom - 8), WEEKS, WEEK_LABELS)
+        y = chart_bottom + 12
+    if y < sy1 - 48:
+        rounded(draw, (left, y, right, min(sy1 - 8, y + 160)), 20, CARD)
+        draw.text((left + 20, y + 12), COPY["routes"], font=small, fill=INK)
+        route_rows = (
+            (COPY["route_1"], COPY["route_1_value"]),
+            (COPY["route_2"], COPY["route_2_value"]),
+            (COPY["route_3"], COPY["route_3_value"]),
+        )
+        ry = y + 48
+        for name, amount in route_rows:
+            if ry + 28 > sy1 - 16:
+                break
+            draw.text((left + 20, ry), name, font=small, fill=INK)
+            aw = text_width(draw, amount, small)
+            draw.text((right - 20 - aw, ry), amount, font=small, fill=INK)
+            ry += 36
+
+
 def render_slide(size: tuple[int, int], slide: str):
     from PIL import ImageDraw
 
     image = gradient(size)
     draw = ImageDraw.Draw(image)
     width, height = size
-    title_face = font("DMSans-Bold.ttf", max(54, width // 16))
-    sub_face = font("DMSans-Medium.ttf", max(28, width // 32))
+    is_pad = width / height > 0.7
+    title_face = font("DMSans-Bold.ttf", 72 if is_pad else max(54, width // 16))
+    sub_face = font("DMSans-Medium.ttf", 36 if is_pad else max(28, width // 32))
     title_key, subtitle_key = CAPTIONS[slide]
     centered(draw, COPY[title_key], title_face, int(height * 0.045), width, WHITE)
     centered(draw, COPY[subtitle_key], sub_face, int(height * 0.045) + int(title_face.size * 1.25), width, GOLD_SOFT)
-    phone_top = int(height * 0.18)
-    phone_width = int(width * 0.78)
+    phone_top = int(height * (0.14 if is_pad else 0.18))
+    phone_width = int(width * (0.9 if is_pad else 0.78))
     phone_left = (width - phone_width) // 2
     phone = (phone_left, phone_top, phone_left + phone_width, height - int(height * 0.028))
-    screen = phone_chrome(image, draw, phone, COPY[title_key], COPY[subtitle_key], COPY["premium_badge"])
+    screen = phone_chrome(
+        image, draw, phone, COPY[title_key], COPY[subtitle_key], COPY["premium_badge"], pad=is_pad
+    )
+    if is_pad:
+        draw_ipad_split(image, draw, screen, slide)
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        return image
     drawers = {
         "01_journal": draw_journal,
         "02_load": draw_load,

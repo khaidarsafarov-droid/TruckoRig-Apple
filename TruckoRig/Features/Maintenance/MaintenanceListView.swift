@@ -5,6 +5,7 @@ import UIKit
 struct MaintenanceListView: View {
 
     @Environment(AppState.self) private var appState
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showsTaskEditor = false
     @State private var showsArchiveEditor = false
@@ -50,9 +51,22 @@ struct MaintenanceListView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: Spacing.section) {
-                taskSection
-                archiveSection
+            Group {
+                if horizontalSizeClass == .regular {
+                    LazyVGrid(
+                        columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)],
+                        alignment: .leading,
+                        spacing: 16
+                    ) {
+                        taskSection
+                        archiveSection
+                    }
+                } else {
+                    LazyVStack(alignment: .leading, spacing: Spacing.section) {
+                        taskSection
+                        archiveSection
+                    }
+                }
             }
             .padding(Spacing.standard)
         }
