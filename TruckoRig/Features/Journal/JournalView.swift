@@ -16,6 +16,9 @@ struct JournalView: View {
     @State private var syncNotice: String?
     @State private var showSurveyPaywall = false
     @State private var showSurvey = false
+    @State private var isSharingReport = false
+    @State private var shareKind: PeriodReportKind = .week
+    @State private var shareDay = Date()
     /// iPad split view. The phone list uses `NavigationLink` instead.
     @State private var selectedLoadID: UUID?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -210,6 +213,9 @@ struct JournalView: View {
             PremiumPaywallSheet(onClose: { showSurveyPaywall = false })
                 .environment(appState)
         }
+        .sheet(isPresented: $isSharingReport) {
+            PeriodReportShareSheet(kind: shareKind, day: shareDay)
+        }
         .task {
             let store = Day7SurveyStore(scope: appState.persistence.scope)
             var record = store.load(now: Date())
@@ -271,13 +277,26 @@ struct JournalView: View {
     private var journalFilter: some View {
         @Bindable var model = viewModel
         return VStack(alignment: .leading, spacing: 8) {
-            Picker("journal.filter", selection: $model.filter) {
-                ForEach(JournalViewModel.Filter.allCases) { item in
-                    Text(item.title).tag(item)
+            HStack(alignment: .center, spacing: 8) {
+                Picker("journal.filter", selection: $model.filter) {
+                    ForEach(JournalViewModel.Filter.allCases) { item in
+                        Text(item.title).tag(item)
+                    }
                 }
+                .pickerStyle(.menu)
+                .font(.appCaptionMedium)
+                Spacer(minLength: 8)
+                Button(action: openShare) {
+                    Label("journal.share", systemImage: "square.and.arrow.up")
+                        .font(.appCaptionMedium)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .foregroundStyle(Color.forestOnPrimary)
+                        .background(Color.forestPrimary, in: Capsule())
+                }
+                .buttonStyle(.borderless)
+                .accessibilityIdentifier("journal.share")
             }
-            .pickerStyle(.menu)
-            .font(.appCaptionMedium)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     dateChip("journal.filter.all", .all)
@@ -379,6 +398,42 @@ struct JournalView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+
+    /// Seeds the share sheet from the journal's period, then lets the driver pick a week or month.
+    private func openShare() {
+        let week = appState.settings.truckingWeek
+        let now = Date()
+        switch viewModel.filter {
+        case .thisWeek:
+            shareKind = .week
+            shareDay = now
+        case .lastWeek:
+            shareKind = .week
+            shareDay = week.startDate(of: week.previousWeek(now: now)) ?? now
+        case .calendarWeek:
+            shareKind = .week
+            shareDay = viewModel.selectedDay
+        case .thisMonth:
+            shareKind = .month
+            shareDay = now
+        case .today:
+            shareKind = .week
+            shareDay = now
+        case .yesterday:
+            shareKind = .week
+            shareDay = week.calendar.date(byAdding: .day, value: -1, to: now) ?? now
+        case .onDate:
+            shareKind = .week
+            shareDay = viewModel.selectedDay
+        case .dateRange:
+            shareKind = .week
+            shareDay = viewModel.rangeStart
+        case .all, .disputes, .unfinished:
+            shareKind = .week
+            shareDay = now
+        }
+        isSharingReport = true
     }
 
     private func deletePending() {

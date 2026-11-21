@@ -159,6 +159,7 @@
 		E812A5D08CD02C98B4A55AD4 /* PremiumPolicy.swift */ = {isa = PBXBuildFile; fileRef = B623A1A76B97E0EEABA3595D /* PremiumPolicy.swift */; };
 		CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */ = {isa = PBXBuildFile; fileRef = 2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */; };
 		9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */ = {isa = PBXBuildFile; fileRef = 36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */; };
+		178C97B43782483CF548C962 /* PeriodReport.swift */ = {isa = PBXBuildFile; fileRef = C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */; };
 		87EB4E74F31E439EBE46A010 /* AccountantWorkbook.swift */ = {isa = PBXBuildFile; fileRef = 5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */; };
 		8869A36CAF7FBF5C7899B2FA /* TaxEstimate.swift */ = {isa = PBXBuildFile; fileRef = 0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */; };
 		57D48107DCAD176096D80F9D /* XlsxWorkbook.swift */ = {isa = PBXBuildFile; fileRef = D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */; };
@@ -194,6 +195,8 @@
 		723E3ABDFD57587A3ABA0FE6 /* JournalView.swift */ = {isa = PBXBuildFile; fileRef = 4F73830F4A051B167E884420 /* JournalView.swift */; };
 		1072A860C7F70F223C7F30AB /* JournalViewModel.swift */ = {isa = PBXBuildFile; fileRef = C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */; };
 		0102AD36EA83617733301F90 /* LoadRowView.swift */ = {isa = PBXBuildFile; fileRef = D717AEF67461754094A98129 /* LoadRowView.swift */; };
+		201936C227AE65F8D8957CA1 /* PeriodReportPDF.swift */ = {isa = PBXBuildFile; fileRef = 3E7DF9FC38D5EFF5AF3140B0 /* PeriodReportPDF.swift */; };
+		D3BEB951AD1D448FD3F9E992 /* PeriodReportShareSheet.swift */ = {isa = PBXBuildFile; fileRef = 545C01A7C28EFBE6E614A470 /* PeriodReportShareSheet.swift */; };
 		D84CBA8F7494E2A888E1C5D1 /* LoadDetailActions.swift */ = {isa = PBXBuildFile; fileRef = D70195CA58DD8E9B9D6C97BB /* LoadDetailActions.swift */; };
 		1374C865E85F31496DDF26D7 /* LoadDetailView.swift */ = {isa = PBXBuildFile; fileRef = DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */; };
 		ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */ = {isa = PBXBuildFile; fileRef = A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */; };
@@ -276,6 +279,7 @@
 		A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */ = {isa = PBXBuildFile; fileRef = CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */; };
 		1E927A95D6A9FACC9A0457FF /* PaywallFeatureListTests.swift */ = {isa = PBXBuildFile; fileRef = 5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */; };
 		2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = 7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */; };
+		300046D00DC011C923CD534B /* PeriodReportPDFTests.swift */ = {isa = PBXBuildFile; fileRef = F11A03133B521EF1294F7811 /* PeriodReportPDFTests.swift */; };
 		73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */ = {isa = PBXBuildFile; fileRef = 275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */; };
 		9C8948936BC8981F577782E7 /* ThemeSettingsTests.swift */ = {isa = PBXBuildFile; fileRef = C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */; };
 		43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */ = {isa = PBXBuildFile; fileRef = F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */; };
@@ -481,6 +485,7 @@
 		B623A1A76B97E0EEABA3595D /* PremiumPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumPolicy.swift"; sourceTree = "<group>"; };
 		2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderPolicy.swift"; sourceTree = "<group>"; };
 		36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReceiptKindClassifier.swift"; sourceTree = "<group>"; };
+		C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReport.swift"; sourceTree = "<group>"; };
 		5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountantWorkbook.swift"; sourceTree = "<group>"; };
 		0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxEstimate.swift"; sourceTree = "<group>"; };
 		D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XlsxWorkbook.swift"; sourceTree = "<group>"; };
@@ -516,6 +521,8 @@
 		4F73830F4A051B167E884420 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalView.swift"; sourceTree = "<group>"; };
 		C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalViewModel.swift"; sourceTree = "<group>"; };
 		D717AEF67461754094A98129 /* LoadRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadRowView.swift"; sourceTree = "<group>"; };
+		3E7DF9FC38D5EFF5AF3140B0 /* PeriodReportPDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportPDF.swift"; sourceTree = "<group>"; };
+		545C01A7C28EFBE6E614A470 /* PeriodReportShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportShareSheet.swift"; sourceTree = "<group>"; };
 		D70195CA58DD8E9B9D6C97BB /* LoadDetailActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDetailActions.swift"; sourceTree = "<group>"; };
 		DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDetailView.swift"; sourceTree = "<group>"; };
 		A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceEditors.swift"; sourceTree = "<group>"; };
@@ -581,6 +588,7 @@
 		CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaRecordTests.swift"; sourceTree = "<group>"; };
 		5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallFeatureListTests.swift"; sourceTree = "<group>"; };
 		7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallLayoutTests.swift"; sourceTree = "<group>"; };
+		F11A03133B521EF1294F7811 /* PeriodReportPDFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportPDFTests.swift"; sourceTree = "<group>"; };
 		275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramTokenStoreTests.swift"; sourceTree = "<group>"; };
 		C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeSettingsTests.swift"; sourceTree = "<group>"; };
 		F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderControllerTests.swift"; sourceTree = "<group>"; };
@@ -884,6 +892,7 @@
 				D2E6E8B74BA17D0E48AADE20 /* Paycheck */,
 				D1F7A1FD11835D852F9F8DEE /* Premium */,
 				5C8093349FAB4075D9514D72 /* Receipts */,
+				74FA34D9A89C9140953D0558 /* Reports */,
 				FDED2F2045248E329691F51E /* Tax */,
 				B1F5FEDB0865207E1E84621B /* Telegram */,
 				A3A7D16827AB33799B159C1E /* Units */,
@@ -1102,6 +1111,14 @@
 			path = "Receipts";
 			sourceTree = "<group>";
 		};
+		74FA34D9A89C9140953D0558 /* Reports */ = {
+			isa = PBXGroup;
+			children = (
+				C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */,
+			);
+			path = "Reports";
+			sourceTree = "<group>";
+		};
 		FDED2F2045248E329691F51E /* Tax */ = {
 			isa = PBXGroup;
 			children = (
@@ -1254,6 +1271,8 @@
 				4F73830F4A051B167E884420 /* JournalView.swift */,
 				C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */,
 				D717AEF67461754094A98129 /* LoadRowView.swift */,
+				3E7DF9FC38D5EFF5AF3140B0 /* PeriodReportPDF.swift */,
+				545C01A7C28EFBE6E614A470 /* PeriodReportShareSheet.swift */,
 			);
 			path = "Journal";
 			sourceTree = "<group>";
@@ -1463,6 +1482,7 @@
 				CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */,
 				5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */,
 				7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */,
+				F11A03133B521EF1294F7811 /* PeriodReportPDFTests.swift */,
 				275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */,
 				C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */,
 				F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */,
@@ -1833,6 +1853,7 @@
 				E812A5D08CD02C98B4A55AD4 /* PremiumPolicy.swift */,
 				CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */,
 				9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */,
+				178C97B43782483CF548C962 /* PeriodReport.swift */,
 				87EB4E74F31E439EBE46A010 /* AccountantWorkbook.swift */,
 				8869A36CAF7FBF5C7899B2FA /* TaxEstimate.swift */,
 				57D48107DCAD176096D80F9D /* XlsxWorkbook.swift */,
@@ -1868,6 +1889,8 @@
 				723E3ABDFD57587A3ABA0FE6 /* JournalView.swift */,
 				1072A860C7F70F223C7F30AB /* JournalViewModel.swift */,
 				0102AD36EA83617733301F90 /* LoadRowView.swift */,
+				201936C227AE65F8D8957CA1 /* PeriodReportPDF.swift */,
+				D3BEB951AD1D448FD3F9E992 /* PeriodReportShareSheet.swift */,
 				D84CBA8F7494E2A888E1C5D1 /* LoadDetailActions.swift */,
 				1374C865E85F31496DDF26D7 /* LoadDetailView.swift */,
 				ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */,
@@ -1942,6 +1965,7 @@
 				A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */,
 				1E927A95D6A9FACC9A0457FF /* PaywallFeatureListTests.swift */,
 				2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */,
+				300046D00DC011C923CD534B /* PeriodReportPDFTests.swift */,
 				73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */,
 				9C8948936BC8981F577782E7 /* ThemeSettingsTests.swift */,
 				43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */,
