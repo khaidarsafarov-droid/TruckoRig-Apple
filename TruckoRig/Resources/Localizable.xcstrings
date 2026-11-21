@@ -24501,6 +24501,33 @@
           }
         }
       }
+    },
+    "journal.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Share" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Поделиться" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Compartir" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Partager" } }
+      }
+    },
+    "journal.share.pdf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "PDF" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "PDF" } },
+        "es": { "stringUnit": { "state": "translated", "value": "PDF" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "PDF" } }
+      }
+    },
+    "journal.share.text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Plain text" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Простой текст" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Texto sin formato" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Texte brut" } }
+      }
     }
   },
   "version": "1.0"
