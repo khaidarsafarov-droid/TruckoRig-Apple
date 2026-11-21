@@ -16,9 +16,8 @@ struct JournalView: View {
     @State private var syncNotice: String?
     @State private var showSurveyPaywall = false
     @State private var showSurvey = false
-    @State private var isSharingReport = false
-    @State private var shareKind: PeriodReportKind = .week
-    @State private var shareDay = Date()
+    @State private var isChoosingShareFormat = false
+    @State private var shareActivity: PeriodReportActivity?
     /// iPad split view. The phone list uses `NavigationLink` instead.
     @State private var selectedLoadID: UUID?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -213,8 +212,13 @@ struct JournalView: View {
             PremiumPaywallSheet(onClose: { showSurveyPaywall = false })
                 .environment(appState)
         }
-        .sheet(isPresented: $isSharingReport) {
-            PeriodReportShareSheet(kind: shareKind, day: shareDay)
+        .confirmationDialog("journal.share", isPresented: $isChoosingShareFormat, titleVisibility: .visible) {
+            Button("journal.share.pdf") { queueShare(.pdf) }
+            Button("journal.share.text") { queueShare(.text) }
+            Button("action.cancel", role: .cancel) {}
+        }
+        .sheet(item: $shareActivity) { activity in
+            ShareSheet(items: activity.items)
         }
         .task {
             let store = Day7SurveyStore(scope: appState.persistence.scope)
@@ -286,15 +290,16 @@ struct JournalView: View {
                 .pickerStyle(.menu)
                 .font(.appCaptionMedium)
                 Spacer(minLength: 8)
-                Button(action: openShare) {
-                    Label("journal.share", systemImage: "square.and.arrow.up")
-                        .font(.appCaptionMedium)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .foregroundStyle(Color.forestOnPrimary)
-                        .background(Color.forestPrimary, in: Capsule())
+                Button {
+                    isChoosingShareFormat = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(Color.forestText)
+                        .frame(width: 40, height: 40)
                 }
                 .buttonStyle(.borderless)
+                .accessibilityLabel("journal.share")
                 .accessibilityIdentifier("journal.share")
             }
             ScrollView(.horizontal, showsIndicators: false) {
@@ -400,40 +405,40 @@ struct JournalView: View {
         .buttonStyle(.plain)
     }
 
-    /// Seeds the share sheet from the journal's period, then lets the driver pick a week or month.
-    private func openShare() {
-        let week = appState.settings.truckingWeek
-        let now = Date()
-        switch viewModel.filter {
-        case .thisWeek:
-            shareKind = .week
-            shareDay = now
-        case .lastWeek:
-            shareKind = .week
-            shareDay = week.startDate(of: week.previousWeek(now: now)) ?? now
-        case .calendarWeek:
-            shareKind = .week
-            shareDay = viewModel.selectedDay
-        case .thisMonth:
-            shareKind = .month
-            shareDay = now
-        case .today:
-            shareKind = .week
-            shareDay = now
-        case .yesterday:
-            shareKind = .week
-            shareDay = week.calendar.date(byAdding: .day, value: -1, to: now) ?? now
-        case .onDate:
-            shareKind = .week
-            shareDay = viewModel.selectedDay
-        case .dateRange:
-            shareKind = .week
-            shareDay = viewModel.rangeStart
-        case .all, .disputes, .unfinished:
-            shareKind = .week
-            shareDay = now
+    /// Lets the action sheet finish dismissing before the system share sheet is presented.
+    private func queueShare(_ format: PeriodReportShare.Format) {
+        Task { @MainActor in
+            presentShare(format)
         }
-        isSharingReport = true
+    }
+
+    private func presentShare(_ format: PeriodReportShare.Format) {
+        let settings = appState.settings
+        let week = settings.truckingWeek
+        let now = Date()
+        let scope = PeriodReportBuilder.scope(
+            home: PeriodReportShare.homePeriod(for: viewModel.filter),
+            selectedDay: viewModel.selectedDay,
+            now: now,
+            week: week
+        )
+        let report = PeriodReportShare.report(
+            scope: scope,
+            loads: loads,
+            diesel: appState.catalog.diesel,
+            expenses: appState.catalog.expenses,
+            driverName: appState.catalog.profile?.name ?? "",
+            weeklyGoal: settings.weeklyGoal,
+            languageCode: AppLocale.resolvedCode(for: settings.language),
+            measurementSystem: settings.measurementSystem,
+            week: week,
+            generatedAt: now
+        )
+        do {
+            shareActivity = try PeriodReportShare.activity(for: report, format: format)
+        } catch {
+            viewModel.errorMessage = error.localizedDescription
+        }
     }
 
     private func deletePending() {

@@ -24511,51 +24511,6 @@
         "fr": { "stringUnit": { "state": "translated", "value": "Partager" } }
       }
     },
-    "journal.share.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Share report" } },
-        "ru": { "stringUnit": { "state": "translated", "value": "Поделиться отчётом" } },
-        "es": { "stringUnit": { "state": "translated", "value": "Compartir el informe" } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Partager le rapport" } }
-      }
-    },
-    "journal.share.period": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Period" } },
-        "ru": { "stringUnit": { "state": "translated", "value": "Период" } },
-        "es": { "stringUnit": { "state": "translated", "value": "Período" } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Période" } }
-      }
-    },
-    "journal.share.week": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Week" } },
-        "ru": { "stringUnit": { "state": "translated", "value": "Неделя" } },
-        "es": { "stringUnit": { "state": "translated", "value": "Semana" } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Semaine" } }
-      }
-    },
-    "journal.share.month": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Month" } },
-        "ru": { "stringUnit": { "state": "translated", "value": "Месяц" } },
-        "es": { "stringUnit": { "state": "translated", "value": "Mes" } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Mois" } }
-      }
-    },
-    "journal.share.format": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Format" } },
-        "ru": { "stringUnit": { "state": "translated", "value": "Формат" } },
-        "es": { "stringUnit": { "state": "translated", "value": "Formato" } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Format" } }
-      }
-    },
     "journal.share.pdf": {
       "extractionState": "manual",
       "localizations": {
@@ -24568,37 +24523,10 @@
     "journal.share.text": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Text" } },
-        "ru": { "stringUnit": { "state": "translated", "value": "Текст" } },
-        "es": { "stringUnit": { "state": "translated", "value": "Texto" } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Texte" } }
-      }
-    },
-    "journal.share.privacy": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Only on this device. The report is created on this phone and is not uploaded." } },
-        "ru": { "stringUnit": { "state": "translated", "value": "Только на этом устройстве. Отчёт создаётся на этом телефоне и никуда не отправляется." } },
-        "es": { "stringUnit": { "state": "translated", "value": "Solo en este dispositivo. El informe se crea en este teléfono y no se sube." } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Uniquement sur cet appareil. Le rapport est créé sur ce téléphone et n'est pas envoyé." } }
-      }
-    },
-    "journal.share.date": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Day in the period" } },
-        "ru": { "stringUnit": { "state": "translated", "value": "День периода" } },
-        "es": { "stringUnit": { "state": "translated", "value": "Día del período" } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Jour de la période" } }
-      }
-    },
-    "journal.share.hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "A day selects its whole week or month." } },
-        "ru": { "stringUnit": { "state": "translated", "value": "День выбирает всю неделю или весь месяц." } },
-        "es": { "stringUnit": { "state": "translated", "value": "Un día selecciona toda la semana o todo el mes." } },
-        "fr": { "stringUnit": { "state": "translated", "value": "Un jour sélectionne toute la semaine ou tout le mois." } }
+        "en": { "stringUnit": { "state": "translated", "value": "Plain text" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Простой текст" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Texto sin formato" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Texte brut" } }
       }
     }
   },

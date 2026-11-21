@@ -26,6 +26,16 @@ final class PeriodReportPDFTests: XCTestCase {
         XCTAssertLessThan(firstLoad?.lowerBound ?? text.endIndex, lastLoad?.lowerBound ?? text.startIndex)
     }
 
+    func testHomeFilterMapsOntoTheSharePeriod() {
+        XCTAssertEqual(PeriodReportShare.homePeriod(for: .thisWeek), .thisWeek)
+        XCTAssertEqual(PeriodReportShare.homePeriod(for: .lastWeek), .lastWeek)
+        XCTAssertEqual(PeriodReportShare.homePeriod(for: .calendarWeek), .chosenWeek)
+        XCTAssertEqual(PeriodReportShare.homePeriod(for: .thisMonth), .thisMonth)
+        for filter in [JournalViewModel.Filter.all, .today, .disputes, .unfinished, .yesterday, .onDate, .dateRange] {
+            XCTAssertEqual(PeriodReportShare.homePeriod(for: filter), .other)
+        }
+    }
+
     func testEmptyPeriodPDFStillExplainsItself() throws {
         let report = sample(loadCount: 0)
         let data = PeriodReportPDF.data(for: report)

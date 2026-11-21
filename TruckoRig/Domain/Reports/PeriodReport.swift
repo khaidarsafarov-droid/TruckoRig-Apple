@@ -16,6 +16,15 @@ public enum PeriodReportKind: Equatable, Hashable, Sendable {
     case month
 }
 
+/// Home-screen period the share button reads. Anything that is not a week or a month is `.other`.
+public enum PeriodReportHomePeriod: Equatable, Sendable {
+    case thisWeek
+    case lastWeek
+    case chosenWeek
+    case thisMonth
+    case other
+}
+
 /// Language of the shared report. Follows the app language; an unknown code stays English.
 public enum PeriodReportLanguage: Equatable, Sendable {
     case english
@@ -358,6 +367,25 @@ public enum PeriodReportBuilder {
         case .month:
             let parts = week.calendar.dateComponents([.year, .month], from: day)
             return .month(year: parts.year ?? 0, month: parts.month ?? 0)
+        }
+    }
+
+    /// Period for the home share button. A week or month filter wins; every other filter is this week.
+    public static func scope(
+        home: PeriodReportHomePeriod,
+        selectedDay: Date,
+        now: Date,
+        week: TruckingWeek
+    ) -> PeriodReportScope {
+        switch home {
+        case .thisWeek, .other:
+            return .week(week.currentWeek(now: now))
+        case .lastWeek:
+            return .week(week.previousWeek(now: now))
+        case .chosenWeek:
+            return .week(week.week(for: selectedDay))
+        case .thisMonth:
+            return scope(kind: .month, containing: now, week: week)
         }
     }
 

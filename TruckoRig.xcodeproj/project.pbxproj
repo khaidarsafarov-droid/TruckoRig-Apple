@@ -196,7 +196,7 @@
 		1072A860C7F70F223C7F30AB /* JournalViewModel.swift */ = {isa = PBXBuildFile; fileRef = C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */; };
 		0102AD36EA83617733301F90 /* LoadRowView.swift */ = {isa = PBXBuildFile; fileRef = D717AEF67461754094A98129 /* LoadRowView.swift */; };
 		201936C227AE65F8D8957CA1 /* PeriodReportPDF.swift */ = {isa = PBXBuildFile; fileRef = 3E7DF9FC38D5EFF5AF3140B0 /* PeriodReportPDF.swift */; };
-		D3BEB951AD1D448FD3F9E992 /* PeriodReportShareSheet.swift */ = {isa = PBXBuildFile; fileRef = 545C01A7C28EFBE6E614A470 /* PeriodReportShareSheet.swift */; };
+		8CD6F39751EE35030387AD32 /* PeriodReportShare.swift */ = {isa = PBXBuildFile; fileRef = 31E590FB17A8D7D22618E780 /* PeriodReportShare.swift */; };
 		D84CBA8F7494E2A888E1C5D1 /* LoadDetailActions.swift */ = {isa = PBXBuildFile; fileRef = D70195CA58DD8E9B9D6C97BB /* LoadDetailActions.swift */; };
 		1374C865E85F31496DDF26D7 /* LoadDetailView.swift */ = {isa = PBXBuildFile; fileRef = DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */; };
 		ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */ = {isa = PBXBuildFile; fileRef = A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */; };
@@ -522,7 +522,7 @@
 		C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalViewModel.swift"; sourceTree = "<group>"; };
 		D717AEF67461754094A98129 /* LoadRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadRowView.swift"; sourceTree = "<group>"; };
 		3E7DF9FC38D5EFF5AF3140B0 /* PeriodReportPDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportPDF.swift"; sourceTree = "<group>"; };
-		545C01A7C28EFBE6E614A470 /* PeriodReportShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportShareSheet.swift"; sourceTree = "<group>"; };
+		31E590FB17A8D7D22618E780 /* PeriodReportShare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportShare.swift"; sourceTree = "<group>"; };
 		D70195CA58DD8E9B9D6C97BB /* LoadDetailActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDetailActions.swift"; sourceTree = "<group>"; };
 		DF8E50CF01F773C5FE9615F2 /* LoadDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDetailView.swift"; sourceTree = "<group>"; };
 		A985697984F0ED74BEC23274 /* MaintenanceEditors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaintenanceEditors.swift"; sourceTree = "<group>"; };
@@ -1272,7 +1272,7 @@
 				C2C9765B44113E0C2716FFA5 /* JournalViewModel.swift */,
 				D717AEF67461754094A98129 /* LoadRowView.swift */,
 				3E7DF9FC38D5EFF5AF3140B0 /* PeriodReportPDF.swift */,
-				545C01A7C28EFBE6E614A470 /* PeriodReportShareSheet.swift */,
+				31E590FB17A8D7D22618E780 /* PeriodReportShare.swift */,
 			);
 			path = "Journal";
 			sourceTree = "<group>";
@@ -1890,7 +1890,7 @@
 				1072A860C7F70F223C7F30AB /* JournalViewModel.swift */,
 				0102AD36EA83617733301F90 /* LoadRowView.swift */,
 				201936C227AE65F8D8957CA1 /* PeriodReportPDF.swift */,
-				D3BEB951AD1D448FD3F9E992 /* PeriodReportShareSheet.swift */,
+				8CD6F39751EE35030387AD32 /* PeriodReportShare.swift */,
 				D84CBA8F7494E2A888E1C5D1 /* LoadDetailActions.swift */,
 				1374C865E85F31496DDF26D7 /* LoadDetailView.swift */,
 				ECCF0493E3AA1C2E9B506A7C /* MaintenanceEditors.swift */,

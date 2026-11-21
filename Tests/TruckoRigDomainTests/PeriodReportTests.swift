@@ -330,6 +330,23 @@ final class PeriodReportTests: XCTestCase {
         XCTAssertEqual(monthScope, .month(year: 2026, month: 11))
     }
 
+    func testHomeShareUsesTheSelectedWeekOrMonthAndOtherwiseThisWeek() {
+        let now = makeDate(2026, 11, 18)
+        let october = makeDate(2026, 10, 7)
+        let thisWeek = PeriodReportBuilder.scope(home: .thisWeek, selectedDay: october, now: now, week: week)
+        let lastWeek = PeriodReportBuilder.scope(home: .lastWeek, selectedDay: october, now: now, week: week)
+        let chosen = PeriodReportBuilder.scope(home: .chosenWeek, selectedDay: october, now: now, week: week)
+        let month = PeriodReportBuilder.scope(home: .thisMonth, selectedDay: october, now: now, week: week)
+        let other = PeriodReportBuilder.scope(home: .other, selectedDay: october, now: now, week: week)
+
+        XCTAssertEqual(thisWeek, .week(ref))
+        XCTAssertEqual(lastWeek, .week(week.previousWeek(now: now)))
+        XCTAssertEqual(chosen, .week(week.week(for: october)))
+        XCTAssertEqual(month, .month(year: 2026, month: 11))
+        XCTAssertEqual(other, thisWeek)
+        XCTAssertNotEqual(other, chosen)
+    }
+
     private func englishWeek() -> PeriodReport {
         let pair = sampleLoads()
         return build(
