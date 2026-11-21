@@ -16,6 +16,8 @@ struct JournalView: View {
     @State private var syncNotice: String?
     @State private var showSurveyPaywall = false
     @State private var showSurvey = false
+    @State private var isChoosingShareFormat = false
+    @State private var shareActivity: PeriodReportActivity?
     /// iPad split view. The phone list uses `NavigationLink` instead.
     @State private var selectedLoadID: UUID?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -210,6 +212,14 @@ struct JournalView: View {
             PremiumPaywallSheet(onClose: { showSurveyPaywall = false })
                 .environment(appState)
         }
+        .confirmationDialog("journal.share", isPresented: $isChoosingShareFormat, titleVisibility: .visible) {
+            Button("journal.share.pdf") { queueShare(.pdf) }
+            Button("journal.share.text") { queueShare(.text) }
+            Button("action.cancel", role: .cancel) {}
+        }
+        .sheet(item: $shareActivity) { activity in
+            ShareSheet(items: activity.items)
+        }
         .task {
             let store = Day7SurveyStore(scope: appState.persistence.scope)
             var record = store.load(now: Date())
@@ -271,13 +281,27 @@ struct JournalView: View {
     private var journalFilter: some View {
         @Bindable var model = viewModel
         return VStack(alignment: .leading, spacing: 8) {
-            Picker("journal.filter", selection: $model.filter) {
-                ForEach(JournalViewModel.Filter.allCases) { item in
-                    Text(item.title).tag(item)
+            HStack(alignment: .center, spacing: 8) {
+                Picker("journal.filter", selection: $model.filter) {
+                    ForEach(JournalViewModel.Filter.allCases) { item in
+                        Text(item.title).tag(item)
+                    }
                 }
+                .pickerStyle(.menu)
+                .font(.appCaptionMedium)
+                Spacer(minLength: 8)
+                Button {
+                    isChoosingShareFormat = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(Color.forestText)
+                        .frame(width: 40, height: 40)
+                }
+                .buttonStyle(.borderless)
+                .accessibilityLabel("journal.share")
+                .accessibilityIdentifier("journal.share")
             }
-            .pickerStyle(.menu)
-            .font(.appCaptionMedium)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     dateChip("journal.filter.all", .all)
@@ -379,6 +403,42 @@ struct JournalView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+
+    /// Lets the action sheet finish dismissing before the system share sheet is presented.
+    private func queueShare(_ format: PeriodReportShare.Format) {
+        Task { @MainActor in
+            presentShare(format)
+        }
+    }
+
+    private func presentShare(_ format: PeriodReportShare.Format) {
+        let settings = appState.settings
+        let week = settings.truckingWeek
+        let now = Date()
+        let scope = PeriodReportBuilder.scope(
+            home: PeriodReportShare.homePeriod(for: viewModel.filter),
+            selectedDay: viewModel.selectedDay,
+            now: now,
+            week: week
+        )
+        let report = PeriodReportShare.report(
+            scope: scope,
+            loads: loads,
+            diesel: appState.catalog.diesel,
+            expenses: appState.catalog.expenses,
+            driverName: appState.catalog.profile?.name ?? "",
+            weeklyGoal: settings.weeklyGoal,
+            languageCode: AppLocale.resolvedCode(for: settings.language),
+            measurementSystem: settings.measurementSystem,
+            week: week,
+            generatedAt: now
+        )
+        do {
+            shareActivity = try PeriodReportShare.activity(for: report, format: format)
+        } catch {
+            viewModel.errorMessage = error.localizedDescription
+        }
     }
 
     private func deletePending() {
