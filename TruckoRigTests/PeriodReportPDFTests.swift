@@ -64,8 +64,9 @@ final class PeriodReportPDFTests: XCTestCase {
         parts.hour = 12
         let day = calendar.date(from: parts) ?? Date()
         let ref = week.week(for: day)
-        let loads = (1...loadCount).map { index in
-            PeriodReportLoadInput(
+        let loads = (0..<loadCount).map { offset in
+            let index = offset + 1
+            return PeriodReportLoadInput(
                 tripId: String(format: "T-%02d", index),
                 rate: 100,
                 loadedMiles: 50,
