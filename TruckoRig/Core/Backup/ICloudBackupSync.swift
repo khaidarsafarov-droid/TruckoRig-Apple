@@ -23,7 +23,8 @@ final class ICloudBackupPrefs {
 
     var autoSyncEnabled: Bool {
         get {
-            if defaults.object(forKey: autoKey) == nil { return true }
+            // Missing means the driver never chose. Older builds treated that as on.
+            if defaults.object(forKey: autoKey) == nil { return false }
             return defaults.bool(forKey: autoKey)
         }
         set { defaults.set(newValue, forKey: autoKey) }

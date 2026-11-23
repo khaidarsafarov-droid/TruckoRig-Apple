@@ -221,17 +221,21 @@ final class ICloudMediaEngine {
                   let data = bytes[item.relativePath] ?? bytes[relative],
                   !data.isEmpty
             else { continue }
-            if data.count > ICloudMediaPolicy.maxFileBytes { continue }
-            if ICloudMediaPolicy.fileIsSecret(Array(data)) {
+            let stripped = ImageLocationStrip.strip(data)
+            if stripped.count > ICloudMediaPolicy.maxFileBytes { continue }
+            if ICloudMediaPolicy.fileIsSecret(Array(stripped)) {
                 refused.append(relative)
                 continue
             }
             var copy = item
             copy.relativePath = relative
-            copy.contentHash = ICloudMediaPolicy.contentHash(Array(data))
-            copy.byteCount = Int64(data.count)
+            copy.latitude = nil
+            copy.longitude = nil
+            copy.ocrText = nil
+            copy.contentHash = ICloudMediaPolicy.contentHash(Array(stripped))
+            copy.byteCount = Int64(stripped.count)
             cleanItems.append(copy)
-            cleanBytes[relative] = data
+            cleanBytes[relative] = stripped
         }
         return (cleanItems, cleanBytes, refused)
     }

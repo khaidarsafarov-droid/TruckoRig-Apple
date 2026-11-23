@@ -1,13 +1,17 @@
 name: Sideload IPA
 
 # Unsigned device build for Sideloadly and a free Apple ID.
-# Push to main publishes a fresh ipa. Run workflow rebuilds it.
-# Pull requests build it too, so a broken sideload package cannot land on main.
+# Pull requests still build the package so a broken sideload config cannot land.
+# The IPA artifact is uploaded only when main itself is pushed, and the name
+# includes the commit SHA so a pull-request build cannot publish one.
 on:
   workflow_dispatch:
   push:
     branches: [main]
   pull_request:
+
+permissions:
+  contents: read
 
 concurrency:
   group: sideload-ipa-${{ github.ref }}
@@ -19,7 +23,7 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Select the latest stable Xcode
         run: |
@@ -105,8 +109,9 @@ jobs:
           unzip -l "$GITHUB_WORKSPACE/TruckoRig-unsigned.ipa" | grep -q 'Payload/TruckoRig.app/Info.plist'
 
       - name: Upload the unsigned ipa
-        uses: actions/upload-artifact@v4
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: TruckoRig-unsigned-ipa
+          name: TruckoRig-unsigned-ipa-${{ github.sha }}
           path: TruckoRig-unsigned.ipa
           if-no-files-found: error

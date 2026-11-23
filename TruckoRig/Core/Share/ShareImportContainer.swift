@@ -3,6 +3,7 @@ import Foundation
 /// App Group folder the share extension writes and the app reads on the next foreground.
 enum ShareImportContainer {
     static func rootURL() -> URL? {
+        ShareInboxCrypto.install()
         guard let base = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: ShareImportLocation.appGroupIdentifier
         ) else {
@@ -14,6 +15,8 @@ enum ShareImportContainer {
         } catch {
             return nil
         }
+        ShareDiskProtection.apply(to: url)
+        ShareImportInbox(root: url).sweep()
         return url
     }
 

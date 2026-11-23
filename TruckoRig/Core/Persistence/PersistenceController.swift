@@ -21,10 +21,12 @@ final class PersistenceController {
             let database = try AppDatabase.open(at: url, passphrase: passphrase)
             self.database = database
             do {
-                _ = try SwiftDataMigration.run(
-                    legacyStoreURL: try AccountScopedContainer.storeURL(for: scope),
-                    database: database
-                )
+                let legacy = try AccountScopedContainer.storeURL(for: scope)
+                _ = try SwiftDataMigration.run(legacyStoreURL: legacy, database: database)
+                SwiftDataMigration.deletePlaintext(legacy)
+                if let directory = try? AccountScopedContainer.storeDirectory() {
+                    SwiftDataMigration.deleteLeftovers(in: directory)
+                }
             } catch {
                 storeFailure = error.localizedDescription
                 AppLog.persistence.error("SwiftData import failed: \(error.localizedDescription, privacy: .public)")

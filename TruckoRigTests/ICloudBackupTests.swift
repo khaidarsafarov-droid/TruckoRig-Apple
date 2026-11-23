@@ -4,6 +4,16 @@ import XCTest
 /// iCloud Drive file, conflict choice, and a missing account. No network and no Apple ID.
 final class ICloudBackupTests: XCTestCase {
 
+    override func setUp() {
+        super.setUp()
+        CloudPayloadSealer.testingKey = Data(repeating: 0x42, count: 32)
+    }
+
+    override func tearDown() {
+        CloudPayloadSealer.testingKey = nil
+        super.tearDown()
+    }
+
     func testContainerFileRoundTripsThroughTheCoordinatorAndKeepsOneFile() throws {
         let root = try makeRoot()
         defer { try? FileManager.default.removeItem(at: root) }

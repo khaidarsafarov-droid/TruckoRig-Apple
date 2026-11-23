@@ -8,7 +8,13 @@ final class ICloudMediaBackupTests: XCTestCase {
     private let token = "123456789:AAHabcdefghijklmnopqrstuvwxyz0123456789"
     private var directories: [URL] = []
 
+    override func setUp() {
+        super.setUp()
+        CloudPayloadSealer.testingKey = Data(repeating: 0x42, count: 32)
+    }
+
     override func tearDown() {
+        CloudPayloadSealer.testingKey = nil
         for directory in directories {
             try? FileManager.default.removeItem(at: directory)
         }
@@ -114,8 +120,8 @@ final class ICloudMediaBackupTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(result.applied.restored, 1)
         let photos = try restoredDatabase.fetchGraph().photos
         let photo = try XCTUnwrap(photos.first { $0.city == "Garner" })
-        XCTAssertEqual(photo.latitude ?? 0, 35.123, accuracy: 0.000_1)
-        XCTAssertEqual(photo.longitude ?? 0, -78.456, accuracy: 0.000_1)
+        XCTAssertNil(photo.latitude)
+        XCTAssertNil(photo.longitude)
         XCTAssertEqual(photo.state, "NC")
         XCTAssertEqual(photo.zipCode, "27529")
         XCTAssertEqual(photo.loadId, try restoredDatabase.fetchGraph().loads.first?.id)
@@ -132,8 +138,9 @@ final class ICloudMediaBackupTests: XCTestCase {
         let root = try makeRoot()
         let store = ICloudDriveStore(probe: .available(root))
         let prefs = ICloudBackupPrefs(defaults: UserDefaults(suiteName: "media-secret-\(UUID().uuidString)")!)
-        XCTAssertTrue(prefs.mediaEnabled)
+        XCTAssertFalse(prefs.mediaEnabled)
         XCTAssertTrue(prefs.wifiOnly)
+        prefs.mediaEnabled = true
         let engine = ICloudSyncEngine(store: store, prefs: prefs)
         let poisoned = #"{"schemaVersion":2,"exportedAt":9,"accountId":"local_dev","loads":[],"note":"\#(token)"}"#
         let refused = engine.perform(ICloudSyncRequest(
@@ -187,7 +194,9 @@ final class ICloudMediaBackupTests: XCTestCase {
         let manifest = try manifestItems(store)
         let text = ICloudMediaPolicy.encode(ICloudMediaPolicy.Manifest(accountId: "local_dev", updatedAt: 1, items: manifest))
         XCTAssertFalse(text.contains(token))
-        XCTAssertTrue(text.contains("***"))
+        XCTAssertFalse(text.contains("ocrText"))
+        XCTAssertNil(manifest.first?.ocrText)
+        XCTAssertNil(manifest.first?.latitude)
         XCTAssertFalse(text.contains("botToken"))
         XCTAssertFalse(text.contains("passphrase"))
         let json = try XCTUnwrap(try store.read(accountId: BackupAccount.localDev))
@@ -256,6 +265,7 @@ final class ICloudMediaBackupTests: XCTestCase {
         controller.mediaStoreOverride = local
         controller.lowPowerModeOverride = false
         controller.onWifi = true
+        controller.setMediaEnabled(true)
         controller.bind(database: database, settings: settings, scope: .local)
         await controller.syncNow()
         return Fixture(database: database, local: local, store: store, controller: controller)

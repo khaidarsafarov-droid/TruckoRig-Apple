@@ -123,11 +123,20 @@ final class ICloudMediaPolicyTests: XCTestCase {
             XCTAssertEqual(error as? BackupDecodeError, .invalidFormat)
         }
         let roundTrip = try ICloudMediaPolicy.decode(manifestJSON)
-        XCTAssertEqual(roundTrip.items.first?.latitude, 35.123)
-        XCTAssertEqual(roundTrip.items.first?.longitude, -78.456)
+        XCTAssertNil(roundTrip.items.first?.latitude)
+        XCTAssertNil(roundTrip.items.first?.longitude)
+        XCTAssertNil(roundTrip.items.first?.ocrText)
         XCTAssertEqual(roundTrip.items.first?.city, "Garner")
         XCTAssertFalse(manifestJSON.contains(token))
-        XCTAssertTrue(manifestJSON.contains("***"))
+        XCTAssertFalse(manifestJSON.contains("latitude"))
+        XCTAssertFalse(manifestJSON.contains("ocrText"))
+
+        let legacy = """
+        {"accountId":"local_dev","items":[{"byteCount":1,"category":"","city":"Garner","contentHash":"abc","fileName":"a.jpg","kind":"photo","latitude":35.123,"longitude":-78.456,"modifiedAt":1,"ocrText":"old note","pageCount":0,"recordId":"p","relativePath":"photos/a.jpg","state":"NC","timestampMillis":0,"zipCode":"27529"}],"kind":"truckorig-media","manifestVersion":1,"updatedAt":9}
+        """
+        let old = try ICloudMediaPolicy.decode(legacy)
+        XCTAssertEqual(old.items.first?.latitude ?? 0, 35.123, accuracy: 0.000_1)
+        XCTAssertEqual(old.items.first?.ocrText, "old note")
     }
 
     func testSecretsStayOutOfTheManifestAndTheFileCheck() {
@@ -156,7 +165,7 @@ final class ICloudMediaPolicyTests: XCTestCase {
 
     func testHeavyUploadWaitsForPowerAndWifi() {
         XCTAssertEqual(ICloudMediaPolicy.backgroundTaskIdentifier, "com.truckorig.icloud-media")
-        XCTAssertTrue(ICloudMediaPolicy.mediaEnabledByDefault)
+        XCTAssertFalse(ICloudMediaPolicy.mediaEnabledByDefault)
         XCTAssertTrue(ICloudMediaPolicy.wifiOnlyByDefault)
         XCTAssertEqual(
             ICloudMediaPolicy.gate(conditions(background: true, wifi: true, power: false)),

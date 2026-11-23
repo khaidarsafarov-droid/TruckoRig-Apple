@@ -93,8 +93,9 @@ final class ICloudDriveStore {
         }
         guard fileManager.fileExists(atPath: url.path) else { return nil }
         let data = try resolveConflicts(at: url) ?? coordinatedRead(url)
-        if data.count > BackupSchedule.maxRestoreBytes { throw Failure.tooLarge }
-        return data
+        let plain = try opened(data)
+        if plain.count > BackupSchedule.maxRestoreBytes { throw Failure.tooLarge }
+        return plain
     }
 
     func write(_ data: Data, accountId: String) throws {
@@ -103,6 +104,12 @@ final class ICloudDriveStore {
         }
         if data.count > BackupSchedule.maxRestoreBytes { throw Failure.tooLarge }
         if ICloudMediaPolicy.documentIsSecret(Array(data)) { throw Failure.refusedSecret }
+        let sealed: Data
+        do {
+            sealed = try CloudPayloadSealer.seal(data)
+        } catch {
+            throw Failure.writeFailed
+        }
         guard let documents = documentsURL() else { throw Failure.unavailable }
         do {
             try fileManager.createDirectory(at: documents, withIntermediateDirectories: true)
@@ -110,7 +117,7 @@ final class ICloudDriveStore {
             throw Failure.writeFailed
         }
         let exists = fileManager.fileExists(atPath: url.path)
-        try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
+        try coordinatedWrite(sealed, to: url, options: exists ? .forReplacing : [])
         _ = try? resolveConflicts(at: url)
     }
 
@@ -135,7 +142,7 @@ final class ICloudDriveStore {
             throw Failure.notDownloaded
         }
         guard fileManager.fileExists(atPath: url.path) else { return nil }
-        return try coordinatedRead(url)
+        return try opened(coordinatedRead(url))
     }
 
     func writeManifest(_ data: Data, accountId: String) throws {
@@ -143,9 +150,15 @@ final class ICloudDriveStore {
             throw Failure.unavailable
         }
         if ICloudMediaPolicy.documentIsSecret(Array(data)) { throw Failure.refusedSecret }
+        let sealed: Data
+        do {
+            sealed = try CloudPayloadSealer.seal(data)
+        } catch {
+            throw Failure.writeFailed
+        }
         try createParent(of: url)
         let exists = fileManager.fileExists(atPath: url.path)
-        try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
+        try coordinatedWrite(sealed, to: url, options: exists ? .forReplacing : [])
         manifestWriteCount += 1
     }
 
@@ -160,7 +173,7 @@ final class ICloudDriveStore {
             throw Failure.notDownloaded
         }
         guard fileManager.fileExists(atPath: url.path) else { throw Failure.missing }
-        return try coordinatedRead(url)
+        return try opened(coordinatedRead(url))
     }
 
     func writeMedia(_ data: Data, accountId: String, relativePath: String) throws {
@@ -169,9 +182,17 @@ final class ICloudDriveStore {
         else { throw Failure.unavailable }
         if data.count > ICloudMediaPolicy.maxFileBytes { throw Failure.tooLarge }
         if ICloudMediaPolicy.fileIsSecret(Array(data)) { throw Failure.refusedSecret }
+        let stripped = ImageLocationStrip.strip(data)
+        if ICloudMediaPolicy.fileIsSecret(Array(stripped)) { throw Failure.refusedSecret }
+        let sealed: Data
+        do {
+            sealed = try CloudPayloadSealer.seal(stripped)
+        } catch {
+            throw Failure.writeFailed
+        }
         try createParent(of: url)
         let exists = fileManager.fileExists(atPath: url.path)
-        try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
+        try coordinatedWrite(sealed, to: url, options: exists ? .forReplacing : [])
         mediaWrites.append(relativePath)
     }
 
@@ -238,6 +259,14 @@ final class ICloudDriveStore {
         return payload ?? Data()
     }
 
+    private func opened(_ data: Data) throws -> Data {
+        do {
+            return try CloudPayloadSealer.open(data)
+        } catch {
+            throw Failure.readFailed
+        }
+    }
+
     private func coordinatedWrite(
         _ data: Data,
         to url: URL,
@@ -289,7 +318,8 @@ final class ICloudDriveStore {
     }
 
     private static func exportedAt(in data: Data) -> Int64 {
-        guard let text = try? BackupRestoreParser.parseToJSON(data),
+        let plain = (try? CloudPayloadSealer.open(data)) ?? data
+        guard let text = try? BackupRestoreParser.parseToJSON(plain),
               let backup = try? BackupDataCodec.decode(text)
         else { return 0 }
         return backup.exportedAt

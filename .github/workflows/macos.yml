@@ -6,6 +6,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ios-simulator-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -16,7 +19,7 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 70
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Select the latest stable Xcode
         run: |

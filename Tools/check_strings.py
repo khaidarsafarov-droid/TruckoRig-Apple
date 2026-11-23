@@ -10,8 +10,9 @@ compares the two directly:
   * the number of format specifiers matches between the key and each language
   * French plural variations include `one` and `other`, and the singular/plural
     wording agrees where the catalog uses those forms
-  * InfoPlist.xcstrings translates the permission strings, and en/es/ru stay
-    equal to the strings already shipped in Info.plist
+  * Info.plist and InfoSideload.plist ship the English permission text.
+    InfoPlist.xcstrings keeps that English text for `en`, and Spanish, French,
+    and Russian are real translations.
 
     python3 Tools/check_strings.py
 """
@@ -27,6 +28,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CATALOG = os.path.join(ROOT, "TruckoRig", "Resources", "Localizable.xcstrings")
 INFO_CATALOG = os.path.join(ROOT, "TruckoRig", "Resources", "InfoPlist.xcstrings")
 INFO_PLIST = os.path.join(ROOT, "TruckoRig", "Resources", "Info.plist")
+SIDELOAD_PLIST = os.path.join(ROOT, "TruckoRig", "Resources", "InfoSideload.plist")
 PROJECT = os.path.join(ROOT, "TruckoRig.xcodeproj", "project.pbxproj")
 SOURCE_DIRS = ["TruckoRig", "TruckoRigWidget", "TruckoRigShare"]
 
@@ -154,17 +156,21 @@ def check_info_plist(problems: list[str]) -> None:
     catalog = json.load(open(INFO_CATALOG, encoding="utf-8"))["strings"]
     if set(catalog) != set(shipped):
         problems.append(f"InfoPlist.xcstrings keys {sorted(catalog)} != Info.plist {sorted(shipped)}")
+    sideload = open(SIDELOAD_PLIST, encoding="utf-8").read()
+    sideload_shipped = dict(re.findall(r"<key>(NS(?:Camera|PhotoLibrary|LocationWhenInUse)UsageDescription)</key>\s*<string>(.*?)</string>", sideload, re.S))
+    if sideload_shipped != shipped:
+        problems.append("InfoSideload.plist permission strings differ from Info.plist")
     for key, entry in catalog.items():
         localizations = entry.get("localizations", {})
-        for language in ("en", "es", "ru"):
+        english = localizations.get("en", {}).get("stringUnit", {}).get("value", "")
+        if english != shipped.get(key, ""):
+            problems.append(f"{key}: en permission text must match Info.plist")
+        for language in ("es", "fr", "ru"):
             value = localizations.get(language, {}).get("stringUnit", {}).get("value", "")
-            if value != shipped.get(key, ""):
-                problems.append(f"{key}: {language} permission text changed")
-        french = localizations.get("fr", {}).get("stringUnit", {}).get("value", "")
-        if not french.strip():
-            problems.append(f"{key}: missing or blank fr")
-        elif french == shipped.get(key):
-            problems.append(f"{key}: fr permission text is still the untranslated string")
+            if not value.strip():
+                problems.append(f"{key}: missing or blank {language}")
+            elif value == english:
+                problems.append(f"{key}: {language} permission text is still English")
 
 
 def check_project_regions(problems: list[str]) -> None:

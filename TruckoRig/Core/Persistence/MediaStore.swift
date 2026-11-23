@@ -50,35 +50,45 @@ struct MediaStore {
     }
 
     func url(for fileName: String, kind: Kind) -> URL {
-        directory(for: kind).appendingPathComponent(fileName)
+        let name = MediaPathRules.fileName(fileName) ?? "invalid"
+        return directory(for: kind).appendingPathComponent(name)
     }
 
     /// Resolves a stored relative path, then the legacy `Photos`/`Scans` folders.
+    ///
+    /// Absolute paths and `..` are refused. An old absolute path from a previous build is not opened.
     func existingFile(fileName: String, filePath: String?, kind: Kind) -> URL? {
-        if let filePath, !filePath.isEmpty {
-            if filePath.hasPrefix("/") {
-                let absolute = URL(fileURLWithPath: filePath)
-                if FileManager.default.fileExists(atPath: absolute.path) { return absolute }
-            } else {
-                let relative = root.appendingPathComponent(filePath)
-                if FileManager.default.fileExists(atPath: relative.path) { return relative }
-            }
+        if let filePath, !filePath.isEmpty, let relative = MediaPathRules.url(relative: filePath, under: root),
+           FileManager.default.fileExists(atPath: relative.path) {
+            return relative
         }
-        let current = url(for: fileName, kind: kind)
-        if FileManager.default.fileExists(atPath: current.path) { return current }
+        if MediaPathRules.fileName(fileName) != nil {
+            let current = url(for: fileName, kind: kind)
+            if FileManager.default.fileExists(atPath: current.path) { return current }
+        }
+        guard let name = MediaPathRules.fileName(fileName) else { return nil }
         let legacy = root
             .appendingPathComponent(kind.legacyDirectoryName, isDirectory: true)
-            .appendingPathComponent(fileName)
+            .appendingPathComponent(name)
         if FileManager.default.fileExists(atPath: legacy.path) { return legacy }
         return nil
     }
 
     func write(_ data: Data, fileName: String, kind: Kind) throws -> URL {
-        guard !data.isEmpty else { throw MediaStoreError.encodingFailed }
+        guard !data.isEmpty, MediaPathRules.fileName(fileName) != nil else { throw MediaStoreError.encodingFailed }
         let url = url(for: fileName, kind: kind)
-        try data.write(to: url, options: .atomic)
+        try data.write(to: url, options: Self.writeOptions)
         return url
     }
+
+    /// Data Protection encrypts the file after the first unlock, including while a background
+    /// iCloud upload runs. The file stays in the device backup: Apple's backup guidance says a
+    /// document the driver cannot download again must survive a restore. Backup exclusion is
+    /// reserved for the temporary share inbox, which the journal replaces.
+    static let writeOptions: Data.WritingOptions = [
+        .atomic,
+        .completeFileProtectionUntilFirstUserAuthentication,
+    ]
 
     func loadImage(named fileName: String, filePath: String? = nil, kind: Kind) -> UIImage? {
         guard let url = existingFile(fileName: fileName, filePath: filePath, kind: kind) else { return nil }
@@ -120,16 +130,14 @@ struct MediaStore {
         guard !data.isEmpty else { throw MediaStoreError.encodingFailed }
         let directory = root.appendingPathComponent(Self.receiptsDirectoryName, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        try data.write(to: directory.appendingPathComponent(fileName), options: .atomic)
-        return "\(Self.receiptsDirectoryName)/\(fileName)"
+        guard let name = MediaPathRules.fileName(fileName) else { throw MediaStoreError.encodingFailed }
+        try data.write(to: directory.appendingPathComponent(name), options: Self.writeOptions)
+        return "\(Self.receiptsDirectoryName)/\(name)"
     }
 
     func receiptFile(relativePath: String) -> URL? {
-        guard !relativePath.isEmpty else { return nil }
-        let url = relativePath.hasPrefix("/")
-            ? URL(fileURLWithPath: relativePath)
-            : root.appendingPathComponent(relativePath)
-        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        guard let url = MediaPathRules.url(relative: relativePath, under: root),
+              FileManager.default.fileExists(atPath: url.path) else { return nil }
         return url
     }
 
@@ -147,7 +155,9 @@ struct MediaStore {
         if let url = existingFile(fileName: fileName, filePath: filePath, kind: kind) {
             try? FileManager.default.removeItem(at: url)
         }
-        try? FileManager.default.removeItem(at: url(for: fileName, kind: kind))
+        if MediaPathRules.fileName(fileName) != nil {
+            try? FileManager.default.removeItem(at: url(for: fileName, kind: kind))
+        }
     }
 
     /// PDF files in `scans/` that no row references. Called when the scan gallery opens.
@@ -156,7 +166,7 @@ struct MediaStore {
         guard let names = try? FileManager.default.contentsOfDirectory(atPath: directory.path) else { return 0 }
         let orphans = OrphanScanCleanup.unreferenced(fileNames: names, knownRelativePaths: knownRelativePaths)
         var removed = 0
-        for name in orphans {
+        for name in orphans where MediaPathRules.fileName(name) != nil {
             let url = directory.appendingPathComponent(name)
             var isDirectory: ObjCBool = false
             guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), !isDirectory.boolValue else {

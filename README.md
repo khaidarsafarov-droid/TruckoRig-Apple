@@ -11,7 +11,7 @@
 | UI | SwiftUI, iOS 17+ |
 | База | GRDB + SQLCipher, ключ в Keychain |
 | Данные | Только на телефоне, без логина |
-| Карты | Google Maps SDK for iOS 11.2.0 |
+| Карты | Google Maps SDK for iOS 11.4.0 |
 | OCR | Vision (`VNRecognizeTextRequest`, ru + en) |
 | Локализация | String Catalog (`.xcstrings`), RU + EN, и ES для Premium |
 
@@ -102,8 +102,8 @@ TruckoRigTests/   тесты шифрования и миграции (XCTest, �
 4. **Один локальный магазин.** База — `TruckoRig_local.sqlite` (SQLCipher, 256-битный пароль в
    Keychain, `AfterFirstUnlockThisDeviceOnly`). Логина нет: журнал открывается сразу. Если на
    телефоне остался файл от старого Sign in with Apple, он один раз переезжает в
-   `TruckoRig_local.store`, а тот один раз копируется в зашифрованную базу и переименовывается
-   в `.premigration`. Пароль с телефона не уезжает; перенос журнала — JSON-бэкап.
+   `TruckoRig_local.store`, а тот один раз копируется в зашифрованную базу и затем удаляется
+   вместе с любым старым `.premigration`. Пароль с телефона не уезжает; перенос журнала — JSON-бэкап.
 5. **Валидация парсера.** Рейс принимается, только если есть Trip ID, Total Rate > 0 и хотя бы
    один адрес PU или DEL. Иначе возвращается типизированная ошибка, и пользователь видит, чего
    именно не хватило.

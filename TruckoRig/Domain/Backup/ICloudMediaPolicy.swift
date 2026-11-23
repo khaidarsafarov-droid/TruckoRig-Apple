@@ -5,7 +5,8 @@ import Foundation
 /// Files live in `Documents/Media/<account>/photos` and `.../scans`. `manifest.json` in that
 /// folder is the only link between a file and a load. Android never reads it. iCloud is not
 /// asked to delete anything: a file removed on this phone stays in the folder and in the
-/// manifest until the driver deletes it in the Files app. A later restore downloads it again.
+/// manifest. The container is private to TruckoRig, so the Files app does not show it. A later
+/// restore downloads the file again. The manifest does not store GPS coordinates or OCR text.
 public enum ICloudMediaPolicy {
     public static let folderName = "Media"
     public static let manifestFileName = "manifest.json"
@@ -14,7 +15,8 @@ public enum ICloudMediaPolicy {
     public static let backgroundTaskIdentifier = "com.truckorig.icloud-media"
     public static let photoDirectory = "photos"
     public static let scanDirectory = "scans"
-    public static let mediaEnabledByDefault = true
+    /// Off until the driver turns it on. A missing preference is not a choice.
+    public static let mediaEnabledByDefault = false
     public static let wifiOnlyByDefault = true
     /// Heavy uploads wait for a plugged-in `BGProcessingTask`. Two minutes batches a burst of shots.
     public static let backgroundDelayAfterChange: TimeInterval = 2 * 60
@@ -26,7 +28,7 @@ public enum ICloudMediaPolicy {
     public static let allowsAutomaticDeletion = false
 
     public static let deletionRule =
-        "TruckoRig never deletes a photo or scan from iCloud. Removing it on this phone does not remove the copy. The bytes stay in Media/<account>/ and the manifest keeps the row. Restore downloads that file again. The copy leaves iCloud only when you delete it yourself in the Files app. The next sync then drops it, because it is neither on the phone nor still in iCloud."
+        "TruckoRig never deletes a photo or scan from iCloud. Removing it on this phone does not remove the copy. The bytes stay in Media/<account>/ and the manifest keeps the row. Restore downloads that file again. The iCloud container is private to TruckoRig and is not shown in the Files app."
 
     public enum Kind {
         public static let photo = "photo"
@@ -252,8 +254,8 @@ public enum ICloudMediaPolicy {
 
     /// New and changed files upload. Same hash skips the bytes. Remote-only rows are kept.
     public static func plan(local: [Item], remote: [Item]) -> Plan {
-        let locals = deduped(local.compactMap(sanitize))
-        let remotes = deduped(remote.compactMap(sanitize))
+        let locals = deduped(local.compactMap { sanitize($0, uploading: true) })
+        let remotes = deduped(remote.compactMap { sanitize($0, uploading: true) })
         let remoteByPath = Dictionary(uniqueKeysWithValues: remotes.map { ($0.relativePath, $0) })
         var upload: [Item] = []
         var manifestOnly: [Item] = []
@@ -311,7 +313,7 @@ public enum ICloudMediaPolicy {
     }
 
     public static func encode(_ manifest: Manifest) -> String {
-        let clean = manifest.items.compactMap(sanitize)
+        let clean = manifest.items.compactMap { sanitize($0, uploading: true) }
         let body: [String: Any] = [
             "kind": manifestKind,
             "manifestVersion": NSNumber(value: manifestVersion),
@@ -344,7 +346,7 @@ public enum ICloudMediaPolicy {
         let rows = root["items"] as? [Any] ?? []
         let items = rows.compactMap { value -> Item? in
             guard let row = value as? [String: Any] else { return nil }
-            return sanitize(item(from: row))
+            return sanitize(item(from: row), uploading: false)
         }
         return Manifest(
             accountId: string(root["accountId"]) ?? "",
@@ -355,7 +357,7 @@ public enum ICloudMediaPolicy {
 
     // MARK: - Private
 
-    private static func sanitize(_ item: Item) -> Item? {
+    private static func sanitize(_ item: Item, uploading: Bool) -> Item? {
         let record = item.recordId.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !record.isEmpty, !fileIsSecret(Array(record.utf8)) else { return nil }
         guard let relative = canonicalRelativePath(kind: item.kind, fileName: item.fileName) else { return nil }
@@ -366,13 +368,21 @@ public enum ICloudMediaPolicy {
         copy.fileName = relative.split(separator: "/").last.map(String.init) ?? item.fileName
         copy.loadId = blankToNil(item.loadId.map(redactBackupText))
         copy.tripId = blankToNil(item.tripId.map(redactBackupText))
-        copy.latitude = normalizedCoordinate(item.latitude)
-        copy.longitude = normalizedCoordinate(item.longitude)
+        // A new upload omits GPS and OCR. Decoding an older manifest keeps them so a restore
+        // can put the coordinates back on this phone. The next upload clears them again.
+        if uploading {
+            copy.latitude = nil
+            copy.longitude = nil
+            copy.ocrText = nil
+        } else {
+            copy.latitude = normalizedCoordinate(item.latitude)
+            copy.longitude = normalizedCoordinate(item.longitude)
+            copy.ocrText = blankToNil(item.ocrText.map(redactBackupText))
+        }
         copy.city = redactBackupText(item.city)
         copy.state = redactBackupText(item.state)
         copy.zipCode = redactBackupText(item.zipCode)
         copy.caption = blankToNil(item.caption.map(redactBackupText))
-        copy.ocrText = blankToNil(item.ocrText.map(redactBackupText))
         copy.title = blankToNil(item.title.map(redactBackupText))
         copy.category = redactBackupText(item.category)
         return copy

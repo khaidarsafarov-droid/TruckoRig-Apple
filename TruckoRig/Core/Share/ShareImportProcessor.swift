@@ -16,6 +16,7 @@ enum ShareImportProcessor {
     ) -> Outcome {
         guard let root = ShareImportContainer.rootURL() else { return Outcome() }
         let inbox = ShareImportInbox(root: root)
+        inbox.sweep()
         let pending: [ShareImportRecord]
         do {
             pending = try inbox.pending()
@@ -80,9 +81,8 @@ enum ShareImportProcessor {
         to load: Load,
         media: MediaRepository
     ) {
-        guard let url = inbox.fileURL(for: record),
-              let data = try? Data(contentsOf: url),
-              !data.isEmpty else { return }
+        guard let data = try? inbox.fileData(for: record), !data.isEmpty else { return }
+        guard let url = inbox.fileURL(for: record) else { return }
         let ext = url.pathExtension.lowercased()
         let day = MediaClock.format(load.date, pattern: "yyyy-MM-dd", timeZone: .current)
         let images: Set<String> = ["jpg", "jpeg", "png", "heic", "heif", "gif", "webp", "tif", "tiff"]

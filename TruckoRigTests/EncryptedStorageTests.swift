@@ -121,7 +121,7 @@ final class EncryptedStorageTests: XCTestCase {
         XCTAssertEqual(loaded?.stops?.first?.city, "Garner")
         XCTAssertEqual(loaded?.stops?.first?.state, "NC")
         XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: legacy.path + ".premigration"))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path + ".premigration"))
 
         let second = try SwiftDataMigration.run(legacyStoreURL: legacy, database: database)
         XCTAssertEqual(second, .alreadyImported)
@@ -152,7 +152,7 @@ final class EncryptedStorageTests: XCTestCase {
         XCTAssertEqual(outcome, .nothingToImport)
         XCTAssertTrue(try database.legacyImportIsDone())
         XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: legacy.path + ".premigration"))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path + ".premigration"))
     }
 
     func testBackupRestoreKeepsTripIdAndParsedAt() async throws {

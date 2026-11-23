@@ -17,8 +17,8 @@ enum SharePayloadReader {
     static let maxAttachments = 8
     static let maxOCRPages = 3
     static let maxImageEdge = 1600
-    static let maxOCRBytes = 20 * 1024 * 1024
-    static let textLimit = 100_000
+    static let maxOCRBytes = ShareFileRules.maxBytes
+    static let textLimit = ShareFileRules.maxText
 
     static func pieces(from context: NSExtensionContext?) async -> [SharePiece] {
         let items = context?.inputItems as? [NSExtensionItem] ?? []
@@ -89,9 +89,15 @@ enum SharePayloadReader {
     }
 
     private static func pdfText(at url: URL) async -> (text: String, pages: Int) {
+        guard fileSize(url) <= ShareFileRules.maxBytes else { return ("", 0) }
         guard let document = PDFDocument(url: url) else { return ("", 0) }
-        let pages = document.pageCount
-        let layer = document.string?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let pages = min(document.pageCount, ShareFileRules.maxPages)
+        var parts: [String] = []
+        for index in 0..<pages {
+            guard let page = document.page(at: index), let text = page.string, !text.isEmpty else { continue }
+            parts.append(text)
+        }
+        let layer = parts.joined(separator: "\n\n").trimmingCharacters(in: .whitespacesAndNewlines)
         if layer.count >= 40 || fileSize(url) > maxOCRBytes { return (layer, pages) }
         var recognized: [String] = []
         let cap = min(pages, maxOCRPages)
@@ -120,6 +126,12 @@ enum SharePayloadReader {
         ]
         guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
         return UIImage(cgImage: cgImage)
+    }
+
+    private static func headerBytes(_ url: URL) throws -> Data {
+        let handle = try FileHandle(forReadingFrom: url)
+        defer { try? handle.close() }
+        return handle.readData(ofLength: 32)
     }
 
     private static func fileSize(_ url: URL) -> Int {
@@ -167,11 +179,17 @@ enum SharePayloadReader {
                     continuation.resume(throwing: CocoaError(.fileReadNoSuchFile))
                     return
                 }
-                let ext = url.pathExtension.isEmpty ? "bin" : url.pathExtension
-                let destination = FileManager.default.temporaryDirectory
-                    .appendingPathComponent(UUID().uuidString)
-                    .appendingPathExtension(ext)
                 do {
+                    let header = try headerBytes(url)
+                    guard fileSize(url) <= ShareFileRules.maxBytes,
+                          let ext = ShareFileRules.storedExtension(pathExtension: url.pathExtension, header: header)
+                    else {
+                        continuation.resume(throwing: CocoaError(.fileReadCorruptFile))
+                        return
+                    }
+                    let destination = FileManager.default.temporaryDirectory
+                        .appendingPathComponent(UUID().uuidString)
+                        .appendingPathExtension(ext)
                     try FileManager.default.copyItem(at: url, to: destination)
                     continuation.resume(returning: destination)
                 } catch {

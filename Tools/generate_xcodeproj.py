@@ -38,7 +38,12 @@ GRDB_VERSION = "7.11.1"
 GRDB_PRODUCT = "GRDB"
 # Maps SDK for iOS. The key is not in the repo: Config/Maps.xcconfig reads GOOGLE_MAPS_API_KEY.
 MAPS_REPOSITORY = "https://github.com/googlemaps/ios-maps-sdk"
-MAPS_VERSION = "11.2.0"
+MAPS_VERSION = "11.4.0"
+# SQLCipher.swift is also what GRDB pulls in with `from: 4.11.0`. An exact pin here
+# forces the resolver to 4.20.0, which includes the sqlcipher_export fix from 4.15.0.
+SQLCIPHER_REPOSITORY = "https://github.com/sqlcipher/SQLCipher.swift.git"
+SQLCIPHER_VERSION = "4.20.0"
+SQLCIPHER_PRODUCT = "SQLCipher"
 MAPS_PRODUCT = "GoogleMaps"
 CONFIG_DIR = "Config"
 CONFIG_FILES = [
@@ -180,6 +185,7 @@ def build() -> str:
         f"{APP_DIR}/Core/Share/ShareFileHash.swift",
         f"{APP_DIR}/Core/Share/ShareImportContainer.swift",
         f"{APP_DIR}/Core/Share/ShareImportNotifier.swift",
+        f"{APP_DIR}/Core/Share/ShareInboxCrypto.swift",
     ]
     test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(TESTS_DIR + os.sep)]
     ui_test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(UITESTS_DIR + os.sep)]
@@ -247,6 +253,10 @@ def build() -> str:
     add(
         f"\t\t{object_id('buildfile-app', MAPS_PRODUCT)} /* {MAPS_PRODUCT} in Frameworks */ = "
         f"{{isa = PBXBuildFile; productRef = {object_id('package-product', MAPS_PRODUCT)} /* {MAPS_PRODUCT} */; }};"
+    )
+    add(
+        f"\t\t{object_id('buildfile-app', SQLCIPHER_PRODUCT)} /* {SQLCIPHER_PRODUCT} in Frameworks */ = "
+        f"{{isa = PBXBuildFile; productRef = {object_id('package-product', SQLCIPHER_PRODUCT)} /* {SQLCIPHER_PRODUCT} */; }};"
     )
     appex = f"{PROJECT_NAME}Widget.appex"
     share_appex = f"{PROJECT_NAME}Share.appex"
@@ -353,6 +363,7 @@ def build() -> str:
         add("\t\t\tfiles = (")
         if target == "app":
             add(f"\t\t\t\t{object_id('buildfile-app', GRDB_PRODUCT)} /* {GRDB_PRODUCT} in Frameworks */,")
+            add(f"\t\t\t\t{object_id('buildfile-app', SQLCIPHER_PRODUCT)} /* {SQLCIPHER_PRODUCT} in Frameworks */,")
             add(f"\t\t\t\t{object_id('buildfile-app', MAPS_PRODUCT)} /* {MAPS_PRODUCT} in Frameworks */,")
         add("\t\t\t);")
         add("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
@@ -440,6 +451,7 @@ def build() -> str:
         if key == "app":
             add("\t\t\tpackageProductDependencies = (")
             add(f"\t\t\t\t{object_id('package-product', GRDB_PRODUCT)} /* {GRDB_PRODUCT} */,")
+            add(f"\t\t\t\t{object_id('package-product', SQLCIPHER_PRODUCT)} /* {SQLCIPHER_PRODUCT} */,")
             add(f"\t\t\t\t{object_id('package-product', MAPS_PRODUCT)} /* {MAPS_PRODUCT} */,")
             add("\t\t\t);")
         add(f"\t\t\tproductName = {name};")
@@ -478,6 +490,7 @@ def build() -> str:
     add(f"\t\t\tmainGroup = {object_id('group', 'root')};")
     add("\t\t\tpackageReferences = (")
     add(f"\t\t\t\t{object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */,")
+    add(f"\t\t\t\t{object_id('package', SQLCIPHER_REPOSITORY)} /* XCRemoteSwiftPackageReference \"SQLCipher.swift\" */,")
     add(f"\t\t\t\t{object_id('package', MAPS_REPOSITORY)} /* XCRemoteSwiftPackageReference \"ios-maps-sdk\" */,")
     add("\t\t\t);")
     add(f"\t\t\tproductRefGroup = {object_id('group', 'Products')} /* Products */;")
@@ -655,6 +668,14 @@ def build() -> str:
     add(f"\t\t\t\tversion = {GRDB_VERSION};")
     add("\t\t\t};")
     add("\t\t};")
+    add(f"\t\t{object_id('package', SQLCIPHER_REPOSITORY)} /* XCRemoteSwiftPackageReference \"SQLCipher.swift\" */ = {{")
+    add("\t\t\tisa = XCRemoteSwiftPackageReference;")
+    add(f"\t\t\trepositoryURL = \"{SQLCIPHER_REPOSITORY}\";")
+    add("\t\t\trequirement = {")
+    add("\t\t\t\tkind = exactVersion;")
+    add(f"\t\t\t\tversion = {SQLCIPHER_VERSION};")
+    add("\t\t\t};")
+    add("\t\t};")
     add(f"\t\t{object_id('package', MAPS_REPOSITORY)} /* XCRemoteSwiftPackageReference \"ios-maps-sdk\" */ = {{")
     add("\t\t\tisa = XCRemoteSwiftPackageReference;")
     add(f"\t\t\trepositoryURL = \"{MAPS_REPOSITORY}\";")
@@ -671,6 +692,11 @@ def build() -> str:
     add("\t\t\tisa = XCSwiftPackageProductDependency;")
     add(f"\t\t\tpackage = {object_id('package', GRDB_REPOSITORY)} /* XCRemoteSwiftPackageReference \"GRDB.swift\" */;")
     add(f"\t\t\tproductName = {GRDB_PRODUCT};")
+    add("\t\t};")
+    add(f"\t\t{object_id('package-product', SQLCIPHER_PRODUCT)} /* {SQLCIPHER_PRODUCT} */ = {{")
+    add("\t\t\tisa = XCSwiftPackageProductDependency;")
+    add(f"\t\t\tpackage = {object_id('package', SQLCIPHER_REPOSITORY)} /* XCRemoteSwiftPackageReference \"SQLCipher.swift\" */;")
+    add(f"\t\t\tproductName = {SQLCIPHER_PRODUCT};")
     add("\t\t};")
     add(f"\t\t{object_id('package-product', MAPS_PRODUCT)} /* {MAPS_PRODUCT} */ = {{")
     add("\t\t\tisa = XCSwiftPackageProductDependency;")
