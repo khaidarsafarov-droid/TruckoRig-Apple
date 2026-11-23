@@ -8,7 +8,7 @@ final class LoadRepositoryCreateTests: XCTestCase {
     func testCreateInsertsAValidDraftAndReadsItBack() throws {
         let database = try AppDatabase.ephemeral()
         var saves = 0
-        let repository = LoadRepository(database: database, onDidSave: { saves += 1 })
+        let repository = LoadRepository(database: database, onDidSave: { _ in saves += 1 })
         let when = Date(timeIntervalSince1970: 1_700_000_000)
         let created = try repository.create(
             LoadDraft(tripId: " new-9 ", date: when, totalRate: 1800, totalMiles: 420, rawMessage: "manual")
