@@ -342,9 +342,19 @@ final class AppDatabase {
 
     // MARK: - Reads
 
+    /// One trip, by its natural key. Stops, penalties, photos, and scans for that row only.
+    ///
+    /// The duplicate check before an insert uses this. It must not read the rest of the journal.
     func load(tripId: String) throws -> Load? {
         let normalized = TripID.normalize(tripId)
-        return try loads().first { $0.tripId == normalized }
+        return try queue.read { db in
+            guard let row = try Row.fetchOne(
+                db,
+                sql: "SELECT * FROM load WHERE tripId = ?",
+                arguments: [normalized]
+            ) else { return nil }
+            return try Self.assemble(load: row, db)
+        }
     }
 
     func loads() throws -> [Load] {
@@ -979,6 +989,49 @@ final class AppDatabase {
     }
 
     // MARK: - Decode
+
+    /// Attaches only the children of this load. Other tables stay unread.
+    private static func assemble(load row: Row, _ db: Database) throws -> Load {
+        let load = load(from: row)
+        let loadId = load.id.uuidString
+        let stops = try Row.fetchAll(
+            db,
+            sql: "SELECT * FROM stop WHERE loadId = ? ORDER BY stopNumber ASC",
+            arguments: [loadId]
+        ).map(stop(from:))
+        if !stops.isEmpty {
+            for stop in stops { stop.load = load }
+            load.stops = stops
+        }
+        let penalties = try Row.fetchAll(
+            db,
+            sql: "SELECT * FROM penalty WHERE loadId = ? ORDER BY date ASC",
+            arguments: [loadId]
+        ).map(penalty(from:))
+        if !penalties.isEmpty {
+            for penalty in penalties { penalty.load = load }
+            load.penalties = penalties
+        }
+        let photos = try Row.fetchAll(
+            db,
+            sql: "SELECT * FROM photo WHERE loadId = ? ORDER BY timestamp DESC",
+            arguments: [loadId]
+        ).map(photo(from:))
+        if !photos.isEmpty {
+            for photo in photos { photo.load = load }
+            load.photos = photos
+        }
+        let scans = try Row.fetchAll(
+            db,
+            sql: "SELECT * FROM scan WHERE loadId = ? ORDER BY timestamp DESC",
+            arguments: [loadId]
+        ).map(scan(from:))
+        if !scans.isEmpty {
+            for scan in scans { scan.load = load }
+            load.scans = scans
+        }
+        return load
+    }
 
     private static func load(from row: Row) -> Load {
         Load(
