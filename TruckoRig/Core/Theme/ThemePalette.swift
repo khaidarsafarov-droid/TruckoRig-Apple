@@ -40,8 +40,10 @@ enum AppThemeMode: Int, CaseIterable, Identifiable {
 
     /// WidgetKit follows the saved app theme. Android `WidgetCabinColors.resolve` does the same
     /// and does not read `oled_dark`, so this returns only light, dark, or system.
+    /// Same suite as `WidgetBridge.appGroup`. The literal keeps this file buildable in the share
+    /// extension, which does not link WidgetKit.
     static func widgetColorScheme(
-        defaults: UserDefaults? = UserDefaults(suiteName: WidgetBridge.appGroup)
+        defaults: UserDefaults? = UserDefaults(suiteName: "group.com.truckorig")
     ) -> ColorScheme? {
         guard let defaults, defaults.object(forKey: dataStoreKey) != nil else { return nil }
         return fromOrdinal(defaults.integer(forKey: dataStoreKey)).preferredColorScheme
