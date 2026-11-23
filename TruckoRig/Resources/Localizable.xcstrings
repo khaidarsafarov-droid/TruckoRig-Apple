@@ -8349,25 +8349,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Off until you turn it on. Photos and scans are encrypted before they go to iCloud. GPS coordinates and recognized text are not stored in the iCloud index. The Telegram token is not uploaded."
+            "value": "Off until you turn it on. Photos and scans are encrypted before they go to iCloud. A photo keeps its location, date, and time. Recognized document text is not stored in the iCloud index. The Telegram token is not uploaded."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apagado hasta que lo actives. Las fotos y los escaneos se cifran antes de ir a iCloud. Las coordenadas GPS y el texto reconocido no se guardan en el índice de iCloud. El token de Telegram no se sube."
+            "value": "Apagado hasta que lo actives. Las fotos y los escaneos se cifran antes de ir a iCloud. Una foto conserva su ubicación, fecha y hora. El texto reconocido de los documentos no se guarda en el índice de iCloud. El token de Telegram no se sube."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выключено, пока вы его не включите. Фото и сканы шифруются перед отправкой в iCloud. Координаты GPS и распознанный текст не попадают в индекс iCloud. Токен Telegram не выгружается."
+            "value": "Выключено, пока вы его не включите. Фото и сканы шифруются перед отправкой в iCloud. У фото сохраняются место, дата и время. Распознанный текст документов в индекс iCloud не попадает. Токен Telegram не выгружается."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Désactivé jusqu'à ce que vous l'activiez. Les photos et les numérisations sont chiffrées avant d'aller sur iCloud. Les coordonnées GPS et le texte reconnu ne sont pas enregistrés dans l'index iCloud. Le jeton Telegram n'est pas envoyé."
+            "value": "Désactivé jusqu'à ce que vous l'activiez. Les photos et les numérisations sont chiffrées avant d'aller sur iCloud. Une photo garde son lieu, sa date et son heure. Le texte reconnu des documents n'est pas enregistré dans l'index iCloud. Le jeton Telegram n'est pas envoyé."
           }
         }
       }

@@ -124,8 +124,8 @@ final class ICloudMediaBackupTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(result.applied.restored, 1)
         let photos = try restoredDatabase.fetchGraph().photos
         let photo = try XCTUnwrap(photos.first { $0.city == "Garner" })
-        XCTAssertNil(photo.latitude)
-        XCTAssertNil(photo.longitude)
+        XCTAssertEqual(photo.latitude ?? 0, 35.123, accuracy: 0.000_1)
+        XCTAssertEqual(photo.longitude ?? 0, -78.456, accuracy: 0.000_1)
         XCTAssertEqual(photo.state, "NC")
         XCTAssertEqual(photo.zipCode, "27529")
         XCTAssertEqual(photo.loadId, try restoredDatabase.fetchGraph().loads.first?.id)

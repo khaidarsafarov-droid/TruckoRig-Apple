@@ -123,12 +123,12 @@ final class ICloudMediaPolicyTests: XCTestCase {
             XCTAssertEqual(error as? BackupDecodeError, .invalidFormat)
         }
         let roundTrip = try ICloudMediaPolicy.decode(manifestJSON)
-        XCTAssertNil(roundTrip.items.first?.latitude)
-        XCTAssertNil(roundTrip.items.first?.longitude)
+        XCTAssertEqual(roundTrip.items.first?.latitude ?? 0, 35.123, accuracy: 0.000_1)
+        XCTAssertEqual(roundTrip.items.first?.longitude ?? 0, -78.456, accuracy: 0.000_1)
         XCTAssertNil(roundTrip.items.first?.ocrText)
         XCTAssertEqual(roundTrip.items.first?.city, "Garner")
         XCTAssertFalse(manifestJSON.contains(token))
-        XCTAssertFalse(manifestJSON.contains("latitude"))
+        XCTAssertTrue(manifestJSON.contains("latitude"))
         XCTAssertFalse(manifestJSON.contains("ocrText"))
 
         let legacy = """

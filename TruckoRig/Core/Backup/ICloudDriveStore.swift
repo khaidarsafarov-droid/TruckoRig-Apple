@@ -194,16 +194,9 @@ final class ICloudDriveStore {
         else { throw Failure.unavailable }
         if data.count > ICloudMediaPolicy.maxFileBytes { throw Failure.tooLarge }
         if ICloudMediaPolicy.fileIsSecret(Array(data)) { throw Failure.refusedSecret }
-        let stripped: Data
-        do {
-            stripped = try ImageLocationStrip.strip(data)
-        } catch {
-            throw Failure.writeFailed
-        }
-        if ICloudMediaPolicy.fileIsSecret(Array(stripped)) { throw Failure.refusedSecret }
         let sealed: Data
         do {
-            sealed = try CloudPayloadSealer.seal(stripped)
+            sealed = try CloudPayloadSealer.seal(data)
         } catch {
             throw Failure.writeFailed
         }

@@ -6,7 +6,8 @@ import Foundation
 /// folder is the only link between a file and a load. Android never reads it. iCloud is not
 /// asked to delete anything: a file removed on this phone stays in the folder and in the
 /// manifest. The container is private to TruckoRig, so the Files app does not show it. A later
-/// restore downloads the file again. The manifest does not store GPS coordinates or OCR text.
+/// restore downloads the file again. Photo files keep their location, date, and time.
+/// Recognized document text is not written into the manifest.
 public enum ICloudMediaPolicy {
     public static let folderName = "Media"
     public static let manifestFileName = "manifest.json"
@@ -368,15 +369,14 @@ public enum ICloudMediaPolicy {
         copy.fileName = relative.split(separator: "/").last.map(String.init) ?? item.fileName
         copy.loadId = blankToNil(item.loadId.map(redactBackupText))
         copy.tripId = blankToNil(item.tripId.map(redactBackupText))
-        // A new upload omits GPS and OCR. Decoding an older manifest keeps them so a restore
-        // can put the coordinates back on this phone. The next upload clears them again.
+        // Location stays. It is part of the photo record and is restored with the backup.
+        // Recognized document text is left out of a new manifest. An older manifest can still
+        // restore text that was saved before this rule.
+        copy.latitude = normalizedCoordinate(item.latitude)
+        copy.longitude = normalizedCoordinate(item.longitude)
         if uploading {
-            copy.latitude = nil
-            copy.longitude = nil
             copy.ocrText = nil
         } else {
-            copy.latitude = normalizedCoordinate(item.latitude)
-            copy.longitude = normalizedCoordinate(item.longitude)
             copy.ocrText = blankToNil(item.ocrText.map(redactBackupText))
         }
         copy.city = redactBackupText(item.city)
