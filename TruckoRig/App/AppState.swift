@@ -60,16 +60,26 @@ final class AppState {
         LocalStoreMigration.adoptPreviousAccountIfNeeded()
         let settings = AppSettings(scope: .local)
         let persistence = PersistenceController(scope: .local)
-        self.init(persistence: persistence, settings: settings, premium: PremiumController())
+        self.init(persistence: persistence, settings: settings, premium: PremiumController(), loadsCatalog: false)
     }
 
     /// Preview and test graph. Does not touch the Keychain, the SwiftData file, or StoreKit.
-    init(persistence: PersistenceController, settings: AppSettings? = nil, premium: PremiumController? = nil) {
+    ///
+    /// `loadsCatalog` is false for the real launch. The app opens the file after the first frame
+    /// and reloads the journal once from `prepareJournal()`.
+    init(
+        persistence: PersistenceController,
+        settings: AppSettings? = nil,
+        premium: PremiumController? = nil,
+        loadsCatalog: Bool = true
+    ) {
         let resolved = settings ?? AppSettings(scope: persistence.scope)
         self.settings = resolved
         self.persistence = persistence
         let catalog = RecordCatalog()
-        catalog.reloadNow(from: persistence.database)
+        if loadsCatalog {
+            catalog.reloadNow(from: persistence.database)
+        }
         self.catalog = catalog
         let journalSaves = JournalSaveNotifier()
         self.journalSaves = journalSaves
@@ -103,11 +113,15 @@ final class AppState {
 
     @ObservationIgnored private let journalSaves: JournalSaveNotifier
 
-    func bootstrap() {
-        installNotificationHandling()
+    /// Opens nothing. Fills the catalog once, after the store is already open.
+    func prepareJournal() {
         ensureProfileExists()
         hydrateImportedLoadFields()
-        reloadJournal()
+        catalog.reloadNow(from: persistence.database)
+    }
+
+    func bootstrap() {
+        installNotificationHandling()
         ShareImportNotifier.shared.onImport = { [weak self] in
             Task { @MainActor in
                 self?.importSharedLoads()
@@ -282,8 +296,7 @@ final class AppState {
     }
 
     private func ensureProfileExists() {
-        catalog.reloadNow(.profile, from: persistence.database)
-        guard catalog.profile == nil else { return }
+        if (try? persistence.database.fetchSlice(.profile).profile) != nil { return }
         let profile = DriverProfile(
             name: LocalStoreMigration.inheritedDisplayName,
             preferredLanguage: settings.language,
