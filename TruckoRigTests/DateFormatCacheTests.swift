@@ -5,7 +5,7 @@ import XCTest
 final class DateFormatCacheTests: XCTestCase {
     func testFormatIsStablePerLocale() {
         var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .gmt
         let date = Date(timeIntervalSince1970: 1_700_000_000)
         let english = Locale(identifier: "en_US")
         let russian = Locale(identifier: "ru_RU")

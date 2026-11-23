@@ -18,7 +18,12 @@ enum DateUtils {
         }
 
         func formatter(format: String, locale: Locale, calendar: Calendar) -> DateFormatter {
-            stored(key: Self.cacheKey(kind: "format", pattern: format, locale: locale, calendar: calendar)) { formatter in
+            stored(key: Self.cacheKey(
+                kind: "format",
+                pattern: format,
+                locale: locale,
+                calendar: calendar
+            )) { formatter in
                 formatter.locale = locale
                 formatter.calendar = calendar
                 formatter.timeZone = calendar.timeZone
@@ -27,7 +32,12 @@ enum DateUtils {
         }
 
         func formatter(template: String, locale: Locale, calendar: Calendar) -> DateFormatter {
-            stored(key: Self.cacheKey(kind: "template", pattern: template, locale: locale, calendar: calendar)) { formatter in
+            stored(key: Self.cacheKey(
+                kind: "template",
+                pattern: template,
+                locale: locale,
+                calendar: calendar
+            )) { formatter in
                 formatter.locale = locale
                 formatter.calendar = calendar
                 formatter.timeZone = calendar.timeZone
@@ -46,7 +56,8 @@ enum DateUtils {
         }
 
         private static func cacheKey(kind: String, pattern: String, locale: Locale, calendar: Calendar) -> String {
-            "\(kind)|\(pattern)|\(locale.identifier)|\(calendar.identifier)|\(calendar.timeZone.identifier)|\(calendar.firstWeekday)"
+            let zone = calendar.timeZone.identifier
+            return "\(kind)|\(pattern)|\(locale.identifier)|\(calendar.identifier)|\(zone)|\(calendar.firstWeekday)"
         }
     }
 
