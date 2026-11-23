@@ -258,12 +258,46 @@ public struct PeriodReportLoadBlock: Equatable, Sendable {
     /// Date or date span. Printed on the numbered line.
     public var title: String
     public var lines: [PeriodReportLine]
+    /// Columns for the printable statement. The plain-text report does not use them.
+    public var origin: String
+    public var destination: String
+    public var shipDate: String
+    public var deliveryDate: String
+    public var tableMiles: String
+    public var tableGross: String
+    public var tableRate: String
+    /// Pickup instant. The PDF formats this in en_US even when the plain text is not English.
+    public var shipAt: Date
+    public var deliveredAt: Date?
 
-    public init(number: Int, tripId: String, title: String, lines: [PeriodReportLine]) {
+    public init(
+        number: Int,
+        tripId: String,
+        title: String,
+        lines: [PeriodReportLine],
+        origin: String = "",
+        destination: String = "",
+        shipDate: String = "",
+        deliveryDate: String = "",
+        tableMiles: String = "",
+        tableGross: String = "",
+        tableRate: String = "",
+        shipAt: Date = Date(timeIntervalSince1970: 0),
+        deliveredAt: Date? = nil
+    ) {
         self.number = number
         self.tripId = tripId
         self.title = title
         self.lines = lines
+        self.origin = origin
+        self.destination = destination
+        self.shipDate = shipDate
+        self.deliveryDate = deliveryDate
+        self.tableMiles = tableMiles
+        self.tableGross = tableGross
+        self.tableRate = tableRate
+        self.shipAt = shipAt
+        self.deliveredAt = deliveredAt
     }
 }
 
@@ -284,6 +318,12 @@ public struct PeriodReport: Equatable, Sendable {
     public var footer: String
     public var totals: PeriodReportTotals
     public var fileStem: String
+    public var language: PeriodReportLanguage
+    public var measurementSystem: MeasurementSystem
+    public var generatedAt: Date
+    public var scope: PeriodReportScope
+    public var weekStart: WeekStartDay
+    public var timeZoneIdentifier: String
 
     public init(
         brand: String,
@@ -300,7 +340,13 @@ public struct PeriodReport: Equatable, Sendable {
         emptyLoadsMessage: String,
         footer: String,
         totals: PeriodReportTotals,
-        fileStem: String
+        fileStem: String,
+        language: PeriodReportLanguage,
+        measurementSystem: MeasurementSystem,
+        generatedAt: Date,
+        scope: PeriodReportScope,
+        weekStart: WeekStartDay,
+        timeZoneIdentifier: String
     ) {
         self.brand = brand
         self.driverLabel = driverLabel
@@ -317,6 +363,12 @@ public struct PeriodReport: Equatable, Sendable {
         self.footer = footer
         self.totals = totals
         self.fileStem = fileStem
+        self.language = language
+        self.measurementSystem = measurementSystem
+        self.generatedAt = generatedAt
+        self.scope = scope
+        self.weekStart = weekStart
+        self.timeZoneIdentifier = timeZoneIdentifier
     }
 }
 
@@ -435,7 +487,13 @@ public enum PeriodReportBuilder {
             emptyLoadsMessage: copy.emptyLoads,
             footer: copy.footer,
             totals: totals,
-            fileStem: fileStem(scope: request.scope)
+            fileStem: fileStem(scope: request.scope),
+            language: request.language,
+            measurementSystem: system,
+            generatedAt: request.generatedAt,
+            scope: request.scope,
+            weekStart: request.week.weekStart,
+            timeZoneIdentifier: request.week.calendar.timeZone.identifier
         )
     }
 
@@ -651,11 +709,22 @@ public enum PeriodReportBuilder {
             }.joined(separator: "; ")
             lines.append(PeriodReportLine(label: copy.penalties, value: text))
         }
+        let ship = load.pickupAt ?? load.filedOn
+        let delivery = load.finishAt ?? load.deliveryAt
         return PeriodReportLoadBlock(
             number: number,
             tripId: trip,
             title: dateSpan(of: load, calendar: calendar, locale: locale),
-            lines: lines
+            lines: lines,
+            origin: origin,
+            destination: destination,
+            shipDate: shortDate(ship, calendar: calendar, locale: locale),
+            deliveryDate: delivery.map { shortDate($0, calendar: calendar, locale: locale) } ?? "",
+            tableMiles: milesNumber(load.drivenMiles, system: system),
+            tableGross: dollars(load.rate),
+            tableRate: perMile > 0 ? rateAmount(perMile, system: system) : "—",
+            shipAt: ship,
+            deliveredAt: delivery
         )
     }
 
@@ -697,6 +766,49 @@ public enum PeriodReportBuilder {
     private static func rate(_ perMile: Double, system: MeasurementSystem) -> String {
         guard perMile > 0 else { return "—" }
         return USMoneyFormat.rpmPerMile(perMile, system: system)
+    }
+
+    /// Dollar amount only. The statement column header already says Rate/mi.
+    static func rateAmount(_ perMile: Double, system: MeasurementSystem) -> String {
+        let shown = MeasurementUnits.displayPerDistance(perMile, system: system)
+        return String(format: "$%.2f", locale: Locale(identifier: "en_US"), shown)
+    }
+
+    static func milesNumber(_ miles: Double, system: MeasurementSystem) -> String {
+        let shown = MeasurementUnits.displayDistance(miles, system: system)
+        let digits = abs(shown.rounded() - shown) < 0.05 ? 0 : 1
+        return USMoneyFormat.number(shown, fractionDigits: digits)
+    }
+
+    /// en_US numeric date for the PDF, independent of the plain-text language.
+    static func englishShortDate(_ date: Date, week: TruckingWeek) -> String {
+        shortDate(date, calendar: week.calendar, locale: Locale(identifier: "en_US"))
+    }
+
+    static func englishMediumDate(_ date: Date, week: TruckingWeek) -> String {
+        mediumDate(date, calendar: week.calendar, locale: Locale(identifier: "en_US"))
+    }
+
+    static func englishWeek(from report: PeriodReport) -> TruckingWeek {
+        let zone = TimeZone(identifier: report.timeZoneIdentifier) ?? .current
+        return TruckingWeek(weekStart: report.weekStart, timeZone: zone)
+    }
+
+    private static func shortDate(_ date: Date, calendar: Calendar, locale: Locale) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = locale
+        formatter.calendar = calendar
+        formatter.timeZone = calendar.timeZone
+        let code = locale.language.languageCode?.identifier ?? "en"
+        switch code {
+        case "ru":
+            formatter.dateFormat = "dd.MM.yy"
+        case "fr", "es":
+            formatter.dateFormat = "dd/MM/yy"
+        default:
+            formatter.dateFormat = "M/d/yy"
+        }
+        return formatter.string(from: date)
     }
 
     // MARK: - Dates and names
@@ -815,7 +927,23 @@ struct PeriodReportCopy: Equatable, Sendable {
     var week: String
     var gallons: String
     var liters: String
+    var statementTitle: String
+    var originHeader: String
+    var destinationHeader: String
+    var shipHeader: String
+    var deliveryHeader: String
+    var grossHeader: String
+    var rateHeaderMiles: String
+    var rateHeaderKilometers: String
+    var total: String
+    var loadsTotal: String
+    var grossTotal: String
+    var milesTotal: String
     var equipmentNames: [String: String]
+
+    func rateColumn(_ system: MeasurementSystem) -> String {
+        system == .kilometers ? rateHeaderKilometers : rateHeaderMiles
+    }
 
     func distance(_ system: MeasurementSystem) -> String {
         system == .kilometers ? kilometers : miles
@@ -904,6 +1032,18 @@ struct PeriodReportCopy: Equatable, Sendable {
         week: "Week",
         gallons: "gal",
         liters: "L",
+        statementTitle: "Load Report",
+        originHeader: "Origin",
+        destinationHeader: "Destination",
+        shipHeader: "Ship date",
+        deliveryHeader: "Delivery",
+        grossHeader: "Gross",
+        rateHeaderMiles: "Rate/mi",
+        rateHeaderKilometers: "Rate/km",
+        total: "Total",
+        loadsTotal: "Loads total",
+        grossTotal: "Gross total",
+        milesTotal: "Miles total",
         equipmentNames: [
             "DRY_VAN": "Dry van",
             "REEFER": "Reefer",
@@ -960,6 +1100,18 @@ struct PeriodReportCopy: Equatable, Sendable {
         week: "Неделя",
         gallons: "гал",
         liters: "л",
+        statementTitle: "Отчёт по грузам",
+        originHeader: "Откуда",
+        destinationHeader: "Куда",
+        shipHeader: "Загрузка",
+        deliveryHeader: "Выгрузка",
+        grossHeader: "Сумма",
+        rateHeaderMiles: "$/миля",
+        rateHeaderKilometers: "$/км",
+        total: "Итого",
+        loadsTotal: "Всего грузов",
+        grossTotal: "Валовая сумма",
+        milesTotal: "Всего миль",
         equipmentNames: [
             "DRY_VAN": "Сухой фургон",
             "REEFER": "Рефрижератор",
@@ -1016,6 +1168,18 @@ struct PeriodReportCopy: Equatable, Sendable {
         week: "Semaine",
         gallons: "gal",
         liters: "L",
+        statementTitle: "Rapport des voyages",
+        originHeader: "Origine",
+        destinationHeader: "Destination",
+        shipHeader: "Enlèvement",
+        deliveryHeader: "Livraison",
+        grossHeader: "Brut",
+        rateHeaderMiles: "$/mille",
+        rateHeaderKilometers: "$/km",
+        total: "Total",
+        loadsTotal: "Voyages au total",
+        grossTotal: "Brut total",
+        milesTotal: "Milles au total",
         equipmentNames: [
             "DRY_VAN": "Fourgon sec",
             "REEFER": "Frigorifique",
@@ -1072,6 +1236,18 @@ struct PeriodReportCopy: Equatable, Sendable {
         week: "Semana",
         gallons: "gal",
         liters: "L",
+        statementTitle: "Informe de cargas",
+        originHeader: "Origen",
+        destinationHeader: "Destino",
+        shipHeader: "Carga",
+        deliveryHeader: "Entrega",
+        grossHeader: "Bruto",
+        rateHeaderMiles: "$/milla",
+        rateHeaderKilometers: "$/km",
+        total: "Total",
+        loadsTotal: "Cargas en total",
+        grossTotal: "Bruto total",
+        milesTotal: "Millas en total",
         equipmentNames: [
             "DRY_VAN": "Caja seca",
             "REEFER": "Refrigerado",
