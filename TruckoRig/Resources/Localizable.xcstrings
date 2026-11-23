@@ -8198,6 +8198,64 @@
         }
       }
     },
+    "settings.icloud.delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete iCloud copy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar copia de iCloud"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить копию iCloud"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la copie iCloud"
+          }
+        }
+      }
+    },
+    "settings.icloud.delete.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete the encrypted journal and document files from iCloud? This phone keeps its own copy."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar el diario cifrado y los documentos de iCloud? Este teléfono conserva su copia."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить зашифрованный журнал и документы из iCloud? Копия на этом телефоне останется."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer le journal chiffré et les documents d'iCloud ? Ce téléphone garde sa copie."
+          }
+        }
+      }
+    },
     "settings.icloud.hint": {
       "extractionState": "manual",
       "localizations": {
@@ -8320,25 +8378,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A photo or scan you remove on this phone stays in iCloud. TruckoRig does not delete that copy. The iCloud container is private to the app and is not shown in the Files app. A restore downloads it again."
+            "value": "A photo or scan you remove on this phone stays in iCloud until you tap Delete iCloud copy. The container is private and is not shown in the Files app."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Una foto o un escaneo que quites en este teléfono permanece en iCloud. TruckoRig no borra esa copia. El contenedor de iCloud es privado de la app y no aparece en Archivos. Una restauración lo descarga de nuevo."
+            "value": "Una foto o un escaneo que quites en este teléfono permanece en iCloud hasta que pulses Eliminar copia de iCloud. El contenedor es privado y no aparece en Archivos."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Фото или скан, удалённые на этом телефоне, остаются в iCloud. TruckoRig не удаляет эту копию. Контейнер iCloud закрыт для приложения и не показывается в «Файлах». Восстановление скачает файл снова."
+            "value": "Фото или скан, удалённые на этом телефоне, остаются в iCloud, пока вы не нажмёте «Удалить копию iCloud». Контейнер закрыт и не показывается в «Файлах»."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une photo ou une numérisation que vous retirez de cet appareil reste dans iCloud. TruckoRig ne supprime pas cette copie. Le conteneur iCloud est privé à l'app et n'apparaît pas dans Fichiers. Une restauration la télécharge de nouveau."
+            "value": "Une photo ou une numérisation retirée de cet appareil reste dans iCloud jusqu'à ce que vous touchiez Supprimer la copie iCloud. Le conteneur est privé et n'apparaît pas dans Fichiers."
           }
         }
       }

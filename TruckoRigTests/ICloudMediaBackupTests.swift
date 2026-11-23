@@ -10,11 +10,15 @@ final class ICloudMediaBackupTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        #if DEBUG
         CloudPayloadSealer.testingKey = Data(repeating: 0x42, count: 32)
+        #endif
     }
 
     override func tearDown() {
+        #if DEBUG
         CloudPayloadSealer.testingKey = nil
+        #endif
         for directory in directories {
             try? FileManager.default.removeItem(at: directory)
         }

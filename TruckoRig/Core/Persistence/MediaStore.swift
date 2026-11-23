@@ -49,8 +49,8 @@ struct MediaStore {
         return directory
     }
 
-    func url(for fileName: String, kind: Kind) -> URL {
-        let name = MediaPathRules.fileName(fileName) ?? "invalid"
+    func url(for fileName: String, kind: Kind) -> URL? {
+        guard let name = MediaPathRules.fileName(fileName) else { return nil }
         return directory(for: kind).appendingPathComponent(name)
     }
 
@@ -62,9 +62,8 @@ struct MediaStore {
            FileManager.default.fileExists(atPath: relative.path) {
             return relative
         }
-        if MediaPathRules.fileName(fileName) != nil {
-            let current = url(for: fileName, kind: kind)
-            if FileManager.default.fileExists(atPath: current.path) { return current }
+        if let current = url(for: fileName, kind: kind), FileManager.default.fileExists(atPath: current.path) {
+            return current
         }
         guard let name = MediaPathRules.fileName(fileName) else { return nil }
         let legacy = root
@@ -75,8 +74,7 @@ struct MediaStore {
     }
 
     func write(_ data: Data, fileName: String, kind: Kind) throws -> URL {
-        guard !data.isEmpty, MediaPathRules.fileName(fileName) != nil else { throw MediaStoreError.encodingFailed }
-        let url = url(for: fileName, kind: kind)
+        guard !data.isEmpty, let url = url(for: fileName, kind: kind) else { throw MediaStoreError.encodingFailed }
         try data.write(to: url, options: Self.writeOptions)
         return url
     }
@@ -155,8 +153,8 @@ struct MediaStore {
         if let url = existingFile(fileName: fileName, filePath: filePath, kind: kind) {
             try? FileManager.default.removeItem(at: url)
         }
-        if MediaPathRules.fileName(fileName) != nil {
-            try? FileManager.default.removeItem(at: url(for: fileName, kind: kind))
+        if let url = url(for: fileName, kind: kind) {
+            try? FileManager.default.removeItem(at: url)
         }
     }
 

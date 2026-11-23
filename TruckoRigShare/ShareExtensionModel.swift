@@ -53,7 +53,6 @@ final class ShareExtensionModel {
             return
         }
         let pieces = await SharePayloadReader.pieces(from: context)
-        defer { deleteTemps(pieces) }
         guard !pieces.isEmpty else {
             phase = .failed
             return
@@ -71,8 +70,8 @@ final class ShareExtensionModel {
         }
         if tally.added == 0, pieces.count > 1 {
             let joined = pieces.map(\.text).filter { !$0.isEmpty }.joined(separator: "\n\n")
-            let carrier = pieces.first { $0.fileURL != nil } ?? pieces[0]
-            let combined = SharePiece(text: joined, fileURL: carrier.fileURL, fileName: carrier.fileName, pageCount: carrier.pageCount)
+            let carrier = pieces.first { $0.fileBytes != nil } ?? pieces[0]
+            let combined = SharePiece(text: joined, fileBytes: carrier.fileBytes, fileName: carrier.fileName, pageCount: carrier.pageCount)
             accept(combined, inbox: inbox, saved: saved, batch: &batch, tally: &tally)
         }
 
@@ -105,7 +104,7 @@ final class ShareExtensionModel {
         case .rejected:
             break
         case .accepted(let loads):
-            let hash = piece.fileURL.flatMap { ShareFileHash.sha256Hex(file: $0) }
+            let hash = piece.fileBytes.map { ShareFileHash.sha256Hex(data: $0) }
             for fields in loads {
                 let fingerprint = ShareImportFingerprint(tripId: fields.tripId, broker: fields.broker, fileSHA256: hash)
                 if ShareImportDeduper.isDuplicate(fingerprint, saved: saved, batch: batch) {
@@ -119,7 +118,7 @@ final class ShareExtensionModel {
                     pageCount: piece.pageCount,
                     load: fields
                 )
-                guard (try? inbox.enqueue(record, file: piece.fileURL)) != nil else {
+                guard (try? inbox.enqueue(record, bytes: piece.fileBytes)) != nil else {
                     continue
                 }
                 batch.append(fingerprint)
@@ -129,10 +128,4 @@ final class ShareExtensionModel {
         }
     }
 
-    private func deleteTemps(_ pieces: [SharePiece]) {
-        for piece in pieces {
-            guard let url = piece.fileURL else { continue }
-            try? FileManager.default.removeItem(at: url)
-        }
-    }
 }

@@ -47,9 +47,9 @@ final class BackupRestoreTests: XCTestCase {
         try database.save(keptPhoto)
         try database.save(droppedPhoto)
         try database.save(loosePhoto)
-        try Data("kept".utf8).write(to: media.url(for: "kept.jpg", kind: .photo))
-        try Data("dropped".utf8).write(to: media.url(for: "dropped.jpg", kind: .photo))
-        try Data("loose".utf8).write(to: media.url(for: "loose.jpg", kind: .photo))
+        try Data("kept".utf8).write(to: try XCTUnwrap(media.url(for: "kept.jpg", kind: .photo)))
+        try Data("dropped".utf8).write(to: try XCTUnwrap(media.url(for: "dropped.jpg", kind: .photo)))
+        try Data("loose".utf8).write(to: try XCTUnwrap(media.url(for: "loose.jpg", kind: .photo)))
 
         let paycheck = Paycheck(
             amount: 2800,
@@ -152,9 +152,9 @@ final class BackupRestoreTests: XCTestCase {
         XCTAssertNil(loose.loadId)
         let keptRow = try XCTUnwrap(graph.photos.first { $0.fileName == "kept.jpg" })
         XCTAssertEqual(keptRow.loadId, graph.loads[0].id)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: media.url(for: "kept.jpg", kind: .photo).path))
-        XCTAssertFalse(FileManager.default.fileExists(atPath: media.url(for: "dropped.jpg", kind: .photo).path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: media.url(for: "loose.jpg", kind: .photo).path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "kept.jpg", kind: .photo)).path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "dropped.jpg", kind: .photo)).path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "loose.jpg", kind: .photo)).path))
 
         let second = BackupJournalMapper.export(
             graph: try database.fetchGraph(),

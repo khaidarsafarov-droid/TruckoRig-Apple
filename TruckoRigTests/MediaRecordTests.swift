@@ -59,7 +59,7 @@ final class MediaRecordTests: XCTestCase {
         XCTAssertEqual(storedPhoto.zipCode, "27529")
         XCTAssertEqual(storedPhoto.timestamp.timeIntervalSince1970, timestamp.timeIntervalSince1970, accuracy: 0.001)
         XCTAssertNil(storedPhoto.loadId)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: store.url(for: storedPhoto.fileName, kind: .photo).path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(store.url(for: storedPhoto.fileName, kind: .photo)).path))
 
         let storedScan = try XCTUnwrap(graph.scans.first { $0.id == scan.id })
         XCTAssertEqual(storedScan.fileName, "114RS221Y_2026-07-21_143052.pdf")
@@ -68,7 +68,7 @@ final class MediaRecordTests: XCTestCase {
         XCTAssertEqual(storedScan.fileSizeBytes, 12)
         XCTAssertEqual(storedScan.ocrText, "Bill of lading")
         XCTAssertEqual(storedScan.category, "LOAD")
-        XCTAssertTrue(FileManager.default.fileExists(atPath: store.url(for: storedScan.fileName, kind: .scan).path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(store.url(for: storedScan.fileName, kind: .scan)).path))
     }
 
     func testDeletingALoadRemovesPhotoAndScanFiles() throws {
@@ -98,8 +98,8 @@ final class MediaRecordTests: XCTestCase {
             category: ScanDocumentCategory.load.rawValue
         )
         let scan = try repository.saveScan(fields: scanFields, pdf: Data("%PDF".utf8), load: load)
-        let photoURL = store.url(for: photo.fileName, kind: .photo)
-        let scanURL = store.url(for: scan.fileName, kind: .scan)
+        let photoURL = try XCTUnwrap(store.url(for: photo.fileName, kind: .photo))
+        let scanURL = try XCTUnwrap(store.url(for: scan.fileName, kind: .scan))
         XCTAssertTrue(FileManager.default.fileExists(atPath: photoURL.path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: scanURL.path))
 

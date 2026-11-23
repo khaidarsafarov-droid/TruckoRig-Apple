@@ -185,7 +185,7 @@ def build() -> str:
         f"{APP_DIR}/Core/Share/ShareFileHash.swift",
         f"{APP_DIR}/Core/Share/ShareImportContainer.swift",
         f"{APP_DIR}/Core/Share/ShareImportNotifier.swift",
-        f"{APP_DIR}/Core/Share/ShareInboxCrypto.swift",
+        f"{APP_DIR}/Core/Share/PayloadSealer.swift",
     ]
     test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(TESTS_DIR + os.sep)]
     ui_test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(UITESTS_DIR + os.sep)]

@@ -215,6 +215,12 @@ enum ShareDiskProtection {
 
 /// Optional seal used by the app and the share extension. Domain tests leave both nil, so the
 /// inbox stays plaintext there. Production installs `ShareInboxCrypto` before the first write.
+public enum ShareInboxOpenError: Error, Equatable {
+    case keyUnavailable
+    case authenticationFailed
+    case keychain(Int32)
+}
+
 public enum ShareInboxCodec {
     public static var seal: ((Data) throws -> Data)?
     public static var open: ((Data) throws -> Data)?
@@ -240,6 +246,12 @@ public struct ShareImportInbox: Equatable, Sendable {
     }
 
     public func enqueue(_ record: ShareImportRecord, file: URL?) throws -> ShareImportRecord {
+        let bytes = try file.map { try Data(contentsOf: $0) }
+        return try enqueue(record, bytes: bytes)
+    }
+
+    /// Seals `bytes` once. The caller already holds the only plaintext buffer.
+    public func enqueue(_ record: ShareImportRecord, bytes: Data?) throws -> ShareImportRecord {
         let records = root.appendingPathComponent("records", isDirectory: true)
         let files = root.appendingPathComponent("files", isDirectory: true)
         try FileManager.default.createDirectory(at: records, withIntermediateDirectories: true)
@@ -248,18 +260,19 @@ public struct ShareImportInbox: Equatable, Sendable {
         ShareDiskProtection.apply(to: records)
         ShareDiskProtection.apply(to: files)
         var stored = record
-        if let file {
-            let ext = file.pathExtension.isEmpty ? "bin" : file.pathExtension
-            guard !ext.contains("/"), !ext.contains("\\"), ext != "..", ext != "." else {
+        if let bytes {
+            let ext = (record.originalFileName.map { ($0 as NSString).pathExtension } ?? "")
+            let safeExt = ext.isEmpty ? "bin" : ext
+            guard MediaPathRules.fileName("file.\(safeExt)") != nil else {
                 throw CocoaError(.fileWriteInvalidFileName)
             }
-            let name = "\(record.id.uuidString).\(ext)"
+            let name = "\(record.id.uuidString).\(safeExt)"
             let destination = files.appendingPathComponent(name)
             if FileManager.default.fileExists(atPath: destination.path) {
                 try FileManager.default.removeItem(at: destination)
             }
-            let bytes = try ShareInboxCodec.sealed(Data(contentsOf: file))
-            try bytes.write(to: destination, options: .atomic)
+            let sealed = try ShareInboxCodec.sealed(bytes)
+            try sealed.write(to: destination, options: .atomic)
             ShareDiskProtection.apply(to: destination)
             stored.storedFileName = name
         }
@@ -289,32 +302,53 @@ public struct ShareImportInbox: Equatable, Sendable {
         return try ShareInboxCodec.opened(Data(contentsOf: url))
     }
 
-    /// Drops corrupt rows, rows older than `ShareFileRules.staleInterval`, and files no row names.
+    /// Drops a row when its JSON is plaintext and invalid, or when the seal fails authentication
+    /// after a key was actually read. A missing key or any other Keychain status keeps the row
+    /// and skips orphan deletion for this pass, so a locked keychain cannot wipe the inbox.
     public func sweep(now: Date = Date()) {
         let records = root.appendingPathComponent("records", isDirectory: true)
         let files = root.appendingPathComponent("files", isDirectory: true)
         let decoder = ShareImportCoding.decoder()
         var live: Set<String> = []
-        if let urls = try? FileManager.default.contentsOfDirectory(at: records, includingPropertiesForKeys: nil) {
-            for url in urls where url.pathExtension.lowercased() == "json" {
-                guard let raw = try? Data(contentsOf: url),
-                      let opened = try? ShareInboxCodec.opened(raw),
-                      let record = try? decoder.decode(ShareImportRecord.self, from: opened)
-                else {
+        var skipOrphans = false
+        guard let urls = try? FileManager.default.contentsOfDirectory(at: records, includingPropertiesForKeys: nil) else {
+            return
+        }
+        for url in urls where url.pathExtension.lowercased() == "json" {
+            guard let raw = try? Data(contentsOf: url) else {
+                skipOrphans = true
+                continue
+            }
+            let opened: Data
+            do {
+                opened = try ShareInboxCodec.opened(raw)
+            } catch let error as ShareInboxOpenError {
+                switch error {
+                case .authenticationFailed:
                     try? FileManager.default.removeItem(at: url)
-                    continue
+                case .keyUnavailable, .keychain:
+                    skipOrphans = true
                 }
-                if now.timeIntervalSince(record.createdAt) > ShareFileRules.staleInterval {
-                    try? remove(record.id)
-                    continue
-                }
-                if let name = record.storedFileName, !name.isEmpty {
-                    live.insert(name)
-                }
+                continue
+            } catch {
+                skipOrphans = true
+                continue
+            }
+            guard let record = try? decoder.decode(ShareImportRecord.self, from: opened) else {
+                try? FileManager.default.removeItem(at: url)
+                continue
+            }
+            if now.timeIntervalSince(record.createdAt) > ShareFileRules.staleInterval {
+                try? remove(record.id)
+                continue
+            }
+            if let name = record.storedFileName, MediaPathRules.fileName(name) != nil {
+                live.insert(name)
             }
         }
+        guard !skipOrphans else { return }
         if let names = try? FileManager.default.contentsOfDirectory(atPath: files.path) {
-            for name in names where !live.contains(name) {
+            for name in names where !live.contains(name) && MediaPathRules.fileName(name) != nil {
                 try? FileManager.default.removeItem(at: files.appendingPathComponent(name))
             }
         }

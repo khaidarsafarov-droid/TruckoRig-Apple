@@ -108,8 +108,9 @@ struct GalleryLoadGrid: View {
 
     private func share(_ chosen: [GalleryItem]) {
         let urls = chosen.compactMap { item -> URL? in
-            let url = store.url(for: item.fileName, kind: item.kind)
-            return FileManager.default.fileExists(atPath: url.path) ? url : nil
+            guard let url = store.url(for: item.fileName, kind: item.kind),
+                  FileManager.default.fileExists(atPath: url.path) else { return nil }
+            return url
         }
         if urls.isEmpty {
             errorMessage = String(localized: "gallery.fileMissing")
@@ -202,8 +203,8 @@ struct GalleryPageViewer: View {
     private func shareCurrent() {
         guard items.indices.contains(index) else { return }
         let item = items[index]
-        let url = store.url(for: item.fileName, kind: item.kind)
-        guard FileManager.default.fileExists(atPath: url.path) else { return }
+        guard let url = store.url(for: item.fileName, kind: item.kind),
+              FileManager.default.fileExists(atPath: url.path) else { return }
         shareURLs = [url]
     }
 

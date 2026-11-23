@@ -6,12 +6,29 @@ final class ICloudBackupTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        #if DEBUG
         CloudPayloadSealer.testingKey = Data(repeating: 0x42, count: 32)
+        #endif
     }
 
     override func tearDown() {
+        #if DEBUG
         CloudPayloadSealer.testingKey = nil
+        #endif
         super.tearDown()
+    }
+
+    func testAPreviousUploadKeepsSyncTurnedOn() {
+        let name = "icloud-adopt-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: name)!
+        defaults.removePersistentDomain(forName: name)
+        defaults.set(5, forKey: "lastUploadedExportedAt")
+        defaults.set(9, forKey: "lastMediaUploadAt")
+        let prefs = ICloudBackupPrefs(defaults: defaults)
+        XCTAssertTrue(prefs.autoSyncEnabled)
+        XCTAssertTrue(prefs.mediaEnabled)
+        XCTAssertEqual(defaults.bool(forKey: "autoSync"), true)
+        XCTAssertEqual(defaults.bool(forKey: "mediaEnabled"), true)
     }
 
     func testContainerFileRoundTripsThroughTheCoordinatorAndKeepsOneFile() throws {

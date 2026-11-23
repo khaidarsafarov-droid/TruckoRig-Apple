@@ -250,7 +250,10 @@ struct CameraView: View {
                 let photo = try repository.savePhoto(fields: fields, jpeg: jpeg, load: load)
                 saved = true
                 recordID = photo.id
-                url = store.url(for: fields.fileName, kind: .photo)
+                guard let stored = store.url(for: fields.fileName, kind: .photo) else {
+                    throw MediaStoreError.encodingFailed
+                }
+                url = stored
             } else {
                 url = try store.write(jpeg, fileName: fields.fileName, kind: .photo)
             }

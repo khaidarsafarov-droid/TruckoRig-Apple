@@ -132,6 +132,25 @@ final class ICloudBackupController {
         prefs.wifiOnly = enabled
     }
 
+    func deleteCloudCopy() async {
+        #if SIDELOAD
+        return
+        #else
+        busy = true
+        defer { busy = false }
+        do {
+            try store.deleteAccountFiles(accountId: accountId)
+            remote = nil
+            notice = .none
+            mediaByteCount = 0
+            mediaBytesKnown = true
+            prefs.lastMediaBytes = 0
+        } catch {
+            notice = .failed
+        }
+        #endif
+    }
+
     func setAutoSync(_ enabled: Bool) {
         autoSyncEnabled = enabled
         prefs.autoSyncEnabled = enabled

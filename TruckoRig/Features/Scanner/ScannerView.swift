@@ -181,7 +181,9 @@ struct ScannerView: View {
     private func mergeSession(store: MediaStore, timestamp: Date) throws -> ScanPiece {
         guard let only = session.first, session.count == 1 else {
             let name = ScanCapture.fileName(timestamp: timestamp, tripId: tripId, loadDate: loadDate)
-            let destination = store.url(for: name, kind: .scan)
+            guard let destination = store.url(for: name, kind: .scan) else {
+                throw MediaStoreError.encodingFailed
+            }
             let previous = pending?.isMerged == true && pending?.savedToDatabase != true ? pending?.fileURL : nil
             guard ScanPDFWriter.merge(sources: session.map(\.fileURL), to: destination) else {
                 throw MediaStoreError.encodingFailed

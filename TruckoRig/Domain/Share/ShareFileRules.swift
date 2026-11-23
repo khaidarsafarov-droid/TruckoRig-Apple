@@ -52,6 +52,6 @@ public enum ShareFileRules {
         let brand = header.subdata(in: 4..<8)
         guard brand == Data("ftyp".utf8) else { return false }
         let major = String(data: header.subdata(in: 8..<12), encoding: .ascii)?.lowercased() ?? ""
-        return ["heic", "heix", "hevc", "hevx", "mif1", "msf1"].contains(major)
+        return ["heic", "heix", "mif1", "msf1"].contains(major)
     }
 }

@@ -148,11 +148,28 @@ final class EncryptedStorageTests: XCTestCase {
         try writeEmptyLegacyStore(at: legacy)
         let database = try AppDatabase.ephemeral()
 
-        let outcome = try SwiftDataMigration.run(legacyStoreURL: legacy, database: database)
-        XCTAssertEqual(outcome, .nothingToImport)
-        XCTAssertTrue(try database.legacyImportIsDone())
-        XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path))
+        XCTAssertThrowsError(try SwiftDataMigration.run(legacyStoreURL: legacy, database: database)) { error in
+            XCTAssertEqual(error as? SwiftDataMigrationError, .legacyUnreadable)
+        }
+        XCTAssertFalse(try database.legacyImportIsDone())
+        XCTAssertTrue(FileManager.default.fileExists(atPath: legacy.path))
         XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path + ".premigration"))
+    }
+
+    func testDeleteLeftoversIgnoresASiblingScope() throws {
+        let directory = try temporaryDirectory()
+        let local = directory.appendingPathComponent("TruckoRig_local.store")
+        let sibling = directory.appendingPathComponent("TruckoRig_other.store")
+        let keptPremigration = directory.appendingPathComponent("TruckoRig_other.store.premigration")
+        try Data("local".utf8).write(to: local)
+        try Data("other".utf8).write(to: sibling)
+        try Data("keep".utf8).write(to: keptPremigration)
+        try Data("old".utf8).write(to: directory.appendingPathComponent("TruckoRig_local.store.premigration"))
+        SwiftDataMigration.deleteLeftovers(in: directory, scopeKey: "local")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: local.path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: directory.appendingPathComponent("TruckoRig_local.store.premigration").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sibling.path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: keptPremigration.path))
     }
 
     func testBackupRestoreKeepsTripIdAndParsedAt() async throws {

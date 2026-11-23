@@ -20,6 +20,8 @@ final class SecurityRulesTests: XCTestCase {
     func testMediaPathsStayInsideTheRoot() throws {
         let root = URL(fileURLWithPath: "/tmp/truckorig-media", isDirectory: true)
         XCTAssertEqual(MediaPathRules.fileName("a.jpg"), "a.jpg")
+        XCTAssertEqual(MediaPathRules.fileName("a..b.jpg"), "a..b.jpg")
+        XCTAssertNil(MediaPathRules.fileName(".."))
         XCTAssertNil(MediaPathRules.fileName("../a.jpg"))
         XCTAssertNil(MediaPathRules.fileName("photos/a.jpg"))
         XCTAssertNil(MediaPathRules.fileName("/tmp/a.jpg"))
@@ -28,6 +30,7 @@ final class SecurityRulesTests: XCTestCase {
         XCTAssertNil(MediaPathRules.url(relative: "../secret", under: root))
         XCTAssertNil(MediaPathRules.url(relative: "/etc/passwd", under: root))
         XCTAssertNil(MediaPathRules.url(relative: "photos/../../secret", under: root))
+        XCTAssertNotNil(MediaPathRules.url(relative: "photos/a..b.jpg", under: root))
     }
 
     func testInboxSweepRemovesStaleRowsAndOrphanFiles() throws {
@@ -59,5 +62,41 @@ final class SecurityRulesTests: XCTestCase {
         XCTAssertTrue(try inbox.pending().isEmpty)
         XCTAssertNil(inbox.fileURL(for: stored))
         XCTAssertFalse(FileManager.default.fileExists(atPath: orphan.path))
+    }
+
+    func testSweepKeepsTheRowWhenOpenThrows() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer {
+            ShareInboxCodec.open = nil
+            try? FileManager.default.removeItem(at: root)
+        }
+        let inbox = ShareImportInbox(root: root.appendingPathComponent("inbox", isDirectory: true))
+        let source = root.appendingPathComponent("page.pdf")
+        try Data("%PDF-1.4".utf8).write(to: source)
+        let fields = ShareLoadFields(
+            tripId: "NW-9",
+            broker: "Northwind",
+            origin: "Dallas, TX",
+            destination: "Atlanta, GA",
+            pickupDate: nil,
+            deliveryDate: nil,
+            rate: 1000,
+            miles: 100,
+            missing: [],
+            score: 80
+        )
+        let record = ShareImportRecord(sourceText: "demo", originalFileName: "page.pdf", load: fields)
+        let stored = try inbox.enqueue(record, file: source)
+        let files = inbox.root.appendingPathComponent("files", isDirectory: true)
+        let orphan = files.appendingPathComponent("orphan.bin")
+        try Data("leftover".utf8).write(to: orphan)
+        ShareInboxCodec.open = { _ in throw ShareInboxOpenError.keyUnavailable }
+        inbox.sweep()
+        let recordURL = inbox.root
+            .appendingPathComponent("records", isDirectory: true)
+            .appendingPathComponent("\(stored.id.uuidString).json")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: recordURL.path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: orphan.path))
     }
 }

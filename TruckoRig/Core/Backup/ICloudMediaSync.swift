@@ -76,7 +76,12 @@ final class ICloudMediaEngine {
         bytes: [String: Data],
         now: Int64
     ) -> ICloudMediaUploadReport {
-        let prepared = prepare(items: items, bytes: bytes)
+        let prepared: (items: [ICloudMediaPolicy.Item], bytes: [String: Data], refused: [String])
+        do {
+            prepared = try prepare(items: items, bytes: bytes)
+        } catch {
+            return report(outcome: .failed, refused: [])
+        }
         switch readManifest(accountId: accountId) {
         case .notDownloaded:
             return report(outcome: .notDownloaded, refused: prepared.refused)
@@ -212,7 +217,7 @@ final class ICloudMediaEngine {
     private func prepare(
         items: [ICloudMediaPolicy.Item],
         bytes: [String: Data]
-    ) -> (items: [ICloudMediaPolicy.Item], bytes: [String: Data], refused: [String]) {
+    ) throws -> (items: [ICloudMediaPolicy.Item], bytes: [String: Data], refused: [String]) {
         var cleanItems: [ICloudMediaPolicy.Item] = []
         var cleanBytes: [String: Data] = [:]
         var refused: [String] = []
@@ -221,7 +226,7 @@ final class ICloudMediaEngine {
                   let data = bytes[item.relativePath] ?? bytes[relative],
                   !data.isEmpty
             else { continue }
-            let stripped = ImageLocationStrip.strip(data)
+            let stripped = try ImageLocationStrip.strip(data)
             if stripped.count > ICloudMediaPolicy.maxFileBytes { continue }
             if ICloudMediaPolicy.fileIsSecret(Array(stripped)) {
                 refused.append(relative)
