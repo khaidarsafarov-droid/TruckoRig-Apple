@@ -32,6 +32,7 @@ enum ICloudCopyPresentation {
 /// iCloud Drive status on Settings. File export below this section keeps working when iCloud is off.
 struct ICloudBackupSection: View {
     @Environment(AppState.self) private var appState
+    @State private var confirmDelete = false
 
     var body: some View {
         let icloud = appState.icloud
@@ -129,6 +130,16 @@ struct ICloudBackupSection: View {
             Task { await icloud.syncNow() }
         }
         .disabled(icloud.busy)
+        Button("settings.icloud.delete", role: .destructive) {
+            confirmDelete = true
+        }
+        .disabled(icloud.busy)
+        .confirmationDialog("settings.icloud.delete.confirm", isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button("settings.icloud.delete", role: .destructive) {
+                Task { await icloud.deleteCloudCopy() }
+            }
+            Button("action.cancel", role: .cancel) {}
+        }
         if icloud.remote != nil {
             NavigationLink("settings.icloud.restore") {
                 ICloudRestoreView()

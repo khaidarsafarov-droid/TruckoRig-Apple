@@ -228,6 +228,7 @@ final class ICloudMediaEngine {
             }
             var copy = item
             copy.relativePath = relative
+            copy.ocrText = nil
             copy.contentHash = ICloudMediaPolicy.contentHash(Array(data))
             copy.byteCount = Int64(data.count)
             cleanItems.append(copy)

@@ -121,7 +121,7 @@ final class EncryptedStorageTests: XCTestCase {
         XCTAssertEqual(loaded?.stops?.first?.city, "Garner")
         XCTAssertEqual(loaded?.stops?.first?.state, "NC")
         XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: legacy.path + ".premigration"))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path + ".premigration"))
 
         let second = try SwiftDataMigration.run(legacyStoreURL: legacy, database: database)
         XCTAssertEqual(second, .alreadyImported)
@@ -151,8 +151,47 @@ final class EncryptedStorageTests: XCTestCase {
         let outcome = try SwiftDataMigration.run(legacyStoreURL: legacy, database: database)
         XCTAssertEqual(outcome, .nothingToImport)
         XCTAssertTrue(try database.legacyImportIsDone())
-        XCTAssertFalse(FileManager.default.fileExists(atPath: legacy.path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: legacy.path + ".premigration"))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: legacy.path))
+        let second = try SwiftDataMigration.run(legacyStoreURL: legacy, database: database)
+        XCTAssertEqual(second, .alreadyImported)
+    }
+
+    func testRowCountMismatchDoesNotMarkTheImportDone() throws {
+        let directory = try temporaryDirectory()
+        let legacy = directory.appendingPathComponent("TruckoRig_local.store")
+        let encrypted = directory.appendingPathComponent("TruckoRig_local.sqlite")
+        try writeLegacyStore(
+            at: legacy,
+            loadId: UUID(),
+            stopId: UUID(),
+            tripId: "T-LEGACY",
+            referenceSeconds: 654_321.0
+        )
+        let database = try AppDatabase.open(at: encrypted, passphrase: Data(repeating: 0xAB, count: 32))
+        try database.save(Load(tripId: "T-ALREADY", date: Date(), totalRate: 1, totalMiles: 1))
+        XCTAssertThrowsError(try SwiftDataMigration.run(legacyStoreURL: legacy, database: database)) { error in
+            XCTAssertEqual(error as? SwiftDataMigrationError, .legacyUnreadable)
+        }
+        XCTAssertFalse(try database.legacyImportIsDone())
+        XCTAssertTrue(FileManager.default.fileExists(atPath: legacy.path))
+        XCTAssertThrowsError(try SwiftDataMigration.run(legacyStoreURL: legacy, database: database))
+        XCTAssertFalse(try database.legacyImportIsDone())
+    }
+
+    func testDeleteLeftoversIgnoresASiblingScope() throws {
+        let directory = try temporaryDirectory()
+        let local = directory.appendingPathComponent("TruckoRig_local.store")
+        let sibling = directory.appendingPathComponent("TruckoRig_other.store")
+        let keptPremigration = directory.appendingPathComponent("TruckoRig_other.store.premigration")
+        try Data("local".utf8).write(to: local)
+        try Data("other".utf8).write(to: sibling)
+        try Data("keep".utf8).write(to: keptPremigration)
+        try Data("old".utf8).write(to: directory.appendingPathComponent("TruckoRig_local.store.premigration"))
+        SwiftDataMigration.deleteLeftovers(in: directory, scopeKey: "local")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: local.path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: directory.appendingPathComponent("TruckoRig_local.store.premigration").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sibling.path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: keptPremigration.path))
     }
 
     func testBackupRestoreKeepsTripIdAndParsedAt() async throws {

@@ -8,7 +8,17 @@ final class ICloudMediaBackupTests: XCTestCase {
     private let token = "123456789:AAHabcdefghijklmnopqrstuvwxyz0123456789"
     private var directories: [URL] = []
 
+    override func setUp() {
+        super.setUp()
+        #if DEBUG
+        CloudPayloadSealer.testingKey = Data(repeating: 0x42, count: 32)
+        #endif
+    }
+
     override func tearDown() {
+        #if DEBUG
+        CloudPayloadSealer.testingKey = nil
+        #endif
         for directory in directories {
             try? FileManager.default.removeItem(at: directory)
         }
@@ -132,8 +142,9 @@ final class ICloudMediaBackupTests: XCTestCase {
         let root = try makeRoot()
         let store = ICloudDriveStore(probe: .available(root))
         let prefs = ICloudBackupPrefs(defaults: UserDefaults(suiteName: "media-secret-\(UUID().uuidString)")!)
-        XCTAssertTrue(prefs.mediaEnabled)
+        XCTAssertFalse(prefs.mediaEnabled)
         XCTAssertTrue(prefs.wifiOnly)
+        prefs.mediaEnabled = true
         let engine = ICloudSyncEngine(store: store, prefs: prefs)
         let poisoned = #"{"schemaVersion":2,"exportedAt":9,"accountId":"local_dev","loads":[],"note":"\#(token)"}"#
         let refused = engine.perform(ICloudSyncRequest(
@@ -187,7 +198,9 @@ final class ICloudMediaBackupTests: XCTestCase {
         let manifest = try manifestItems(store)
         let text = ICloudMediaPolicy.encode(ICloudMediaPolicy.Manifest(accountId: "local_dev", updatedAt: 1, items: manifest))
         XCTAssertFalse(text.contains(token))
-        XCTAssertTrue(text.contains("***"))
+        XCTAssertFalse(text.contains("ocrText"))
+        XCTAssertNil(manifest.first?.ocrText)
+        XCTAssertNil(manifest.first?.latitude)
         XCTAssertFalse(text.contains("botToken"))
         XCTAssertFalse(text.contains("passphrase"))
         let json = try XCTUnwrap(try store.read(accountId: BackupAccount.localDev))
@@ -256,6 +269,7 @@ final class ICloudMediaBackupTests: XCTestCase {
         controller.mediaStoreOverride = local
         controller.lowPowerModeOverride = false
         controller.onWifi = true
+        controller.setMediaEnabled(true)
         controller.bind(database: database, settings: settings, scope: .local)
         await controller.syncNow()
         return Fixture(database: database, local: local, store: store, controller: controller)

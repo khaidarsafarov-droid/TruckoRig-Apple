@@ -193,6 +193,49 @@ public enum ShareImportCoding {
     }
 }
 
+/// Share inbox files are temporary. Complete protection encrypts them until the phone is
+/// unlocked, which is when the share sheet and the later import both run. They are excluded
+/// from backup because the journal keeps the durable copy and Apple's backup guidance says
+/// re-creatable staging data should not be backed up. Resource values are set again after
+/// every write because an atomic replace can clear them.
+enum ShareDiskProtection {
+    static func apply(to url: URL) {
+        #if os(iOS)
+        try? FileManager.default.setAttributes(
+            [.protectionKey: FileProtectionType.complete],
+            ofItemAtPath: url.path
+        )
+        var values = URLResourceValues()
+        values.isExcludedFromBackup = true
+        var copy = url
+        try? copy.setResourceValues(values)
+        #endif
+    }
+}
+
+/// Optional seal used by the app and the share extension. Domain tests leave both nil, so the
+/// inbox stays plaintext there. Production installs `ShareInboxCrypto` before the first write.
+public enum ShareInboxOpenError: Error, Equatable {
+    case keyUnavailable
+    case authenticationFailed
+    case keychain(Int32)
+}
+
+public enum ShareInboxCodec {
+    public static var seal: ((Data) throws -> Data)?
+    public static var open: ((Data) throws -> Data)?
+
+    static func sealed(_ data: Data) throws -> Data {
+        guard let seal else { return data }
+        return try seal(data)
+    }
+
+    static func opened(_ data: Data) throws -> Data {
+        guard let open else { return data }
+        return try open(data)
+    }
+}
+
 /// `records/` and `files/` under a directory the caller owns. The app group path stays out of this
 /// type so the Linux domain tests can use a temporary folder.
 public struct ShareImportInbox: Equatable, Sendable {
@@ -203,23 +246,40 @@ public struct ShareImportInbox: Equatable, Sendable {
     }
 
     public func enqueue(_ record: ShareImportRecord, file: URL?) throws -> ShareImportRecord {
+        let bytes = try file.map { try Data(contentsOf: $0) }
+        return try enqueue(record, bytes: bytes)
+    }
+
+    /// Seals `bytes` once. The caller already holds the only plaintext buffer.
+    public func enqueue(_ record: ShareImportRecord, bytes: Data?) throws -> ShareImportRecord {
         let records = root.appendingPathComponent("records", isDirectory: true)
         let files = root.appendingPathComponent("files", isDirectory: true)
         try FileManager.default.createDirectory(at: records, withIntermediateDirectories: true)
         try FileManager.default.createDirectory(at: files, withIntermediateDirectories: true)
+        ShareDiskProtection.apply(to: root)
+        ShareDiskProtection.apply(to: records)
+        ShareDiskProtection.apply(to: files)
         var stored = record
-        if let file {
-            let ext = file.pathExtension.isEmpty ? "bin" : file.pathExtension
-            let name = "\(record.id.uuidString).\(ext)"
+        if let bytes {
+            let ext = (record.originalFileName.map { ($0 as NSString).pathExtension } ?? "")
+            let safeExt = ext.isEmpty ? "bin" : ext
+            guard MediaPathRules.fileName("file.\(safeExt)") != nil else {
+                throw CocoaError(.fileWriteInvalidFileName)
+            }
+            let name = "\(record.id.uuidString).\(safeExt)"
             let destination = files.appendingPathComponent(name)
             if FileManager.default.fileExists(atPath: destination.path) {
                 try FileManager.default.removeItem(at: destination)
             }
-            try FileManager.default.copyItem(at: file, to: destination)
+            let sealed = try ShareInboxCodec.sealed(bytes)
+            try sealed.write(to: destination, options: .atomic)
+            ShareDiskProtection.apply(to: destination)
             stored.storedFileName = name
         }
-        let data = try ShareImportCoding.encoder().encode(stored)
-        try data.write(to: records.appendingPathComponent("\(record.id.uuidString).json"), options: .atomic)
+        let data = try ShareInboxCodec.sealed(ShareImportCoding.encoder().encode(stored))
+        let recordURL = records.appendingPathComponent("\(record.id.uuidString).json")
+        try data.write(to: recordURL, options: .atomic)
+        ShareDiskProtection.apply(to: recordURL)
         return stored
     }
 
@@ -230,13 +290,72 @@ public struct ShareImportInbox: Equatable, Sendable {
             .filter { $0.pathExtension.lowercased() == "json" }
         let decoder = ShareImportCoding.decoder()
         let decoded = try urls.map { url in
-            try decoder.decode(ShareImportRecord.self, from: Data(contentsOf: url))
+            let data = try ShareInboxCodec.opened(Data(contentsOf: url))
+            return try decoder.decode(ShareImportRecord.self, from: data)
         }
         return decoded.sorted { $0.createdAt < $1.createdAt }
     }
 
+    /// Plaintext bytes of the stored attachment. Nil when the row has no file.
+    public func fileData(for record: ShareImportRecord) throws -> Data? {
+        guard let url = fileURL(for: record) else { return nil }
+        return try ShareInboxCodec.opened(Data(contentsOf: url))
+    }
+
+    /// Drops a row when its JSON is plaintext and invalid, or when the seal fails authentication
+    /// after a key was actually read. A missing key or any other Keychain status keeps the row
+    /// and skips orphan deletion for this pass, so a locked keychain cannot wipe the inbox.
+    public func sweep(now: Date = Date()) {
+        let records = root.appendingPathComponent("records", isDirectory: true)
+        let files = root.appendingPathComponent("files", isDirectory: true)
+        let decoder = ShareImportCoding.decoder()
+        var live: Set<String> = []
+        var skipOrphans = false
+        guard let urls = try? FileManager.default.contentsOfDirectory(at: records, includingPropertiesForKeys: nil) else {
+            return
+        }
+        for url in urls where url.pathExtension.lowercased() == "json" {
+            guard let raw = try? Data(contentsOf: url) else {
+                skipOrphans = true
+                continue
+            }
+            let opened: Data
+            do {
+                opened = try ShareInboxCodec.opened(raw)
+            } catch let error as ShareInboxOpenError {
+                switch error {
+                case .authenticationFailed:
+                    try? FileManager.default.removeItem(at: url)
+                case .keyUnavailable, .keychain:
+                    skipOrphans = true
+                }
+                continue
+            } catch {
+                skipOrphans = true
+                continue
+            }
+            guard let record = try? decoder.decode(ShareImportRecord.self, from: opened) else {
+                try? FileManager.default.removeItem(at: url)
+                continue
+            }
+            if now.timeIntervalSince(record.createdAt) > ShareFileRules.staleInterval {
+                try? remove(record.id)
+                continue
+            }
+            if let name = record.storedFileName, MediaPathRules.fileName(name) != nil {
+                live.insert(name)
+            }
+        }
+        guard !skipOrphans else { return }
+        if let names = try? FileManager.default.contentsOfDirectory(atPath: files.path) {
+            for name in names where !live.contains(name) && MediaPathRules.fileName(name) != nil {
+                try? FileManager.default.removeItem(at: files.appendingPathComponent(name))
+            }
+        }
+    }
+
     public func fileURL(for record: ShareImportRecord) -> URL? {
-        guard let name = record.storedFileName, !name.isEmpty else { return nil }
+        guard let name = record.storedFileName, MediaPathRules.fileName(name) != nil else { return nil }
         let url = root.appendingPathComponent("files", isDirectory: true).appendingPathComponent(name)
         return FileManager.default.fileExists(atPath: url.path) ? url : nil
     }
@@ -244,9 +363,10 @@ public struct ShareImportInbox: Equatable, Sendable {
     public func remove(_ id: UUID) throws {
         let recordURL = root.appendingPathComponent("records", isDirectory: true)
             .appendingPathComponent("\(id.uuidString).json")
-        if let data = try? Data(contentsOf: recordURL),
+        if let raw = try? Data(contentsOf: recordURL),
+           let data = try? ShareInboxCodec.opened(raw),
            let record = try? ShareImportCoding.decoder().decode(ShareImportRecord.self, from: data),
-           let name = record.storedFileName {
+           let name = record.storedFileName, MediaPathRules.fileName(name) != nil {
             try? FileManager.default.removeItem(
                 at: root.appendingPathComponent("files", isDirectory: true).appendingPathComponent(name)
             )

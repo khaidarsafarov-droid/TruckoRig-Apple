@@ -7,7 +7,7 @@ import UniformTypeIdentifiers
 /// One attachment, already copied out of the provider's temporary URL.
 struct SharePiece: Sendable {
     var text: String
-    var fileURL: URL?
+    var fileBytes: Data?
     var fileName: String?
     var pageCount: Int
 }
@@ -17,8 +17,8 @@ enum SharePayloadReader {
     static let maxAttachments = 8
     static let maxOCRPages = 3
     static let maxImageEdge = 1600
-    static let maxOCRBytes = 20 * 1024 * 1024
-    static let textLimit = 100_000
+    static let maxOCRBytes = ShareFileRules.maxBytes
+    static let textLimit = ShareFileRules.maxText
 
     static func pieces(from context: NSExtensionContext?) async -> [SharePiece] {
         let items = context?.inputItems as? [NSExtensionItem] ?? []
@@ -36,26 +36,26 @@ enum SharePayloadReader {
 
     private static func read(_ provider: NSItemProvider) async -> SharePiece? {
         var texts: [String] = []
-        var fileURL: URL?
+        var fileBytes: Data?
         var fileName: String?
         var pageCount = 0
 
         if provider.hasItemConformingToTypeIdentifier(UTType.pdf.identifier) {
-            if let url = try? await copyFile(provider, type: UTType.pdf.identifier) {
-                fileURL = url
-                fileName = url.lastPathComponent
-                let pdf = await pdfText(at: url)
+            if let file = try? await readFile(provider, type: UTType.pdf.identifier) {
+                fileBytes = file.bytes
+                fileName = file.name
+                let pdf = await pdfText(file.bytes)
                 pageCount = pdf.pages
                 if !pdf.text.isEmpty { texts.append(pdf.text) }
             }
         }
 
-        if fileURL == nil, provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-            if let url = try? await copyFile(provider, type: UTType.image.identifier) {
-                fileURL = url
-                fileName = url.lastPathComponent
+        if fileBytes == nil, provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+            if let file = try? await readFile(provider, type: UTType.image.identifier) {
+                fileBytes = file.bytes
+                fileName = file.name
                 pageCount = 1
-                if let text = await ocrImage(at: url), !text.isEmpty { texts.append(text) }
+                if let text = await ocrImage(file.bytes), !text.isEmpty { texts.append(text) }
             }
         }
 
@@ -68,31 +68,38 @@ enum SharePayloadReader {
             if fileName == nil { fileName = url.lastPathComponent }
         }
 
-        if fileURL == nil, provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) {
-            if let url = try? await copyFile(provider, type: UTType.fileURL.identifier) {
-                fileURL = url
-                fileName = url.lastPathComponent
-                if let text = try? LoadDocumentText.read(url: url), !text.isEmpty {
+        if fileBytes == nil, provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) {
+            if let file = try? await readFile(provider, type: UTType.fileURL.identifier) {
+                fileBytes = file.bytes
+                fileName = file.name
+                if let text = textFromBytes(file.bytes, name: file.name), !text.isEmpty {
                     texts.append(text)
                 }
             }
         }
 
         let joined = texts.joined(separator: "\n\n").trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !joined.isEmpty || fileURL != nil else { return nil }
+        guard !joined.isEmpty || fileBytes != nil else { return nil }
         return SharePiece(
             text: String(joined.prefix(textLimit)),
-            fileURL: fileURL,
+            fileBytes: fileBytes,
             fileName: fileName,
             pageCount: pageCount
         )
     }
 
-    private static func pdfText(at url: URL) async -> (text: String, pages: Int) {
-        guard let document = PDFDocument(url: url) else { return ("", 0) }
-        let pages = document.pageCount
-        let layer = document.string?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        if layer.count >= 40 || fileSize(url) > maxOCRBytes { return (layer, pages) }
+    private static func pdfText(_ bytes: Data) async -> (text: String, pages: Int) {
+        guard bytes.count <= ShareFileRules.maxBytes else { return ("", 0) }
+        guard let document = PDFDocument(data: bytes) else { return ("", 0) }
+        let pages = min(document.pageCount, ShareFileRules.maxPages)
+        var parts: [String] = []
+        for index in 0..<pages {
+            guard let page = document.page(at: index), let text = page.string, !text.isEmpty else { continue }
+            parts.append(text)
+        }
+        let layer = String(parts.joined(separator: "\n\n").prefix(textLimit))
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if layer.count >= 40 || bytes.count > maxOCRBytes { return (layer, pages) }
         var recognized: [String] = []
         let cap = min(pages, maxOCRPages)
         for index in 0..<cap {
@@ -106,13 +113,13 @@ enum SharePayloadReader {
         return (ocr.isEmpty ? layer : ocr, pages)
     }
 
-    private static func ocrImage(at url: URL) async -> String? {
-        guard fileSize(url) <= maxOCRBytes, let image = thumbnail(url: url, maxPixel: maxImageEdge) else { return nil }
+    private static func ocrImage(_ bytes: Data) async -> String? {
+        guard bytes.count <= maxOCRBytes, let image = thumbnail(bytes, maxPixel: maxImageEdge) else { return nil }
         return await OCRService.recognizeText(in: image)?.text
     }
 
-    private static func thumbnail(url: URL, maxPixel: Int) -> UIImage? {
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
+    private static func thumbnail(_ bytes: Data, maxPixel: Int) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(bytes as CFData, nil) else { return nil }
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
             kCGImageSourceCreateThumbnailWithTransform: true,
@@ -122,18 +129,81 @@ enum SharePayloadReader {
         return UIImage(cgImage: cgImage)
     }
 
-    private static func fileSize(_ url: URL) -> Int {
-        let values = try? url.resourceValues(forKeys: [.fileSizeKey])
-        return values?.fileSize ?? 0
+    private static func readCappedText(_ url: URL) -> String? {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+        let data = handle.readData(ofLength: textLimit)
+        return String(data: data, encoding: .utf8)
+    }
+
+    private static func textFromBytes(_ bytes: Data, name: String) -> String? {
+        if name.lowercased().hasSuffix("pdf") {
+            return nil
+        }
+        return String(data: bytes.prefix(textLimit), encoding: .utf8)
+    }
+
+    private static func byteCount(_ url: URL) -> Int? {
+        guard let values = try? url.resourceValues(forKeys: [.fileSizeKey, .isDirectoryKey]) else { return nil }
+        if values.isDirectory == true { return nil }
+        return values.fileSize
+    }
+
+    private struct SharedFile {
+        var bytes: Data
+        var name: String
+    }
+
+    /// One buffer: the provider file is read once, checked, and that buffer is what gets sealed.
+    private static func readFile(_ provider: NSItemProvider, type: String) async throws -> SharedFile {
+        try await withCheckedThrowingContinuation { continuation in
+            provider.loadFileRepresentation(forTypeIdentifier: type) { url, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                guard let url else {
+                    continuation.resume(throwing: CocoaError(.fileReadNoSuchFile))
+                    return
+                }
+                do {
+                    guard let size = byteCount(url), size <= ShareFileRules.maxBytes else {
+                        continuation.resume(throwing: CocoaError(.fileReadTooLarge))
+                        return
+                    }
+                    let handle = try FileHandle(forReadingFrom: url)
+                    defer { try? handle.close() }
+                    var buffer = Data()
+                    buffer.reserveCapacity(size)
+                    while buffer.count < size {
+                        let chunk = handle.readData(ofLength: min(1024 * 1024, size - buffer.count))
+                        if chunk.isEmpty { break }
+                        buffer.append(chunk)
+                    }
+                    guard buffer.count == size,
+                          let ext = ShareFileRules.storedExtension(pathExtension: url.pathExtension, header: Data(buffer.prefix(32)))
+                    else {
+                        continuation.resume(throwing: CocoaError(.fileReadCorruptFile))
+                        return
+                    }
+                    let name = url.pathExtension.isEmpty ? "attachment." + ext : url.lastPathComponent
+                    continuation.resume(returning: SharedFile(bytes: buffer, name: name))
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
     private static func loadText(_ provider: NSItemProvider) async -> String? {
         let types = [UTType.plainText.identifier, UTType.utf8PlainText.identifier, UTType.text.identifier]
         for type in types where provider.hasItemConformingToTypeIdentifier(type) {
             guard let item = try? await loadItem(provider, type: type) else { continue }
-            if let text = item as? String, !text.isEmpty { return text }
-            if let data = item as? Data, let text = String(data: data, encoding: .utf8), !text.isEmpty { return text }
-            if let url = item as? URL, let text = try? String(contentsOf: url, encoding: .utf8), !text.isEmpty { return text }
+            if let text = item as? String, !text.isEmpty { return String(text.prefix(textLimit)) }
+            if let data = item as? Data, let text = String(data: data.prefix(textLimit), encoding: .utf8), !text.isEmpty {
+                return text
+            }
+            if let url = item as? URL, let text = readCappedText(url), !text.isEmpty { return text }
         }
         return nil
     }
@@ -152,31 +222,6 @@ enum SharePayloadReader {
                     return
                 }
                 continuation.resume(returning: item)
-            }
-        }
-    }
-
-    private static func copyFile(_ provider: NSItemProvider, type: String) async throws -> URL {
-        try await withCheckedThrowingContinuation { continuation in
-            provider.loadFileRepresentation(forTypeIdentifier: type) { url, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-                guard let url else {
-                    continuation.resume(throwing: CocoaError(.fileReadNoSuchFile))
-                    return
-                }
-                let ext = url.pathExtension.isEmpty ? "bin" : url.pathExtension
-                let destination = FileManager.default.temporaryDirectory
-                    .appendingPathComponent(UUID().uuidString)
-                    .appendingPathExtension(ext)
-                do {
-                    try FileManager.default.copyItem(at: url, to: destination)
-                    continuation.resume(returning: destination)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
             }
         }
     }

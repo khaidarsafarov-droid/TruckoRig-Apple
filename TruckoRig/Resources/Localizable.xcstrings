@@ -2513,25 +2513,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only on this device"
+            "value": "On this phone"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo en este dispositivo"
+            "value": "En este teléfono"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Только на этом устройстве"
+            "value": "На этом телефоне"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uniquement sur cet appareil"
+            "value": "Sur ce téléphone"
           }
         }
       }
@@ -8198,31 +8198,89 @@
         }
       }
     },
+    "settings.icloud.delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete iCloud copy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar copia de iCloud"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить копию iCloud"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la copie iCloud"
+          }
+        }
+      }
+    },
+    "settings.icloud.delete.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete the encrypted journal and document files from iCloud? This phone keeps its copy. iCloud sync turns off and stays off until you turn it on again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar el diario cifrado y los documentos de iCloud? Este teléfono conserva su copia. La sincronización con iCloud se apaga y sigue apagada hasta que la vuelvas a activar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить зашифрованный журнал и документы из iCloud? Копия на этом телефоне останется. Синхронизация с iCloud выключится и не включится, пока вы сами её не включите."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer le journal chiffré et les documents d'iCloud ? Ce téléphone garde sa copie. La synchro iCloud s'éteint et reste éteinte jusqu'à ce que vous la rallumiez."
+          }
+        }
+      }
+    },
     "settings.icloud.hint": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "One JSON backup for this account, the same format as a file export. Photos, scans, and the Telegram token stay on this device."
+            "value": "Off until you turn it on. When it is on, one encrypted backup of this journal is stored in your private iCloud Drive container. The Telegram token stays on this phone."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Una copia JSON por cuenta, el mismo formato que una exportación. Las fotos, los escaneos y el token de Telegram se quedan en este dispositivo."
+            "value": "Apagada hasta que la actives. Cuando está activa, una copia cifrada de este diario se guarda en tu contenedor privado de iCloud Drive. El token de Telegram se queda en este teléfono."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Одна JSON-копия на аккаунт, тот же формат, что и экспорт в файл. Фото, сканы и токен Telegram остаются на этом устройстве."
+            "value": "Выключена, пока вы её не включите. Когда она включена, одна зашифрованная копия этого журнала хранится в вашем закрытом контейнере iCloud Drive. Токен Telegram остаётся на этом телефоне."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une copie JSON par compte, le même format qu'une exportation. Les photos, les numérisations et le jeton Telegram restent sur cet appareil."
+            "value": "Désactivée jusqu'à ce que vous l'activiez. Une fois activée, une copie chiffrée de ce journal est enregistrée dans votre conteneur iCloud Drive privé. Le jeton Telegram reste sur ce téléphone."
           }
         }
       }
@@ -8291,25 +8349,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Photos and scans are saved as files next to the JSON backup. Location and other photo details stay with the file. The Telegram token is not uploaded."
+            "value": "Off until you turn it on. Photos and scans are encrypted before they go to iCloud. A photo keeps its location, date, and time. Recognized document text is not stored in the iCloud index. The Telegram token is not uploaded."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Las fotos y los escaneos se guardan como archivos junto a la copia JSON. La ubicación y los datos de la foto se quedan con el archivo. El token de Telegram no se sube."
+            "value": "Apagado hasta que lo actives. Las fotos y los escaneos se cifran antes de ir a iCloud. Una foto conserva su ubicación, fecha y hora. El texto reconocido de los documentos no se guarda en el índice de iCloud. El token de Telegram no se sube."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Фото и сканы сохраняются отдельными файлами рядом с JSON-копией. Геолокация и данные снимка остаются с файлом. Токен Telegram не выгружается."
+            "value": "Выключено, пока вы его не включите. Фото и сканы шифруются перед отправкой в iCloud. У фото сохраняются место, дата и время. Распознанный текст документов в индекс iCloud не попадает. Токен Telegram не выгружается."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les photos et les numérisations sont enregistrées comme fichiers à côté de la copie JSON. La position et les détails de la photo restent avec le fichier. Le jeton Telegram n'est pas envoyé."
+            "value": "Désactivé jusqu'à ce que vous l'activiez. Les photos et les numérisations sont chiffrées avant d'aller sur iCloud. Une photo garde son lieu, sa date et son heure. Le texte reconnu des documents n'est pas enregistré dans l'index iCloud. Le jeton Telegram n'est pas envoyé."
           }
         }
       }
@@ -8320,25 +8378,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A photo or scan you remove on this phone stays in iCloud until you delete it in the Files app. A restore downloads it again."
+            "value": "A photo or scan you remove on this phone stays in iCloud until you tap Delete iCloud copy. The container is private and is not shown in the Files app."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Una foto o un escaneo que quites en este teléfono permanece en iCloud hasta que lo borres en la app Archivos. Una restauración lo descarga de nuevo."
+            "value": "Una foto o un escaneo que quites en este teléfono permanece en iCloud hasta que pulses Eliminar copia de iCloud. El contenedor es privado y no aparece en Archivos."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Фото или скан, удалённые на этом телефоне, остаются в iCloud, пока вы не удалите их в приложении «Файлы». Восстановление скачает их снова."
+            "value": "Фото или скан, удалённые на этом телефоне, остаются в iCloud, пока вы не нажмёте «Удалить копию iCloud». Контейнер закрыт и не показывается в «Файлах»."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une photo ou une numérisation que vous retirez de cet appareil reste dans iCloud jusqu'à ce que vous la supprimiez dans l'app Fichiers. Une restauration la télécharge de nouveau."
+            "value": "Une photo ou une numérisation retirée de cet appareil reste dans iCloud jusqu'à ce que vous touchiez Supprimer la copie iCloud. Le conteneur est privé et n'apparaît pas dans Fichiers."
           }
         }
       }
@@ -17051,25 +17109,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only on this device"
+            "value": "On this phone"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo en este dispositivo"
+            "value": "En este teléfono"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Только на этом устройстве"
+            "value": "На этом телефоне"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uniquement sur cet appareil"
+            "value": "Sur ce téléphone"
           }
         }
       }
@@ -17109,25 +17167,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stored only on this device. There is no account and nothing is sent to a server."
+            "value": "Loads, rates, and document photos stay on this phone in an encrypted journal. iCloud backup is off until you turn it on in Settings. When it is on, TruckoRig encrypts the journal and the document files and stores them in your private iCloud Drive container. That container is not shown in the Files app. Telegram receives load text only after you save a bot token. Google Maps receives the map view when you open the map and this build includes a Maps key. TruckoRig has no account of its own."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo se guarda en este dispositivo. No hay cuenta y no se envía nada a un servidor."
+            "value": "Los viajes, las tarifas y las fotos de documentos se quedan en este teléfono, en un diario cifrado. La copia en iCloud está apagada hasta que la actives en Ajustes. Cuando está activa, TruckoRig cifra el diario y los documentos y los guarda en tu contenedor privado de iCloud Drive. Ese contenedor no aparece en la app Archivos. Telegram recibe el texto del viaje solo después de que guardas un token de bot. Google Maps recibe la vista del mapa cuando lo abres y esta compilación incluye una clave de Maps. TruckoRig no tiene una cuenta propia."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Хранятся только на этом устройстве. Аккаунта нет, на сервер ничего не уходит."
+            "value": "Рейсы, ставки и фото документов хранятся на этом телефоне в зашифрованном журнале. Копия в iCloud выключена, пока вы не включите её в Настройках. Когда она включена, TruckoRig шифрует журнал и файлы документов и кладёт их в ваш закрытый контейнер iCloud Drive. Этот контейнер не показывается в приложении «Файлы». Telegram получает текст рейса только после того, как вы сохраните токен бота. Google Maps получает вид карты, когда вы её открываете и в этой сборке есть ключ Maps. Своего аккаунта у TruckoRig нет."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stockés seulement sur cet appareil. Il n'y a pas de compte et rien n'est envoyé à un serveur."
+            "value": "Les voyages, les taux et les photos de documents restent sur ce téléphone, dans un journal chiffré. La copie iCloud est désactivée jusqu'à ce que vous l'activiez dans Réglages. Une fois activée, TruckoRig chiffre le journal et les documents et les enregistre dans votre conteneur iCloud Drive privé. Ce conteneur n'apparaît pas dans l'app Fichiers. Telegram reçoit le texte d'un voyage seulement après l'enregistrement d'un jeton de bot. Google Maps reçoit la vue de la carte lorsque vous l'ouvrez et que cette version contient une clé Maps. TruckoRig n'a pas de compte propre."
           }
         }
       }

@@ -7,13 +7,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "TruckoRig использует камеру, чтобы сфотографировать документы рейса и отсканировать бумаги."
+            "value": "TruckoRig uses the camera to photograph trip documents and scan paperwork."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "TruckoRig использует камеру, чтобы сфотографировать документы рейса и отсканировать бумаги."
+            "value": "TruckoRig usa la cámara para fotografiar los documentos del viaje y escanear los papeles."
           }
         },
         "fr": {
@@ -36,13 +36,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "TruckoRig записывает место съёмки на фото рейса, чтобы было видно, где подписаны документы."
+            "value": "TruckoRig records where a trip photo was taken so you can see where the documents were signed."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "TruckoRig записывает место съёмки на фото рейса, чтобы было видно, где подписаны документы."
+            "value": "TruckoRig registra el lugar de la foto del viaje para que veas dónde se firmaron los documentos."
           }
         },
         "fr": {
@@ -65,13 +65,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "TruckoRig может взять фото документа из галереи, если камера недоступна, и добавить страницы в сканер."
+            "value": "TruckoRig can choose a document photo from your library when the camera is unavailable, and add pages to the scanner."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "TruckoRig может взять фото документа из галереи, если камера недоступна, и добавить страницы в сканер."
+            "value": "TruckoRig puede elegir una foto del documento en tu fototeca si la cámara no está disponible, y añadir páginas al escáner."
           }
         },
         "fr": {

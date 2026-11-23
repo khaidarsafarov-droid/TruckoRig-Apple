@@ -93,8 +93,9 @@ final class ICloudDriveStore {
         }
         guard fileManager.fileExists(atPath: url.path) else { return nil }
         let data = try resolveConflicts(at: url) ?? coordinatedRead(url)
-        if data.count > BackupSchedule.maxRestoreBytes { throw Failure.tooLarge }
-        return data
+        let plain = try opened(data)
+        if plain.count > BackupSchedule.maxRestoreBytes { throw Failure.tooLarge }
+        return plain
     }
 
     func write(_ data: Data, accountId: String) throws {
@@ -103,6 +104,12 @@ final class ICloudDriveStore {
         }
         if data.count > BackupSchedule.maxRestoreBytes { throw Failure.tooLarge }
         if ICloudMediaPolicy.documentIsSecret(Array(data)) { throw Failure.refusedSecret }
+        let sealed: Data
+        do {
+            sealed = try CloudPayloadSealer.seal(data)
+        } catch {
+            throw Failure.writeFailed
+        }
         guard let documents = documentsURL() else { throw Failure.unavailable }
         do {
             try fileManager.createDirectory(at: documents, withIntermediateDirectories: true)
@@ -110,8 +117,20 @@ final class ICloudDriveStore {
             throw Failure.writeFailed
         }
         let exists = fileManager.fileExists(atPath: url.path)
-        try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
+        try coordinatedWrite(sealed, to: url, options: exists ? .forReplacing : [])
         _ = try? resolveConflicts(at: url)
+    }
+
+    /// Removes this account's journal file and media folder. The container is private, so the
+    /// Files app cannot delete them.
+    func deleteAccountFiles(accountId: String) throws {
+        guard availability() == .available else { throw Failure.unavailable }
+        if let backup = backupURL(accountId: accountId), fileManager.fileExists(atPath: backup.path) {
+            try coordinatedRemove(backup)
+        }
+        if let media = mediaRoot(accountId: accountId), fileManager.fileExists(atPath: media.path) {
+            try coordinatedRemove(media)
+        }
     }
 
     func mediaRoot(accountId: String) -> URL? {
@@ -135,7 +154,7 @@ final class ICloudDriveStore {
             throw Failure.notDownloaded
         }
         guard fileManager.fileExists(atPath: url.path) else { return nil }
-        return try coordinatedRead(url)
+        return try opened(coordinatedRead(url))
     }
 
     func writeManifest(_ data: Data, accountId: String) throws {
@@ -143,9 +162,15 @@ final class ICloudDriveStore {
             throw Failure.unavailable
         }
         if ICloudMediaPolicy.documentIsSecret(Array(data)) { throw Failure.refusedSecret }
+        let sealed: Data
+        do {
+            sealed = try CloudPayloadSealer.seal(data)
+        } catch {
+            throw Failure.writeFailed
+        }
         try createParent(of: url)
         let exists = fileManager.fileExists(atPath: url.path)
-        try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
+        try coordinatedWrite(sealed, to: url, options: exists ? .forReplacing : [])
         manifestWriteCount += 1
     }
 
@@ -160,7 +185,7 @@ final class ICloudDriveStore {
             throw Failure.notDownloaded
         }
         guard fileManager.fileExists(atPath: url.path) else { throw Failure.missing }
-        return try coordinatedRead(url)
+        return try opened(coordinatedRead(url))
     }
 
     func writeMedia(_ data: Data, accountId: String, relativePath: String) throws {
@@ -169,9 +194,15 @@ final class ICloudDriveStore {
         else { throw Failure.unavailable }
         if data.count > ICloudMediaPolicy.maxFileBytes { throw Failure.tooLarge }
         if ICloudMediaPolicy.fileIsSecret(Array(data)) { throw Failure.refusedSecret }
+        let sealed: Data
+        do {
+            sealed = try CloudPayloadSealer.seal(data)
+        } catch {
+            throw Failure.writeFailed
+        }
         try createParent(of: url)
         let exists = fileManager.fileExists(atPath: url.path)
-        try coordinatedWrite(data, to: url, options: exists ? .forReplacing : [])
+        try coordinatedWrite(sealed, to: url, options: exists ? .forReplacing : [])
         mediaWrites.append(relativePath)
     }
 
@@ -238,6 +269,14 @@ final class ICloudDriveStore {
         return payload ?? Data()
     }
 
+    private func opened(_ data: Data) throws -> Data {
+        do {
+            return try CloudPayloadSealer.open(data)
+        } catch {
+            throw Failure.readFailed
+        }
+    }
+
     private func coordinatedWrite(
         _ data: Data,
         to url: URL,
@@ -257,19 +296,48 @@ final class ICloudDriveStore {
         if writeFailed { throw Failure.writeFailed }
     }
 
+    private func coordinatedRemove(_ url: URL) throws {
+        var coordinationError: NSError?
+        var removeFailed = false
+        let coordinator = NSFileCoordinator()
+        coordinator.coordinate(writingItemAt: url, options: .forDeleting, error: &coordinationError) { target in
+            do {
+                try fileManager.removeItem(at: target)
+            } catch {
+                removeFailed = true
+            }
+        }
+        if coordinationError != nil || removeFailed { throw Failure.writeFailed }
+    }
+
     /// Keeps the conflict version with the newer `exportedAt` and drops the rest.
     private func resolveConflicts(at url: URL) throws -> Data? {
         let conflicts = NSFileVersion.unresolvedConflictVersionsOfItem(at: url) ?? []
         guard !conflicts.isEmpty, let current = NSFileVersion.currentVersionOfItem(at: url) else {
             return nil
         }
-        var versions: [(NSFileVersion, Data, Int64)] = []
-        if let data = try? coordinatedRead(current.url) {
-            versions.append((current, data, Self.exportedAt(in: data)))
-        }
+        let currentData = try? coordinatedRead(current.url)
+        var conflictData: [(NSFileVersion, Data)] = []
+        var blobs: [Data] = []
+        if let currentData { blobs.append(currentData) }
         for conflict in conflicts {
-            guard let data = try? coordinatedRead(conflict.url) else { continue }
-            versions.append((conflict, data, Self.exportedAt(in: data)))
+            if let data = try? coordinatedRead(conflict.url) {
+                blobs.append(data)
+                conflictData.append((conflict, data))
+            }
+        }
+        // A sealed file this phone cannot open yet (the key has not synced) must stay.
+        // Resolving now would delete it in favor of an older plaintext copy.
+        if Self.leavesConflictsUnresolved(blobs) {
+            return nil
+        }
+        var versions: [(NSFileVersion, Data, Int64)] = []
+        if let currentData, let stamp = Self.exportedAt(in: currentData) {
+            versions.append((current, currentData, stamp))
+        }
+        for (conflict, data) in conflictData {
+            guard let stamp = Self.exportedAt(in: data) else { continue }
+            versions.append((conflict, data, stamp))
         }
         guard !versions.isEmpty else { return nil }
         let stamps = versions.map {
@@ -288,10 +356,31 @@ final class ICloudDriveStore {
         return winner.1
     }
 
-    private static func exportedAt(in data: Data) -> Int64 {
-        guard let text = try? BackupRestoreParser.parseToJSON(data),
+    /// True when any copy is sealed and cannot be opened. Callers must not resolve or delete versions.
+    static func leavesConflictsUnresolved(_ versions: [Data]) -> Bool {
+        versions.contains { data in
+            data.starts(with: CloudPayloadSealer.magic) && exportedAt(in: data) == nil
+        }
+    }
+
+    /// `nil` when a sealed file cannot be opened. Callers drop that version.
+    /// A failed tag is not scored as zero, so an old plaintext conflict cannot win by default.
+    static func exportedAt(in data: Data) -> Int64? {
+        let plain: Data
+        if data.starts(with: CloudPayloadSealer.magic) {
+            do {
+                plain = try CloudPayloadSealer.open(data)
+            } catch {
+                return nil
+            }
+        } else {
+            plain = data
+        }
+        guard let text = try? BackupRestoreParser.parseToJSON(plain),
               let backup = try? BackupDataCodec.decode(text)
-        else { return 0 }
+        else {
+            return data.starts(with: CloudPayloadSealer.magic) ? nil : 0
+        }
         return backup.exportedAt
     }
 }

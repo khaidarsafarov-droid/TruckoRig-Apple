@@ -3,9 +3,9 @@ import Foundation
 /// Photos and scans on this phone, shaped for the iCloud manifest.
 ///
 /// Receipts are not included. The Telegram token is never read here. Text fields are redacted
-/// by `ICloudMediaPolicy` before they are written. File bytes are copied as they are, so a GPS
-/// tag already in the JPEG stays in the JPEG. The row's latitude and longitude are stored in
-/// the manifest because the camera watermark keeps the fix on the photo record.
+/// by `ICloudMediaPolicy` before they are written. Photo bytes are copied as they are, including
+/// location, date, and time, then the upload is encrypted. Recognized document text is left out
+/// of the manifest.
 enum ICloudMediaLibrary {
     struct Snapshot: Equatable {
         var items: [ICloudMediaPolicy.Item]

@@ -351,6 +351,46 @@ final class AppDatabase {
         try fetchGraph().loads
     }
 
+    struct TableCounts: Equatable {
+        var loads = 0
+        var paychecks = 0
+        var diesel = 0
+        var maintenance = 0
+        var maintenanceArchive = 0
+        var photos = 0
+        var scans = 0
+        var profiles = 0
+
+        func matches(_ journal: LegacyJournal) -> Bool {
+            loads == journal.loads.count
+                && paychecks == journal.paychecks.count
+                && diesel == journal.diesel.count
+                && maintenance == journal.maintenance.count
+                && maintenanceArchive == journal.maintenanceArchive.count
+                && photos == journal.photos.count
+                && scans == journal.scans.count
+                && profiles == (journal.profile == nil ? 0 : 1)
+        }
+    }
+
+    func tableCounts() throws -> TableCounts {
+        try queue.read { db in
+            func count(_ table: String) throws -> Int {
+                try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM \(table)") ?? 0
+            }
+            return TableCounts(
+                loads: try count("load"),
+                paychecks: try count("paycheck"),
+                diesel: try count("diesel"),
+                maintenance: try count("maintenance_task"),
+                maintenanceArchive: try count("maintenance_archive"),
+                photos: try count("photo"),
+                scans: try count("scan"),
+                profiles: try count("profile")
+            )
+        }
+    }
+
     func fetchGraph() throws -> StoredGraph {
         try queue.read(Self.fetchGraph)
     }
@@ -599,7 +639,8 @@ final class AppDatabase {
         }
     }
 
-    /// Copies a SwiftData journal in one transaction, then records that the copy finished.
+    /// Copies a SwiftData journal in one transaction. The caller marks the import done
+    /// only after the row counts match, so a mismatch can be tried again.
     func importLegacy(_ journal: LegacyJournal) throws {
         try queue.write { db in
             for load in journal.loads {
@@ -626,7 +667,6 @@ final class AppDatabase {
             if let profile = journal.profile {
                 try Self.upsert(db, profile)
             }
-            try Self.markLegacyImportDone(db)
         }
     }
 

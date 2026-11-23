@@ -60,7 +60,7 @@ enum LocalStoreMigration {
             do {
                 try FileManager.default.moveItem(at: source, to: destination)
             } catch {
-                AppLog.persistence.error("Could not move store file \(source.lastPathComponent, privacy: .public): \(error.localizedDescription, privacy: .public)")
+                AppLog.persistence.error("Could not move store file \(source.lastPathComponent, privacy: .private): \(error.localizedDescription, privacy: .public)")
             }
         }
     }
