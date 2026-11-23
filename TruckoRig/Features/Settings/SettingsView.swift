@@ -105,7 +105,7 @@ struct SettingsView: View {
                             Button {
                                 settings.chooseMeasurementSystem(system)
                             } label: {
-                                Text(system == .kilometers ? "settings.units.kilometers" : "settings.units.miles")
+                                Text(UnitCopy.settingsUnit(system))
                                     .font(.appCaptionMedium)
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.7)
@@ -182,7 +182,7 @@ struct SettingsView: View {
             .onChange(of: settings.quietStartHour) { appState.scheduleReminders() }
             .onChange(of: settings.quietEndHour) { appState.scheduleReminders() }
 
-            Section(settings.measurementSystem == .kilometers ? "settings.rpm.perKilometer" : "settings.rpm") {
+            Section(UnitCopy.settingsRate(settings.measurementSystem)) {
                 SoftNumberField(
                     title: "settings.rpm.min",
                     value: UnitEntry.perDistance(stored: $settings.rpmMinProfit, system: settings.measurementSystem)

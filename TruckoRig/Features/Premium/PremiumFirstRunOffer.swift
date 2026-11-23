@@ -10,7 +10,7 @@ struct PremiumFirstRunOffer: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text("premium.offer.title")
                     .font(.appLargeTitle)
-                    .foregroundStyle(Color.brandGold)
+                    .foregroundStyle(Color.brandGoldInk)
                     .fixedSize(horizontal: false, vertical: true)
                 Text("premium.offer.price \(premium.displayPrice)")
                     .font(.appHeadline)
@@ -68,7 +68,7 @@ struct PremiumFirstRunOffer: View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Image(systemName: "checkmark")
                 .font(.appBodyMedium)
-                .foregroundStyle(Color.brandGold)
+                .foregroundStyle(Color.brandGoldInk)
             Text(key)
                 .font(.appBody)
                 .foregroundStyle(Color.forestText)

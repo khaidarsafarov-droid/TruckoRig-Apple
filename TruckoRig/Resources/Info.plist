@@ -52,6 +52,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>TruckoRig records where a trip photo was taken so you can see where the documents were signed.</string>
 
+	<!-- Basis: docs/EXPORT_COMPLIANCE.md. Standard AES for the driver's own records, ECCN 5D992. -->
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 

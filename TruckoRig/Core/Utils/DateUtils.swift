@@ -11,20 +11,57 @@ enum DateUtils {
         private let lock = NSLock()
 
         func formatter(template: String, locale: Locale) -> DateFormatter {
-            let key = "\(template)|\(locale.identifier)"
+            stored(key: "template|\(template)|\(locale.identifier)") { formatter in
+                formatter.locale = locale
+                formatter.setLocalizedDateFormatFromTemplate(template)
+            }
+        }
+
+        func formatter(format: String, locale: Locale, calendar: Calendar) -> DateFormatter {
+            stored(key: Self.cacheKey(kind: "format", pattern: format, locale: locale, calendar: calendar)) { formatter in
+                formatter.locale = locale
+                formatter.calendar = calendar
+                formatter.timeZone = calendar.timeZone
+                formatter.dateFormat = format
+            }
+        }
+
+        func formatter(template: String, locale: Locale, calendar: Calendar) -> DateFormatter {
+            stored(key: Self.cacheKey(kind: "template", pattern: template, locale: locale, calendar: calendar)) { formatter in
+                formatter.locale = locale
+                formatter.calendar = calendar
+                formatter.timeZone = calendar.timeZone
+                formatter.setLocalizedDateFormatFromTemplate(template)
+            }
+        }
+
+        private func stored(key: String, configure: (DateFormatter) -> Void) -> DateFormatter {
             lock.lock()
             defer { lock.unlock() }
             if let existing = formatters[key] { return existing }
             let formatter = DateFormatter()
-            formatter.locale = locale
-            formatter.setLocalizedDateFormatFromTemplate(template)
+            configure(formatter)
             formatters[key] = formatter
             return formatter
+        }
+
+        private static func cacheKey(kind: String, pattern: String, locale: Locale, calendar: Calendar) -> String {
+            "\(kind)|\(pattern)|\(locale.identifier)|\(calendar.identifier)|\(calendar.timeZone.identifier)|\(calendar.firstWeekday)"
         }
     }
 
     static func string(_ date: Date, template: String, locale: Locale = AppLocale.locale) -> String {
         cache.formatter(template: template, locale: locale).string(from: date)
+    }
+
+    /// `dateFormat`, cached per locale and calendar. The home screen asks for this on every body pass.
+    static func string(_ date: Date, format: String, locale: Locale, calendar: Calendar) -> String {
+        cache.formatter(format: format, locale: locale, calendar: calendar).string(from: date)
+    }
+
+    /// Localized template, cached per locale and calendar.
+    static func string(_ date: Date, template: String, locale: Locale, calendar: Calendar) -> String {
+        cache.formatter(template: template, locale: locale, calendar: calendar).string(from: date)
     }
 
     /// `Aug 6` — journal rows and week headers.

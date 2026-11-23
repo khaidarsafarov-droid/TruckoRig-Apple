@@ -276,14 +276,9 @@ struct JournalView: View {
 
     private func narrowDays(week: TruckingWeek, ref: WeekRef) -> [String] {
         guard let start = week.startDate(of: ref) else { return [] }
-        let formatter = DateFormatter()
-        formatter.locale = AppLocale.locale
-        formatter.calendar = week.calendar
-        formatter.timeZone = week.calendar.timeZone
-        formatter.dateFormat = "EEEEE"
         return (0..<7).compactMap { offset in
             guard let day = week.calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
-            return formatter.string(from: day)
+            return DateUtils.string(day, format: "EEEEE", locale: AppLocale.locale, calendar: week.calendar)
         }
     }
 
@@ -305,7 +300,7 @@ struct JournalView: View {
                     Image(systemName: "square.and.arrow.up")
                         .font(.system(size: 18, weight: .medium))
                         .foregroundStyle(Color.forestText)
-                        .frame(width: 40, height: 40)
+                        .minimumHitTarget()
                 }
                 .buttonStyle(.borderless)
                 .accessibilityLabel("journal.share")

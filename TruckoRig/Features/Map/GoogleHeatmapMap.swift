@@ -151,7 +151,7 @@ final class HeatmapMapContainer: UIView {
         let zoomOut = zoomButton(title: "−", label: String(localized: "map.zoom.out"), delta: -1)
         let stack = UIStackView(arrangedSubviews: [zoomIn, zoomOut])
         stack.axis = .vertical
-        stack.spacing = 6
+        stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stack)
 
@@ -168,7 +168,7 @@ final class HeatmapMapContainer: UIView {
     required init?(coder: NSCoder) { nil }
 
     private func zoomButton(title: String, label: String, delta: Float) -> UIButton {
-        let button = UIButton(type: .system)
+        let button = MapZoomButton(type: .system)
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 22, weight: .medium)
         button.backgroundColor = UIColor.secondarySystemBackground.withAlphaComponent(0.92)
@@ -193,4 +193,13 @@ final class HeatmapMapContainer: UIView {
       {"featureType":"landscape","elementType":"geometry.fill","stylers":[{"color":"#f5f5f5"}]}
     ]
     """
+}
+
+/// The drawn control stays 36pt. Touches outside that square still count out to 44pt.
+private final class MapZoomButton: UIButton {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let horizontal = max(44 - bounds.width, 0)
+        let vertical = max(44 - bounds.height, 0)
+        return bounds.insetBy(dx: -horizontal / 2, dy: -vertical / 2).contains(point)
+    }
 }

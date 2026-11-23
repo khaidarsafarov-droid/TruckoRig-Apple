@@ -278,26 +278,29 @@ private struct MapScreenBody: View {
 
     private func stateAverage(_ summary: CrowdStateSummary) -> String {
         let value = rpm(summary.avgOutboundRpm.dollars)
-        if system == .kilometers {
-            return String(localized: "map.state.avg.km \(value) \(summary.outboundTrips)")
-        }
-        return String(localized: "map.state.avg \(value) \(summary.outboundTrips)")
+        return UnitCopy.mapStateAverage(rpm: value, trips: summary.outboundTrips, system: system)
     }
 
     private func laneText(_ lane: CrowdLaneAggregate) -> String {
         let value = rpm(lane.avgRpm.dollars)
-        if system == .kilometers {
-            return String(localized: "map.lane.km \(lane.fromState) \(lane.toState) \(value) \(lane.tripCount)")
-        }
-        return String(localized: "map.lane \(lane.fromState) \(lane.toState) \(value) \(lane.tripCount)")
+        return UnitCopy.mapLane(
+            from: lane.fromState,
+            to: lane.toState,
+            rpm: value,
+            trips: lane.tripCount,
+            system: system
+        )
     }
 
     private func recentText(_ report: CrowdRateReport, age: String) -> String {
         let value = rpm(report.rpm.dollars)
-        if system == .kilometers {
-            return String(localized: "map.recent.km \(report.fromState) \(report.toState) \(value) \(age)")
-        }
-        return String(localized: "map.recent \(report.fromState) \(report.toState) \(value) \(age)")
+        return UnitCopy.mapRecent(
+            from: report.fromState,
+            to: report.toState,
+            rpm: value,
+            age: age,
+            system: system
+        )
     }
 
     private func periodTitle(_ period: MapPeriod) -> LocalizedStringKey {
@@ -411,6 +414,7 @@ private struct MapHeatmapCard: View {
                             .foregroundStyle(Color.forestText)
                             .frame(width: 36, height: 36)
                             .background(Color.forestCard.faded(to: 0.92), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .minimumHitTarget()
                     }
                     .accessibilityLabel("map.expand")
                     .padding(4)
@@ -486,9 +490,7 @@ private struct MapHeatmapCard: View {
             Text(String(localized: "map.detail.trips \(name) \(state.code) \(state.trips)"))
                 .font(.appBodyMedium)
                 .foregroundStyle(Color.forestText)
-            Text(system == .kilometers
-                 ? String(localized: "map.detail.perKilometer \(rpmText)")
-                 : String(localized: "map.detail.rpm \(rpmText)"))
+            Text(UnitCopy.mapDetailRate(rpm: rpmText, system: system))
                 .font(.appBody)
                 .foregroundStyle(Color.forestTextSecondary)
             Text(String(localized: "map.detail.gross \(gross)"))

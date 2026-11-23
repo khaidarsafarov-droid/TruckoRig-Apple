@@ -70,6 +70,22 @@ enum ThemePalette {
     static let accentLight = "3F3D9E"
     static let accentDark = "D6BC85"
 
+    /// Champagne fill. 2.06:1 on the light page, so it is a button fill, not text.
+    static let champagneLight = "C8A867"
+    /// Text and icons in the light cabin. Same hue as champagne, 5.91:1 on `#F5F4F1`,
+    /// 6.34:1 on the card, and 5.40:1 on the muted wash.
+    static let goldInkLight = "7A5810"
+    /// Dark-cabin gold. Unchanged: 10.32:1 on `#0D0F1E`.
+    static let goldInkDark = accentDark
+
+    static let textLight = "16182B"
+    static let textSecondaryLight = "585A6E"
+    static let successLight = "3D6A55"
+    static let warningLight = "86542A"
+    static let errorLight = "953C46"
+    static let onGold = "1D1708"
+    static let onPrimaryLight = "FFFFFF"
+
     static func isDark(mode: AppThemeMode, systemIsDark: Bool) -> Bool {
         switch mode {
         case .light: return false

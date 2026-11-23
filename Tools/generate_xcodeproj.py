@@ -82,9 +82,6 @@ NON_BUNDLE_FILES = {
     "TruckoRigSideload.entitlements",
     "TruckoRigWidget.entitlements",
     "TruckoRigShare.entitlements",
-    # Licenses stay in the repository and out of the app bundle.
-    "DMSans-OFL.txt",
-    "Roboto-LICENSE.txt",
     # StoreKit configuration is selected by the scheme. It is not an app resource.
     "Premium.storekit",
 }
@@ -189,6 +186,8 @@ def build() -> str:
     ]
     test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(TESTS_DIR + os.sep)]
     ui_test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(UITESTS_DIR + os.sep)]
+    # The UI test target cannot import the app, so it compiles the launch contract itself.
+    ui_test_sources.append(f"{APP_DIR}/App/UITestLaunch.swift")
 
     app_resources = [
         p for p in tree.files
