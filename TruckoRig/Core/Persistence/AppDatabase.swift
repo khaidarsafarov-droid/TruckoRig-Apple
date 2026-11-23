@@ -1,6 +1,57 @@
 import Foundation
 import GRDB
 
+/// Tables a journal write can invalidate. A reload reads these and leaves the rest alone.
+struct JournalTables: OptionSet, Sendable, Equatable {
+    let rawValue: UInt
+
+    static let loads = JournalTables(rawValue: 1 << 0)
+    static let paychecks = JournalTables(rawValue: 1 << 1)
+    static let diesel = JournalTables(rawValue: 1 << 2)
+    static let maintenance = JournalTables(rawValue: 1 << 3)
+    static let photos = JournalTables(rawValue: 1 << 4)
+    static let scans = JournalTables(rawValue: 1 << 5)
+    static let profile = JournalTables(rawValue: 1 << 6)
+    static let expenses = JournalTables(rawValue: 1 << 7)
+    static let perDiem = JournalTables(rawValue: 1 << 8)
+
+    static let all: JournalTables = [
+        .loads, .paychecks, .diesel, .maintenance, .photos, .scans, .profile, .expenses, .perDiem,
+    ]
+}
+
+/// Coalesces save notifications so an import reloads the journal once.
+final class JournalSaveNotifier {
+    var deliver: ((JournalTables) -> Void)?
+    private var depth = 0
+    private var pending: JournalTables = []
+
+    init(deliver: ((JournalTables) -> Void)? = nil) {
+        self.deliver = deliver
+    }
+
+    func saved(_ tables: JournalTables) {
+        guard !tables.isEmpty else { return }
+        if depth > 0 {
+            pending.formUnion(tables)
+        } else {
+            deliver?(tables)
+        }
+    }
+
+    func batch(_ work: () throws -> Void) rethrows {
+        depth += 1
+        defer {
+            depth -= 1
+            guard depth == 0 else { return }
+            let tables = pending
+            pending = []
+            if !tables.isEmpty { deliver?(tables) }
+        }
+        try work()
+    }
+}
+
 /// Encrypted on-device journal.
 ///
 /// SQLCipher (via the GRDB + SQLCipher package) encrypts the file with a 256-bit passphrase.
@@ -358,7 +409,7 @@ final class AppDatabase {
     }
 
     func loads() throws -> [Load] {
-        try fetchGraph().loads
+        try fetchSlice(.loads).loads
     }
 
     struct TableCounts: Equatable {
@@ -401,8 +452,14 @@ final class AppDatabase {
         }
     }
 
+    func fetchSlice(_ tables: JournalTables) throws -> StoredGraph {
+        try queue.read { db in
+            try Self.fetchSlice(tables, db)
+        }
+    }
+
     func fetchGraph() throws -> StoredGraph {
-        try queue.read(Self.fetchGraph)
+        try fetchSlice(.all)
     }
 
     func legacyImportIsDone() throws -> Bool {
@@ -711,64 +768,105 @@ final class AppDatabase {
         var perDiemOverrides: [PerDiemOverride]
     }
 
-    private static func fetchGraph(_ db: Database) throws -> StoredGraph {
-        let loadRows = try Row.fetchAll(db, sql: "SELECT * FROM load ORDER BY date DESC")
-        let stopRows = try Row.fetchAll(db, sql: "SELECT * FROM stop ORDER BY stopNumber ASC")
-        let penaltyRows = try Row.fetchAll(db, sql: "SELECT * FROM penalty ORDER BY date ASC")
-        let loads = loadRows.map(load(from:))
-        let loadsById = Dictionary(uniqueKeysWithValues: loads.map { ($0.id, $0) })
+    private static func fetchSlice(_ tables: JournalTables, _ db: Database) throws -> StoredGraph {
+        let loads = tables.contains(.loads) ? try fetchLoadRows(db) : []
+        let photos = tables.contains(.photos) ? try fetchPhotoRows(db) : []
+        let scans = tables.contains(.scans) ? try fetchScanRows(db) : []
+        if tables.contains(.loads), tables.contains(.photos) {
+            attach(photos, to: loads)
+        }
+        if tables.contains(.loads), tables.contains(.scans) {
+            attach(scans, to: loads)
+        }
+        return StoredGraph(
+            loads: loads,
+            paychecks: tables.contains(.paychecks) ? try fetchPaychecks(db) : [],
+            diesel: tables.contains(.diesel) ? try fetchDiesel(db) : [],
+            maintenance: tables.contains(.maintenance) ? try fetchMaintenanceTasks(db) : [],
+            maintenanceArchive: tables.contains(.maintenance) ? try fetchMaintenanceArchive(db) : [],
+            photos: photos,
+            scans: scans,
+            profile: tables.contains(.profile) ? try fetchProfile(db) : nil,
+            expenses: tables.contains(.expenses) ? try fetchExpenses(db) : [],
+            perDiemOverrides: tables.contains(.perDiem) ? try fetchPerDiem(db) : []
+        )
+    }
 
+    private static func fetchLoadRows(_ db: Database) throws -> [Load] {
+        let loads = try Row.fetchAll(db, sql: "SELECT * FROM load ORDER BY date DESC").map(load(from:))
+        let loadsById = Dictionary(uniqueKeysWithValues: loads.map { ($0.id, $0) })
+        let stopRows = try Row.fetchAll(db, sql: "SELECT * FROM stop ORDER BY stopNumber ASC")
         for row in stopRows {
             guard let loadId = uuid(row, "loadId"), let load = loadsById[loadId] else { continue }
             let stop = stop(from: row)
             stop.load = load
             load.stops = (load.stops ?? []) + [stop]
         }
+        let penaltyRows = try Row.fetchAll(db, sql: "SELECT * FROM penalty ORDER BY date ASC")
         for row in penaltyRows {
             guard let loadId = uuid(row, "loadId"), let load = loadsById[loadId] else { continue }
             let penalty = penalty(from: row)
             penalty.load = load
             load.penalties = (load.penalties ?? []) + [penalty]
         }
+        return loads
+    }
 
-        let photos = try Row.fetchAll(db, sql: "SELECT * FROM photo ORDER BY timestamp DESC").map(photo(from:))
+    private static func fetchPhotoRows(_ db: Database) throws -> [Photo] {
+        try Row.fetchAll(db, sql: "SELECT * FROM photo ORDER BY timestamp DESC").map(photo(from:))
+    }
+
+    private static func fetchScanRows(_ db: Database) throws -> [Scan] {
+        try Row.fetchAll(db, sql: "SELECT * FROM scan ORDER BY timestamp DESC").map(scan(from:))
+    }
+
+    private static func fetchPaychecks(_ db: Database) throws -> [Paycheck] {
+        try Row.fetchAll(db, sql: "SELECT * FROM paycheck ORDER BY date DESC").map(paycheck(from:))
+    }
+
+    private static func fetchDiesel(_ db: Database) throws -> [Diesel] {
+        try Row.fetchAll(db, sql: "SELECT * FROM diesel ORDER BY date DESC").map(diesel(from:))
+    }
+
+    private static func fetchMaintenanceTasks(_ db: Database) throws -> [MaintenanceTask] {
+        try Row.fetchAll(db, sql: "SELECT * FROM maintenance_task ORDER BY createdAt ASC").map(maintenanceTask(from:))
+    }
+
+    private static func fetchMaintenanceArchive(_ db: Database) throws -> [MaintenanceArchiveEntry] {
+        try Row.fetchAll(
+            db,
+            sql: "SELECT * FROM maintenance_archive ORDER BY serviceDate DESC, createdAt DESC"
+        ).map(maintenanceArchive(from:))
+    }
+
+    private static func fetchProfile(_ db: Database) throws -> DriverProfile? {
+        try Row.fetchOne(db, sql: "SELECT * FROM profile LIMIT 1").map(profile(from:))
+    }
+
+    private static func fetchExpenses(_ db: Database) throws -> [MiscExpense] {
+        try Row.fetchAll(db, sql: "SELECT * FROM misc_expense ORDER BY date DESC").map(expense(from:))
+    }
+
+    private static func fetchPerDiem(_ db: Database) throws -> [PerDiemOverride] {
+        try Row.fetchAll(db, sql: "SELECT * FROM per_diem_override ORDER BY isoDate ASC").map(override(from:))
+    }
+
+    private static func attach(_ photos: [Photo], to loads: [Load]) {
+        let loadsById = Dictionary(uniqueKeysWithValues: loads.map { ($0.id, $0) })
         for photo in photos {
             guard let loadId = photo.loadId, let load = loadsById[loadId] else { continue }
             photo.load = load
             load.photos = (load.photos ?? []) + [photo]
         }
-        let scans = try Row.fetchAll(db, sql: "SELECT * FROM scan ORDER BY timestamp DESC").map(scan(from:))
+    }
+
+    private static func attach(_ scans: [Scan], to loads: [Load]) {
+        let loadsById = Dictionary(uniqueKeysWithValues: loads.map { ($0.id, $0) })
         for scan in scans {
             guard let loadId = scan.loadId, let load = loadsById[loadId] else { continue }
             scan.load = load
             load.scans = (load.scans ?? []) + [scan]
         }
-
-        let paychecks = try Row.fetchAll(db, sql: "SELECT * FROM paycheck ORDER BY date DESC").map(paycheck(from:))
-        let diesel = try Row.fetchAll(db, sql: "SELECT * FROM diesel ORDER BY date DESC").map(diesel(from:))
-        let maintenance = try Row.fetchAll(
-            db,
-            sql: "SELECT * FROM maintenance_task ORDER BY createdAt ASC"
-        ).map(maintenanceTask(from:))
-        let archive = try Row.fetchAll(
-            db,
-            sql: "SELECT * FROM maintenance_archive ORDER BY serviceDate DESC, createdAt DESC"
-        ).map(maintenanceArchive(from:))
-        let profile = try Row.fetchOne(db, sql: "SELECT * FROM profile LIMIT 1").map(profile(from:))
-        let expenses = try Row.fetchAll(db, sql: "SELECT * FROM misc_expense ORDER BY date DESC").map(expense(from:))
-        let overrides = try Row.fetchAll(db, sql: "SELECT * FROM per_diem_override ORDER BY isoDate ASC").map(override(from:))
-        return StoredGraph(
-            loads: loads,
-            paychecks: paychecks,
-            diesel: diesel,
-            maintenance: maintenance,
-            maintenanceArchive: archive,
-            photos: photos,
-            scans: scans,
-            profile: profile,
-            expenses: expenses,
-            perDiemOverrides: overrides
-        )
     }
 
     // MARK: - Upsert

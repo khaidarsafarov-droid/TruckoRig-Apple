@@ -14,7 +14,7 @@ final class TelegramCoordinator {
     private var poll: Task<Void, Never>?
 
     var isPremium: () -> Bool = { false }
-    var onJournalChanged: (() -> Void)?
+    var onJournalChanged: ((JournalTables) -> Void)?
 
     private(set) var hasToken = false
     private(set) var listening = false
@@ -192,7 +192,7 @@ final class TelegramCoordinator {
 
     private func makeEngine() -> TelegramEngine {
         let engine = TelegramEngine(database: database, settings: settings, prefs: prefs, session: session)
-        engine.onJournalChanged = { [weak self] in self?.onJournalChanged?() }
+        engine.onJournalChanged = { [weak self] tables in self?.onJournalChanged?(tables) }
         engine.onStateChanged = { [weak self] in self?.refreshLocal() }
         return engine
     }

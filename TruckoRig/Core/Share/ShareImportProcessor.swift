@@ -35,6 +35,7 @@ enum ShareImportProcessor {
         var batch: [ShareImportFingerprint] = []
         var outcome = Outcome()
 
+        repository.batch {
         for record in pending {
             let plan = ShareLoadCommit.plan(
                 fields: record.load,
@@ -71,6 +72,7 @@ enum ShareImportProcessor {
                     try? inbox.remove(record.id)
                 }
             }
+        }
         }
         return outcome
     }
