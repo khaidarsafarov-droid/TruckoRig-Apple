@@ -5,6 +5,14 @@ final class MapLogicTests: XCTestCase {
 
     private let now: Int64 = 1_774_800_000_000
 
+    func testTrailingStateUsesTheStaticPattern() {
+        XCTAssertEqual(CrowdMapAggregator.extractState(from: "Dallas, TX"), "TX")
+        XCTAssertEqual(CrowdMapAggregator.extractState(from: "Yard WA"), "WA")
+        XCTAssertEqual(CrowdMapAggregator.extractState(from: "tx"), "TX")
+        XCTAssertNil(CrowdMapAggregator.extractState(from: "NoState"))
+        XCTAssertNil(CrowdMapAggregator.extractState(from: ""))
+    }
+
     func testReportsFromLoadsBuildsLaneWithinWeek() {
         let load = sample(
             pointA: "Seattle, WA",

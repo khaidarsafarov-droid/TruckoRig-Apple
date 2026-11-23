@@ -6,7 +6,8 @@ public enum BackupSchedule {
     public static let periodicIntervalSeconds: Int64 = 12 * 60 * 60
     public static let autoBackupDebounceSeconds: Int64 = 45
     public static let requiresNetwork = true
-    public static let requiresExternalPower = false
+    /// The iOS backup task waits for power. Location lookup stays a one-shot request.
+    public static let requiresExternalPower = true
     public static let maxRestoreBytes = 32 * 1024 * 1024
     /// Stored sync errors are truncated the same way Android prefs truncate them.
     public static let maxErrorLength = 240

@@ -2,7 +2,7 @@ import BackgroundTasks
 import Foundation
 import Observation
 
-/// Starts and stops the on-device long poll. The bot runs while TruckoRig is open.
+/// Starts and stops the on-device long poll. The 25-second poll runs only while the driver is in the app.
 @MainActor
 @Observable
 final class TelegramCoordinator {
@@ -12,9 +12,11 @@ final class TelegramCoordinator {
     private let tokens: TelegramTokenStore
     private let session = TelegramSession()
     private var poll: Task<Void, Never>?
+    /// True only while the scene is active. Background catch-up uses a short poll instead.
+    private var driverIsPresent = false
 
     var isPremium: () -> Bool = { false }
-    var onJournalChanged: (() -> Void)?
+    var onJournalChanged: ((JournalTables) -> Void)?
 
     private(set) var hasToken = false
     private(set) var listening = false
@@ -37,7 +39,21 @@ final class TelegramCoordinator {
         resume()
     }
 
+    /// Long-poll only while the driver is in the app with the bot turned on.
+    func noteDriverPresence(_ present: Bool) {
+        driverIsPresent = present
+        if present {
+            resume()
+        } else {
+            pause()
+        }
+    }
+
     func resume() {
+        guard driverIsPresent else {
+            pause()
+            return
+        }
         refreshLocal()
         // Android `TelegramBotForegroundService.start` returns immediately when Premium is locked.
         guard isPremium() else {
@@ -192,12 +208,16 @@ final class TelegramCoordinator {
 
     private func makeEngine() -> TelegramEngine {
         let engine = TelegramEngine(database: database, settings: settings, prefs: prefs, session: session)
-        engine.onJournalChanged = { [weak self] in self?.onJournalChanged?() }
+        engine.onJournalChanged = { [weak self] tables in self?.onJournalChanged?(tables) }
         engine.onStateChanged = { [weak self] in self?.refreshLocal() }
         return engine
     }
 
     func refresh() { refreshLocal() }
+
+    func noteScheduleFailure(_ message: String) {
+        statusMessage = message
+    }
 
     private func refreshLocal() {
         hasToken = (try? tokens.read()) != nil
@@ -232,7 +252,14 @@ enum TelegramBackgroundRegistrar {
         let request = BGProcessingTaskRequest(identifier: identifier)
         request.requiresNetworkConnectivity = true
         request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60)
-        try? BGTaskScheduler.shared.submit(request)
+        do {
+            try BGTaskScheduler.shared.submit(request)
+        } catch {
+            AppLog.persistence.error("Could not schedule Telegram sync: \(error.localizedDescription, privacy: .public)")
+            Task { @MainActor in
+                TelegramRuntime.coordinator?.noteScheduleFailure(String(localized: "settings.telegram.scheduleFailed"))
+            }
+        }
     }
 }
 

@@ -8,10 +8,10 @@ enum PeriodReportPDF {
 
     static let pageSize = CGSize(width: 612, height: 792)
 
-    static func data(for report: PeriodReport) -> Data {
+    static func data(for report: PeriodReport, statement prepared: PeriodReportStatement? = nil) -> Data {
         let bytes = NSMutableData()
         let bounds = CGRect(origin: .zero, size: pageSize)
-        let statement = PeriodReportStatementBuilder.make(report)
+        let statement = prepared ?? PeriodReportStatementBuilder.make(report)
         let info: [String: Any] = [
             kCGPDFContextTitle as String: statement.title,
             kCGPDFContextCreator as String: report.brand,

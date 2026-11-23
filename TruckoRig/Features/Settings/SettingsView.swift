@@ -242,6 +242,11 @@ struct SettingsView: View {
                         .font(.appCaption)
                         .foregroundStyle(Color.forestError)
                 }
+                if let failure = appState.journalWriteFailure {
+                    Text("settings.about.storeFailure \(failure)")
+                        .font(.appCaption)
+                        .foregroundStyle(Color.forestError)
+                }
             }
         }
         .navigationTitle("screen.settings")
