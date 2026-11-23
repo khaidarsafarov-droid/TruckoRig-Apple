@@ -1,6 +1,7 @@
 #!/bin/bash
 # Build the simulator host without a development team, ad-hoc sign it so Keychain works,
 # then run one test bundle. A skipped Keychain test fails the process.
+# application-identifier must be -.com.truckorig; a bare bundle id is rejected by launchd.
 # macOS runners ship bash 3.2, so this script avoids empty arrays under `set -u`.
 set -euo pipefail
 
@@ -83,6 +84,10 @@ sign_item() {
 
 while IFS= read -r framework; do
   [[ -z "$framework" ]] && continue
+  # Re-signing XCTest/Testing with a bare ad-hoc identity breaks the test host launch.
+  case "$(basename "$framework")" in
+    Testing.framework|XCTest*.framework|XCT*.framework) continue ;;
+  esac
   sign_item "$framework"
 done < <(find "$APP" -depth -type d -name '*.framework')
 
@@ -107,16 +112,32 @@ codesign -d --entitlements :- "$APP" > "$DERIVED/host-entitlements.plist"
 cat "$DERIVED/host-entitlements.plist"
 grep -q "keychain-access-groups" "$DERIVED/host-entitlements.plist"
 
-set -- xcodebuild test-without-building \
-  -xctestrun "$XCTESTRUN" \
-  -destination "platform=iOS Simulator,id=$UDID" \
-  -only-testing:"$ONLY" \
-  -parallel-testing-enabled NO \
-  -resultBundlePath "$RESULT"
-if [[ "$COVERAGE" == 1 ]]; then
-  set -- "$@" -enableCodeCoverage YES
+boot_simulator() {
+  # boot exits non-zero when the device is already booted.
+  xcrun simctl boot "$1" >/dev/null 2>&1 || true
+  xcrun simctl bootstatus "$1" -b
+}
+
+run_tests() {
+  rm -rf "$RESULT"
+  set -- xcodebuild test-without-building \
+    -xctestrun "$XCTESTRUN" \
+    -destination "platform=iOS Simulator,id=$UDID" \
+    -only-testing:"$ONLY" \
+    -parallel-testing-enabled NO \
+    -resultBundlePath "$RESULT"
+  if [[ "$COVERAGE" == 1 ]]; then
+    set -- "$@" -enableCodeCoverage YES
+  fi
+  "$@" 2>&1 | tee "$LOG"
+}
+
+boot_simulator "$UDID"
+if ! run_tests; then
+  echo "Tests failed; booting the simulator again and retrying once." >&2
+  boot_simulator "$UDID"
+  run_tests
 fi
-"$@" 2>&1 | tee "$LOG"
 
 if [[ "$REQUIRE_KEYCHAIN" == 1 ]]; then
   python3 - "$LOG" <<'PY'
