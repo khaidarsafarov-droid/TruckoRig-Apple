@@ -7,6 +7,7 @@ struct TruckoRigApp: App {
 
     init() {
         AppLocale.install()
+        DiagnosticReporter.start()
         TelegramBackgroundRegistrar.register()
         ICloudBackgroundRegistrar.register()
     }

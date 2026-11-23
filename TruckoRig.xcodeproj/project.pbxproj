@@ -19,6 +19,7 @@
 		BF8ADDD0C055C6967BBC8C46 /* ICloudDriveStore.swift */ = {isa = PBXBuildFile; fileRef = 812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */; };
 		2C8F4A909B371B552C70F9F1 /* ICloudMediaLibrary.swift */ = {isa = PBXBuildFile; fileRef = 9E1571569165555A420D2106 /* ICloudMediaLibrary.swift */; };
 		3FA5650B7CF9CE6A23F7CBCC /* ICloudMediaSync.swift */ = {isa = PBXBuildFile; fileRef = 26501D41D9586AA99D083417 /* ICloudMediaSync.swift */; };
+		2C6378782F026A5C566BE649 /* DiagnosticReporter.swift */ = {isa = PBXBuildFile; fileRef = 70703EB55645AF1C7E61980A /* DiagnosticReporter.swift */; };
 		134A7E1A5A97B69C57CB1D06 /* LoadDocumentText.swift */ = {isa = PBXBuildFile; fileRef = E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */; };
 		0DBAAC2A642A1D5AC7EA84C6 /* AppLanguage.swift */ = {isa = PBXBuildFile; fileRef = 9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */; };
 		AB5896F4057BA37FEE44208D /* AppLocale.swift */ = {isa = PBXBuildFile; fileRef = 203C0259857B749C5803EE78 /* AppLocale.swift */; };
@@ -502,6 +503,7 @@
 		812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudDriveStore.swift"; sourceTree = "<group>"; };
 		9E1571569165555A420D2106 /* ICloudMediaLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaLibrary.swift"; sourceTree = "<group>"; };
 		26501D41D9586AA99D083417 /* ICloudMediaSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaSync.swift"; sourceTree = "<group>"; };
+		70703EB55645AF1C7E61980A /* DiagnosticReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiagnosticReporter.swift"; sourceTree = "<group>"; };
 		E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDocumentText.swift"; sourceTree = "<group>"; };
 		9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLanguage.swift"; sourceTree = "<group>"; };
 		203C0259857B749C5803EE78 /* AppLocale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLocale.swift"; sourceTree = "<group>"; };
@@ -905,6 +907,7 @@
 			isa = PBXGroup;
 			children = (
 				711DCD7B1C389CA57D3C1A1F /* Backup */,
+				595061DB693AEB1FA8410602 /* Diagnostics */,
 				06A2C546F804DD14AA685E72 /* Documents */,
 				CE8BEEE2EF490FF44D3F4018 /* Localization */,
 				7B46438A6EE8560A29A047FC /* Media */,
@@ -933,6 +936,14 @@
 				26501D41D9586AA99D083417 /* ICloudMediaSync.swift */,
 			);
 			path = "Backup";
+			sourceTree = "<group>";
+		};
+		595061DB693AEB1FA8410602 /* Diagnostics */ = {
+			isa = PBXGroup;
+			children = (
+				70703EB55645AF1C7E61980A /* DiagnosticReporter.swift */,
+			);
+			path = "Diagnostics";
 			sourceTree = "<group>";
 		};
 		06A2C546F804DD14AA685E72 /* Documents */ = {
@@ -2007,6 +2018,7 @@
 				BF8ADDD0C055C6967BBC8C46 /* ICloudDriveStore.swift */,
 				2C8F4A909B371B552C70F9F1 /* ICloudMediaLibrary.swift */,
 				3FA5650B7CF9CE6A23F7CBCC /* ICloudMediaSync.swift */,
+				2C6378782F026A5C566BE649 /* DiagnosticReporter.swift */,
 				134A7E1A5A97B69C57CB1D06 /* LoadDocumentText.swift */,
 				0DBAAC2A642A1D5AC7EA84C6 /* AppLanguage.swift */,
 				AB5896F4057BA37FEE44208D /* AppLocale.swift */,

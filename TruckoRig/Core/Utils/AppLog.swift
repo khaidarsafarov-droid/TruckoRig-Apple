@@ -11,4 +11,6 @@ enum AppLog {
     static let persistence = Logger(subsystem: subsystem, category: "persistence")
     static let media = Logger(subsystem: subsystem, category: "media")
     static let parser = Logger(subsystem: subsystem, category: "parser")
+    /// Crash and hang reports. They stay in the device log until the driver shares a sysdiagnose.
+    static let diagnostics = Logger(subsystem: subsystem, category: "diagnostics")
 }

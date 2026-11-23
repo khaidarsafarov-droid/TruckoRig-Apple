@@ -17225,25 +17225,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No analytics, no advertising identifier, no crash reports. OCR runs on the phone."
+            "value": "No analytics and no advertising identifier. Crash and hang reports stay on this phone until you share them. OCR runs on the phone."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sin analítica, sin identificador de publicidad, sin informes de fallos. El OCR se ejecuta en el teléfono."
+            "value": "Sin analítica y sin identificador de publicidad. Los informes de fallos y de bloqueos permanecen en este teléfono hasta que usted los comparta. El OCR se ejecuta en el teléfono."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Нет аналитики, рекламного идентификатора и отчётов о сбоях. Распознавание текста идёт на телефоне."
+            "value": "Нет аналитики и рекламного идентификатора. Отчёты о сбоях и зависаниях остаются на этом телефоне, пока вы сами их не отправите. Распознавание текста идёт на телефоне."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aucune analytique, aucun identifiant publicitaire, aucun rapport de plantage. La reconnaissance de texte se fait sur le téléphone."
+            "value": "Aucune analytique et aucun identifiant publicitaire. Les rapports de plantage et de blocage restent sur ce téléphone tant que vous ne les partagez pas. La reconnaissance de texte se fait sur le téléphone."
           }
         }
       }
