@@ -28,7 +28,7 @@ CATALOG = os.path.join(ROOT, "TruckoRig", "Resources", "Localizable.xcstrings")
 INFO_CATALOG = os.path.join(ROOT, "TruckoRig", "Resources", "InfoPlist.xcstrings")
 INFO_PLIST = os.path.join(ROOT, "TruckoRig", "Resources", "Info.plist")
 PROJECT = os.path.join(ROOT, "TruckoRig.xcodeproj", "project.pbxproj")
-SOURCE_DIRS = ["TruckoRig", "TruckoRigWidget"]
+SOURCE_DIRS = ["TruckoRig", "TruckoRigWidget", "TruckoRigShare"]
 
 # Only these namespaces are localized keys; everything else in quotes is an SF Symbol, a bundle
 # identifier or plain data.
@@ -36,7 +36,7 @@ NAMESPACES = (
     "about.", "action.", "analytics.", "attach.", "auth.", "camera.", "date.", "diesel.", "duration.", "error.",
     "expense.", "format.", "gallery.", "goal.", "heatmap.", "home.", "improve.", "journal.", "load.", "maintenance.", "map.",
     "media.", "onboard.", "paycheck.", "penalty.", "premium.", "privacy.", "profile.", "receipt.", "relay.", "scanner.", "screen.",
-    "settings.", "stat.", "status.", "stop.", "tab.", "tax.", "widget.", "app.name", "notify.",
+    "settings.", "share.", "stat.", "status.", "stop.", "tab.", "tax.", "widget.", "app.name", "notify.",
 )
 
 # French plural pairs: the `one` form must contain the singular word and not the

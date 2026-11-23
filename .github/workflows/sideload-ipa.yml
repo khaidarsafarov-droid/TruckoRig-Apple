@@ -79,7 +79,12 @@ jobs:
             app="$RUNNER_TEMP/sideload/Build/Products/Sideload-iphoneos/TruckoRig.app"
           fi
           test -d "$app"
-          # The embed phase copies the widget, then the Sideload script removes it.
+          products="$(dirname "$app")"
+          # The share extension and the widget are real targets in this unsigned build.
+          # The Sideload script then removes PlugIns so a free Apple ID never signs an appex.
+          test -d "$products/TruckoRigShare.appex"
+          test -d "$products/TruckoRigWidget.appex"
+          # The embed phase copies the extensions, then the Sideload script removes them.
           # Remove it again so a free Apple ID never has to sign an extension.
           rm -rf "$app/PlugIns" "$app/_CodeSignature" "$app/embedded.mobileprovision"
           info="$app/Info.plist"

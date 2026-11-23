@@ -57,7 +57,8 @@ struct JournalView: View {
     private var journalList: some View {
         @Bindable var model = viewModel
 
-        return List {
+        return ScrollViewReader { proxy in
+        List {
             Section {
                 JournalHomeHeader(
                     name: appState.catalog.profile?.name ?? "",
@@ -123,6 +124,7 @@ struct JournalView: View {
                 Section {
                     ForEach(section.loads) { load in
                         loadLink(load)
+                        .id(load.id)
                         .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                         .listRowSeparator(.hidden)
@@ -172,6 +174,12 @@ struct JournalView: View {
         }
         .navigationTitle("")
         .toolbar(.hidden, for: .navigationBar)
+        .onAppear {
+            revealSharedLoad(using: proxy)
+        }
+        .onChange(of: appState.highlightedLoadIDs) { _, _ in
+            revealSharedLoad(using: proxy)
+        }
         .navigationDestination(for: Load.self) { load in
             LoadDetailView(load: load)
         }
@@ -229,6 +237,7 @@ struct JournalView: View {
                 store.save(record)
             }
             showSurvey = due
+        }
         }
     }
 
@@ -386,6 +395,17 @@ struct JournalView: View {
         )
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
+    }
+
+    private func revealSharedLoad(using proxy: ScrollViewProxy) {
+        guard let id = appState.highlightedLoadIDs.first else { return }
+        isSearching = false
+        viewModel.searchText = ""
+        viewModel.filter = .all
+        selectedLoadID = id
+        withAnimation {
+            proxy.scrollTo(id, anchor: .center)
+        }
     }
 
     private func loadLink(_ load: Load) -> some View {

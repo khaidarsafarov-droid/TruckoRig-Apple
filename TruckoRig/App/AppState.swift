@@ -46,6 +46,9 @@ final class AppState {
     /// Screen a widget deep link asked to open. Cleared when the cover dismisses.
     var pendingPresentation: WidgetPresentation?
 
+    /// Loads just imported from the share sheet. The journal draws a gold stroke until this clears.
+    var highlightedLoadIDs: Set<UUID> = []
+
     /// True after the driver refuses the alert that a ТО reminder asked for.
     var maintenanceAlertsDenied = false
 
@@ -98,6 +101,13 @@ final class AppState {
         ensureProfileExists()
         hydrateImportedLoadFields()
         reloadJournal()
+        ShareImportNotifier.shared.onImport = { [weak self] in
+            Task { @MainActor in
+                self?.importSharedLoads()
+            }
+        }
+        ShareImportNotifier.shared.start()
+        importSharedLoads()
         premium.start()
         telegram.launch()
         TelegramBackgroundRegistrar.submit()
@@ -108,6 +118,7 @@ final class AppState {
     func reloadJournal() {
         catalog.reload(from: persistence.database)
         publishWidgetSnapshot()
+        ShareImportIndexPublisher.publish(loads: catalog.loads)
         scheduleReminders()
         icloud.noteLocalChange()
     }
@@ -197,6 +208,7 @@ final class AppState {
     }
 
     @ObservationIgnored private var reminderTask: Task<Void, Never>?
+    @ObservationIgnored private var highlightClear: Task<Void, Never>?
 
     /// Refreshes the home-screen widget from the current week.
     ///
@@ -221,6 +233,24 @@ final class AppState {
             now: now
         )
         WidgetBridge.publish(snapshot)
+    }
+
+    /// Pulls share-sheet loads into the journal. Safe to call when the App Group is missing.
+    func importSharedLoads() {
+        let outcome = ShareImportProcessor.importPending(
+            loads: catalog.loads,
+            repository: loadRepository(),
+            media: mediaRepository()
+        )
+        guard !outcome.inserted.isEmpty else { return }
+        highlightedLoadIDs = Set(outcome.inserted)
+        selectedTab = .journal
+        highlightClear?.cancel()
+        highlightClear = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 8_000_000_000)
+            guard !Task.isCancelled else { return }
+            self?.highlightedLoadIDs = []
+        }
     }
 
     /// Widget and home-screen links. Unknown `truckorig://` paths open the journal.

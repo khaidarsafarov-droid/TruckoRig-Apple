@@ -24528,6 +24528,114 @@
         "es": { "stringUnit": { "state": "translated", "value": "Texto sin formato" } },
         "fr": { "stringUnit": { "state": "translated", "value": "Texte brut" } }
       }
+    },
+    "share.added": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Load added" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Viaje añadido" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Voyage ajouté" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Груз добавлен" } }
+      }
+    },
+    "share.added.many": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loads added" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Viajes añadidos" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Voyages ajoutés" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Грузы добавлены" } }
+      }
+    },
+    "share.added.partial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Load added. A few fields are blank — you can fill them in on the Journal." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Viaje añadido. Faltan algunos datos: puedes completarlos en el diario." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Voyage ajouté. Quelques champs sont vides — vous pouvez les remplir dans le journal." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Груз добавлен. Несколько полей пустые — их можно заполнить в журнале." } }
+      }
+    },
+    "share.badge.new": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "New" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Nuevo" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Nouveau" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Новый" } }
+      }
+    },
+    "share.checking": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Checking…" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Comprobando…" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Vérification…" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Проверяем…" } }
+      }
+    },
+    "share.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Done" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Listo" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "OK" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Готово" } }
+      }
+    },
+    "share.duplicate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "This load is already in TruckoRig. Nothing new was added." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Este viaje ya está en TruckoRig. No se añadió nada nuevo." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Ce voyage est déjà dans TruckoRig. Rien de nouveau n'a été ajouté." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Этот груз уже есть в TruckoRig. Ничего нового не добавлено." } }
+      }
+    },
+    "share.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Couldn't read this, so nothing was added." } },
+        "es": { "stringUnit": { "state": "translated", "value": "No se pudo leer, así que no se añadió nada." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Lecture impossible, donc rien n'a été ajouté." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Не удалось прочитать, поэтому ничего не добавлено." } }
+      }
+    },
+    "share.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Open TruckoRig" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Abrir TruckoRig" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Ouvrir TruckoRig" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Открыть TruckoRig" } }
+      }
+    },
+    "share.rejected": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "This doesn't look like a load, so nothing was added." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Esto no parece un viaje, así que no se añadió nada." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Cela ne ressemble pas à un voyage, donc rien n'a été ajouté." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Это не похоже на груз, поэтому ничего не добавлено." } }
+      }
+    },
+    "share.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "TruckoRig" } },
+        "es": { "stringUnit": { "state": "translated", "value": "TruckoRig" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "TruckoRig" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "TruckoRig" } }
+      }
+    },
+    "share.unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "TruckoRig couldn't open its shared folder, so nothing was added." } },
+        "es": { "stringUnit": { "state": "translated", "value": "TruckoRig no pudo abrir su carpeta compartida, así que no se añadió nada." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "TruckoRig n'a pas pu ouvrir son dossier partagé, donc rien n'a été ajouté." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "TruckoRig не смог открыть общую папку, поэтому ничего не добавлено." } }
+      }
     }
   },
   "version": "1.0"

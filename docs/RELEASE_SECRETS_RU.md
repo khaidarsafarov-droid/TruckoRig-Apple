@@ -16,6 +16,7 @@ Mac не нужен. Все шаги ниже — с Windows.
 |---|---|
 | Bundle ID приложения | `com.truckorig` |
 | Bundle ID виджета | `com.truckorig.widget` |
+| Bundle ID Share Extension | `com.truckorig.share` |
 | App Group | `group.com.truckorig` |
 | iCloud container | `iCloud.com.truckorig` |
 
@@ -24,7 +25,7 @@ Mac не нужен. Все шаги ниже — с Windows.
 не нужно.
 
 У приложения в Release также есть capability Time Sensitive Notifications.
-У виджета — только App Group `group.com.truckorig`.
+У виджета и у Share Extension — только App Group `group.com.truckorig`.
 
 ## 1. Программа разработчика
 
@@ -43,6 +44,11 @@ Certificates, Identifiers & Profiles → Identifiers.
    - Time Sensitive Notifications
 4. App ID `com.truckorig.widget`:
    - App Groups → тот же `group.com.truckorig`
+5. App ID `com.truckorig.share` (явный):
+   - App Groups → тот же `group.com.truckorig`
+   - iCloud и Time Sensitive Notifications не включать
+
+Без App ID `com.truckorig.share` пункт TruckoRig не появится в системном меню «Поделиться». Подробности — в `docs/SHARE_IMPORT.md`.
 
 Профили вручную не нужны: workflow подписывает автоматически ключом App Store Connect.
 
