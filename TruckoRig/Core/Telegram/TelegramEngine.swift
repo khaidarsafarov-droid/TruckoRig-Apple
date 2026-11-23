@@ -84,7 +84,7 @@ final class TelegramEngine {
         )
     }
 
-    /// Short poll used by pull-to-refresh and the background task.
+    /// Short poll used by pull-to-refresh and the background task. Timeout stays 0 so this is not the 25-second long poll.
     func catchUp(token: String) async -> TelegramPollOutcome {
         let offset = prefs.offset
         let request = TelegramBotAPI.getUpdates(token: token, offset: offset > 0 ? offset : nil, timeoutSeconds: 0)

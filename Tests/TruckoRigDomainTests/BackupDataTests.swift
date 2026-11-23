@@ -247,7 +247,7 @@ final class BackupSyncPolicyTests: XCTestCase {
         XCTAssertEqual(BackupSchedule.periodicIntervalSeconds, 12 * 60 * 60)
         XCTAssertEqual(BackupSchedule.autoBackupDebounceSeconds, 45)
         XCTAssertTrue(BackupSchedule.requiresNetwork)
-        XCTAssertFalse(BackupSchedule.requiresExternalPower)
+        XCTAssertTrue(BackupSchedule.requiresExternalPower)
         XCTAssertEqual(BackupSchedule.maxRestoreBytes, 32 * 1024 * 1024)
 
         XCTAssertEqual(BackupSchedule.autoPush(

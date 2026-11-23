@@ -2,7 +2,7 @@ import BackgroundTasks
 import Foundation
 import Observation
 
-/// Starts and stops the on-device long poll. The bot runs while TruckoRig is open.
+/// Starts and stops the on-device long poll. The 25-second poll runs only while the driver is in the app.
 @MainActor
 @Observable
 final class TelegramCoordinator {
@@ -12,6 +12,8 @@ final class TelegramCoordinator {
     private let tokens: TelegramTokenStore
     private let session = TelegramSession()
     private var poll: Task<Void, Never>?
+    /// True only while the scene is active. Background catch-up uses a short poll instead.
+    private var driverIsPresent = false
 
     var isPremium: () -> Bool = { false }
     var onJournalChanged: ((JournalTables) -> Void)?
@@ -37,7 +39,21 @@ final class TelegramCoordinator {
         resume()
     }
 
+    /// Long-poll only while the driver is in the app with the bot turned on.
+    func noteDriverPresence(_ present: Bool) {
+        driverIsPresent = present
+        if present {
+            resume()
+        } else {
+            pause()
+        }
+    }
+
     func resume() {
+        guard driverIsPresent else {
+            pause()
+            return
+        }
         refreshLocal()
         // Android `TelegramBotForegroundService.start` returns immediately when Premium is locked.
         guard isPremium() else {
