@@ -1,7 +1,10 @@
 import Foundation
 
 /// One parsed or hand-edited stop, before it becomes a SwiftData `Stop`.
-public struct StopDraft: Equatable, Hashable, Sendable {
+public struct StopDraft: Equatable, Hashable, Sendable, Identifiable {
+    /// Stable row identity for the editor. Two stops with the same text stay distinct rows.
+    /// Equality ignores it so a parsed stop still matches a hand-built one.
+    public var id: UUID
     public var type: StopType
     public var stopNumber: Int
     /// Relay `PU#` code of the leg this stop belongs to.
@@ -37,8 +40,10 @@ public struct StopDraft: Equatable, Hashable, Sendable {
         scheduledTimeRaw: String = "",
         scheduledTime: Date? = nil,
         localDay: String? = nil,
-        timezone: String = ""
+        timezone: String = "",
+        id: UUID = UUID()
     ) {
+        self.id = id
         self.type = type
         self.stopNumber = stopNumber
         self.puNumber = puNumber
@@ -58,5 +63,37 @@ public struct StopDraft: Equatable, Hashable, Sendable {
     public var cityState: String {
         let parts = [city, state].filter { !$0.isEmpty }
         return parts.isEmpty ? fullAddress : parts.joined(separator: ", ")
+    }
+
+    public static func == (lhs: StopDraft, rhs: StopDraft) -> Bool {
+        lhs.type == rhs.type
+            && lhs.stopNumber == rhs.stopNumber
+            && lhs.puNumber == rhs.puNumber
+            && lhs.note == rhs.note
+            && lhs.facility == rhs.facility
+            && lhs.fullAddress == rhs.fullAddress
+            && lhs.city == rhs.city
+            && lhs.state == rhs.state
+            && lhs.zip == rhs.zip
+            && lhs.scheduledTimeRaw == rhs.scheduledTimeRaw
+            && lhs.scheduledTime == rhs.scheduledTime
+            && lhs.localDay == rhs.localDay
+            && lhs.timezone == rhs.timezone
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(type)
+        hasher.combine(stopNumber)
+        hasher.combine(puNumber)
+        hasher.combine(note)
+        hasher.combine(facility)
+        hasher.combine(fullAddress)
+        hasher.combine(city)
+        hasher.combine(state)
+        hasher.combine(zip)
+        hasher.combine(scheduledTimeRaw)
+        hasher.combine(scheduledTime)
+        hasher.combine(localDay)
+        hasher.combine(timezone)
     }
 }
