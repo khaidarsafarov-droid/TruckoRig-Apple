@@ -37,6 +37,11 @@ struct ICloudBackupSection: View {
     var body: some View {
         let icloud = appState.icloud
         Section("settings.icloud.section") {
+            if !appState.link.isOnline {
+                Text("settings.sync.offline")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestError)
+            }
             switch icloud.availability {
             case .unknown:
                 Text("settings.icloud.checking")

@@ -14,21 +14,23 @@ struct RootView: View {
                 appState.open(url)
             }
             .onChange(of: appState.settings.language) { _, _ in
-                appState.publishWidgetSnapshot()
+                WidgetBridge.publishWeek(loads: appState.catalog.loads, settings: appState.settings)
             }
             .onChange(of: appState.settings.weekStart) { _, _ in
-                appState.publishWidgetSnapshot()
+                WidgetBridge.publishWeek(loads: appState.catalog.loads, settings: appState.settings)
+            }
+            .onAppear {
+                appState.telegram.noteDriverPresence(scenePhase == .active)
             }
             .onChange(of: scenePhase) { _, phase in
+                appState.telegram.noteDriverPresence(phase == .active)
                 if phase == .active {
                     appState.importSharedLoads()
                     appState.scheduleReminders()
-                    appState.telegram.resume()
                     TelegramBackgroundRegistrar.submit()
                     ICloudBackgroundRegistrar.submit()
                     appState.icloud.start()
                 } else if phase == .background {
-                    appState.telegram.pause()
                     TelegramBackgroundRegistrar.submit()
                     ICloudBackgroundRegistrar.submit()
                     appState.icloud.syncOnBackground()

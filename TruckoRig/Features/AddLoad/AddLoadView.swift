@@ -178,9 +178,13 @@ struct StopsSection: View {
 
     var body: some View {
         Section("load.stops") {
-            ForEach(Array(stops.indices), id: \.self) { index in
-                Button { onEdit(index) } label: {
-                    StopRowView(stop: stops[index])
+            ForEach(stops) { stop in
+                Button {
+                    if let index = stops.firstIndex(where: { $0.id == stop.id }) {
+                        onEdit(index)
+                    }
+                } label: {
+                    StopRowView(stop: stop)
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("uitest.stopRow")

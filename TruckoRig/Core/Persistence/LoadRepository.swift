@@ -24,21 +24,27 @@ struct LoadRepository {
     let database: AppDatabase
     let week: TruckingWeek
     /// Called after a successful save so the catalog and the home-screen widget can catch up.
-    let onDidSave: (() -> Void)?
+    let saves: JournalSaveNotifier
 
     init(
         database: AppDatabase,
         week: TruckingWeek = TruckingWeek(),
-        onDidSave: (() -> Void)? = nil
+        onDidSave: ((JournalTables) -> Void)? = nil,
+        saves: JournalSaveNotifier? = nil
     ) {
         self.database = database
         self.week = week
-        self.onDidSave = onDidSave
+        self.saves = saves ?? JournalSaveNotifier(deliver: onDidSave)
     }
 
-    private func persist(_ load: Load) throws {
+    private func persist(_ load: Load, tables: JournalTables = .loads) throws {
         try database.save(load)
-        onDidSave?()
+        saves.saved(tables)
+    }
+
+    /// Several inserts share one catalog refresh.
+    func batch(_ work: () throws -> Void) rethrows {
+        try saves.batch(work)
     }
 
     // MARK: - Queries
@@ -102,15 +108,17 @@ struct LoadRepository {
     @discardableResult
     func importParsed(_ parsed: [ParsedLoad]) -> ImportOutcome {
         var outcome = ImportOutcome()
-        for item in parsed {
-            let draft = LoadDraft(parsed: item)
-            do {
-                try create(draft)
-                outcome.imported.append(item.tripId)
-            } catch LoadRepositoryError.duplicateTripId {
-                outcome.duplicates.append(item.tripId)
-            } catch {
-                outcome.rejected.append(item.tripId)
+        batch {
+            for item in parsed {
+                let draft = LoadDraft(parsed: item)
+                do {
+                    try create(draft)
+                    outcome.imported.append(item.tripId)
+                } catch LoadRepositoryError.duplicateTripId {
+                    outcome.duplicates.append(item.tripId)
+                } catch {
+                    outcome.rejected.append(item.tripId)
+                }
             }
         }
         return outcome
@@ -225,6 +233,6 @@ struct LoadRepository {
                 mediaStore.delete(fileName: scan.fileName, filePath: scan.filePath, kind: .scan)
             }
         }
-        onDidSave?()
+        saves.saved([.loads, .photos, .scans])
     }
 }

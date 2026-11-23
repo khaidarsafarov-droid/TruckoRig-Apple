@@ -209,7 +209,7 @@ struct MaintenanceListView: View {
             }
             HStack {
                 Button("maintenance.mark.done") {
-                    appState.completeMaintenance(item.task)
+                    MaintenanceReminderCenter.complete(item.task, in: appState)
                 }
                 .buttonStyle(.softSecondary)
                 Spacer()

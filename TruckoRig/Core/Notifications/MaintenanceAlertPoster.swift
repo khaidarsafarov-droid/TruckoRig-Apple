@@ -77,7 +77,7 @@ enum MaintenanceAlertPoster {
         }
         UserDefaults.standard.set(queued, forKey: pendingKey)
         if !mark.isEmpty {
-            appState.markMaintenanceNotified(ids: mark, now: now)
+            MaintenanceReminderCenter.markNotified(mark, in: appState, now: now)
         }
         clearStaleMileageFlags(tasks: tasks, progressByID: progressByID, appState: appState, now: now)
         try? await center.setBadgeCount(queued.isEmpty ? 0 : fires.count)
@@ -155,7 +155,7 @@ enum MaintenanceAlertPoster {
         let stale = tasks.filter { task in
             task.reminderType == .miles && task.notifiedAt != nil && progressByID[task.id]?.isDue != true
         }.map(\.id)
-        appState.clearMaintenanceNotified(ids: stale, now: now)
+        MaintenanceReminderCenter.clearNotified(stale, in: appState, now: now)
     }
 }
 

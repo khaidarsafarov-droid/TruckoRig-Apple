@@ -3,9 +3,15 @@ import UIKit
 /// Builds the share payload for the period already selected on the home screen.
 enum PeriodReportShare {
 
-    enum Format {
+    enum Format: Sendable {
         case pdf
         case text
+    }
+
+    /// Model built off the main actor. The PDF case still has to be drawn with UIGraphics on main.
+    enum Prepared: Sendable {
+        case text(String, subject: String)
+        case pdf(PeriodReport, PeriodReportStatement, fileStem: String, subject: String)
     }
 
     /// This week, last week, the chosen week, or this month. Every other home filter is this week.
@@ -24,6 +30,49 @@ enum PeriodReportShare {
         }
     }
 
+    static func request(
+        scope: PeriodReportScope,
+        loads: [Load],
+        diesel: [Diesel],
+        expenses: [MiscExpense],
+        driverName: String,
+        weeklyGoal: Double,
+        languageCode: String,
+        measurementSystem: MeasurementSystem,
+        week: TruckingWeek,
+        generatedAt: Date
+    ) -> PeriodReportRequest {
+        PeriodReportRequest(
+            driverName: driverName,
+            scope: scope,
+            loads: loads.map(loadInput),
+            fuel: diesel.map {
+                PeriodReportFuelFill(totalCost: $0.totalCost, gallons: $0.gallons, date: $0.date)
+            },
+            expenses: expenses.map {
+                PeriodReportExpense(amount: $0.amount, date: $0.date)
+            },
+            weeklyGoal: weeklyGoal,
+            generatedAt: generatedAt,
+            language: PeriodReportLanguage.from(code: languageCode),
+            measurementSystem: measurementSystem,
+            week: week
+        )
+    }
+
+    /// Text and the statement model. No UIKit.
+    static func prepare(_ request: PeriodReportRequest, format: Format) -> Prepared {
+        let report = PeriodReportBuilder.build(request)
+        let subject = "\(report.brand) — \(report.periodTitle)"
+        switch format {
+        case .text:
+            return .text(PeriodReportText.render(report), subject: subject)
+        case .pdf:
+            let statement = PeriodReportStatementBuilder.make(report)
+            return .pdf(report, statement, fileStem: report.fileStem, subject: "\(report.brand) — \(statement.periodLine)")
+        }
+    }
+
     static func report(
         scope: PeriodReportScope,
         loads: [Load],
@@ -36,38 +85,48 @@ enum PeriodReportShare {
         week: TruckingWeek,
         generatedAt: Date
     ) -> PeriodReport {
-        PeriodReportBuilder.build(
-            PeriodReportRequest(
-                driverName: driverName,
-                scope: scope,
-                loads: loads.map(loadInput),
-                fuel: diesel.map {
-                    PeriodReportFuelFill(totalCost: $0.totalCost, gallons: $0.gallons, date: $0.date)
-                },
-                expenses: expenses.map {
-                    PeriodReportExpense(amount: $0.amount, date: $0.date)
-                },
-                weeklyGoal: weeklyGoal,
-                generatedAt: generatedAt,
-                language: PeriodReportLanguage.from(code: languageCode),
-                measurementSystem: measurementSystem,
-                week: week
-            )
-        )
+        PeriodReportBuilder.build(request(
+            scope: scope,
+            loads: loads,
+            diesel: diesel,
+            expenses: expenses,
+            driverName: driverName,
+            weeklyGoal: weeklyGoal,
+            languageCode: languageCode,
+            measurementSystem: measurementSystem,
+            week: week,
+            generatedAt: generatedAt
+        ))
     }
 
     static func activity(for report: PeriodReport, format: Format) throws -> PeriodReportActivity {
-        let subject = "\(report.brand) — \(report.periodTitle)"
         switch format {
         case .pdf:
             let statement = PeriodReportStatementBuilder.make(report)
-            let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(report.fileStem).pdf")
-            try PeriodReportPDF.data(for: report).write(to: url, options: .atomic)
-            let englishSubject = "\(report.brand) — \(statement.periodLine)"
-            return PeriodReportActivity(items: [PeriodReportActivityItem(file: url, subject: englishSubject)])
+            return try activity(for: .pdf(
+                report,
+                statement,
+                fileStem: report.fileStem,
+                subject: "\(report.brand) — \(statement.periodLine)"
+            ))
         case .text:
+            return try activity(for: .text(
+                PeriodReportText.render(report),
+                subject: "\(report.brand) — \(report.periodTitle)"
+            ))
+        }
+    }
+
+    /// Draws a PDF on the caller. Call this on the main thread. Text does not touch UIKit.
+    static func activity(for prepared: Prepared) throws -> PeriodReportActivity {
+        switch prepared {
+        case .pdf(let report, let statement, let fileStem, let subject):
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileStem).pdf")
+            try PeriodReportPDF.data(for: report, statement: statement).write(to: url, options: .atomic)
+            return PeriodReportActivity(items: [PeriodReportActivityItem(file: url, subject: subject)])
+        case .text(let text, let subject):
             return PeriodReportActivity(items: [
-                PeriodReportActivityItem(text: PeriodReportText.render(report), subject: subject),
+                PeriodReportActivityItem(text: text, subject: subject),
             ])
         }
     }
