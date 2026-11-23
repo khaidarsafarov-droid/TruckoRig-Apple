@@ -8,9 +8,9 @@ enum ImageLocationStripError: Error {
 /// Removes GPS from a photo before it is uploaded.
 ///
 /// Bytes with no GPS IFD and no XMP GPS packet are returned unchanged, so a PDF or a test
-/// marker is not re-encoded. When GPS is present, ImageIO writes a new file without the GPS
-/// dictionary and any XMP packet that still carries GPS is removed. A failed encode fails the
-/// upload instead of sending the original bytes.
+/// marker is not re-encoded. When GPS is present, ImageIO copies the file and drops only the
+/// GPS metadata. Orientation, the color profile, and the compressed samples stay. A failed
+/// copy fails the upload instead of sending the original bytes.
 enum ImageLocationStrip {
     static func strip(_ data: Data) throws -> Data {
         let source = CGImageSourceCreateWithData(data as CFData, nil)
@@ -25,16 +25,16 @@ enum ImageLocationStrip {
         guard let destination = CGImageDestinationCreateWithData(output, type, count, nil) else {
             throw ImageLocationStripError.encodeFailed
         }
-        for index in 0..<count {
-            guard let image = CGImageSourceCreateImageAtIndex(source, index, nil) else {
-                throw ImageLocationStripError.encodeFailed
-            }
-            // Pixels only. Copying the source with edited properties can keep the GPS IFD.
-            CGImageDestinationAddImage(destination, image, nil)
-        }
-        guard CGImageDestinationFinalize(destination), output.length > 0 else {
-            throw ImageLocationStripError.encodeFailed
-        }
+        // CopyImageSource removes GPS without decoding the pixels, so orientation and the
+        // color profile survive and a large HEIC is not expanded under the sealer lock.
+        var copyError: Unmanaged<CFError>?
+        let options: [CFString: Any] = [
+            kCGImageMetadataShouldExcludeGPS: true,
+            kCGImageDestinationLossyCompressionQuality: 1.0,
+        ]
+        let copied = CGImageDestinationCopyImageSource(destination, source, options as CFDictionary, &copyError)
+        copyError?.release()
+        guard copied, output.length > 0 else { throw ImageLocationStripError.encodeFailed }
         let stripped = removingXMPGPS(output as Data)
         if containsXMPGPS(stripped) || containsGPSIFD(of: stripped) {
             throw ImageLocationStripError.encodeFailed

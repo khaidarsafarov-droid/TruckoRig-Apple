@@ -16,7 +16,7 @@ final class ICloudBackupPrefs {
         self.defaults = defaults
         // Older builds synced without writing the switch. A real upload means the driver
         // already had it on, so write that choice once and keep sealing on the next upload.
-        if defaults.object(forKey: autoKey) == nil, read(uploadedKey) != 0 {
+        if defaults.object(forKey: autoKey) == nil, read(uploadedKey) != 0 || read(syncKey) != 0 {
             defaults.set(true, forKey: autoKey)
         }
         if defaults.object(forKey: mediaKey) == nil, read(mediaSyncKey) != 0 {

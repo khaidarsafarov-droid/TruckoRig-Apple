@@ -44,6 +44,17 @@ final class PayloadSealerTests: XCTestCase {
         #endif
     }
 
+    func testAnUnreadableSealLeavesConflictsUnresolved() throws {
+        #if DEBUG
+        let sealed = CloudPayloadSealer.magic + Data(repeating: 0xAB, count: 48)
+        let plaintext = Data("{\"exportedAt\":10}".utf8)
+        XCTAssertTrue(ICloudDriveStore.leavesConflictsUnresolved([plaintext, sealed]))
+        XCTAssertFalse(ICloudDriveStore.leavesConflictsUnresolved([plaintext]))
+        #else
+        throw XCTSkip("Sealer test keys are compiled into Debug builds.")
+        #endif
+    }
+
     func testWrongKeySealedFileIsNotScoredZero() throws {
         #if DEBUG
         CloudPayloadSealer.testingKey = Data(repeating: 0x03, count: 32)

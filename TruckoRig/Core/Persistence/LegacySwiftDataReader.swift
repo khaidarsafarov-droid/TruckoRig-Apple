@@ -88,6 +88,20 @@ enum LegacySwiftDataReader {
         return journal
     }
 
+    /// True when the file has a SwiftData user table, even if every row count is zero.
+    static func containsUserTable(at storeURL: URL) throws -> Bool {
+        let connection = try SystemSQLite.open(path: storeURL.path, readOnly: true)
+        let tables = try tableNames(connection)
+        let user = [
+            "ZLOAD", "Load", "ZPAYCHECK", "Paycheck", "ZDIESEL", "Diesel",
+            "ZPHOTO", "Photo", "ZSCAN", "Scan", "ZDRIVERPROFILE", "DriverProfile",
+            "ZMAINTENANCETASK", "MaintenanceTask",
+        ]
+        return tables.contains { name in
+            user.contains { $0.caseInsensitiveCompare(name) == .orderedSame }
+        }
+    }
+
     // MARK: - Tables
 
     private static func tableNames(_ connection: SystemSQLite.Connection) throws -> Set<String> {

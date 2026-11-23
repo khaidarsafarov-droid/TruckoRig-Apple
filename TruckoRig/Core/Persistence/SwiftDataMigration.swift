@@ -38,6 +38,10 @@ enum SwiftDataMigration {
 
         let journal = try LegacySwiftDataReader.read(storeURL: legacyStoreURL)
         if journal.isEmpty {
+            if try LegacySwiftDataReader.containsUserTable(at: legacyStoreURL) {
+                try database.markLegacyImportDone()
+                return .nothingToImport
+            }
             if hasBytes(legacyStoreURL, fileManager: fileManager)
                 || hasBytes(URL(fileURLWithPath: legacyStoreURL.path + "-wal"), fileManager: fileManager) {
                 throw SwiftDataMigrationError.legacyUnreadable
@@ -51,6 +55,7 @@ enum SwiftDataMigration {
         guard counts.matches(journal) else {
             throw SwiftDataMigrationError.legacyUnreadable
         }
+        try database.markLegacyImportDone()
         deleteVerified(legacyStoreURL, fileManager: fileManager)
         return .imported(journal.loads.count)
     }

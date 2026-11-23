@@ -8233,25 +8233,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Delete the encrypted journal and document files from iCloud? This phone keeps its own copy."
+            "value": "Delete the encrypted journal and document files from iCloud? This phone keeps its copy. iCloud sync turns off and stays off until you turn it on again."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¿Eliminar el diario cifrado y los documentos de iCloud? Este teléfono conserva su copia."
+            "value": "¿Eliminar el diario cifrado y los documentos de iCloud? Este teléfono conserva su copia. La sincronización con iCloud se apaga y sigue apagada hasta que la vuelvas a activar."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Удалить зашифрованный журнал и документы из iCloud? Копия на этом телефоне останется."
+            "value": "Удалить зашифрованный журнал и документы из iCloud? Копия на этом телефоне останется. Синхронизация с iCloud выключится и не включится, пока вы сами её не включите."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Supprimer le journal chiffré et les documents d'iCloud ? Ce téléphone garde sa copie."
+            "value": "Supprimer le journal chiffré et les documents d'iCloud ? Ce téléphone garde sa copie. La synchro iCloud s'éteint et reste éteinte jusqu'à ce que vous la rallumiez."
           }
         }
       }

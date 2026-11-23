@@ -140,6 +140,12 @@ final class ICloudBackupController {
         defer { busy = false }
         do {
             try store.deleteAccountFiles(accountId: accountId)
+            debounceTask?.cancel()
+            generation += 1
+            setAutoSync(false)
+            setMediaEnabled(false)
+            prefs.lastUploadedExportedAt = 0
+            prefs.lastMediaUploadAt = 0
             remote = nil
             notice = .none
             mediaByteCount = 0

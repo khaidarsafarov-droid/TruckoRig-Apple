@@ -11,6 +11,15 @@ final class ImageLocationStripTests: XCTestCase {
         XCTAssertEqual(try ImageLocationStrip.strip(jpeg), jpeg)
     }
 
+    func testOrientationSurvivesGPSRemoval() throws {
+        var jpeg = try makeJPEG(gps: true, orientation: 6)
+        jpeg = injectXMP(jpeg)
+        let stripped = try ImageLocationStrip.strip(jpeg)
+        XCTAssertFalse(hasGPSIFD(stripped))
+        XCTAssertEqual(orientation(of: stripped), 6)
+        XCTAssertFalse(String(decoding: stripped, as: UTF8.self).contains("GPSLatitude"))
+    }
+
     func testGPSIFDAndXMPPacketAreRemoved() throws {
         var jpeg = try makeJPEG(gps: true)
         jpeg = injectXMP(jpeg)
@@ -32,7 +41,17 @@ final class ImageLocationStripTests: XCTestCase {
         return false
     }
 
-    private func makeJPEG(gps: Bool) throws -> Data {
+    private func orientation(of data: Data) -> Int? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
+        else { return nil }
+        if let number = properties[kCGImagePropertyOrientation] as? NSNumber {
+            return number.intValue
+        }
+        return nil
+    }
+
+    private func makeJPEG(gps: Bool, orientation: Int? = nil) throws -> Data {
         let space = CGColorSpaceCreateDeviceRGB()
         guard let context = CGContext(
             data: nil,
@@ -50,6 +69,9 @@ final class ImageLocationStripTests: XCTestCase {
             throw ImageLocationStripError.encodeFailed
         }
         var properties: [CFString: Any] = [:]
+        if let orientation {
+            properties[kCGImagePropertyOrientation] = orientation
+        }
         if gps {
             properties[kCGImagePropertyGPSDictionary] = [
                 kCGImagePropertyGPSLatitude: 35.123,

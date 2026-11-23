@@ -18,6 +18,40 @@ final class ICloudBackupTests: XCTestCase {
         super.tearDown()
     }
 
+    func testAPreviousSyncTimeKeepsSyncTurnedOn() {
+        let name = "icloud-sync-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: name)!
+        defaults.removePersistentDomain(forName: name)
+        defaults.set(4, forKey: "lastSyncAt")
+        let prefs = ICloudBackupPrefs(defaults: defaults)
+        XCTAssertTrue(prefs.autoSyncEnabled)
+        XCTAssertFalse(prefs.mediaEnabled)
+        XCTAssertEqual(defaults.bool(forKey: "autoSync"), true)
+    }
+
+    @MainActor
+    func testDeletingTheCloudCopyTurnsSyncOff() async throws {
+        let root = try makeRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = ICloudDriveStore(probe: .available(root))
+        try store.write(
+            Data(payload(exportedAt: 10, accountId: BackupAccount.localDev, trip: "T-DEL").utf8),
+            accountId: BackupAccount.localDev
+        )
+        let prefs = ICloudBackupPrefs(defaults: UserDefaults(suiteName: "icloud-del-\(UUID().uuidString)")!)
+        prefs.autoSyncEnabled = true
+        prefs.mediaEnabled = true
+        prefs.lastUploadedExportedAt = 10
+        prefs.lastMediaUploadAt = 10
+        let controller = ICloudBackupController(store: store, prefs: prefs)
+        await controller.deleteCloudCopy()
+        XCTAssertFalse(controller.autoSyncEnabled)
+        XCTAssertFalse(controller.mediaEnabled)
+        XCTAssertEqual(prefs.lastUploadedExportedAt, 0)
+        XCTAssertEqual(prefs.lastMediaUploadAt, 0)
+        XCTAssertNil(try store.read(accountId: BackupAccount.localDev))
+    }
+
     func testAPreviousUploadKeepsSyncTurnedOn() {
         let name = "icloud-adopt-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: name)!

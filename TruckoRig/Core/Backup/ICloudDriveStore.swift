@@ -323,17 +323,26 @@ final class ICloudDriveStore {
         guard !conflicts.isEmpty, let current = NSFileVersion.currentVersionOfItem(at: url) else {
             return nil
         }
-        var versions: [(NSFileVersion, Data, Int64)] = []
-        if let data = try? coordinatedRead(current.url) {
-            if data.starts(with: CloudPayloadSealer.magic), Self.exportedAt(in: data) == nil {
-                return nil
-            }
-            if let stamp = Self.exportedAt(in: data) {
-                versions.append((current, data, stamp))
+        let currentData = try? coordinatedRead(current.url)
+        var conflictData: [(NSFileVersion, Data)] = []
+        var blobs: [Data] = []
+        if let currentData { blobs.append(currentData) }
+        for conflict in conflicts {
+            if let data = try? coordinatedRead(conflict.url) {
+                blobs.append(data)
+                conflictData.append((conflict, data))
             }
         }
-        for conflict in conflicts {
-            guard let data = try? coordinatedRead(conflict.url) else { continue }
+        // A sealed file this phone cannot open yet (the key has not synced) must stay.
+        // Resolving now would delete it in favor of an older plaintext copy.
+        if Self.leavesConflictsUnresolved(blobs) {
+            return nil
+        }
+        var versions: [(NSFileVersion, Data, Int64)] = []
+        if let currentData, let stamp = Self.exportedAt(in: currentData) {
+            versions.append((current, currentData, stamp))
+        }
+        for (conflict, data) in conflictData {
             guard let stamp = Self.exportedAt(in: data) else { continue }
             versions.append((conflict, data, stamp))
         }
@@ -352,6 +361,13 @@ final class ICloudDriveStore {
         }
         try? NSFileVersion.removeOtherVersionsOfItem(at: url)
         return winner.1
+    }
+
+    /// True when any copy is sealed and cannot be opened. Callers must not resolve or delete versions.
+    static func leavesConflictsUnresolved(_ versions: [Data]) -> Bool {
+        versions.contains { data in
+            data.starts(with: CloudPayloadSealer.magic) && exportedAt(in: data) == nil
+        }
     }
 
     /// `nil` when a sealed file cannot be opened. Callers drop that version.

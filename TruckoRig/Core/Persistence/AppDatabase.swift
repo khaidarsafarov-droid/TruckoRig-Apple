@@ -639,7 +639,8 @@ final class AppDatabase {
         }
     }
 
-    /// Copies a SwiftData journal in one transaction, then records that the copy finished.
+    /// Copies a SwiftData journal in one transaction. The caller marks the import done
+    /// only after the row counts match, so a mismatch can be tried again.
     func importLegacy(_ journal: LegacyJournal) throws {
         try queue.write { db in
             for load in journal.loads {
@@ -666,7 +667,6 @@ final class AppDatabase {
             if let profile = journal.profile {
                 try Self.upsert(db, profile)
             }
-            try Self.markLegacyImportDone(db)
         }
     }
 
