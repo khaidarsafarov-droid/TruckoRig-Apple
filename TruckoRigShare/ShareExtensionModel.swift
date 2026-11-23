@@ -66,13 +66,13 @@ final class ShareExtensionModel {
         var batch: [ShareImportFingerprint] = []
         var tally = Tally()
         for piece in pieces {
-            accept(piece, inbox: inbox, saved: saved, batch: &batch, tally: &tally)
+            await accept(piece, inbox: inbox, saved: saved, batch: &batch, tally: &tally)
         }
         if tally.added == 0, pieces.count > 1 {
             let joined = pieces.map(\.text).filter { !$0.isEmpty }.joined(separator: "\n\n")
             let carrier = pieces.first { $0.fileBytes != nil } ?? pieces[0]
             let combined = SharePiece(text: joined, fileBytes: carrier.fileBytes, fileName: carrier.fileName, pageCount: carrier.pageCount)
-            accept(combined, inbox: inbox, saved: saved, batch: &batch, tally: &tally)
+            await accept(combined, inbox: inbox, saved: saved, batch: &batch, tally: &tally)
         }
 
         if tally.added > 0 {
@@ -97,14 +97,14 @@ final class ShareExtensionModel {
         saved: [ShareImportFingerprint],
         batch: inout [ShareImportFingerprint],
         tally: inout Tally
-    ) {
+    ) async {
         let text = piece.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
         switch ShareLoadClassifier.classify(text: text, fileName: piece.fileName) {
         case .rejected:
             break
         case .accepted(let loads):
-            let hash = piece.fileBytes.map { ShareFileHash.sha256Hex(data: $0) }
+            let hash = await Self.fileHash(piece.fileBytes)
             for fields in loads {
                 let fingerprint = ShareImportFingerprint(tripId: fields.tripId, broker: fields.broker, fileSHA256: hash)
                 if ShareImportDeduper.isDuplicate(fingerprint, saved: saved, batch: batch) {
@@ -118,14 +118,23 @@ final class ShareExtensionModel {
                     pageCount: piece.pageCount,
                     load: fields
                 )
-                guard (try? inbox.enqueue(record, bytes: piece.fileBytes)) != nil else {
-                    continue
-                }
+                let bytes = piece.fileBytes
+                let stored = await Task.detached(priority: .userInitiated) {
+                    (try? inbox.enqueue(record, bytes: bytes)) != nil
+                }.value
+                guard stored else { continue }
                 batch.append(fingerprint)
                 tally.added += 1
                 if !fields.missing.isEmpty { tally.partial = true }
             }
         }
+    }
+
+    private static func fileHash(_ bytes: Data?) async -> String? {
+        guard let bytes else { return nil }
+        return await Task.detached(priority: .userInitiated) {
+            ShareFileHash.sha256Hex(data: bytes)
+        }.value
     }
 
 }

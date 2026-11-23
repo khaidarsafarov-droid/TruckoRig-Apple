@@ -70,13 +70,21 @@ public struct MaintenanceTaskDraft: Equatable, Sendable {
     }
 }
 
-public struct MaintenanceArchiveLineDraft: Equatable, Sendable {
+public struct MaintenanceArchiveLineDraft: Equatable, Sendable, Identifiable {
+    /// Editor row identity. Amount and description stay the equality, so a receipt line
+    /// still matches after the screen rebuilds it.
+    public var id: UUID
     public var description: String
     public var amount: String
 
-    public init(description: String = "", amount: String = "") {
+    public init(description: String = "", amount: String = "", id: UUID = UUID()) {
+        self.id = id
         self.description = description
         self.amount = amount
+    }
+
+    public static func == (lhs: MaintenanceArchiveLineDraft, rhs: MaintenanceArchiveLineDraft) -> Bool {
+        lhs.description == rhs.description && lhs.amount == rhs.amount
     }
 
     public func parsedAmount() -> Double? { DecimalInput.parse(amount) }

@@ -9,6 +9,28 @@ enum ShareImportProcessor {
         var duplicates = 0
     }
 
+    private static var highlightClear: Task<Void, Never>?
+
+    /// Imports the inbox and asks the journal to stroke the new rows for a few seconds.
+    static func receive(
+        loads: [Load],
+        repository: LoadRepository,
+        media: MediaRepository,
+        highlight: @escaping (Set<UUID>) -> Void,
+        showJournal: @escaping () -> Void
+    ) {
+        let outcome = importPending(loads: loads, repository: repository, media: media)
+        guard !outcome.inserted.isEmpty else { return }
+        highlight(Set(outcome.inserted))
+        showJournal()
+        highlightClear?.cancel()
+        highlightClear = Task {
+            try? await Task.sleep(nanoseconds: 8_000_000_000)
+            guard !Task.isCancelled else { return }
+            highlight([])
+        }
+    }
+
     static func importPending(
         loads: [Load],
         repository: LoadRepository,
@@ -36,6 +58,7 @@ enum ShareImportProcessor {
         var batch: [ShareImportFingerprint] = []
         var outcome = Outcome()
 
+        repository.batch {
         for record in pending {
             let plan = ShareLoadCommit.plan(
                 fields: record.load,
@@ -72,6 +95,7 @@ enum ShareImportProcessor {
                     try? inbox.remove(record.id)
                 }
             }
+        }
         }
         return outcome
     }

@@ -7,12 +7,17 @@ struct MediaRepository {
 
     let database: AppDatabase
     let store: MediaStore
-    let onDidSave: (() -> Void)?
+    let saves: JournalSaveNotifier
 
-    init(database: AppDatabase, store: MediaStore, onDidSave: (() -> Void)? = nil) {
+    init(
+        database: AppDatabase,
+        store: MediaStore,
+        onDidSave: ((JournalTables) -> Void)? = nil,
+        saves: JournalSaveNotifier? = nil
+    ) {
         self.database = database
         self.store = store
-        self.onDidSave = onDidSave
+        self.saves = saves ?? JournalSaveNotifier(deliver: onDidSave)
     }
 
     @discardableResult
@@ -38,7 +43,7 @@ struct MediaRepository {
             photo.loadId = UUID(uuidString: loadId)
         }
         try database.save(photo)
-        onDidSave?()
+        saves.saved(.photos)
         return photo
     }
 
@@ -64,7 +69,7 @@ struct MediaRepository {
             scan.loadId = UUID(uuidString: loadId)
         }
         try database.save(scan)
-        onDidSave?()
+        saves.saved(.scans)
         return scan
     }
 
@@ -72,7 +77,7 @@ struct MediaRepository {
         photo.load = load
         if load == nil { photo.loadId = nil }
         try database.save(photo)
-        onDidSave?()
+        saves.saved(.photos)
     }
 
     /// Linking a scan to a load files it as `LOAD`, matching `ScanRepository.linkScanToLoad`.
@@ -84,25 +89,25 @@ struct MediaRepository {
             scan.documentCategory = .load
         }
         try database.save(scan)
-        onDidSave?()
+        saves.saved(.scans)
     }
 
     func updateCategory(_ scan: Scan, category: ScanDocumentCategory) throws {
         scan.documentCategory = category
         try database.save(scan)
-        onDidSave?()
+        saves.saved(.scans)
     }
 
     func delete(_ photo: Photo) throws {
         store.delete(fileName: photo.fileName, filePath: photo.filePath, kind: .photo)
         try database.delete(photo)
-        onDidSave?()
+        saves.saved(.photos)
     }
 
     func delete(_ scan: Scan) throws {
         store.delete(fileName: scan.fileName, filePath: scan.filePath, kind: .scan)
         try database.delete(scan)
-        onDidSave?()
+        saves.saved(.scans)
     }
 
     func deleteFiles(_ media: AppDatabase.RemovedMedia) {

@@ -9,7 +9,13 @@ struct TelegramSettingsSection: View {
 
     var body: some View {
         let telegram = appState.telegram
+        let synced = telegram.listening && appState.link.isOnline
         Section("settings.telegram.title") {
+            if !appState.link.isOnline {
+                Text("settings.sync.offline")
+                    .font(.appCaption)
+                    .foregroundStyle(Color.forestError)
+            }
             Text("settings.telegram.desc")
                 .font(.appCaption)
                 .foregroundStyle(Color.forestTextSecondary)
@@ -21,11 +27,11 @@ struct TelegramSettingsSection: View {
             } else {
                 HStack(spacing: 8) {
                     Circle()
-                        .fill(telegram.listening ? Color.forestPrimary : Color.forestTextSecondary)
+                        .fill(synced ? Color.forestPrimary : Color.forestTextSecondary)
                         .frame(width: 8, height: 8)
-                    Text(telegram.listening ? "settings.telegram.active" : "settings.telegram.inactive")
+                    Text(synced ? "settings.telegram.active" : "settings.telegram.inactive")
                         .font(.appCaption)
-                        .foregroundStyle(telegram.listening ? Color.forestPrimary : Color.forestTextSecondary)
+                        .foregroundStyle(synced ? Color.forestPrimary : Color.forestTextSecondary)
                 }
                 Text(telegram.hasToken ? "settings.telegram.configured" : "settings.telegram.missing")
                     .font(.appCaption)

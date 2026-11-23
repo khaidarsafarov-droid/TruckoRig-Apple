@@ -141,8 +141,8 @@ struct MaintenanceArchiveEditor: View {
                     placeholder: "maintenance.shop.hint"
                 )
                 DatePicker("maintenance.when", selection: $serviceDate, displayedComponents: .date)
-                ForEach(draft.lines.indices, id: \.self) { index in
-                    lineFields(index)
+                ForEach($draft.lines) { $line in
+                    lineFields($line)
                 }
                 Button("maintenance.add.line") {
                     draft.lines.append(MaintenanceArchiveLineDraft())
@@ -173,13 +173,13 @@ struct MaintenanceArchiveEditor: View {
         }
     }
 
-    private func lineFields(_ index: Int) -> some View {
+    private func lineFields(_ line: Binding<MaintenanceArchiveLineDraft>) -> some View {
         VStack(alignment: .leading) {
-            SoftTextField(title: "maintenance.line.name", text: $draft.lines[index].description)
-            SoftTextField(title: "maintenance.line.price", text: $draft.lines[index].amount, keyboard: .decimalPad)
+            SoftTextField(title: "maintenance.line.name", text: line.description)
+            SoftTextField(title: "maintenance.line.price", text: line.amount, keyboard: .decimalPad)
             if draft.lines.count > 1 {
                 Button("action.delete", role: .destructive) {
-                    draft.lines.remove(at: index)
+                    draft.lines.removeAll { $0.id == line.wrappedValue.id }
                 }
                 .font(.appCaption)
             }

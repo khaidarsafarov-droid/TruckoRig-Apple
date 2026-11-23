@@ -54,7 +54,7 @@ final class TelegramEngineTests: XCTestCase {
         let harness = try makeHarness(transport: transport)
         harness.prefs.chatId = 7
         let changes = JournalWrites()
-        harness.engine.onJournalChanged = { changes.value += 1 }
+        harness.engine.onJournalChanged = { _ in changes.value += 1 }
 
         let outcome = await harness.engine.runOnce(token: token)
         XCTAssertFalse(outcome.failed)

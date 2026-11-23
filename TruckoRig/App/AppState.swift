@@ -40,6 +40,7 @@ final class AppState {
     let premium: PremiumController
     let telegram: TelegramCoordinator
     let icloud: ICloudBackupController
+    let link = DeviceLink()
 
     var selectedTab: MainTab = .journal
 
@@ -52,6 +53,14 @@ final class AppState {
     /// True after the driver refuses the alert that a ТО reminder asked for.
     var maintenanceAlertsDenied = false
 
+    /// A journal read or maintenance save that did not stick. Settings shows this.
+    var journalWriteFailure: String?
+
+    func noteJournalFailure(_ error: Error) {
+        journalWriteFailure = error.localizedDescription
+        AppLog.persistence.error("Journal write failed: \(error.localizedDescription, privacy: .public)")
+    }
+
     /// Active App Store subscription, including the free month. StoreKit is the only source.
     var premiumIsActive: Bool { premium.isActive }
 
@@ -60,17 +69,29 @@ final class AppState {
         LocalStoreMigration.adoptPreviousAccountIfNeeded()
         let settings = AppSettings(scope: .local)
         let persistence = PersistenceController(scope: .local)
-        self.init(persistence: persistence, settings: settings, premium: PremiumController())
+        self.init(persistence: persistence, settings: settings, premium: PremiumController(), loadsCatalog: false)
     }
 
     /// Preview and test graph. Does not touch the Keychain, the SwiftData file, or StoreKit.
-    init(persistence: PersistenceController, settings: AppSettings? = nil, premium: PremiumController? = nil) {
+    ///
+    /// `loadsCatalog` is false for the real launch. The app opens the file after the first frame
+    /// and reloads the journal once from `prepareJournal()`.
+    init(
+        persistence: PersistenceController,
+        settings: AppSettings? = nil,
+        premium: PremiumController? = nil,
+        loadsCatalog: Bool = true
+    ) {
         let resolved = settings ?? AppSettings(scope: persistence.scope)
         self.settings = resolved
         self.persistence = persistence
         let catalog = RecordCatalog()
-        catalog.reload(from: persistence.database)
+        if loadsCatalog {
+            catalog.reloadNow(from: persistence.database)
+        }
         self.catalog = catalog
+        let journalSaves = JournalSaveNotifier()
+        self.journalSaves = journalSaves
         let controller = premium ?? PremiumController(inactiveStore: nil)
         controller.localeProvider = { [weak resolved] in
             PremiumCopy.locale(for: resolved?.language ?? .system)
@@ -88,19 +109,31 @@ final class AppState {
         TelegramRuntime.coordinator = telegram
         ICloudBackupRuntime.controller = icloud
         telegram.isPremium = { [weak controller] in controller?.isActive ?? false }
-        telegram.onJournalChanged = { [weak self] in
-            self?.reloadJournal()
+        telegram.onJournalChanged = { [weak self] tables in
+            self?.reloadJournal(tables)
         }
         icloud.onJournalRestored = { [weak self] in
             self?.reloadJournal()
         }
+        journalSaves.deliver = { [weak self] tables in
+            self?.reloadJournal(tables)
+        }
+        catalog.onReadFailure = { [weak self] message in
+            self?.journalWriteFailure = message
+        }
+    }
+
+    @ObservationIgnored private let journalSaves: JournalSaveNotifier
+
+    /// Opens nothing. Fills the catalog once, after the store is already open.
+    func prepareJournal() {
+        ensureProfileExists()
+        hydrateImportedLoadFields()
+        catalog.reloadNow(from: persistence.database)
     }
 
     func bootstrap() {
         installNotificationHandling()
-        ensureProfileExists()
-        hydrateImportedLoadFields()
-        reloadJournal()
         ShareImportNotifier.shared.onImport = { [weak self] in
             Task { @MainActor in
                 self?.importSharedLoads()
@@ -112,14 +145,27 @@ final class AppState {
         telegram.launch()
         TelegramBackgroundRegistrar.submit()
         icloud.start()
+        link.start()
     }
 
-    /// Reloads the in-memory journal and refreshes the home-screen widget.
-    func reloadJournal() {
-        catalog.reload(from: persistence.database)
-        publishWidgetSnapshot()
-        ShareImportIndexPublisher.publish(loads: catalog.loads)
-        scheduleReminders()
+    /// Reloads the tables a write changed. The SQL runs off the main actor. Widget, share index,
+    /// and reminders run only when those tables feed them.
+    func reloadJournal(_ tables: JournalTables = .all) {
+        catalog.reload(tables, from: persistence.database) { [weak self] in
+            self?.publishAfterReload(tables)
+        }
+    }
+
+    private func publishAfterReload(_ tables: JournalTables) {
+        if tables.contains(.loads) || tables.contains(.profile) {
+            WidgetBridge.publishWeek(loads: catalog.loads, settings: settings)
+        }
+        if tables.contains(.loads) {
+            ShareImportIndexPublisher.publish(loads: catalog.loads)
+        }
+        if !tables.isDisjoint(with: [.loads, .paychecks, .diesel, .maintenance]) {
+            scheduleReminders()
+        }
         icloud.noteLocalChange()
     }
 
@@ -132,125 +178,25 @@ final class AppState {
         }
     }
 
-    /// Records that a maintenance alert was handed to the system. Skips another reminder pass.
-    func markMaintenanceNotified(ids: [String], now: Date = Date()) {
-        let millis = Int64(now.timeIntervalSince1970 * 1000)
-        for id in ids {
-            guard var task = catalog.maintenance.first(where: { $0.id == id }) else { continue }
-            task.notifiedAt = millis
-            task.updatedAt = millis
-            try? persistence.database.save(task)
-        }
-        catalog.reload(from: persistence.database)
-        publishWidgetSnapshot()
-    }
-
-    /// Drops the "already alerted" stamp when a mileage interval is no longer due.
-    func clearMaintenanceNotified(ids: [String], now: Date = Date()) {
-        guard !ids.isEmpty else { return }
-        let millis = Int64(now.timeIntervalSince1970 * 1000)
-        for id in ids {
-            guard var task = catalog.maintenance.first(where: { $0.id == id }) else { continue }
-            task.notifiedAt = nil
-            task.updatedAt = millis
-            try? persistence.database.save(task)
-        }
-        catalog.reload(from: persistence.database)
-    }
-
-    /// Marks the service done and, when it repeats, files the next occurrence.
-    func completeMaintenance(_ task: MaintenanceTask, now: Date = Date()) {
-        let next = MaintenanceReminderSchedule.nextTask(
-            after: task,
-            now: now,
-            calendar: settings.truckingWeek.calendar
-        )
-        MaintenanceSnoozeStore.clear(task.id)
-        let repository = financeRepository()
-        try? repository.complete(task, now: now)
-        if let next {
-            try? repository.addTask(next)
-        }
-    }
-
-    /// Delivers the same alert again tomorrow. Quiet hours still shift the fire time.
-    func snoozeMaintenance(taskID: String, now: Date = Date()) {
-        guard var task = catalog.maintenance.first(where: { $0.id == taskID }) else { return }
-        let millis = Int64(now.timeIntervalSince1970 * 1000)
-        task.notifiedAt = nil
-        task.updatedAt = millis
-        try? persistence.database.save(task)
-        MaintenanceSnoozeStore.set(now.addingTimeInterval(MaintenanceReminderSchedule.snoozeInterval), for: taskID)
-        reloadJournal()
-    }
-
     func installNotificationHandling() {
         premium.observeMaintenanceActions { [weak self] action, taskID in
-            self?.handleMaintenanceNotification(action: action, taskID: taskID)
+            guard let self else { return }
+            MaintenanceReminderCenter.handle(action: action, taskID: taskID, in: self)
         }
         premium.installNotificationDelegate()
     }
 
-    func handleMaintenanceNotification(action: String, taskID: String) {
-        if catalog.maintenance.contains(where: { $0.id == taskID }) == false {
-            catalog.reload(from: persistence.database)
-        }
-        guard let task = catalog.maintenance.first(where: { $0.id == taskID }) else { return }
-        if action == MaintenanceAlertPoster.doneAction {
-            completeMaintenance(task)
-            return
-        }
-        if action == MaintenanceAlertPoster.snoozeAction {
-            snoozeMaintenance(taskID: taskID)
-            return
-        }
-        markMaintenanceNotified(ids: [taskID])
-    }
-
     @ObservationIgnored private var reminderTask: Task<Void, Never>?
-    @ObservationIgnored private var highlightClear: Task<Void, Never>?
-
-    /// Refreshes the home-screen widget from the current week.
-    ///
-    /// The SQLCipher key stays in this process. Only the finished numbers are written to the App Group.
-    func publishWidgetSnapshot(now: Date = Date()) {
-        let week = settings.truckingWeek
-        let ref = week.currentWeek(now: now)
-        let loads = catalog.loads.filter { $0.weekNumber == ref.weekNumber && $0.year == ref.year }
-        let progress = WeeklyGoalCalculator(week: week, locale: snapshotLocale).calculate(
-            target: settings.weeklyGoal,
-            loads: loads.map(\.summary),
-            for: ref,
-            now: now
-        )
-        guard let start = week.startDate(of: ref), let end = week.endDate(of: ref) else { return }
-        let snapshot = WidgetSnapshotBuilder.make(
-            progress: progress,
-            weekStart: start,
-            weekEnd: end,
-            calendar: week.calendar,
-            locale: snapshotLocale,
-            now: now
-        )
-        WidgetBridge.publish(snapshot)
-    }
 
     /// Pulls share-sheet loads into the journal. Safe to call when the App Group is missing.
     func importSharedLoads() {
-        let outcome = ShareImportProcessor.importPending(
+        ShareImportProcessor.receive(
             loads: catalog.loads,
             repository: loadRepository(),
-            media: mediaRepository()
+            media: mediaRepository(),
+            highlight: { [weak self] ids in self?.highlightedLoadIDs = ids },
+            showJournal: { [weak self] in self?.selectedTab = .journal }
         )
-        guard !outcome.inserted.isEmpty else { return }
-        highlightedLoadIDs = Set(outcome.inserted)
-        selectedTab = .journal
-        highlightClear?.cancel()
-        highlightClear = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: 8_000_000_000)
-            guard !Task.isCancelled else { return }
-            self?.highlightedLoadIDs = []
-        }
     }
 
     /// Widget and home-screen links. Unknown `truckorig://` paths open the journal.
@@ -281,19 +227,12 @@ final class AppState {
         }
     }
 
-    private var snapshotLocale: Locale {
-        if let identifier = settings.language.localeIdentifier {
-            return Locale(identifier: identifier)
-        }
-        return .current
-    }
-
     /// The only way views should obtain a load repository: writes also refresh the journal.
     func loadRepository() -> LoadRepository {
         LoadRepository(
             database: persistence.database,
             week: settings.truckingWeek,
-            onDidSave: { [weak self] in self?.reloadJournal() }
+            saves: journalSaves
         )
     }
 
@@ -301,7 +240,7 @@ final class AppState {
         FinanceRepository(
             database: persistence.database,
             week: settings.truckingWeek,
-            onDidSave: { [weak self] in self?.reloadJournal() }
+            saves: journalSaves
         )
     }
 
@@ -309,7 +248,7 @@ final class AppState {
         MediaRepository(
             database: persistence.database,
             store: store ?? MediaStore(scope: persistence.scope),
-            onDidSave: { [weak self] in self?.reloadJournal() }
+            saves: journalSaves
         )
     }
 
@@ -321,12 +260,12 @@ final class AppState {
             profile.updatedAt = Date()
             try? persistence.database.save(profile)
         }
-        reloadJournal()
+        reloadJournal(.profile)
     }
 
     /// Settings follow the profile row after a backup restore.
     func adoptRestoredGoal() {
-        catalog.reload(from: persistence.database)
+        catalog.reloadNow(from: persistence.database)
         if let profile = catalog.profile {
             settings.weeklyGoal = profile.weeklyGoal
         }
@@ -335,7 +274,7 @@ final class AppState {
     func saveProfile(_ profile: DriverProfile) {
         profile.updatedAt = Date()
         try? persistence.database.save(profile)
-        reloadJournal()
+        reloadJournal(.profile)
     }
 
     /// Exactly one profile row; created lazily on first launch.
@@ -370,8 +309,7 @@ final class AppState {
     }
 
     private func ensureProfileExists() {
-        catalog.reload(from: persistence.database)
-        guard catalog.profile == nil else { return }
+        if (try? persistence.database.fetchSlice(.profile).profile) != nil { return }
         let profile = DriverProfile(
             name: LocalStoreMigration.inheritedDisplayName,
             preferredLanguage: settings.language,

@@ -14,11 +14,13 @@
 		02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */ = {isa = PBXBuildFile; fileRef = A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */; };
 		5A9BCDF30C20AD26B24C47F4 /* BackupIdentity.swift */ = {isa = PBXBuildFile; fileRef = E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */; };
 		8B5A088FC7272F60C4AE8CC9 /* BackupJournalMapper.swift */ = {isa = PBXBuildFile; fileRef = 4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */; };
+		AA3F49AF32913287AB976ED3 /* DeviceLink.swift */ = {isa = PBXBuildFile; fileRef = EE05B477F44AF7227F1984AC /* DeviceLink.swift */; };
 		3F896985C84EB47E4D48BE10 /* ICloudBackupController.swift */ = {isa = PBXBuildFile; fileRef = B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */; };
 		4974FB1BBA7336ABA2F45C25 /* ICloudBackupSync.swift */ = {isa = PBXBuildFile; fileRef = 21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */; };
 		BF8ADDD0C055C6967BBC8C46 /* ICloudDriveStore.swift */ = {isa = PBXBuildFile; fileRef = 812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */; };
 		2C8F4A909B371B552C70F9F1 /* ICloudMediaLibrary.swift */ = {isa = PBXBuildFile; fileRef = 9E1571569165555A420D2106 /* ICloudMediaLibrary.swift */; };
 		3FA5650B7CF9CE6A23F7CBCC /* ICloudMediaSync.swift */ = {isa = PBXBuildFile; fileRef = 26501D41D9586AA99D083417 /* ICloudMediaSync.swift */; };
+		2C6378782F026A5C566BE649 /* DiagnosticReporter.swift */ = {isa = PBXBuildFile; fileRef = 70703EB55645AF1C7E61980A /* DiagnosticReporter.swift */; };
 		134A7E1A5A97B69C57CB1D06 /* LoadDocumentText.swift */ = {isa = PBXBuildFile; fileRef = E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */; };
 		0DBAAC2A642A1D5AC7EA84C6 /* AppLanguage.swift */ = {isa = PBXBuildFile; fileRef = 9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */; };
 		AB5896F4057BA37FEE44208D /* AppLocale.swift */ = {isa = PBXBuildFile; fileRef = 203C0259857B749C5803EE78 /* AppLocale.swift */; };
@@ -43,6 +45,14 @@
 		512D6791792E4032E227341D /* AccountScopedContainer.swift */ = {isa = PBXBuildFile; fileRef = 4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */; };
 		696D4F7AFAA9FE8036E89F54 /* AccountSnapshot.swift */ = {isa = PBXBuildFile; fileRef = 231D79631C3AA436E4E1B0F4 /* AccountSnapshot.swift */; };
 		5874DDD389F3358E74105040 /* AppDatabase.swift */ = {isa = PBXBuildFile; fileRef = B9BA8ECB9F6D426DF392A6B0 /* AppDatabase.swift */; };
+		D318D6267945286C9DFBFA34 /* AppDatabaseFinance.swift */ = {isa = PBXBuildFile; fileRef = 00ED2BCFFADB4B7CC29C0035 /* AppDatabaseFinance.swift */; };
+		E5E698D2AB0D4C977232EDB3 /* AppDatabaseGraph.swift */ = {isa = PBXBuildFile; fileRef = 51B69AC462D82307A90B1766 /* AppDatabaseGraph.swift */; };
+		562A07600C4CE544CD45B07F /* AppDatabaseLoad.swift */ = {isa = PBXBuildFile; fileRef = B71B65B064D9978FBC3D8476 /* AppDatabaseLoad.swift */; };
+		1488C7E94CC8137A32F338C1 /* AppDatabaseMaintenance.swift */ = {isa = PBXBuildFile; fileRef = 7A31F931419FD7D31E0B1D64 /* AppDatabaseMaintenance.swift */; };
+		1AE07171CA65604594585072 /* AppDatabaseMedia.swift */ = {isa = PBXBuildFile; fileRef = F414CFE861B84C6647DBFBFF /* AppDatabaseMedia.swift */; };
+		CA19919BB386F1E19F1B7D08 /* AppDatabaseProfile.swift */ = {isa = PBXBuildFile; fileRef = 24D26EF4CF6CABFA2764E0E0 /* AppDatabaseProfile.swift */; };
+		4CAB3ECD1547A1F9E6D59EDF /* AppDatabaseSQL.swift */ = {isa = PBXBuildFile; fileRef = CE5BB959921AFC4214E0569D /* AppDatabaseSQL.swift */; };
+		B1CD5DAF5767827F0519FCA1 /* AppDatabaseSchema.swift */ = {isa = PBXBuildFile; fileRef = 92FBBB93AB004A0CF25DB82F /* AppDatabaseSchema.swift */; };
 		DC5A9C3F51722F79A9ABF61F /* AppSettings.swift */ = {isa = PBXBuildFile; fileRef = C331D207AC404EC483D2B448 /* AppSettings.swift */; };
 		296CA7111AAE65185672947A /* BackupService.swift */ = {isa = PBXBuildFile; fileRef = 01A0625B8DEB54A745750CB1 /* BackupService.swift */; };
 		58DDC40A531CF60131BA4C46 /* DatabasePassphraseStore.swift */ = {isa = PBXBuildFile; fileRef = F958A91A8B735A0D329AB8EB /* DatabasePassphraseStore.swift */; };
@@ -60,6 +70,7 @@
 		4E657CC15645CAF0EE570312 /* SystemSQLite.swift */ = {isa = PBXBuildFile; fileRef = F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */; };
 		F1B2BB637FC0E34C47B8D28C /* WeekReindexer.swift */ = {isa = PBXBuildFile; fileRef = 97345C3015F38C2FED601B83 /* WeekReindexer.swift */; };
 		977D401F0F8FA8D7C9F8E27E /* WidgetBridge.swift */ = {isa = PBXBuildFile; fileRef = E30048804E0843EB21F639BF /* WidgetBridge.swift */; };
+		05FE1F4EE23C614F0660D86C /* WidgetGoalPublish.swift */ = {isa = PBXBuildFile; fileRef = 71A05DAC2FCBC835324F8483 /* WidgetGoalPublish.swift */; };
 		C5F261ADC67C57B65C4210FC /* PremiumController.swift */ = {isa = PBXBuildFile; fileRef = 58E3D822C67F417420AB1A00 /* PremiumController.swift */; };
 		1F731BD062337EAC85294CF1 /* PremiumLocalStore.swift */ = {isa = PBXBuildFile; fileRef = 6E2880B814B3D0BE6D75ADAA /* PremiumLocalStore.swift */; };
 		8C9E0FFCDEAB74E4A0F037D0 /* StoreKitPremiumGateway.swift */ = {isa = PBXBuildFile; fileRef = 1B04FD251467F771AED17E12 /* StoreKitPremiumGateway.swift */; };
@@ -87,7 +98,13 @@
 		553B8278C13DBCED044A9B21 /* StringUtils.swift */ = {isa = PBXBuildFile; fileRef = C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */; };
 		98AC20431B9137A089548D73 /* UnitEntry.swift */ = {isa = PBXBuildFile; fileRef = F0CED976358B2E52FCED5382 /* UnitEntry.swift */; };
 		4E35DF5735EA9DB8D6C09EC1 /* BackupAccount.swift */ = {isa = PBXBuildFile; fileRef = 085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */; };
+		13EA7B282A66B71A09B4A3DF /* BackupAppSettingsRecord.swift */ = {isa = PBXBuildFile; fileRef = 1138B0F276FE5985A34398EC /* BackupAppSettingsRecord.swift */; };
 		FE9FBDC58450BA99FCAFCAA2 /* BackupData.swift */ = {isa = PBXBuildFile; fileRef = 92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */; };
+		153FD40FAEF21822CD6167DA /* BackupDataCodec.swift */ = {isa = PBXBuildFile; fileRef = 15F3F49F9D56EF6687FFEA20 /* BackupDataCodec.swift */; };
+		40BC9C1B49A6DD1363A7F3B5 /* BackupDieselRecord.swift */ = {isa = PBXBuildFile; fileRef = 08996F4DE5552A4AF209EA68 /* BackupDieselRecord.swift */; };
+		9F21CBBF528E0BB41AE1FAC7 /* BackupLoadRecord.swift */ = {isa = PBXBuildFile; fileRef = DBBA928AA988472662BC932D /* BackupLoadRecord.swift */; };
+		28ECF8D976B21690FDA1FA9A /* BackupMaintenanceRecord.swift */ = {isa = PBXBuildFile; fileRef = 36B133D4F5C35257262819B4 /* BackupMaintenanceRecord.swift */; };
+		7ABBC961147B6A2BA2979A23 /* BackupPaycheckRecord.swift */ = {isa = PBXBuildFile; fileRef = DED318DC53DEEB027209559B /* BackupPaycheckRecord.swift */; };
 		306760269278F232415BDE90 /* BackupRestoreParser.swift */ = {isa = PBXBuildFile; fileRef = 0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */; };
 		B7F6B8FBA41296AAF6C6F7A9 /* BackupSchedule.swift */ = {isa = PBXBuildFile; fileRef = 9EC8965324449551C656D14D /* BackupSchedule.swift */; };
 		98B6530A722C47BDDAE9841A /* BackupSyncPolicy.swift */ = {isa = PBXBuildFile; fileRef = C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */; };
@@ -166,6 +183,8 @@
 		CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */ = {isa = PBXBuildFile; fileRef = 2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */; };
 		9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */ = {isa = PBXBuildFile; fileRef = 36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */; };
 		178C97B43782483CF548C962 /* PeriodReport.swift */ = {isa = PBXBuildFile; fileRef = C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */; };
+		5B98BF4D0F70F9C7D5C7917E /* PeriodReportCopy.swift */ = {isa = PBXBuildFile; fileRef = 9EB1129D1682843697FA15AC /* PeriodReportCopy.swift */; };
+		62B63782F75609D80A9BA2F4 /* PeriodReportModels.swift */ = {isa = PBXBuildFile; fileRef = 6F3F8D84BEAB20C4362705CC /* PeriodReportModels.swift */; };
 		1B3C7CD8396206B0F622DAA2 /* PeriodReportStatement.swift */ = {isa = PBXBuildFile; fileRef = 70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */; };
 		30A65540B8E65A1466209385 /* ShareFileRules.swift */ = {isa = PBXBuildFile; fileRef = 8980FF096619F13700D4F489 /* ShareFileRules.swift */; };
 		6A46C72B9A00A56A6ECB8DF2 /* ShareLoadClassifier.swift */ = {isa = PBXBuildFile; fileRef = FCFC2A5F4205705CFBA2EF58 /* ShareLoadClassifier.swift */; };
@@ -286,7 +305,13 @@
 		93FD9D8F35007BA5F671E261 /* SharePayloadReader.swift */ = {isa = PBXBuildFile; fileRef = FE1AD2F57FBBE9B545B66FAA /* SharePayloadReader.swift */; };
 		315F1F4DC4F5157307DE7266 /* ShareViewController.swift */ = {isa = PBXBuildFile; fileRef = 3AD6F700601A0693E5F90737 /* ShareViewController.swift */; };
 		E04768058BA8B1A8C56F5B92 /* BackupAccount.swift */ = {isa = PBXBuildFile; fileRef = 085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */; };
+		8B277B2259C1167FA8A5DCAF /* BackupAppSettingsRecord.swift */ = {isa = PBXBuildFile; fileRef = 1138B0F276FE5985A34398EC /* BackupAppSettingsRecord.swift */; };
 		F1076831F75903621DC3D62F /* BackupData.swift */ = {isa = PBXBuildFile; fileRef = 92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */; };
+		CDD206E7AB02A3C72929C434 /* BackupDataCodec.swift */ = {isa = PBXBuildFile; fileRef = 15F3F49F9D56EF6687FFEA20 /* BackupDataCodec.swift */; };
+		90E663B1A0075F6B9C4129C9 /* BackupDieselRecord.swift */ = {isa = PBXBuildFile; fileRef = 08996F4DE5552A4AF209EA68 /* BackupDieselRecord.swift */; };
+		D11F573B8AD439365E9E323B /* BackupLoadRecord.swift */ = {isa = PBXBuildFile; fileRef = DBBA928AA988472662BC932D /* BackupLoadRecord.swift */; };
+		8B7348593CBF2D7C30CE8CD7 /* BackupMaintenanceRecord.swift */ = {isa = PBXBuildFile; fileRef = 36B133D4F5C35257262819B4 /* BackupMaintenanceRecord.swift */; };
+		207B81A27302F87400D63D04 /* BackupPaycheckRecord.swift */ = {isa = PBXBuildFile; fileRef = DED318DC53DEEB027209559B /* BackupPaycheckRecord.swift */; };
 		3E3A585D6934A2C349688109 /* BackupRestoreParser.swift */ = {isa = PBXBuildFile; fileRef = 0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */; };
 		12B40B1E24D02748A1440079 /* BackupSchedule.swift */ = {isa = PBXBuildFile; fileRef = 9EC8965324449551C656D14D /* BackupSchedule.swift */; };
 		6A54732E3735337977597630 /* BackupSyncPolicy.swift */ = {isa = PBXBuildFile; fileRef = C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */; };
@@ -365,6 +390,8 @@
 		8354DDAE51D81084CD85BDF6 /* TrialReminderPolicy.swift */ = {isa = PBXBuildFile; fileRef = 2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */; };
 		3CB376D9D779CBFF72C3DA28 /* ReceiptKindClassifier.swift */ = {isa = PBXBuildFile; fileRef = 36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */; };
 		A4D6D5DA972EDCAFC4210333 /* PeriodReport.swift */ = {isa = PBXBuildFile; fileRef = C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */; };
+		E16F4E3A3CB77A6A7E953900 /* PeriodReportCopy.swift */ = {isa = PBXBuildFile; fileRef = 9EB1129D1682843697FA15AC /* PeriodReportCopy.swift */; };
+		F194395D6B5C41E2992B23C4 /* PeriodReportModels.swift */ = {isa = PBXBuildFile; fileRef = 6F3F8D84BEAB20C4362705CC /* PeriodReportModels.swift */; };
 		28B151D630BC58FAB3A14171 /* PeriodReportStatement.swift */ = {isa = PBXBuildFile; fileRef = 70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */; };
 		A4C3AB85F1E92009CA40DE6E /* ShareFileRules.swift */ = {isa = PBXBuildFile; fileRef = 8980FF096619F13700D4F489 /* ShareFileRules.swift */; };
 		A524FA06355FBBEA5F925065 /* ShareLoadClassifier.swift */ = {isa = PBXBuildFile; fileRef = FCFC2A5F4205705CFBA2EF58 /* ShareLoadClassifier.swift */; };
@@ -484,11 +511,13 @@
 		A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestLaunch.swift"; sourceTree = "<group>"; };
 		E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupIdentity.swift"; sourceTree = "<group>"; };
 		4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupJournalMapper.swift"; sourceTree = "<group>"; };
+		EE05B477F44AF7227F1984AC /* DeviceLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceLink.swift"; sourceTree = "<group>"; };
 		B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupController.swift"; sourceTree = "<group>"; };
 		21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupSync.swift"; sourceTree = "<group>"; };
 		812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudDriveStore.swift"; sourceTree = "<group>"; };
 		9E1571569165555A420D2106 /* ICloudMediaLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaLibrary.swift"; sourceTree = "<group>"; };
 		26501D41D9586AA99D083417 /* ICloudMediaSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaSync.swift"; sourceTree = "<group>"; };
+		70703EB55645AF1C7E61980A /* DiagnosticReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiagnosticReporter.swift"; sourceTree = "<group>"; };
 		E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadDocumentText.swift"; sourceTree = "<group>"; };
 		9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLanguage.swift"; sourceTree = "<group>"; };
 		203C0259857B749C5803EE78 /* AppLocale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppLocale.swift"; sourceTree = "<group>"; };
@@ -513,6 +542,14 @@
 		4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountScopedContainer.swift"; sourceTree = "<group>"; };
 		231D79631C3AA436E4E1B0F4 /* AccountSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountSnapshot.swift"; sourceTree = "<group>"; };
 		B9BA8ECB9F6D426DF392A6B0 /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabase.swift"; sourceTree = "<group>"; };
+		00ED2BCFFADB4B7CC29C0035 /* AppDatabaseFinance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabaseFinance.swift"; sourceTree = "<group>"; };
+		51B69AC462D82307A90B1766 /* AppDatabaseGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabaseGraph.swift"; sourceTree = "<group>"; };
+		B71B65B064D9978FBC3D8476 /* AppDatabaseLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabaseLoad.swift"; sourceTree = "<group>"; };
+		7A31F931419FD7D31E0B1D64 /* AppDatabaseMaintenance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabaseMaintenance.swift"; sourceTree = "<group>"; };
+		F414CFE861B84C6647DBFBFF /* AppDatabaseMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabaseMedia.swift"; sourceTree = "<group>"; };
+		24D26EF4CF6CABFA2764E0E0 /* AppDatabaseProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabaseProfile.swift"; sourceTree = "<group>"; };
+		CE5BB959921AFC4214E0569D /* AppDatabaseSQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabaseSQL.swift"; sourceTree = "<group>"; };
+		92FBBB93AB004A0CF25DB82F /* AppDatabaseSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabaseSchema.swift"; sourceTree = "<group>"; };
 		C331D207AC404EC483D2B448 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettings.swift"; sourceTree = "<group>"; };
 		01A0625B8DEB54A745750CB1 /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupService.swift"; sourceTree = "<group>"; };
 		F958A91A8B735A0D329AB8EB /* DatabasePassphraseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DatabasePassphraseStore.swift"; sourceTree = "<group>"; };
@@ -530,6 +567,7 @@
 		F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemSQLite.swift"; sourceTree = "<group>"; };
 		97345C3015F38C2FED601B83 /* WeekReindexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekReindexer.swift"; sourceTree = "<group>"; };
 		E30048804E0843EB21F639BF /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetBridge.swift"; sourceTree = "<group>"; };
+		71A05DAC2FCBC835324F8483 /* WidgetGoalPublish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetGoalPublish.swift"; sourceTree = "<group>"; };
 		58E3D822C67F417420AB1A00 /* PremiumController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumController.swift"; sourceTree = "<group>"; };
 		6E2880B814B3D0BE6D75ADAA /* PremiumLocalStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumLocalStore.swift"; sourceTree = "<group>"; };
 		1B04FD251467F771AED17E12 /* StoreKitPremiumGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoreKitPremiumGateway.swift"; sourceTree = "<group>"; };
@@ -557,7 +595,13 @@
 		C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringUtils.swift"; sourceTree = "<group>"; };
 		F0CED976358B2E52FCED5382 /* UnitEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnitEntry.swift"; sourceTree = "<group>"; };
 		085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupAccount.swift"; sourceTree = "<group>"; };
+		1138B0F276FE5985A34398EC /* BackupAppSettingsRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupAppSettingsRecord.swift"; sourceTree = "<group>"; };
 		92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupData.swift"; sourceTree = "<group>"; };
+		15F3F49F9D56EF6687FFEA20 /* BackupDataCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupDataCodec.swift"; sourceTree = "<group>"; };
+		08996F4DE5552A4AF209EA68 /* BackupDieselRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupDieselRecord.swift"; sourceTree = "<group>"; };
+		DBBA928AA988472662BC932D /* BackupLoadRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupLoadRecord.swift"; sourceTree = "<group>"; };
+		36B133D4F5C35257262819B4 /* BackupMaintenanceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupMaintenanceRecord.swift"; sourceTree = "<group>"; };
+		DED318DC53DEEB027209559B /* BackupPaycheckRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupPaycheckRecord.swift"; sourceTree = "<group>"; };
 		0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreParser.swift"; sourceTree = "<group>"; };
 		9EC8965324449551C656D14D /* BackupSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupSchedule.swift"; sourceTree = "<group>"; };
 		C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupSyncPolicy.swift"; sourceTree = "<group>"; };
@@ -636,6 +680,8 @@
 		2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderPolicy.swift"; sourceTree = "<group>"; };
 		36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReceiptKindClassifier.swift"; sourceTree = "<group>"; };
 		C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReport.swift"; sourceTree = "<group>"; };
+		9EB1129D1682843697FA15AC /* PeriodReportCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportCopy.swift"; sourceTree = "<group>"; };
+		6F3F8D84BEAB20C4362705CC /* PeriodReportModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportModels.swift"; sourceTree = "<group>"; };
 		70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportStatement.swift"; sourceTree = "<group>"; };
 		8980FF096619F13700D4F489 /* ShareFileRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareFileRules.swift"; sourceTree = "<group>"; };
 		FCFC2A5F4205705CFBA2EF58 /* ShareLoadClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareLoadClassifier.swift"; sourceTree = "<group>"; };
@@ -886,6 +932,7 @@
 			isa = PBXGroup;
 			children = (
 				711DCD7B1C389CA57D3C1A1F /* Backup */,
+				595061DB693AEB1FA8410602 /* Diagnostics */,
 				06A2C546F804DD14AA685E72 /* Documents */,
 				CE8BEEE2EF490FF44D3F4018 /* Localization */,
 				7B46438A6EE8560A29A047FC /* Media */,
@@ -907,6 +954,7 @@
 			children = (
 				E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */,
 				4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */,
+				EE05B477F44AF7227F1984AC /* DeviceLink.swift */,
 				B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */,
 				21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */,
 				812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */,
@@ -914,6 +962,14 @@
 				26501D41D9586AA99D083417 /* ICloudMediaSync.swift */,
 			);
 			path = "Backup";
+			sourceTree = "<group>";
+		};
+		595061DB693AEB1FA8410602 /* Diagnostics */ = {
+			isa = PBXGroup;
+			children = (
+				70703EB55645AF1C7E61980A /* DiagnosticReporter.swift */,
+			);
+			path = "Diagnostics";
 			sourceTree = "<group>";
 		};
 		06A2C546F804DD14AA685E72 /* Documents */ = {
@@ -985,6 +1041,14 @@
 				4A3A1F5229805A58D1D55633 /* AccountScopedContainer.swift */,
 				231D79631C3AA436E4E1B0F4 /* AccountSnapshot.swift */,
 				B9BA8ECB9F6D426DF392A6B0 /* AppDatabase.swift */,
+				00ED2BCFFADB4B7CC29C0035 /* AppDatabaseFinance.swift */,
+				51B69AC462D82307A90B1766 /* AppDatabaseGraph.swift */,
+				B71B65B064D9978FBC3D8476 /* AppDatabaseLoad.swift */,
+				7A31F931419FD7D31E0B1D64 /* AppDatabaseMaintenance.swift */,
+				F414CFE861B84C6647DBFBFF /* AppDatabaseMedia.swift */,
+				24D26EF4CF6CABFA2764E0E0 /* AppDatabaseProfile.swift */,
+				CE5BB959921AFC4214E0569D /* AppDatabaseSQL.swift */,
+				92FBBB93AB004A0CF25DB82F /* AppDatabaseSchema.swift */,
 				C331D207AC404EC483D2B448 /* AppSettings.swift */,
 				01A0625B8DEB54A745750CB1 /* BackupService.swift */,
 				F958A91A8B735A0D329AB8EB /* DatabasePassphraseStore.swift */,
@@ -1002,6 +1066,7 @@
 				F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */,
 				97345C3015F38C2FED601B83 /* WeekReindexer.swift */,
 				E30048804E0843EB21F639BF /* WidgetBridge.swift */,
+				71A05DAC2FCBC835324F8483 /* WidgetGoalPublish.swift */,
 			);
 			path = "Persistence";
 			sourceTree = "<group>";
@@ -1102,7 +1167,13 @@
 			isa = PBXGroup;
 			children = (
 				085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */,
+				1138B0F276FE5985A34398EC /* BackupAppSettingsRecord.swift */,
 				92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */,
+				15F3F49F9D56EF6687FFEA20 /* BackupDataCodec.swift */,
+				08996F4DE5552A4AF209EA68 /* BackupDieselRecord.swift */,
+				DBBA928AA988472662BC932D /* BackupLoadRecord.swift */,
+				36B133D4F5C35257262819B4 /* BackupMaintenanceRecord.swift */,
+				DED318DC53DEEB027209559B /* BackupPaycheckRecord.swift */,
 				0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */,
 				9EC8965324449551C656D14D /* BackupSchedule.swift */,
 				C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */,
@@ -1314,6 +1385,8 @@
 			isa = PBXGroup;
 			children = (
 				C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */,
+				9EB1129D1682843697FA15AC /* PeriodReportCopy.swift */,
+				6F3F8D84BEAB20C4362705CC /* PeriodReportModels.swift */,
 				70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */,
 			);
 			path = "Reports";
@@ -1990,11 +2063,13 @@
 				02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */,
 				5A9BCDF30C20AD26B24C47F4 /* BackupIdentity.swift */,
 				8B5A088FC7272F60C4AE8CC9 /* BackupJournalMapper.swift */,
+				AA3F49AF32913287AB976ED3 /* DeviceLink.swift */,
 				3F896985C84EB47E4D48BE10 /* ICloudBackupController.swift */,
 				4974FB1BBA7336ABA2F45C25 /* ICloudBackupSync.swift */,
 				BF8ADDD0C055C6967BBC8C46 /* ICloudDriveStore.swift */,
 				2C8F4A909B371B552C70F9F1 /* ICloudMediaLibrary.swift */,
 				3FA5650B7CF9CE6A23F7CBCC /* ICloudMediaSync.swift */,
+				2C6378782F026A5C566BE649 /* DiagnosticReporter.swift */,
 				134A7E1A5A97B69C57CB1D06 /* LoadDocumentText.swift */,
 				0DBAAC2A642A1D5AC7EA84C6 /* AppLanguage.swift */,
 				AB5896F4057BA37FEE44208D /* AppLocale.swift */,
@@ -2019,6 +2094,14 @@
 				512D6791792E4032E227341D /* AccountScopedContainer.swift */,
 				696D4F7AFAA9FE8036E89F54 /* AccountSnapshot.swift */,
 				5874DDD389F3358E74105040 /* AppDatabase.swift */,
+				D318D6267945286C9DFBFA34 /* AppDatabaseFinance.swift */,
+				E5E698D2AB0D4C977232EDB3 /* AppDatabaseGraph.swift */,
+				562A07600C4CE544CD45B07F /* AppDatabaseLoad.swift */,
+				1488C7E94CC8137A32F338C1 /* AppDatabaseMaintenance.swift */,
+				1AE07171CA65604594585072 /* AppDatabaseMedia.swift */,
+				CA19919BB386F1E19F1B7D08 /* AppDatabaseProfile.swift */,
+				4CAB3ECD1547A1F9E6D59EDF /* AppDatabaseSQL.swift */,
+				B1CD5DAF5767827F0519FCA1 /* AppDatabaseSchema.swift */,
 				DC5A9C3F51722F79A9ABF61F /* AppSettings.swift */,
 				296CA7111AAE65185672947A /* BackupService.swift */,
 				58DDC40A531CF60131BA4C46 /* DatabasePassphraseStore.swift */,
@@ -2036,6 +2119,7 @@
 				4E657CC15645CAF0EE570312 /* SystemSQLite.swift */,
 				F1B2BB637FC0E34C47B8D28C /* WeekReindexer.swift */,
 				977D401F0F8FA8D7C9F8E27E /* WidgetBridge.swift */,
+				05FE1F4EE23C614F0660D86C /* WidgetGoalPublish.swift */,
 				C5F261ADC67C57B65C4210FC /* PremiumController.swift */,
 				1F731BD062337EAC85294CF1 /* PremiumLocalStore.swift */,
 				8C9E0FFCDEAB74E4A0F037D0 /* StoreKitPremiumGateway.swift */,
@@ -2063,7 +2147,13 @@
 				553B8278C13DBCED044A9B21 /* StringUtils.swift */,
 				98AC20431B9137A089548D73 /* UnitEntry.swift */,
 				4E35DF5735EA9DB8D6C09EC1 /* BackupAccount.swift */,
+				13EA7B282A66B71A09B4A3DF /* BackupAppSettingsRecord.swift */,
 				FE9FBDC58450BA99FCAFCAA2 /* BackupData.swift */,
+				153FD40FAEF21822CD6167DA /* BackupDataCodec.swift */,
+				40BC9C1B49A6DD1363A7F3B5 /* BackupDieselRecord.swift */,
+				9F21CBBF528E0BB41AE1FAC7 /* BackupLoadRecord.swift */,
+				28ECF8D976B21690FDA1FA9A /* BackupMaintenanceRecord.swift */,
+				7ABBC961147B6A2BA2979A23 /* BackupPaycheckRecord.swift */,
 				306760269278F232415BDE90 /* BackupRestoreParser.swift */,
 				B7F6B8FBA41296AAF6C6F7A9 /* BackupSchedule.swift */,
 				98B6530A722C47BDDAE9841A /* BackupSyncPolicy.swift */,
@@ -2142,6 +2232,8 @@
 				CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */,
 				9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */,
 				178C97B43782483CF548C962 /* PeriodReport.swift */,
+				5B98BF4D0F70F9C7D5C7917E /* PeriodReportCopy.swift */,
+				62B63782F75609D80A9BA2F4 /* PeriodReportModels.swift */,
 				1B3C7CD8396206B0F622DAA2 /* PeriodReportStatement.swift */,
 				30A65540B8E65A1466209385 /* ShareFileRules.swift */,
 				6A46C72B9A00A56A6ECB8DF2 /* ShareLoadClassifier.swift */,
@@ -2254,7 +2346,13 @@
 				93FD9D8F35007BA5F671E261 /* SharePayloadReader.swift */,
 				315F1F4DC4F5157307DE7266 /* ShareViewController.swift */,
 				E04768058BA8B1A8C56F5B92 /* BackupAccount.swift */,
+				8B277B2259C1167FA8A5DCAF /* BackupAppSettingsRecord.swift */,
 				F1076831F75903621DC3D62F /* BackupData.swift */,
+				CDD206E7AB02A3C72929C434 /* BackupDataCodec.swift */,
+				90E663B1A0075F6B9C4129C9 /* BackupDieselRecord.swift */,
+				D11F573B8AD439365E9E323B /* BackupLoadRecord.swift */,
+				8B7348593CBF2D7C30CE8CD7 /* BackupMaintenanceRecord.swift */,
+				207B81A27302F87400D63D04 /* BackupPaycheckRecord.swift */,
 				3E3A585D6934A2C349688109 /* BackupRestoreParser.swift */,
 				12B40B1E24D02748A1440079 /* BackupSchedule.swift */,
 				6A54732E3735337977597630 /* BackupSyncPolicy.swift */,
@@ -2333,6 +2431,8 @@
 				8354DDAE51D81084CD85BDF6 /* TrialReminderPolicy.swift */,
 				3CB376D9D779CBFF72C3DA28 /* ReceiptKindClassifier.swift */,
 				A4D6D5DA972EDCAFC4210333 /* PeriodReport.swift */,
+				E16F4E3A3CB77A6A7E953900 /* PeriodReportCopy.swift */,
+				F194395D6B5C41E2992B23C4 /* PeriodReportModels.swift */,
 				28B151D630BC58FAB3A14171 /* PeriodReportStatement.swift */,
 				A4C3AB85F1E92009CA40DE6E /* ShareFileRules.swift */,
 				A524FA06355FBBEA5F925065 /* ShareLoadClassifier.swift */,

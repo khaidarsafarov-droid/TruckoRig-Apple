@@ -16,7 +16,7 @@ final class TelegramEngine {
     let settings: AppSettings
     let prefs: TelegramPrefs
     let session: any TelegramTransport
-    var onJournalChanged: (() -> Void)?
+    var onJournalChanged: ((JournalTables) -> Void)?
     var onStateChanged: (() -> Void)?
 
     init(database: AppDatabase, settings: AppSettings, prefs: TelegramPrefs, session: any TelegramTransport) {
@@ -84,7 +84,7 @@ final class TelegramEngine {
         )
     }
 
-    /// Short poll used by pull-to-refresh and the background task.
+    /// Short poll used by pull-to-refresh and the background task. Timeout stays 0 so this is not the 25-second long poll.
     func catchUp(token: String) async -> TelegramPollOutcome {
         let offset = prefs.offset
         let request = TelegramBotAPI.getUpdates(token: token, offset: offset > 0 ? offset : nil, timeoutSeconds: 0)
@@ -298,8 +298,11 @@ final class TelegramEngine {
     }
 
     private func saveLoads(_ loads: [ParsedLoad], raw: String) -> String {
-        let repository = LoadRepository(database: database, week: week) { [weak self] in self?.onJournalChanged?() }
+        let repository = LoadRepository(database: database, week: week) { [weak self] tables in
+            self?.onJournalChanged?(tables)
+        }
         var lines: [String] = []
+        repository.batch {
         for load in loads {
             let draft = LoadDraft(parsed: load)
             do {
@@ -312,6 +315,7 @@ final class TelegramEngine {
             } catch {
                 lines.append(TelegramIngest.duplicateReply(load.tripId, language))
             }
+        }
         }
         _ = raw
         return lines.joined(separator: "\n\n")
@@ -336,7 +340,9 @@ final class TelegramEngine {
         if Date().timeIntervalSince(started) > 30 {
             return TelegramCopy.text("sync_import_timeout", language, "30")
         }
-        let repository = LoadRepository(database: database, week: week) { [weak self] in self?.onJournalChanged?() }
+        let repository = LoadRepository(database: database, week: week) { [weak self] tables in
+            self?.onJournalChanged?(tables)
+        }
         let outcome = repository.importParsed(loads)
         let elapsed = Int(Date().timeIntervalSince(started) * 1000)
         return [
@@ -381,7 +387,7 @@ final class TelegramEngine {
         _ = try? database.delete(load)
         prefs.lastLoadId = nil
         prefs.lastLoadTrip = nil
-        onJournalChanged?()
+        onJournalChanged?([.loads, .photos, .scans])
         return TelegramCopy.text("sync_load_undo_done", language, load.tripId)
     }
 
@@ -395,7 +401,7 @@ final class TelegramEngine {
         load.updatedAt = Date()
         load.refreshDerivedFields(week: week)
         try? database.save(load)
-        onJournalChanged?()
+        onJournalChanged?(.loads)
         let detail = TelegramLoadReply.detail(
             rate: load.totalRate,
             miles: load.totalMiles,
@@ -456,7 +462,11 @@ final class TelegramEngine {
                 seenFuel.insert(key)
             }
         }
-        if !removed.isEmpty || payRemoved > 0 || dieselRemoved > 0 { onJournalChanged?() }
+        var changed: JournalTables = []
+        if !removed.isEmpty { changed.formUnion([.loads, .photos, .scans]) }
+        if payRemoved > 0 { changed.insert(.paychecks) }
+        if dieselRemoved > 0 { changed.insert(.diesel) }
+        if !changed.isEmpty { onJournalChanged?(changed) }
         let elapsed = Int(Date().timeIntervalSince(started) * 1000)
         return TelegramDedupReport.text(
             loadsScanned: loads.count,
@@ -534,7 +544,9 @@ final class TelegramEngine {
     private func writeReceipt(_ draft: TelegramReceiptDraft, amount: Double) -> String {
         let date = draft.date.map { Date(timeIntervalSince1970: TimeInterval($0)) } ?? Date()
         let ref = week.week(for: date)
-        let finance = FinanceRepository(database: database, week: week) { [weak self] in self?.onJournalChanged?() }
+        let finance = FinanceRepository(database: database, week: week) { [weak self] tables in
+            self?.onJournalChanged?(tables)
+        }
         if draft.kind == "paycheck" {
             let existing = ((try? database.fetchGraph().paychecks) ?? []).contains { $0.weekNumber == ref.weekNumber && $0.year == ref.year }
             if existing { return TelegramCopy.text("sync_paycheck_exists", language, String(ref.weekNumber)) }

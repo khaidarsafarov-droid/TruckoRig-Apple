@@ -6,16 +6,21 @@ struct FinanceRepository {
 
     let database: AppDatabase
     let week: TruckingWeek
-    let onDidSave: (() -> Void)?
+    let saves: JournalSaveNotifier
 
-    init(database: AppDatabase, week: TruckingWeek = TruckingWeek(), onDidSave: (() -> Void)? = nil) {
+    init(
+        database: AppDatabase,
+        week: TruckingWeek = TruckingWeek(),
+        onDidSave: ((JournalTables) -> Void)? = nil,
+        saves: JournalSaveNotifier? = nil
+    ) {
         self.database = database
         self.week = week
-        self.onDidSave = onDidSave
+        self.saves = saves ?? JournalSaveNotifier(deliver: onDidSave)
     }
 
-    private func saved() {
-        onDidSave?()
+    private func saved(_ tables: JournalTables) {
+        saves.saved(tables)
     }
 
     // MARK: - Paychecks
@@ -43,7 +48,7 @@ struct FinanceRepository {
         )
         paycheck.refreshWeek(week: week)
         try database.save(paycheck)
-        saved()
+        saved(.paychecks)
         return paycheck
     }
 
@@ -69,12 +74,12 @@ struct FinanceRepository {
         paycheck.updatedAt = Date()
         paycheck.refreshWeek(week: week)
         try database.save(paycheck)
-        saved()
+        saved(.paychecks)
     }
 
     func delete(_ paycheck: Paycheck) throws {
         try database.delete(paycheck)
-        saved()
+        saved(.paychecks)
     }
 
     // MARK: - Diesel
@@ -107,7 +112,7 @@ struct FinanceRepository {
             sourceFileName: sourceFileName
         )
         try database.save(fill)
-        saved()
+        saved(.diesel)
         return fill
     }
 
@@ -138,19 +143,19 @@ struct FinanceRepository {
         fill.sourceFileName = sourceFileName
         fill.updatedAt = Date()
         try database.save(fill)
-        saved()
+        saved(.diesel)
     }
 
     func delete(_ fill: Diesel) throws {
         try database.delete(fill)
-        saved()
+        saved(.diesel)
     }
 
     // MARK: - Maintenance
 
     func addTask(_ task: MaintenanceTask) throws {
         try database.save(task)
-        saved()
+        saved(.maintenance)
     }
 
     func complete(_ task: MaintenanceTask, now: Date = Date()) throws {
@@ -160,7 +165,7 @@ struct FinanceRepository {
         copy.completedAt = millis
         copy.updatedAt = millis
         try database.save(copy)
-        saved()
+        saved(.maintenance)
     }
 
     @discardableResult
@@ -172,7 +177,7 @@ struct FinanceRepository {
             receiptFileName: receiptFileName
         )
         try database.save(expense)
-        saved()
+        saved(.expenses)
         return expense
     }
 
@@ -183,12 +188,12 @@ struct FinanceRepository {
         expense.receiptFileName = receiptFileName
         expense.updatedAt = Date()
         try database.save(expense)
-        saved()
+        saved(.expenses)
     }
 
     func delete(_ expense: MiscExpense) throws {
         try database.delete(expense)
-        saved()
+        saved(.expenses)
     }
 
     /// Applies one calendar tap the way Android does: auto days flip off, manual days come back off.
@@ -201,12 +206,12 @@ struct FinanceRepository {
         case .delete:
             try database.deletePerDiemOverride(isoDate: isoDate)
         }
-        saved()
+        saved(.perDiem)
     }
 
     func delete(_ task: MaintenanceTask) throws {
         try database.delete(task)
-        saved()
+        saved(.maintenance)
     }
 
     func addArchive(_ entries: [MaintenanceArchiveEntry]) throws {
@@ -214,7 +219,7 @@ struct FinanceRepository {
         for entry in entries {
             try database.save(entry)
         }
-        saved()
+        saved(.maintenance)
     }
 
     func deleteVisit(ids: [String], store: MediaStore) throws {
@@ -222,6 +227,6 @@ struct FinanceRepository {
         for path in paths {
             store.deleteReceipt(relativePath: path)
         }
-        saved()
+        saved(.maintenance)
     }
 }
