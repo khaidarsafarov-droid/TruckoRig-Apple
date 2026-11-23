@@ -21,11 +21,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_NAME = "TruckoRig"
 APP_DIR = "TruckoRig"
 WIDGET_DIR = "TruckoRigWidget"
+SHARE_DIR = "TruckoRigShare"
 TESTS_DIR = "TruckoRigTests"
 UITESTS_DIR = "TruckoRigUITests"
 
 APP_BUNDLE_ID = "com.truckorig"
 WIDGET_BUNDLE_ID = "com.truckorig.widget"
+SHARE_BUNDLE_ID = "com.truckorig.share"
 TESTS_BUNDLE_ID = "com.truckorig.tests"
 UITESTS_BUNDLE_ID = "com.truckorig.uitests"
 
@@ -74,6 +76,7 @@ NON_BUNDLE_FILES = {
     "TruckoRig.entitlements",
     "TruckoRigSideload.entitlements",
     "TruckoRigWidget.entitlements",
+    "TruckoRigShare.entitlements",
     # Licenses stay in the repository and out of the app bundle.
     "DMSans-OFL.txt",
     "Roboto-LICENSE.txt",
@@ -149,6 +152,7 @@ def build() -> str:
     tree = Tree()
     tree.collect(APP_DIR)
     tree.collect(WIDGET_DIR)
+    tree.collect(SHARE_DIR)
     tree.collect(TESTS_DIR)
     tree.collect(UITESTS_DIR)
     # xcconfig lives outside the app sources. Secrets.xcconfig is gitignored and not referenced.
@@ -158,6 +162,25 @@ def build() -> str:
     app_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(APP_DIR + os.sep)]
     widget_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(WIDGET_DIR + os.sep)]
     widget_sources += WIDGET_SHARED_SOURCES
+    share_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(SHARE_DIR + os.sep)]
+    # The extension classifies with the same Foundation parsers as the app, then writes an inbox.
+    # It does not link SQLCipher. ShareImportProcessor stays in the app target only.
+    share_sources += [
+        p for p in tree.files
+        if p.endswith(".swift") and p.startswith(APP_DIR + os.sep + "Domain" + os.sep)
+    ]
+    share_sources += [
+        f"{APP_DIR}/Core/Theme/Colors.swift",
+        f"{APP_DIR}/Core/Theme/ThemePalette.swift",
+        f"{APP_DIR}/Core/Localization/AppLanguage.swift",
+        f"{APP_DIR}/Core/Localization/AppLocale.swift",
+        f"{APP_DIR}/Core/Utils/AppLog.swift",
+        f"{APP_DIR}/Core/Utils/OCRService.swift",
+        f"{APP_DIR}/Core/Documents/LoadDocumentText.swift",
+        f"{APP_DIR}/Core/Share/ShareFileHash.swift",
+        f"{APP_DIR}/Core/Share/ShareImportContainer.swift",
+        f"{APP_DIR}/Core/Share/ShareImportNotifier.swift",
+    ]
     test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(TESTS_DIR + os.sep)]
     ui_test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(UITESTS_DIR + os.sep)]
 
@@ -175,6 +198,13 @@ def build() -> str:
         and os.path.basename(p) not in NON_BUNDLE_FILES
     ]
     widget_resources.append(f"{APP_DIR}/Resources/Localizable.xcstrings")
+    share_resources = [
+        p for p in tree.files
+        if p.startswith(SHARE_DIR + os.sep)
+        and not p.endswith(".swift")
+        and os.path.basename(p) not in NON_BUNDLE_FILES
+    ]
+    share_resources.append(f"{APP_DIR}/Resources/Localizable.xcstrings")
     font_directory = os.path.join(ROOT, APP_DIR, "Resources", "Fonts")
     if os.path.isdir(font_directory):
         widget_resources.extend(
@@ -201,6 +231,7 @@ def build() -> str:
     for target, paths in (
         ("app", app_sources + app_resources),
         ("widget", widget_sources + widget_resources),
+        ("share", share_sources + share_resources),
         ("tests", test_sources),
         ("uitests", ui_test_sources),
     ):
@@ -218,11 +249,13 @@ def build() -> str:
         f"{{isa = PBXBuildFile; productRef = {object_id('package-product', MAPS_PRODUCT)} /* {MAPS_PRODUCT} */; }};"
     )
     appex = f"{PROJECT_NAME}Widget.appex"
-    add(
-        f"\t\t{object_id('buildfile-embed', appex)} /* {appex} in Embed Foundation Extensions */ = "
-        f"{{isa = PBXBuildFile; fileRef = {object_id('product', appex)} /* {appex} */; "
-        "settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };"
-    )
+    share_appex = f"{PROJECT_NAME}Share.appex"
+    for embedded in (appex, share_appex):
+        add(
+            f"\t\t{object_id('buildfile-embed', embedded)} /* {embedded} in Embed Foundation Extensions */ = "
+            f"{{isa = PBXBuildFile; fileRef = {object_id('product', embedded)} /* {embedded} */; "
+            "settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };"
+        )
     add("/* End PBXBuildFile section */")
 
     # PBXContainerItemProxy
@@ -234,6 +267,13 @@ def build() -> str:
     add("\t\t\tproxyType = 1;")
     add(f"\t\t\tremoteGlobalIDString = {object_id('target', 'widget')};")
     add(f"\t\t\tremoteInfo = {PROJECT_NAME}Widget;")
+    add("\t\t};")
+    add(f"\t\t{object_id('proxy', 'share')} /* PBXContainerItemProxy */ = {{")
+    add("\t\t\tisa = PBXContainerItemProxy;")
+    add(f"\t\t\tcontainerPortal = {object_id('project', PROJECT_NAME)} /* Project object */;")
+    add("\t\t\tproxyType = 1;")
+    add(f"\t\t\tremoteGlobalIDString = {object_id('target', 'share')};")
+    add(f"\t\t\tremoteInfo = {PROJECT_NAME}Share;")
     add("\t\t};")
     add(f"\t\t{object_id('proxy', 'tests')} /* PBXContainerItemProxy */ = {{")
     add("\t\t\tisa = PBXContainerItemProxy;")
@@ -261,6 +301,7 @@ def build() -> str:
     add("\t\t\tdstSubfolderSpec = 13;")
     add("\t\t\tfiles = (")
     add(f"\t\t\t\t{object_id('buildfile-embed', appex)} /* {appex} in Embed Foundation Extensions */,")
+    add(f"\t\t\t\t{object_id('buildfile-embed', share_appex)} /* {share_appex} in Embed Foundation Extensions */,")
     add("\t\t\t);")
     add("\t\t\tname = \"Embed Foundation Extensions\";")
     add("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
@@ -282,11 +323,12 @@ def build() -> str:
         "explicitFileType = wrapper.application; includeInIndex = 0; "
         f"path = \"{app_product}\"; sourceTree = BUILT_PRODUCTS_DIR; }};"
     )
-    add(
-        f"\t\t{object_id('product', appex)} /* {appex} */ = {{isa = PBXFileReference; "
-        "explicitFileType = \"wrapper.app-extension\"; includeInIndex = 0; "
-        f"path = \"{appex}\"; sourceTree = BUILT_PRODUCTS_DIR; }};"
-    )
+    for embedded in (appex, share_appex):
+        add(
+            f"\t\t{object_id('product', embedded)} /* {embedded} */ = {{isa = PBXFileReference; "
+            "explicitFileType = \"wrapper.app-extension\"; includeInIndex = 0; "
+            f"path = \"{embedded}\"; sourceTree = BUILT_PRODUCTS_DIR; }};"
+        )
     test_product = f"{PROJECT_NAME}Tests.xctest"
     add(
         f"\t\t{object_id('product', test_product)} /* {test_product} */ = {{isa = PBXFileReference; "
@@ -304,7 +346,7 @@ def build() -> str:
     # PBXFrameworksBuildPhase (empty: Swift auto-links the system frameworks it imports)
     add("")
     add("/* Begin PBXFrameworksBuildPhase section */")
-    for target in ("app", "widget", "tests", "uitests"):
+    for target in ("app", "widget", "share", "tests", "uitests"):
         add(f"\t\t{object_id('phase-frameworks', target)} /* Frameworks */ = {{")
         add("\t\t\tisa = PBXFrameworksBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
@@ -325,6 +367,7 @@ def build() -> str:
     add("\t\t\tchildren = (")
     add(f"\t\t\t\t{object_id('group', APP_DIR)} /* {APP_DIR} */,")
     add(f"\t\t\t\t{object_id('group', WIDGET_DIR)} /* {WIDGET_DIR} */,")
+    add(f"\t\t\t\t{object_id('group', SHARE_DIR)} /* {SHARE_DIR} */,")
     add(f"\t\t\t\t{object_id('group', TESTS_DIR)} /* {TESTS_DIR} */,")
     add(f"\t\t\t\t{object_id('group', UITESTS_DIR)} /* {UITESTS_DIR} */,")
     add(f"\t\t\t\t{object_id('group', CONFIG_DIR)} /* {CONFIG_DIR} */,")
@@ -338,6 +381,7 @@ def build() -> str:
     add("\t\t\tchildren = (")
     add(f"\t\t\t\t{object_id('product', app_product)} /* {app_product} */,")
     add(f"\t\t\t\t{object_id('product', appex)} /* {appex} */,")
+    add(f"\t\t\t\t{object_id('product', share_appex)} /* {share_appex} */,")
     add(f"\t\t\t\t{object_id('product', test_product)} /* {test_product} */,")
     add(f"\t\t\t\t{object_id('product', ui_test_product)} /* {ui_test_product} */,")
     add("\t\t\t);")
@@ -365,6 +409,7 @@ def build() -> str:
     targets = [
         ("app", PROJECT_NAME, app_product, "com.apple.product-type.application"),
         ("widget", f"{PROJECT_NAME}Widget", appex, "com.apple.product-type.app-extension"),
+        ("share", f"{PROJECT_NAME}Share", share_appex, "com.apple.product-type.app-extension"),
         ("tests", f"{PROJECT_NAME}Tests", test_product, "com.apple.product-type.bundle.unit-test"),
         ("uitests", f"{PROJECT_NAME}UITests", ui_test_product, "com.apple.product-type.bundle.ui-testing"),
     ]
@@ -378,13 +423,14 @@ def build() -> str:
         add(f"\t\t\t\t{object_id('phase-resources', key)} /* Resources */,")
         if key == "app":
             add(f"\t\t\t\t{object_id('phase-embed', 'app')} /* Embed Foundation Extensions */,")
-            add(f"\t\t\t\t{object_id('phase-strip', 'app')} /* Strip widget for sideload */,")
+            add(f"\t\t\t\t{object_id('phase-strip', 'app')} /* Strip extensions for sideload */,")
         add("\t\t\t);")
         add("\t\t\tbuildRules = (")
         add("\t\t\t);")
         add("\t\t\tdependencies = (")
         if key == "app":
             add(f"\t\t\t\t{object_id('dependency', 'widget')} /* PBXTargetDependency */,")
+            add(f"\t\t\t\t{object_id('dependency', 'share')} /* PBXTargetDependency */,")
         if key == "tests":
             add(f"\t\t\t\t{object_id('dependency', 'tests')} /* PBXTargetDependency */,")
         if key == "uitests":
@@ -447,7 +493,13 @@ def build() -> str:
     # PBXResourcesBuildPhase
     add("")
     add("/* Begin PBXResourcesBuildPhase section */")
-    for key, paths in (("app", app_resources), ("widget", widget_resources), ("tests", []), ("uitests", [])):
+    for key, paths in (
+        ("app", app_resources),
+        ("widget", widget_resources),
+        ("share", share_resources),
+        ("tests", []),
+        ("uitests", []),
+    ):
         add(f"\t\t{object_id('phase-resources', key)} /* Resources */ = {{")
         add("\t\t\tisa = PBXResourcesBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
@@ -462,7 +514,13 @@ def build() -> str:
     # PBXSourcesBuildPhase
     add("")
     add("/* Begin PBXSourcesBuildPhase section */")
-    for key, paths in (("app", app_sources), ("widget", widget_sources), ("tests", test_sources), ("uitests", ui_test_sources)):
+    for key, paths in (
+        ("app", app_sources),
+        ("widget", widget_sources),
+        ("share", share_sources),
+        ("tests", test_sources),
+        ("uitests", ui_test_sources),
+    ):
         add(f"\t\t{object_id('phase-sources', key)} /* Sources */ = {{")
         add("\t\t\tisa = PBXSourcesBuildPhase;")
         add("\t\t\tbuildActionMask = 2147483647;")
@@ -474,10 +532,10 @@ def build() -> str:
         add("\t\t};")
     add("/* End PBXSourcesBuildPhase section */")
 
-    # Removes the widget appex only from the Sideload configuration. Debug and Release keep it.
+    # Removes every appex from the Sideload configuration. Debug and Release keep the widget and the share extension.
     add("")
     add("/* Begin PBXShellScriptBuildPhase section */")
-    add(f"\t\t{object_id('phase-strip', 'app')} /* Strip widget for sideload */ = {{")
+    add(f"\t\t{object_id('phase-strip', 'app')} /* Strip extensions for sideload */ = {{")
     add("\t\t\tisa = PBXShellScriptBuildPhase;")
     add("\t\t\talwaysOutOfDate = 1;")
     add("\t\t\tenableUserScriptSandboxing = 0;")
@@ -488,7 +546,7 @@ def build() -> str:
     add("\t\t\t);")
     add("\t\t\tinputPaths = (")
     add("\t\t\t);")
-    add('\t\t\tname = "Strip widget for sideload";')
+    add('\t\t\tname = "Strip extensions for sideload";')
     add("\t\t\toutputFileListPaths = (")
     add("\t\t\t);")
     add("\t\t\toutputPaths = (")
@@ -510,6 +568,11 @@ def build() -> str:
     add("\t\t\tisa = PBXTargetDependency;")
     add(f"\t\t\ttarget = {object_id('target', 'widget')} /* {PROJECT_NAME}Widget */;")
     add(f"\t\t\ttargetProxy = {object_id('proxy', 'widget')} /* PBXContainerItemProxy */;")
+    add("\t\t};")
+    add(f"\t\t{object_id('dependency', 'share')} /* PBXTargetDependency */ = {{")
+    add("\t\t\tisa = PBXTargetDependency;")
+    add(f"\t\t\ttarget = {object_id('target', 'share')} /* {PROJECT_NAME}Share */;")
+    add(f"\t\t\ttargetProxy = {object_id('proxy', 'share')} /* PBXContainerItemProxy */;")
     add("\t\t};")
     add(f"\t\t{object_id('dependency', 'tests')} /* PBXTargetDependency */ = {{")
     add("\t\t\tisa = PBXTargetDependency;")
@@ -535,7 +598,7 @@ def build() -> str:
         add("\t\t\t};")
         add(f"\t\t\tname = {name};")
         add("\t\t};")
-    for key in ("app", "widget", "tests", "uitests"):
+    for key in ("app", "widget", "share", "tests", "uitests"):
         for name, settings in target_configurations(key).items():
             add(f"\t\t{object_id(f'config-{key}', name)} /* {name} */ = {{")
             add("\t\t\tisa = XCBuildConfiguration;")
@@ -545,7 +608,7 @@ def build() -> str:
             base_config = None
             if key == "app":
                 base_config = "Config/Maps.xcconfig"
-            elif key == "widget" and name != "Sideload":
+            elif key in ("widget", "share") and name != "Sideload":
                 base_config = "Config/Signing.xcconfig"
             if base_config:
                 add(
@@ -567,6 +630,7 @@ def build() -> str:
         ("project", "config-project"),
         ("app", "config-app"),
         ("widget", "config-widget"),
+        ("share", "config-share"),
         ("tests", "config-tests"),
         ("uitests", "config-uitests"),
     ):
@@ -699,6 +763,24 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "TARGETED_DEVICE_FAMILY": '"1,2"',
             "TEST_TARGET_NAME": PROJECT_NAME,
         }
+    elif key == "share":
+        settings = {
+            "CODE_SIGN_ENTITLEMENTS": f"{SHARE_DIR}/TruckoRigShare.entitlements",
+            "CODE_SIGN_STYLE": "Automatic",
+            "CURRENT_PROJECT_VERSION": "1",
+            "ENABLE_PREVIEWS": "YES",
+            "GENERATE_INFOPLIST_FILE": "YES",
+            "INFOPLIST_FILE": f"{SHARE_DIR}/Info.plist",
+            "INFOPLIST_KEY_CFBundleDisplayName": '"TruckoRig"',
+            "INFOPLIST_KEY_NSHumanReadableCopyright": '""',
+            "LD_RUNPATH_SEARCH_PATHS": '"$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks"',
+            "MARKETING_VERSION": MARKETING_VERSION,
+            "PRODUCT_BUNDLE_IDENTIFIER": SHARE_BUNDLE_ID,
+            "PRODUCT_NAME": '"$(TARGET_NAME)"',
+            "SKIP_INSTALL": "YES",
+            "SWIFT_EMIT_LOC_STRINGS": "YES",
+            "TARGETED_DEVICE_FAMILY": '"1,2"',
+        }
     elif key == "widget":
         settings = {
             "CODE_SIGN_ENTITLEMENTS": f"{WIDGET_DIR}/TruckoRigWidget.entitlements",
@@ -743,8 +825,8 @@ def target_configurations(key: str) -> dict[str, dict[str, str]]:
             "SWIFT_ACTIVE_COMPILATION_CONDITIONS": '"SIDELOAD"',
             "VALIDATE_PRODUCT": "NO",
         })
-    elif key == "widget":
-        # Still built, because the app target depends on it, then deleted from the Sideload app.
+    elif key in ("widget", "share"):
+        # Still built, because the app target depends on them, then deleted from the Sideload app.
         sideload.update({
             "CODE_SIGN_IDENTITY": '"-"',
             "CODE_SIGNING_ALLOWED": "NO",

@@ -64,6 +64,10 @@
 		1F731BD062337EAC85294CF1 /* PremiumLocalStore.swift */ = {isa = PBXBuildFile; fileRef = 6E2880B814B3D0BE6D75ADAA /* PremiumLocalStore.swift */; };
 		8C9E0FFCDEAB74E4A0F037D0 /* StoreKitPremiumGateway.swift */ = {isa = PBXBuildFile; fileRef = 1B04FD251467F771AED17E12 /* StoreKitPremiumGateway.swift */; };
 		64500F05D825DF95F6C389A4 /* TrialNotificationCenter.swift */ = {isa = PBXBuildFile; fileRef = 9404946154788D50EA73D843 /* TrialNotificationCenter.swift */; };
+		878FDB09292869616D901C55 /* ShareFileHash.swift */ = {isa = PBXBuildFile; fileRef = DEA0A3EB70AE5336568A5D4A /* ShareFileHash.swift */; };
+		8368DBE50EE19026F2DC356A /* ShareImportContainer.swift */ = {isa = PBXBuildFile; fileRef = 77751DF97729886AF394E479 /* ShareImportContainer.swift */; };
+		1E2BE675B8D55D39CC3B626D /* ShareImportNotifier.swift */ = {isa = PBXBuildFile; fileRef = 26F794B847AE3E40D39B3D7F /* ShareImportNotifier.swift */; };
+		FD43822A564DC3A6EB0DAEB4 /* ShareImportProcessor.swift */ = {isa = PBXBuildFile; fileRef = 14806E1FFEA591527AF91817 /* ShareImportProcessor.swift */; };
 		1216EA9D36493382C783AD8E /* TelegramCoordinator.swift */ = {isa = PBXBuildFile; fileRef = 8784ACE30EA852569B2ADE44 /* TelegramCoordinator.swift */; };
 		FAEF4181B59A72898FA3F6C1 /* TelegramEngine.swift */ = {isa = PBXBuildFile; fileRef = 321E9E5B2E00BDDF9BEC1AAF /* TelegramEngine.swift */; };
 		A06757D7240654164EB1C12B /* TelegramLogo.swift */ = {isa = PBXBuildFile; fileRef = C8E68BA41B4EF48AA3877621 /* TelegramLogo.swift */; };
@@ -161,6 +165,8 @@
 		9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */ = {isa = PBXBuildFile; fileRef = 36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */; };
 		178C97B43782483CF548C962 /* PeriodReport.swift */ = {isa = PBXBuildFile; fileRef = C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */; };
 		1B3C7CD8396206B0F622DAA2 /* PeriodReportStatement.swift */ = {isa = PBXBuildFile; fileRef = 70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */; };
+		6A46C72B9A00A56A6ECB8DF2 /* ShareLoadClassifier.swift */ = {isa = PBXBuildFile; fileRef = FCFC2A5F4205705CFBA2EF58 /* ShareLoadClassifier.swift */; };
+		F5AF5F849FDEE2F129D64364 /* ShareLoadModels.swift */ = {isa = PBXBuildFile; fileRef = CC3E3672744CA2A690DF4B44 /* ShareLoadModels.swift */; };
 		87EB4E74F31E439EBE46A010 /* AccountantWorkbook.swift */ = {isa = PBXBuildFile; fileRef = 5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */; };
 		8869A36CAF7FBF5C7899B2FA /* TaxEstimate.swift */ = {isa = PBXBuildFile; fileRef = 0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */; };
 		57D48107DCAD176096D80F9D /* XlsxWorkbook.swift */ = {isa = PBXBuildFile; fileRef = D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */; };
@@ -271,6 +277,114 @@
 		0F55C0FB98E7C4263CEBD28C /* Roboto-Bold.ttf */ = {isa = PBXBuildFile; fileRef = 1FD1CD9C069F3DB1C83340F4 /* Roboto-Bold.ttf */; };
 		48058AA0391FBA5D903BEDBE /* Roboto-Medium.ttf */ = {isa = PBXBuildFile; fileRef = D6322AFD6E0109ED2A2F3D9B /* Roboto-Medium.ttf */; };
 		C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */ = {isa = PBXBuildFile; fileRef = BD603CE0C8CA112C46144A12 /* Roboto-Regular.ttf */; };
+		C9A238A9E0F675D4165B4DEC /* ShareExtensionModel.swift */ = {isa = PBXBuildFile; fileRef = C83112F3A19887CECE81F945 /* ShareExtensionModel.swift */; };
+		B69A1F7D6BAE16DD6CE3DE0C /* ShareExtensionScreen.swift */ = {isa = PBXBuildFile; fileRef = C85D1C6FF8371CAFEC75C9D1 /* ShareExtensionScreen.swift */; };
+		93FD9D8F35007BA5F671E261 /* SharePayloadReader.swift */ = {isa = PBXBuildFile; fileRef = FE1AD2F57FBBE9B545B66FAA /* SharePayloadReader.swift */; };
+		315F1F4DC4F5157307DE7266 /* ShareViewController.swift */ = {isa = PBXBuildFile; fileRef = 3AD6F700601A0693E5F90737 /* ShareViewController.swift */; };
+		E04768058BA8B1A8C56F5B92 /* BackupAccount.swift */ = {isa = PBXBuildFile; fileRef = 085ADEB1CE8E512C3E4825EF /* BackupAccount.swift */; };
+		F1076831F75903621DC3D62F /* BackupData.swift */ = {isa = PBXBuildFile; fileRef = 92AA9A1F8A0CF767B70D52F3 /* BackupData.swift */; };
+		3E3A585D6934A2C349688109 /* BackupRestoreParser.swift */ = {isa = PBXBuildFile; fileRef = 0D8594D4058C95767C0515A0 /* BackupRestoreParser.swift */; };
+		12B40B1E24D02748A1440079 /* BackupSchedule.swift */ = {isa = PBXBuildFile; fileRef = 9EC8965324449551C656D14D /* BackupSchedule.swift */; };
+		6A54732E3735337977597630 /* BackupSyncPolicy.swift */ = {isa = PBXBuildFile; fileRef = C8A993D995F86DE8D04C2752 /* BackupSyncPolicy.swift */; };
+		77495E2186BCB564480AA11C /* ICloudBackupPolicy.swift */ = {isa = PBXBuildFile; fileRef = 7F129C433867C02F18FD644D /* ICloudBackupPolicy.swift */; };
+		F77F5B35AC59CBC4AB45C491 /* ICloudMediaPolicy.swift */ = {isa = PBXBuildFile; fileRef = 441C9F73ED83409F5854B29A /* ICloudMediaPolicy.swift */; };
+		7355D436AF250ADEB5A35316 /* AnalyticsCalculator.swift */ = {isa = PBXBuildFile; fileRef = 2875D2376898F097057DD656 /* AnalyticsCalculator.swift */; };
+		9C2431F7BCA060C8598B645B /* GoalMoneyMath.swift */ = {isa = PBXBuildFile; fileRef = 9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */; };
+		F86AED66F39751207C742F2C /* LoadYieldCalculator.swift */ = {isa = PBXBuildFile; fileRef = 6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */; };
+		8D4F186D0BE353553EF9A512 /* OnRoadCalendar.swift */ = {isa = PBXBuildFile; fileRef = C9586AD73DA70791A70A65EE /* OnRoadCalendar.swift */; };
+		0341A7087BF8161A12E13F7A /* PeriodFinance.swift */ = {isa = PBXBuildFile; fileRef = AB6A692E324ABCB3AEA2BE7E /* PeriodFinance.swift */; };
+		AC9097CCE03A09008704DB87 /* RPMCalculator.swift */ = {isa = PBXBuildFile; fileRef = 9005CBC34731ABE895F8F0E5 /* RPMCalculator.swift */; };
+		788D568E1BF211080C00AF84 /* TruckingWeek.swift */ = {isa = PBXBuildFile; fileRef = 67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */; };
+		8BB5CD5F8F830990943FC155 /* WeekDayGross.swift */ = {isa = PBXBuildFile; fileRef = 2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */; };
+		9CF2A626729421D67CF4B89B /* WeekLabelFormatter.swift */ = {isa = PBXBuildFile; fileRef = AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */; };
+		C3956E6792A1201A10E28CCB /* WeeklyDayPlan.swift */ = {isa = PBXBuildFile; fileRef = E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */; };
+		BB9AC5A92C5689A50007F4FF /* WeeklyGoalCalculator.swift */ = {isa = PBXBuildFile; fileRef = F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */; };
+		004FAA7F22BA1A53E19019DA /* WidgetDeepLink.swift */ = {isa = PBXBuildFile; fileRef = 3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */; };
+		FE2F2932863A375BBEE91B15 /* DieselJournalFilter.swift */ = {isa = PBXBuildFile; fileRef = A420A2579DC6A708B11D0247 /* DieselJournalFilter.swift */; };
+		C69D6E3417C67DE3F560CE55 /* DieselPurchaseMath.swift */ = {isa = PBXBuildFile; fileRef = E13FD3B31D49AC499F3B47EB /* DieselPurchaseMath.swift */; };
+		36A7C4D013321B387F557DF7 /* DieselReceiptExtractor.swift */ = {isa = PBXBuildFile; fileRef = 2ABBDBA24009D3651D78A5A3 /* DieselReceiptExtractor.swift */; };
+		528108D0A6A5A61AB5957DC2 /* DieselTextParser.swift */ = {isa = PBXBuildFile; fileRef = 44394B990D387738A91B47BE /* DieselTextParser.swift */; };
+		6FE30C72BA92E86AEC1C4BB8 /* OfficeXMLText.swift */ = {isa = PBXBuildFile; fileRef = 27E5DB35DBB2A0F2871847D4 /* OfficeXMLText.swift */; };
+		949385342224F4B22CC91367 /* MiscExpenseFields.swift */ = {isa = PBXBuildFile; fileRef = 8BEF209E6DCD4B75692C8158 /* MiscExpenseFields.swift */; };
+		86FE39933A6B058B1C919878 /* ImprovementFeedbackMail.swift */ = {isa = PBXBuildFile; fileRef = 84757FB26B847439A0169DE1 /* ImprovementFeedbackMail.swift */; };
+		E17EB00E591CFF9B653379D4 /* JournalPeriodFilter.swift */ = {isa = PBXBuildFile; fileRef = 6A994062D89D23D3FF3F7F25 /* JournalPeriodFilter.swift */; };
+		5C94F81AB821570322D75A00 /* MaintenanceDrafts.swift */ = {isa = PBXBuildFile; fileRef = 39E5094B7BFEEC47FAD0FD11 /* MaintenanceDrafts.swift */; };
+		CDC74122105781460EF2BB15 /* MaintenanceMileage.swift */ = {isa = PBXBuildFile; fileRef = 800504AC56F6EABFD67BE63B /* MaintenanceMileage.swift */; };
+		48FF384C6B0A5B6F8E535D2C /* MaintenanceModels.swift */ = {isa = PBXBuildFile; fileRef = 0875DD2F7E84D2E8599FF469 /* MaintenanceModels.swift */; };
+		D4FE1410D05F2BDB99F98813 /* CrowdMapAggregator.swift */ = {isa = PBXBuildFile; fileRef = 2312523487B12A0A692A5520 /* CrowdMapAggregator.swift */; };
+		335FEB7EFC8E219BF5FD905E /* MapModels.swift */ = {isa = PBXBuildFile; fileRef = E9B6FE24C5C474C04FB9AE8C /* MapModels.swift */; };
+		751EA49CDB3AA183E38E09A3 /* MapMoney.swift */ = {isa = PBXBuildFile; fileRef = 3719D8E23771B2BE98F43C6D /* MapMoney.swift */; };
+		09D6ADEE866A0FF68A138165 /* MapStateMetrics.swift */ = {isa = PBXBuildFile; fileRef = BC2DBE45E6E199269647F92C /* MapStateMetrics.swift */; };
+		4994A98DC39BA24B0E3B2B24 /* MapsAPIKey.swift */ = {isa = PBXBuildFile; fileRef = 7B1B2C22A62419E320B8C2D0 /* MapsAPIKey.swift */; };
+		39224D18B437218976AE9E1F /* StateOutlines.swift */ = {isa = PBXBuildFile; fileRef = 07EFC602FE4E2CFEC1772ED7 /* StateOutlines.swift */; };
+		53FBB75B0B6E18FB28BBD69C /* AttachLoadSelection.swift */ = {isa = PBXBuildFile; fileRef = F9068F57C9B52A0353C02FA1 /* AttachLoadSelection.swift */; };
+		5F31BAFDD88219ABC45AE241 /* AttachmentNaming.swift */ = {isa = PBXBuildFile; fileRef = EDBAB01A84FE71C7B9C0E62B /* AttachmentNaming.swift */; };
+		7AF8CA380A0108EFCA2548D5 /* LocationStamp.swift */ = {isa = PBXBuildFile; fileRef = 15E24B28256ECBFB48D63139 /* LocationStamp.swift */; };
+		8EF361BD24C3BC5A2C3E8277 /* MediaClock.swift */ = {isa = PBXBuildFile; fileRef = 2BB29A46FBFDB19DC7E71E39 /* MediaClock.swift */; };
+		D8C14C457E0A51529B867233 /* PhotoCapture.swift */ = {isa = PBXBuildFile; fileRef = 4E5DAA1C2571C437FC94FF17 /* PhotoCapture.swift */; };
+		80367C07B6B775E548CD8A9B /* ScanCapture.swift */ = {isa = PBXBuildFile; fileRef = CCD2B4260C8AB65C0EC85995 /* ScanCapture.swift */; };
+		A17713DC87EB8440D385FCD0 /* DisputePayout.swift */ = {isa = PBXBuildFile; fileRef = 9A6EDBC5ABC70DC9C51367E7 /* DisputePayout.swift */; };
+		EE2538900C1BFB8A629927EB /* EquipmentType.swift */ = {isa = PBXBuildFile; fileRef = 8E8E476614D1087EE8926696 /* EquipmentType.swift */; };
+		42A4257D31223CDB9B982DE3 /* LoadDraft.swift */ = {isa = PBXBuildFile; fileRef = 30B94C7FDC74DC5A2A2CFE7D /* LoadDraft.swift */; };
+		DB14A7C7B915500BEEB2F702 /* LoadSourceTag.swift */ = {isa = PBXBuildFile; fileRef = 9520FDF943FC41E820312901 /* LoadSourceTag.swift */; };
+		E6E4F17D57C37A958D5EBB9E /* LoadSummary.swift */ = {isa = PBXBuildFile; fileRef = 053D099DE9105A4A9727FB26 /* LoadSummary.swift */; };
+		0C6E06C260172095EE51D59E /* ParsedLoad.swift */ = {isa = PBXBuildFile; fileRef = A692320A0BAA5D107F76BACB /* ParsedLoad.swift */; };
+		88BBF82930A98FC87DC3EC33 /* RPMBand.swift */ = {isa = PBXBuildFile; fileRef = 889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */; };
+		C1FF0932873C565BF1E68172 /* StopDraft.swift */ = {isa = PBXBuildFile; fileRef = DC1A43D1E5A7E99EE0C2D820 /* StopDraft.swift */; };
+		D2EEE82AAB99AFD8D277A4BF /* StopType.swift */ = {isa = PBXBuildFile; fileRef = 565CABBE9CCC357901093F9C /* StopType.swift */; };
+		643DA53DACFD64552D26AACE /* TripID.swift */ = {isa = PBXBuildFile; fileRef = B57841BC97544FDC98FCAFC5 /* TripID.swift */; };
+		1F711BF6FEDDA2E285B3E969 /* USStates.swift */ = {isa = PBXBuildFile; fileRef = 2A6E7DBCA866340C9F2A6C0C /* USStates.swift */; };
+		28AAAED0CEE24BA308845F15 /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
+		94D3ECCA65828BA090F31137 /* WidgetGoalSnapshot.swift */ = {isa = PBXBuildFile; fileRef = EF4F8A4BB5CD07D0CE6C5B11 /* WidgetGoalSnapshot.swift */; };
+		D90776AC54B989617062B664 /* MoneyCents.swift */ = {isa = PBXBuildFile; fileRef = 52D8E9B550BD5E2EF23FDB29 /* MoneyCents.swift */; };
+		1E17F8209CA47E42FE355A00 /* HomeMotivation.swift */ = {isa = PBXBuildFile; fileRef = 2EEE84D2085B196DD9903BD1 /* HomeMotivation.swift */; };
+		B51754DED1FF3FDBCD844C84 /* MaintenanceReminderSchedule.swift */ = {isa = PBXBuildFile; fileRef = 4C8C0075CAFBD5B9B72E24B2 /* MaintenanceReminderSchedule.swift */; };
+		B61B80AFBAFDB30EDA14DBEE /* SmartNotifications.swift */ = {isa = PBXBuildFile; fileRef = D294B5BDFE5F0D55521FDF82 /* SmartNotifications.swift */; };
+		751A7406ED5A667FE06A1C9E /* AddressParser.swift */ = {isa = PBXBuildFile; fileRef = 182585A026C2B15E60AC4276 /* AddressParser.swift */; };
+		E3D140902B5FFDC639A297C5 /* AmazonRelayParser.swift */ = {isa = PBXBuildFile; fileRef = 752F4F175FC643C4B14F3E5C /* AmazonRelayParser.swift */; };
+		4CFA6242F8A1B0F9BF3FE640 /* CSVExportParser.swift */ = {isa = PBXBuildFile; fileRef = 002DEF18EE84F28AFD0D3969 /* CSVExportParser.swift */; };
+		716402C9C7166FB5D757F600 /* ChatHistoryDates.swift */ = {isa = PBXBuildFile; fileRef = AEAF784A101838AFD38F9A8F /* ChatHistoryDates.swift */; };
+		72D91420D4C1114C75E8C9F9 /* DecimalInput.swift */ = {isa = PBXBuildFile; fileRef = 0C75965133619EDFD8CDC9C8 /* DecimalInput.swift */; };
+		1C387DF17DC14E815F909556 /* InboundLoadParser.swift */ = {isa = PBXBuildFile; fileRef = 8733621AEFE558DCA08329F1 /* InboundLoadParser.swift */; };
+		7515112073A3AAB981176690 /* LoadMessageParser+Stops.swift */ = {isa = PBXBuildFile; fileRef = 3E85FFBBC720C322DADCAF64 /* LoadMessageParser+Stops.swift */; };
+		6B14D84B8128A0C35BFB096D /* LoadMessageParser.swift */ = {isa = PBXBuildFile; fileRef = 027730AD621A8AB3D50A37C0 /* LoadMessageParser.swift */; };
+		3059CD6678CB8AAAB8CF3EE7 /* MessageClassifier.swift */ = {isa = PBXBuildFile; fileRef = 9743A44A081DA5F426F9FCE9 /* MessageClassifier.swift */; };
+		CEECBE9663CE11EEA6F8A36A /* NumberParsing.swift */ = {isa = PBXBuildFile; fileRef = AD2D6FB5F03F03A2E7A62F31 /* NumberParsing.swift */; };
+		106B6E9EBF790441C229925E /* ReceiptDateParser.swift */ = {isa = PBXBuildFile; fileRef = 385EDBC8845A93F781EB5B69 /* ReceiptDateParser.swift */; };
+		808751B18C1B235A8310AECD /* RegexKit.swift */ = {isa = PBXBuildFile; fileRef = 0ADD02F61E9B8EF4716DBC15 /* RegexKit.swift */; };
+		15F71441718F38203319D47D /* RelayTimeParser.swift */ = {isa = PBXBuildFile; fileRef = 75634311652C2593A2EA7443 /* RelayTimeParser.swift */; };
+		47D068D8E680AD9BA566DAAA /* ServiceReceiptParser.swift */ = {isa = PBXBuildFile; fileRef = A23569DC2D44504D3FD20C85 /* ServiceReceiptParser.swift */; };
+		1997D6AA9E37F56F1419CE64 /* StyledTextNormalizer.swift */ = {isa = PBXBuildFile; fileRef = 019AB75FD2BE7966DE0494B9 /* StyledTextNormalizer.swift */; };
+		E30A26FCD60FD94CABA82396 /* PaycheckTextParser.swift */ = {isa = PBXBuildFile; fileRef = 8EC5A3797B0A9A0F9C60778A /* PaycheckTextParser.swift */; };
+		5828558BDCE24882D893848A /* PremiumPolicy.swift */ = {isa = PBXBuildFile; fileRef = B623A1A76B97E0EEABA3595D /* PremiumPolicy.swift */; };
+		8354DDAE51D81084CD85BDF6 /* TrialReminderPolicy.swift */ = {isa = PBXBuildFile; fileRef = 2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */; };
+		3CB376D9D779CBFF72C3DA28 /* ReceiptKindClassifier.swift */ = {isa = PBXBuildFile; fileRef = 36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */; };
+		A4D6D5DA972EDCAFC4210333 /* PeriodReport.swift */ = {isa = PBXBuildFile; fileRef = C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */; };
+		28B151D630BC58FAB3A14171 /* PeriodReportStatement.swift */ = {isa = PBXBuildFile; fileRef = 70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */; };
+		A524FA06355FBBEA5F925065 /* ShareLoadClassifier.swift */ = {isa = PBXBuildFile; fileRef = FCFC2A5F4205705CFBA2EF58 /* ShareLoadClassifier.swift */; };
+		50E14DA852AD019CF5C1FD4A /* ShareLoadModels.swift */ = {isa = PBXBuildFile; fileRef = CC3E3672744CA2A690DF4B44 /* ShareLoadModels.swift */; };
+		B3934BAE61EA107BF030B1CE /* AccountantWorkbook.swift */ = {isa = PBXBuildFile; fileRef = 5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */; };
+		B5CA380E0A0945ACB127BB16 /* TaxEstimate.swift */ = {isa = PBXBuildFile; fileRef = 0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */; };
+		B2BDA31761DC14F639F5792E /* XlsxWorkbook.swift */ = {isa = PBXBuildFile; fileRef = D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */; };
+		24F32BD680D4742294695262 /* TelegramCopy.swift */ = {isa = PBXBuildFile; fileRef = 1A7ECC665686BD45C1748A48 /* TelegramCopy.swift */; };
+		43D694E4AC41FED4D15DA4EC /* TelegramFoundation.swift */ = {isa = PBXBuildFile; fileRef = 3E43520566618F3BD7D35FD9 /* TelegramFoundation.swift */; };
+		1F772CFE69F635A57D6FBD4E /* TelegramHTTP.swift */ = {isa = PBXBuildFile; fileRef = B249EA0DE1C7915F0F8271F7 /* TelegramHTTP.swift */; };
+		2A5C20236B6C54F71794704D /* TelegramIngest.swift */ = {isa = PBXBuildFile; fileRef = 265AC9773540258462A8600C /* TelegramIngest.swift */; };
+		F788B0B8BA95E5C472405573 /* TelegramRouter.swift */ = {isa = PBXBuildFile; fileRef = AB0FAE50F5588FF5A602096D /* TelegramRouter.swift */; };
+		BAAEFB398A55F64E95C15231 /* TelegramRules.swift */ = {isa = PBXBuildFile; fileRef = 47227EDBF85F0CF4CBE27DA1 /* TelegramRules.swift */; };
+		15FBB178E5FF8913CC700977 /* MeasurementUnits.swift */ = {isa = PBXBuildFile; fileRef = 95D3018275DEA547F3A5389A /* MeasurementUnits.swift */; };
+		C4647EDD5047A9F6AC2F2D64 /* Colors.swift */ = {isa = PBXBuildFile; fileRef = 05BED02069663E067A86E29A /* Colors.swift */; };
+		B9E950070608A782DE7D0C17 /* ThemePalette.swift */ = {isa = PBXBuildFile; fileRef = 6FFFC95AA58C3210DBBA4FFB /* ThemePalette.swift */; };
+		5EAE3A0A87B264CE80CD84DB /* AppLanguage.swift */ = {isa = PBXBuildFile; fileRef = 9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */; };
+		183AC9ED9FDAB96476FEDFF6 /* AppLocale.swift */ = {isa = PBXBuildFile; fileRef = 203C0259857B749C5803EE78 /* AppLocale.swift */; };
+		FE7E169EB868356D74C3E7C1 /* AppLog.swift */ = {isa = PBXBuildFile; fileRef = 79E3F919905E7EC566301483 /* AppLog.swift */; };
+		16E7F3224B13335FCCE095AD /* OCRService.swift */ = {isa = PBXBuildFile; fileRef = E2B035AF781CC96577EF33A1 /* OCRService.swift */; };
+		8550318FFBABC01EA6F823FC /* LoadDocumentText.swift */ = {isa = PBXBuildFile; fileRef = E840D02AFED6185E1F0303E8 /* LoadDocumentText.swift */; };
+		671CD80DE10344017BCEC8B7 /* ShareFileHash.swift */ = {isa = PBXBuildFile; fileRef = DEA0A3EB70AE5336568A5D4A /* ShareFileHash.swift */; };
+		FB15EAB2C57F7B55195120A7 /* ShareImportContainer.swift */ = {isa = PBXBuildFile; fileRef = 77751DF97729886AF394E479 /* ShareImportContainer.swift */; };
+		0C3E1DABFA2A3C6DB3E05A24 /* ShareImportNotifier.swift */ = {isa = PBXBuildFile; fileRef = 26F794B847AE3E40D39B3D7F /* ShareImportNotifier.swift */; };
+		1FF39FFE6F605D84445BFE87 /* PrivacyInfo.xcprivacy */ = {isa = PBXBuildFile; fileRef = 58D5F2CB8D546426F45CC468 /* PrivacyInfo.xcprivacy */; };
+		9CFD6456A72D7BE43AA026EF /* Localizable.xcstrings */ = {isa = PBXBuildFile; fileRef = 1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */; };
 		330B6D79605EAB60611D5B1B /* BackupRestoreTests.swift */ = {isa = PBXBuildFile; fileRef = 366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */; };
 		6247BB683169494C6B36A700 /* EditLoadRoundTripTests.swift */ = {isa = PBXBuildFile; fileRef = A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */; };
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
@@ -290,6 +404,7 @@
 		109E7A66906193EF84584997 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 1B12FA89457B475550D08A7A /* GRDB */; };
 		15526688769DC7F70FA1BACC /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = C282B09B29FB0A5E9CF3F42D /* GoogleMaps */; };
 		ADD14D21F915C76FF9FEE31E /* TruckoRigWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		58F8B67CE2266E1DA60504C7 /* TruckoRigShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 78B6573733A64FD352B69A03 /* TruckoRigShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -299,6 +414,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 314DC4CF3D401B5A7CB470DF;
 			remoteInfo = TruckoRigWidget;
+		};
+		506673F9460CEC59922811D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D5B6ED0100CE3FBC6889956 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE1C0C0A2D7FC4EFAFF3E018;
+			remoteInfo = TruckoRigShare;
 		};
 		6605C10F6C8F6BC76033835A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -324,6 +446,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				ADD14D21F915C76FF9FEE31E /* TruckoRigWidget.appex in Embed Foundation Extensions */,
+				58F8B67CE2266E1DA60504C7 /* TruckoRigShare.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -391,6 +514,10 @@
 		6E2880B814B3D0BE6D75ADAA /* PremiumLocalStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumLocalStore.swift"; sourceTree = "<group>"; };
 		1B04FD251467F771AED17E12 /* StoreKitPremiumGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoreKitPremiumGateway.swift"; sourceTree = "<group>"; };
 		9404946154788D50EA73D843 /* TrialNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialNotificationCenter.swift"; sourceTree = "<group>"; };
+		DEA0A3EB70AE5336568A5D4A /* ShareFileHash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareFileHash.swift"; sourceTree = "<group>"; };
+		77751DF97729886AF394E479 /* ShareImportContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareImportContainer.swift"; sourceTree = "<group>"; };
+		26F794B847AE3E40D39B3D7F /* ShareImportNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareImportNotifier.swift"; sourceTree = "<group>"; };
+		14806E1FFEA591527AF91817 /* ShareImportProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareImportProcessor.swift"; sourceTree = "<group>"; };
 		8784ACE30EA852569B2ADE44 /* TelegramCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramCoordinator.swift"; sourceTree = "<group>"; };
 		321E9E5B2E00BDDF9BEC1AAF /* TelegramEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramEngine.swift"; sourceTree = "<group>"; };
 		C8E68BA41B4EF48AA3877621 /* TelegramLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramLogo.swift"; sourceTree = "<group>"; };
@@ -488,6 +615,8 @@
 		36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReceiptKindClassifier.swift"; sourceTree = "<group>"; };
 		C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReport.swift"; sourceTree = "<group>"; };
 		70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportStatement.swift"; sourceTree = "<group>"; };
+		FCFC2A5F4205705CFBA2EF58 /* ShareLoadClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareLoadClassifier.swift"; sourceTree = "<group>"; };
+		CC3E3672744CA2A690DF4B44 /* ShareLoadModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareLoadModels.swift"; sourceTree = "<group>"; };
 		5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountantWorkbook.swift"; sourceTree = "<group>"; };
 		0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxEstimate.swift"; sourceTree = "<group>"; };
 		D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XlsxWorkbook.swift"; sourceTree = "<group>"; };
@@ -581,6 +710,13 @@
 		78E4700C12FAFE14A48EA814 /* SoftButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftButton.swift"; sourceTree = "<group>"; };
 		9A0E18B200B7FA69FB005B28 /* SoftCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftCard.swift"; sourceTree = "<group>"; };
 		E9A91E3DC8256945501586BD /* SoftTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoftTextField.swift"; sourceTree = "<group>"; };
+		F30D6B5DEFFA36DA0572F9E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
+		58D5F2CB8D546426F45CC468 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		C83112F3A19887CECE81F945 /* ShareExtensionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareExtensionModel.swift"; sourceTree = "<group>"; };
+		C85D1C6FF8371CAFEC75C9D1 /* ShareExtensionScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareExtensionScreen.swift"; sourceTree = "<group>"; };
+		FE1AD2F57FBBE9B545B66FAA /* SharePayloadReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SharePayloadReader.swift"; sourceTree = "<group>"; };
+		3AD6F700601A0693E5F90737 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareViewController.swift"; sourceTree = "<group>"; };
+		B665D7FFCC99A85205749C7B /* TruckoRigShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRigShare.entitlements"; sourceTree = "<group>"; };
 		366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupRestoreTests.swift"; sourceTree = "<group>"; };
 		A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditLoadRoundTripTests.swift"; sourceTree = "<group>"; };
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
@@ -604,6 +740,7 @@
 		5330DB8D8D1B053921AE4256 /* WeeklyGoalWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalWidget.swift"; sourceTree = "<group>"; };
 		B3DA8B53248BA20805DF53E9 /* TruckoRig.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TruckoRig.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "TruckoRigWidget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		78B6573733A64FD352B69A03 /* TruckoRigShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "TruckoRigShare.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E78E117CD68A4B0C02407F4 /* TruckoRigTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TruckoRigTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1829AC6AFE2DACF82419BC7 /* TruckoRigUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TruckoRigUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -619,6 +756,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		34DF2F344897C639546F644A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE08B0713EDB0972C41B00F2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -647,6 +791,7 @@
 			children = (
 				7BD173E8EB3E2895F7843687 /* TruckoRig */,
 				F52F77CC0D3228E216E3A6F4 /* TruckoRigWidget */,
+				50E8ED1BEEE822E707FCAED0 /* TruckoRigShare */,
 				D699D40C0DE22C80CB771F02 /* TruckoRigTests */,
 				23876982F4FAC5BD0024AE63 /* TruckoRigUITests */,
 				1B3039B2E15DD2AB7EA6156D /* Config */,
@@ -659,6 +804,7 @@
 			children = (
 				B3DA8B53248BA20805DF53E9 /* TruckoRig.app */,
 				DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */,
+				78B6573733A64FD352B69A03 /* TruckoRigShare.appex */,
 				3E78E117CD68A4B0C02407F4 /* TruckoRigTests.xctest */,
 				C1829AC6AFE2DACF82419BC7 /* TruckoRigUITests.xctest */,
 			);
@@ -712,6 +858,7 @@
 				7286F81711A383D0B6A2BF46 /* Notifications */,
 				BA28C1F0921BD05A06E4B466 /* Persistence */,
 				0455CEDCF317049FA1260C21 /* Premium */,
+				D37E669B63FD251F7FB32862 /* Share */,
 				A1ACC9CA2E1C3ED700BB152B /* Telegram */,
 				164F4DC553BA843520C790A9 /* Theme */,
 				D79027A108C9C00EEFD83A30 /* Utils */,
@@ -834,6 +981,17 @@
 			path = "Premium";
 			sourceTree = "<group>";
 		};
+		D37E669B63FD251F7FB32862 /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				DEA0A3EB70AE5336568A5D4A /* ShareFileHash.swift */,
+				77751DF97729886AF394E479 /* ShareImportContainer.swift */,
+				26F794B847AE3E40D39B3D7F /* ShareImportNotifier.swift */,
+				14806E1FFEA591527AF91817 /* ShareImportProcessor.swift */,
+			);
+			path = "Share";
+			sourceTree = "<group>";
+		};
 		A1ACC9CA2E1C3ED700BB152B /* Telegram */ = {
 			isa = PBXGroup;
 			children = (
@@ -895,6 +1053,7 @@
 				D1F7A1FD11835D852F9F8DEE /* Premium */,
 				5C8093349FAB4075D9514D72 /* Receipts */,
 				74FA34D9A89C9140953D0558 /* Reports */,
+				08147527EC737AD03EC4B80B /* Share */,
 				FDED2F2045248E329691F51E /* Tax */,
 				B1F5FEDB0865207E1E84621B /* Telegram */,
 				A3A7D16827AB33799B159C1E /* Units */,
@@ -1120,6 +1279,15 @@
 				70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */,
 			);
 			path = "Reports";
+			sourceTree = "<group>";
+		};
+		08147527EC737AD03EC4B80B /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				FCFC2A5F4205705CFBA2EF58 /* ShareLoadClassifier.swift */,
+				CC3E3672744CA2A690DF4B44 /* ShareLoadModels.swift */,
+			);
+			path = "Share";
 			sourceTree = "<group>";
 		};
 		FDED2F2045248E329691F51E /* Tax */ = {
@@ -1473,6 +1641,20 @@
 			path = "Components";
 			sourceTree = "<group>";
 		};
+		50E8ED1BEEE822E707FCAED0 /* TruckoRigShare */ = {
+			isa = PBXGroup;
+			children = (
+				F30D6B5DEFFA36DA0572F9E0 /* Info.plist */,
+				58D5F2CB8D546426F45CC468 /* PrivacyInfo.xcprivacy */,
+				C83112F3A19887CECE81F945 /* ShareExtensionModel.swift */,
+				C85D1C6FF8371CAFEC75C9D1 /* ShareExtensionScreen.swift */,
+				FE1AD2F57FBBE9B545B66FAA /* SharePayloadReader.swift */,
+				3AD6F700601A0693E5F90737 /* ShareViewController.swift */,
+				B665D7FFCC99A85205749C7B /* TruckoRigShare.entitlements */,
+			);
+			path = "TruckoRigShare";
+			sourceTree = "<group>";
+		};
 		D699D40C0DE22C80CB771F02 /* TruckoRigTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1526,12 +1708,13 @@
 				FD408E19B6EF845E93EC4E96 /* Frameworks */,
 				851F3183EF610546A033D2DE /* Resources */,
 				90769E3777782F31183BC486 /* Embed Foundation Extensions */,
-				5BCA025080C70C8CF7ABC9AE /* Strip widget for sideload */,
+				5BCA025080C70C8CF7ABC9AE /* Strip extensions for sideload */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				584C342C1866B10AB5FF7DA3 /* PBXTargetDependency */,
+				E0E355A3B8EFA561EA45D819 /* PBXTargetDependency */,
 			);
 			name = TruckoRig;
 			packageProductDependencies = (
@@ -1557,6 +1740,23 @@
 			name = TruckoRigWidget;
 			productName = TruckoRigWidget;
 			productReference = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		CE1C0C0A2D7FC4EFAFF3E018 /* TruckoRigShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DF97CC44CA5F95BC61191EEF /* Build configuration list */;
+			buildPhases = (
+				4F78FED3B87CEAC53F977DDF /* Sources */,
+				AE08B0713EDB0972C41B00F2 /* Frameworks */,
+				2F7C9DE4526EF116AE4783DA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TruckoRigShare;
+			productName = TruckoRigShare;
+			productReference = 78B6573733A64FD352B69A03 /* TruckoRigShare.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		2ADDEE89B29C55E11126D89F /* TruckoRigTests */ = {
@@ -1611,6 +1811,9 @@
 					314DC4CF3D401B5A7CB470DF = {
 						CreatedOnToolsVersion = 16.0;
 					};
+					CE1C0C0A2D7FC4EFAFF3E018 = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					2ADDEE89B29C55E11126D89F = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -1641,6 +1844,7 @@
 			targets = (
 				8C1A045E96B998B40533C7FF /* TruckoRig */,
 				314DC4CF3D401B5A7CB470DF /* TruckoRigWidget */,
+				CE1C0C0A2D7FC4EFAFF3E018 /* TruckoRigShare */,
 				2ADDEE89B29C55E11126D89F /* TruckoRigTests */,
 				129964AA630C5970DF325D9E /* TruckoRigUITests */,
 			);
@@ -1681,6 +1885,15 @@
 				0F55C0FB98E7C4263CEBD28C /* Roboto-Bold.ttf */,
 				48058AA0391FBA5D903BEDBE /* Roboto-Medium.ttf */,
 				C750078622E8AF7B5D386F5F /* Roboto-Regular.ttf */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2F7C9DE4526EF116AE4783DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FF39FFE6F605D84445BFE87 /* PrivacyInfo.xcprivacy */,
+				9CFD6456A72D7BE43AA026EF /* Localizable.xcstrings */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1761,6 +1974,10 @@
 				1F731BD062337EAC85294CF1 /* PremiumLocalStore.swift */,
 				8C9E0FFCDEAB74E4A0F037D0 /* StoreKitPremiumGateway.swift */,
 				64500F05D825DF95F6C389A4 /* TrialNotificationCenter.swift */,
+				878FDB09292869616D901C55 /* ShareFileHash.swift */,
+				8368DBE50EE19026F2DC356A /* ShareImportContainer.swift */,
+				1E2BE675B8D55D39CC3B626D /* ShareImportNotifier.swift */,
+				FD43822A564DC3A6EB0DAEB4 /* ShareImportProcessor.swift */,
 				1216EA9D36493382C783AD8E /* TelegramCoordinator.swift */,
 				FAEF4181B59A72898FA3F6C1 /* TelegramEngine.swift */,
 				A06757D7240654164EB1C12B /* TelegramLogo.swift */,
@@ -1858,6 +2075,8 @@
 				9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */,
 				178C97B43782483CF548C962 /* PeriodReport.swift */,
 				1B3C7CD8396206B0F622DAA2 /* PeriodReportStatement.swift */,
+				6A46C72B9A00A56A6ECB8DF2 /* ShareLoadClassifier.swift */,
+				F5AF5F849FDEE2F129D64364 /* ShareLoadModels.swift */,
 				87EB4E74F31E439EBE46A010 /* AccountantWorkbook.swift */,
 				8869A36CAF7FBF5C7899B2FA /* TaxEstimate.swift */,
 				57D48107DCAD176096D80F9D /* XlsxWorkbook.swift */,
@@ -1956,6 +2175,119 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4F78FED3B87CEAC53F977DDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9A238A9E0F675D4165B4DEC /* ShareExtensionModel.swift */,
+				B69A1F7D6BAE16DD6CE3DE0C /* ShareExtensionScreen.swift */,
+				93FD9D8F35007BA5F671E261 /* SharePayloadReader.swift */,
+				315F1F4DC4F5157307DE7266 /* ShareViewController.swift */,
+				E04768058BA8B1A8C56F5B92 /* BackupAccount.swift */,
+				F1076831F75903621DC3D62F /* BackupData.swift */,
+				3E3A585D6934A2C349688109 /* BackupRestoreParser.swift */,
+				12B40B1E24D02748A1440079 /* BackupSchedule.swift */,
+				6A54732E3735337977597630 /* BackupSyncPolicy.swift */,
+				77495E2186BCB564480AA11C /* ICloudBackupPolicy.swift */,
+				F77F5B35AC59CBC4AB45C491 /* ICloudMediaPolicy.swift */,
+				7355D436AF250ADEB5A35316 /* AnalyticsCalculator.swift */,
+				9C2431F7BCA060C8598B645B /* GoalMoneyMath.swift */,
+				F86AED66F39751207C742F2C /* LoadYieldCalculator.swift */,
+				8D4F186D0BE353553EF9A512 /* OnRoadCalendar.swift */,
+				0341A7087BF8161A12E13F7A /* PeriodFinance.swift */,
+				AC9097CCE03A09008704DB87 /* RPMCalculator.swift */,
+				788D568E1BF211080C00AF84 /* TruckingWeek.swift */,
+				8BB5CD5F8F830990943FC155 /* WeekDayGross.swift */,
+				9CF2A626729421D67CF4B89B /* WeekLabelFormatter.swift */,
+				C3956E6792A1201A10E28CCB /* WeeklyDayPlan.swift */,
+				BB9AC5A92C5689A50007F4FF /* WeeklyGoalCalculator.swift */,
+				004FAA7F22BA1A53E19019DA /* WidgetDeepLink.swift */,
+				FE2F2932863A375BBEE91B15 /* DieselJournalFilter.swift */,
+				C69D6E3417C67DE3F560CE55 /* DieselPurchaseMath.swift */,
+				36A7C4D013321B387F557DF7 /* DieselReceiptExtractor.swift */,
+				528108D0A6A5A61AB5957DC2 /* DieselTextParser.swift */,
+				6FE30C72BA92E86AEC1C4BB8 /* OfficeXMLText.swift */,
+				949385342224F4B22CC91367 /* MiscExpenseFields.swift */,
+				86FE39933A6B058B1C919878 /* ImprovementFeedbackMail.swift */,
+				E17EB00E591CFF9B653379D4 /* JournalPeriodFilter.swift */,
+				5C94F81AB821570322D75A00 /* MaintenanceDrafts.swift */,
+				CDC74122105781460EF2BB15 /* MaintenanceMileage.swift */,
+				48FF384C6B0A5B6F8E535D2C /* MaintenanceModels.swift */,
+				D4FE1410D05F2BDB99F98813 /* CrowdMapAggregator.swift */,
+				335FEB7EFC8E219BF5FD905E /* MapModels.swift */,
+				751EA49CDB3AA183E38E09A3 /* MapMoney.swift */,
+				09D6ADEE866A0FF68A138165 /* MapStateMetrics.swift */,
+				4994A98DC39BA24B0E3B2B24 /* MapsAPIKey.swift */,
+				39224D18B437218976AE9E1F /* StateOutlines.swift */,
+				53FBB75B0B6E18FB28BBD69C /* AttachLoadSelection.swift */,
+				5F31BAFDD88219ABC45AE241 /* AttachmentNaming.swift */,
+				7AF8CA380A0108EFCA2548D5 /* LocationStamp.swift */,
+				8EF361BD24C3BC5A2C3E8277 /* MediaClock.swift */,
+				D8C14C457E0A51529B867233 /* PhotoCapture.swift */,
+				80367C07B6B775E548CD8A9B /* ScanCapture.swift */,
+				A17713DC87EB8440D385FCD0 /* DisputePayout.swift */,
+				EE2538900C1BFB8A629927EB /* EquipmentType.swift */,
+				42A4257D31223CDB9B982DE3 /* LoadDraft.swift */,
+				DB14A7C7B915500BEEB2F702 /* LoadSourceTag.swift */,
+				E6E4F17D57C37A958D5EBB9E /* LoadSummary.swift */,
+				0C6E06C260172095EE51D59E /* ParsedLoad.swift */,
+				88BBF82930A98FC87DC3EC33 /* RPMBand.swift */,
+				C1FF0932873C565BF1E68172 /* StopDraft.swift */,
+				D2EEE82AAB99AFD8D277A4BF /* StopType.swift */,
+				643DA53DACFD64552D26AACE /* TripID.swift */,
+				1F711BF6FEDDA2E285B3E969 /* USStates.swift */,
+				28AAAED0CEE24BA308845F15 /* WeeklyGoalProgress.swift */,
+				94D3ECCA65828BA090F31137 /* WidgetGoalSnapshot.swift */,
+				D90776AC54B989617062B664 /* MoneyCents.swift */,
+				1E17F8209CA47E42FE355A00 /* HomeMotivation.swift */,
+				B51754DED1FF3FDBCD844C84 /* MaintenanceReminderSchedule.swift */,
+				B61B80AFBAFDB30EDA14DBEE /* SmartNotifications.swift */,
+				751A7406ED5A667FE06A1C9E /* AddressParser.swift */,
+				E3D140902B5FFDC639A297C5 /* AmazonRelayParser.swift */,
+				4CFA6242F8A1B0F9BF3FE640 /* CSVExportParser.swift */,
+				716402C9C7166FB5D757F600 /* ChatHistoryDates.swift */,
+				72D91420D4C1114C75E8C9F9 /* DecimalInput.swift */,
+				1C387DF17DC14E815F909556 /* InboundLoadParser.swift */,
+				7515112073A3AAB981176690 /* LoadMessageParser+Stops.swift */,
+				6B14D84B8128A0C35BFB096D /* LoadMessageParser.swift */,
+				3059CD6678CB8AAAB8CF3EE7 /* MessageClassifier.swift */,
+				CEECBE9663CE11EEA6F8A36A /* NumberParsing.swift */,
+				106B6E9EBF790441C229925E /* ReceiptDateParser.swift */,
+				808751B18C1B235A8310AECD /* RegexKit.swift */,
+				15F71441718F38203319D47D /* RelayTimeParser.swift */,
+				47D068D8E680AD9BA566DAAA /* ServiceReceiptParser.swift */,
+				1997D6AA9E37F56F1419CE64 /* StyledTextNormalizer.swift */,
+				E30A26FCD60FD94CABA82396 /* PaycheckTextParser.swift */,
+				5828558BDCE24882D893848A /* PremiumPolicy.swift */,
+				8354DDAE51D81084CD85BDF6 /* TrialReminderPolicy.swift */,
+				3CB376D9D779CBFF72C3DA28 /* ReceiptKindClassifier.swift */,
+				A4D6D5DA972EDCAFC4210333 /* PeriodReport.swift */,
+				28B151D630BC58FAB3A14171 /* PeriodReportStatement.swift */,
+				A524FA06355FBBEA5F925065 /* ShareLoadClassifier.swift */,
+				50E14DA852AD019CF5C1FD4A /* ShareLoadModels.swift */,
+				B3934BAE61EA107BF030B1CE /* AccountantWorkbook.swift */,
+				B5CA380E0A0945ACB127BB16 /* TaxEstimate.swift */,
+				B2BDA31761DC14F639F5792E /* XlsxWorkbook.swift */,
+				24F32BD680D4742294695262 /* TelegramCopy.swift */,
+				43D694E4AC41FED4D15DA4EC /* TelegramFoundation.swift */,
+				1F772CFE69F635A57D6FBD4E /* TelegramHTTP.swift */,
+				2A5C20236B6C54F71794704D /* TelegramIngest.swift */,
+				F788B0B8BA95E5C472405573 /* TelegramRouter.swift */,
+				BAAEFB398A55F64E95C15231 /* TelegramRules.swift */,
+				15FBB178E5FF8913CC700977 /* MeasurementUnits.swift */,
+				C4647EDD5047A9F6AC2F2D64 /* Colors.swift */,
+				B9E950070608A782DE7D0C17 /* ThemePalette.swift */,
+				5EAE3A0A87B264CE80CD84DB /* AppLanguage.swift */,
+				183AC9ED9FDAB96476FEDFF6 /* AppLocale.swift */,
+				FE7E169EB868356D74C3E7C1 /* AppLog.swift */,
+				16E7F3224B13335FCCE095AD /* OCRService.swift */,
+				8550318FFBABC01EA6F823FC /* LoadDocumentText.swift */,
+				671CD80DE10344017BCEC8B7 /* ShareFileHash.swift */,
+				FB15EAB2C57F7B55195120A7 /* ShareImportContainer.swift */,
+				0C3E1DABFA2A3C6DB3E05A24 /* ShareImportNotifier.swift */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0CAD9FB840F9865AF252195E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1989,7 +2321,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		5BCA025080C70C8CF7ABC9AE /* Strip widget for sideload */ = {
+		5BCA025080C70C8CF7ABC9AE /* Strip extensions for sideload */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			enableUserScriptSandboxing = 0;
@@ -2000,7 +2332,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Strip widget for sideload";
+			name = "Strip extensions for sideload";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -2016,6 +2348,11 @@
 			isa = PBXTargetDependency;
 			target = 314DC4CF3D401B5A7CB470DF /* TruckoRigWidget */;
 			targetProxy = 82D3F98C29F6712177415044 /* PBXContainerItemProxy */;
+		};
+		E0E355A3B8EFA561EA45D819 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE1C0C0A2D7FC4EFAFF3E018 /* TruckoRigShare */;
+			targetProxy = 506673F9460CEC59922811D2 /* PBXContainerItemProxy */;
 		};
 		60356F681D31A06D546741DC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2247,6 +2584,74 @@
 			};
 			name = Sideload;
 		};
+		3F4A39BF43DC198014BF7482 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C5A99597CD4C624170452B0 /* Signing.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TruckoRigShare/TruckoRigShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TruckoRigShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.share;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		30D2E665A6E3493ACC49BF2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C5A99597CD4C624170452B0 /* Signing.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TruckoRigShare/TruckoRigShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TruckoRigShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.share;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		11B6E9317F950FD8D7D4ECFA /* Sideload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TruckoRigShare/TruckoRigShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TruckoRigShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.5.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.share;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+			};
+			name = Sideload;
+		};
 		21B179F8F9DFCE51ACDF5546 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2366,6 +2771,16 @@
 				297D4155EEB86AAF4470A4B9 /* Debug */,
 				B54244056D086D3B2AB1A5FD /* Release */,
 				D31B0A79E9A68B0367C8D1A2 /* Sideload */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DF97CC44CA5F95BC61191EEF /* Build configuration list */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F4A39BF43DC198014BF7482 /* Debug */,
+				30D2E665A6E3493ACC49BF2A /* Release */,
+				11B6E9317F950FD8D7D4ECFA /* Sideload */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

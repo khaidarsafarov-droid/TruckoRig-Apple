@@ -46,7 +46,7 @@ public enum WidgetDeepLink {
         let trimmed = raw?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         guard !trimmed.isEmpty else { return nil }
         switch trimmed {
-        case "home":
+        case "home", "share":
             return .home
         case "camera", "attach_pick/camera":
             return .camera

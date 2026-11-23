@@ -220,6 +220,14 @@ struct JournalLoadCard: View {
                         iconButton("doc.viewfinder", label: "load.card.scanner", action: onScan)
                     }
                 }
+                if appState.highlightedLoadIDs.contains(load.id) {
+                    Text("share.badge.new")
+                        .font(.appCaptionMedium)
+                        .foregroundStyle(Color.goldOnGold)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Color.brandGold, in: Capsule())
+                }
                 route
                 facts
             }
@@ -228,6 +236,12 @@ struct JournalLoadCard: View {
             .background(Color.forestCard)
         }
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay {
+            if appState.highlightedLoadIDs.contains(load.id) {
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .strokeBorder(Color.brandGold, lineWidth: 2)
+            }
+        }
         .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
     }
 

@@ -21,6 +21,7 @@ struct RootView: View {
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
+                    appState.importSharedLoads()
                     appState.scheduleReminders()
                     appState.telegram.resume()
                     TelegramBackgroundRegistrar.submit()
@@ -216,6 +217,9 @@ struct SidebarView: View {
             }
             .navigationTitle("app.name")
             .listStyle(.sidebar)
+            .onChange(of: appState.highlightedLoadIDs) { _, ids in
+                if !ids.isEmpty { selection = .journal }
+            }
         } detail: {
             NavigationStack {
                 destination(for: selection ?? .journal)
