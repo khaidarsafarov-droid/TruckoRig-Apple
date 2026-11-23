@@ -321,6 +321,85 @@ final class PeriodReportTests: XCTestCase {
         XCTAssertEqual(report.loads[0].lines.first { $0.label == "Rate per mile" }?.value, "—")
     }
 
+    func testStatementTableHasLoadColumnsAndNoDeductions() {
+        let first = load(
+            trip: "L-1042",
+            rate: 600,
+            loaded: 200,
+            empty: 0,
+            on: makeDate(2026, 11, 16, 8),
+            delivery: makeDate(2026, 11, 17, 15),
+            origin: "Boise, ID",
+            destination: "Reno, NV"
+        )
+        let second = load(
+            trip: "L-1048",
+            rate: 300,
+            loaded: 100,
+            empty: 0,
+            on: makeDate(2026, 11, 18, 9),
+            origin: "Reno, NV",
+            destination: "Boise, ID"
+        )
+        let report = build(
+            loads: [second, first],
+            fuel: sampleFuel(),
+            expenses: sampleExpenses(),
+            goal: 12_000,
+            driver: "Alex Rivera"
+        )
+        let statement = PeriodReportStatementBuilder.make(report)
+        let text = PeriodReportText.render(report)
+
+        XCTAssertEqual(statement.title, "Load Report")
+        XCTAssertEqual(statement.driverName, "Alex Rivera")
+        XCTAssertEqual(statement.columns, [
+            "Load #", "Origin", "Destination", "Ship date", "Delivery", "Miles", "Gross", "Rate/mi",
+        ])
+        XCTAssertEqual(statement.rows.map { $0[0] }, ["L-1042", "L-1048"])
+        XCTAssertEqual(statement.rows[0][1], "Boise, ID")
+        XCTAssertEqual(statement.rows[0][2], "Reno, NV")
+        XCTAssertEqual(statement.rows[0][3], "11/16/26")
+        XCTAssertEqual(statement.rows[0][4], "11/17/26")
+        XCTAssertEqual(statement.rows[0][5], "200")
+        XCTAssertEqual(statement.rows[0][6], "$600.00")
+        XCTAssertEqual(statement.rows[0][7], "$3.00")
+        XCTAssertEqual(statement.rows[1][4], "")
+        XCTAssertEqual(statement.totalRow[0], "Total")
+        XCTAssertEqual(statement.totalRow[5], "300")
+        XCTAssertEqual(statement.totalRow[6], "$900.00")
+        XCTAssertEqual(statement.summary.map(\.label), [
+            "Loads total", "Gross total", "Miles total", "Average rate",
+        ])
+        XCTAssertEqual(statement.summary.map(\.value), ["2", "$900.00", "300 mi", "$3.00/mi"])
+        let tableText = (statement.columns + statement.rows.flatMap { $0 } + statement.summary.map(\.label)).joined(separator: " ")
+        XCTAssertFalse(tableText.contains("Fuel"))
+        XCTAssertFalse(tableText.contains("Expenses"))
+        XCTAssertFalse(tableText.contains("Deductions"))
+        XCTAssertFalse(tableText.contains("IFTA"))
+        XCTAssertTrue(text.contains("Fuel:"))
+        XCTAssertTrue(text.contains("Expenses:"))
+    }
+
+    func testRussianStatementUsesTheLoadReportTitle() {
+        let report = build(
+            loads: [load(trip: "L-1", rate: 100, loaded: 40, empty: 0, on: makeDate(2026, 11, 16))],
+            fuel: [],
+            expenses: [],
+            goal: 0,
+            language: .russian,
+            driver: "Alex Rivera"
+        )
+        let statement = PeriodReportStatementBuilder.make(report)
+
+        XCTAssertEqual(statement.title, "Отчёт по грузам")
+        XCTAssertEqual(statement.columns[0], "№ груза")
+        XCTAssertEqual(statement.columns[1], "Откуда")
+        XCTAssertEqual(statement.columns[2], "Куда")
+        XCTAssertEqual(statement.totalRow[0], "Итого")
+        XCTAssertEqual(statement.summary.first?.label, "Всего грузов")
+    }
+
     func testScopeFollowsTheDayInsideTheWeekOrMonth() {
         let day = makeDate(2026, 11, 18)
         let weekScope = PeriodReportBuilder.scope(kind: .week, containing: day, week: week)

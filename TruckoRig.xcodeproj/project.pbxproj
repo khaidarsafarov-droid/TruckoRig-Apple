@@ -160,6 +160,7 @@
 		CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */ = {isa = PBXBuildFile; fileRef = 2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */; };
 		9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */ = {isa = PBXBuildFile; fileRef = 36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */; };
 		178C97B43782483CF548C962 /* PeriodReport.swift */ = {isa = PBXBuildFile; fileRef = C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */; };
+		1B3C7CD8396206B0F622DAA2 /* PeriodReportStatement.swift */ = {isa = PBXBuildFile; fileRef = 70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */; };
 		87EB4E74F31E439EBE46A010 /* AccountantWorkbook.swift */ = {isa = PBXBuildFile; fileRef = 5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */; };
 		8869A36CAF7FBF5C7899B2FA /* TaxEstimate.swift */ = {isa = PBXBuildFile; fileRef = 0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */; };
 		57D48107DCAD176096D80F9D /* XlsxWorkbook.swift */ = {isa = PBXBuildFile; fileRef = D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */; };
@@ -486,6 +487,7 @@
 		2A9F8837588A03E3CD3F76A9 /* TrialReminderPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderPolicy.swift"; sourceTree = "<group>"; };
 		36A6A01FAC6EB6FFDDC4977B /* ReceiptKindClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReceiptKindClassifier.swift"; sourceTree = "<group>"; };
 		C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReport.swift"; sourceTree = "<group>"; };
+		70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportStatement.swift"; sourceTree = "<group>"; };
 		5841FEE2A9A66DA71AA9E2D4 /* AccountantWorkbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountantWorkbook.swift"; sourceTree = "<group>"; };
 		0D1C5D92402947DE5E17B496 /* TaxEstimate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxEstimate.swift"; sourceTree = "<group>"; };
 		D15C682BE89F64CB2B7A8001 /* XlsxWorkbook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XlsxWorkbook.swift"; sourceTree = "<group>"; };
@@ -1115,6 +1117,7 @@
 			isa = PBXGroup;
 			children = (
 				C73D31A58C7FCA611A5344A3 /* PeriodReport.swift */,
+				70E07C3FA587F667B45532F5 /* PeriodReportStatement.swift */,
 			);
 			path = "Reports";
 			sourceTree = "<group>";
@@ -1854,6 +1857,7 @@
 				CA5961FFC39B43FC1EE890DC /* TrialReminderPolicy.swift */,
 				9A186BE72C200226986F26A9 /* ReceiptKindClassifier.swift */,
 				178C97B43782483CF548C962 /* PeriodReport.swift */,
+				1B3C7CD8396206B0F622DAA2 /* PeriodReportStatement.swift */,
 				87EB4E74F31E439EBE46A010 /* AccountantWorkbook.swift */,
 				8869A36CAF7FBF5C7899B2FA /* TaxEstimate.swift */,
 				57D48107DCAD176096D80F9D /* XlsxWorkbook.swift */,

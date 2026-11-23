@@ -1,20 +1,24 @@
 import UIKit
 
-/// Midnight & Gold PDF of a period report. One table per load, drawn on device.
+/// US Letter load statement. White page, grey table header, one row per load.
+///
+/// Fuel, expenses, and carrier deductions are not on this page. The plain-text share
+/// still includes them.
 enum PeriodReportPDF {
 
-    static let pageSize = CGSize(width: 595.2, height: 841.8)
+    static let pageSize = CGSize(width: 612, height: 792)
 
     static func data(for report: PeriodReport) -> Data {
         let bytes = NSMutableData()
         let bounds = CGRect(origin: .zero, size: pageSize)
+        let statement = PeriodReportStatementBuilder.make(report)
         let info: [String: Any] = [
-            kCGPDFContextTitle as String: report.periodTitle,
+            kCGPDFContextTitle as String: statement.title,
             kCGPDFContextCreator as String: report.brand,
-            kCGPDFContextAuthor as String: report.driverName ?? report.brand,
+            kCGPDFContextAuthor as String: statement.driverName ?? report.brand,
         ]
         UIGraphicsBeginPDFContextToData(bytes, bounds, info)
-        Canvas(report: report, page: bounds).draw()
+        Canvas(report: report, statement: statement, page: bounds).draw()
         UIGraphicsEndPDFContext()
         return bytes as Data
     }
@@ -22,298 +26,227 @@ enum PeriodReportPDF {
 
 private final class Canvas {
     let report: PeriodReport
+    let statement: PeriodReportStatement
     let page: CGRect
     let margin: CGFloat = 36
-    let footerReserve: CGFloat = 32
+    let footerReserve: CGFloat = 28
     var y: CGFloat = 0
     var pageOpen = false
 
-    init(report: PeriodReport, page: CGRect) {
+    init(report: PeriodReport, statement: PeriodReportStatement, page: CGRect) {
         self.report = report
+        self.statement = statement
         self.page = page
     }
 
     var contentWidth: CGFloat { page.width - margin * 2 }
     var contentBottom: CGFloat { page.height - footerReserve }
+    var widths: [CGFloat] {
+        let shares: [CGFloat] = [0.13, 0.16, 0.16, 0.11, 0.11, 0.10, 0.12, 0.11]
+        return shares.map { contentWidth * $0 }
+    }
 
     func draw() {
-        beginPage(continuation: false)
-        drawHeaderBand()
-        drawSectionTitle(report.summaryTitle)
-        drawSummaryCard()
-        drawSectionTitle(report.loadsTitle)
-        if report.loads.isEmpty {
-            drawNoteCard(report.emptyLoadsMessage)
+        beginPage()
+        drawLetterhead()
+        drawColumnHeader()
+        if statement.rows.isEmpty {
+            drawEmptyMessage()
         } else {
-            for load in report.loads {
-                drawLoadCard(load)
+            for (index, row) in statement.rows.enumerated() {
+                drawDataRow(row, stripe: index % 2 == 1, bold: false)
             }
+            drawDataRow(statement.totalRow, stripe: false, bold: true, rule: true)
         }
+        drawSummary()
         drawPageFooter()
     }
 
-    func beginPage(continuation: Bool) {
+    func beginPage() {
         if pageOpen {
             drawPageFooter()
         }
         UIGraphicsBeginPDFPage()
         pageOpen = true
-        Palette.page.setFill()
+        UIColor.white.setFill()
         UIRectFill(page)
-        if continuation {
-            drawContinuationBar()
-        } else {
-            y = 0
-        }
+        y = margin
     }
 
-    func ensure(_ height: CGFloat) {
-        if y + height > contentBottom {
-            beginPage(continuation: true)
+    func drawLetterhead() {
+        let leftWidth = contentWidth * 0.46
+        let rightWidth = contentWidth - leftWidth
+        let rightX = margin + leftWidth
+        var leftY = y
+        if let driver = statement.driverName, !driver.isEmpty {
+            leftY += draw(driver, x: margin, y: y, width: leftWidth, font: Palette.nameFont, color: Palette.ink, align: .left)
         }
-    }
-
-    func drawHeaderBand() {
-        let textWidth = contentWidth
-        let brandHeight = measure(report.brand, width: textWidth, font: Palette.brandFont)
-        var block: [(String, UIFont, UIColor)] = []
-        if let driver = report.driverName {
-            block.append(("\(report.driverLabel): \(driver)", Palette.headerFont, Palette.cream))
-        }
-        block.append(("\(report.periodLabel): \(report.periodTitle)", Palette.headerFont, Palette.cream))
-        block.append(("\(report.generatedLabel): \(report.generatedOn)", Palette.headerMutedFont, Palette.creamMuted))
-        let body = block.reduce(CGFloat(0)) { $0 + measure($1.0, width: textWidth, font: $1.1) + 4 }
-        let height = 28 + brandHeight + 8 + body + 16
-        let band = CGRect(x: 0, y: 0, width: page.width, height: height)
-        Palette.midnight.setFill()
-        UIRectFill(band)
-        Palette.midnightDeep.setFill()
-        UIRectFill(CGRect(x: page.width * 0.55, y: 0, width: page.width * 0.45, height: height))
-        var cursor = CGFloat(28)
-        cursor += draw(report.brand, x: margin, y: cursor, width: textWidth, font: Palette.brandFont, color: Palette.gold) + 8
-        for (text, font, color) in block {
-            cursor += draw(text, x: margin, y: cursor, width: textWidth, font: font, color: color) + 4
-        }
+        var rightY = y
+        rightY += draw(statement.title, x: rightX, y: rightY, width: rightWidth, font: Palette.titleFont, color: Palette.midnight, align: .right)
+        rightY += 3
+        rightY += draw(statement.periodLine, x: rightX, y: rightY, width: rightWidth, font: Palette.metaFont, color: Palette.ink, align: .right)
+        rightY += 2
+        rightY += draw(statement.generatedLine, x: rightX, y: rightY, width: rightWidth, font: Palette.metaFont, color: Palette.secondary, align: .right)
+        y = max(leftY, rightY) + 8
         Palette.gold.setFill()
-        UIRectFill(CGRect(x: 0, y: height - 4, width: page.width, height: 4))
-        y = height + 20
+        UIRectFill(CGRect(x: margin, y: y, width: contentWidth, height: 2))
+        y += 14
     }
 
-    func drawContinuationBar() {
-        let height: CGFloat = 36
-        Palette.midnight.setFill()
-        UIRectFill(CGRect(x: 0, y: 0, width: page.width, height: height))
-        Palette.gold.setFill()
-        UIRectFill(CGRect(x: 0, y: height - 3, width: page.width, height: 3))
-        _ = draw(
-            "\(report.brand)  ·  \(report.periodTitle)",
-            x: margin,
-            y: 10,
-            width: contentWidth,
-            font: Palette.headerFont,
-            color: Palette.cream
-        )
-        y = height + 16
+    func drawColumnHeader() {
+        let height = rowHeight(statement.columns, font: Palette.headerFont) 
+        ensure(height, repeatingHeader: false)
+        Palette.headerFill.setFill()
+        UIRectFill(CGRect(x: margin, y: y, width: contentWidth, height: height))
+        drawCells(statement.columns, font: Palette.headerFont, color: Palette.ink, boldRow: true)
+        y += height
     }
 
-    func drawSectionTitle(_ title: String) {
-        let height = measure(title, width: contentWidth, font: Palette.sectionFont) + 10
-        ensure(height + 8)
-        _ = draw(title, x: margin, y: y, width: contentWidth, font: Palette.sectionFont, color: Palette.ink)
-        let underline = measure(title, width: contentWidth, font: Palette.sectionFont)
-        Palette.gold.setFill()
-        UIRectFill(CGRect(x: margin, y: y + underline + 2, width: min(72, underline), height: 2))
-        y += height + 8
-    }
-
-    func drawSummaryCard() {
-        let rows = report.summary
-        let rowHeights = rows.map { rowHeight($0) }
-        let cardHeight = 8 + rowHeights.reduce(0, +)
-        ensure(min(cardHeight, 80))
-        drawTable(rows: rows, rowHeights: rowHeights, accent: true)
-    }
-
-    func drawLoadCard(_ load: PeriodReportLoadBlock) {
-        let titleHeight = measure(load.title, width: contentWidth - 80, font: Palette.loadTitleFont)
-        let rowHeights = load.lines.map { rowHeight($0) }
-        let cardHeight = 14 + titleHeight + 8 + rowHeights.reduce(0, +) + 6
-        if y + cardHeight > contentBottom && y > margin + 40 {
-            beginPage(continuation: true)
+    func drawDataRow(_ cells: [String], stripe: Bool, bold: Bool, rule: Bool = false) {
+        let font = bold ? Palette.totalFont : Palette.cellFont
+        let height = rowHeight(cells, font: font)
+        ensure(height, repeatingHeader: true)
+        if rule {
+            Palette.ink.setFill()
+            UIRectFill(CGRect(x: margin, y: y, width: contentWidth, height: 1))
         }
-        if y + cardHeight <= contentBottom {
-            drawLoadBox(load, titleHeight: titleHeight, rowHeights: rowHeights, fullHeight: cardHeight)
-            y += 12
-            return
+        if stripe {
+            Palette.stripe.setFill()
+            UIRectFill(CGRect(x: margin, y: y, width: contentWidth, height: height))
         }
-        drawLoadBox(load, titleHeight: titleHeight, rowHeights: [], fullHeight: 14 + titleHeight + 8)
-        var remaining = load.lines
-        var heights = rowHeights
-        while !remaining.isEmpty {
-            ensure(heights[0] + 8)
-            let room = contentBottom - y - 8
-            var count = 0
-            var used: CGFloat = 0
-            while count < remaining.count && used + heights[count] <= room {
-                used += heights[count]
-                count += 1
-            }
-            if count == 0 { count = 1 }
-            let slice = Array(remaining.prefix(count))
-            let sliceHeights = Array(heights.prefix(count))
-            drawTable(rows: slice, rowHeights: sliceHeights, accent: false)
-            remaining.removeFirst(count)
-            heights.removeFirst(count)
-        }
-        y += 12
+        drawCells(cells, font: font, color: Palette.ink, boldRow: bold)
+        y += height
     }
 
-    func drawLoadBox(
-        _ load: PeriodReportLoadBlock,
-        titleHeight: CGFloat,
-        rowHeights: [CGFloat],
-        fullHeight: CGFloat
-    ) {
-        let rect = CGRect(x: margin, y: y, width: contentWidth, height: fullHeight)
-        Palette.card.setFill()
-        UIBezierPath(roundedRect: rect, cornerRadius: 8).fill()
-        Palette.gold.setFill()
-        UIRectFill(CGRect(x: rect.minX, y: rect.minY, width: 4, height: rect.height))
-        let badge = "\(load.number)"
-        let badgeWidth = measureWidth(badge, font: Palette.badgeFont)
-        let badgeRect = CGRect(x: rect.minX + 14, y: rect.minY + 12, width: badgeWidth + 14, height: 18)
-        Palette.gold.setFill()
-        UIBezierPath(roundedRect: badgeRect, cornerRadius: 4).fill()
-        _ = draw(badge, x: badgeRect.minX + 7, y: badgeRect.minY + 1, width: badgeWidth + 2, font: Palette.badgeFont, color: Palette.espresso)
-        _ = draw(
-            load.title,
-            x: badgeRect.maxX + 8,
-            y: rect.minY + 12,
-            width: rect.maxX - badgeRect.maxX - 20,
-            font: Palette.loadTitleFont,
-            color: Palette.ink
-        )
-        y = rect.minY + 14 + titleHeight + 8
-        guard !rowHeights.isEmpty else { return }
-        drawRows(load.lines, heights: rowHeights, inset: true)
-        y = rect.maxY
+    func drawEmptyMessage() {
+        let height = measure(statement.emptyMessage, width: contentWidth - 8, font: Palette.cellFont, align: .left) + 12
+        ensure(height, repeatingHeader: true)
+        _ = draw(statement.emptyMessage, x: margin + 4, y: y + 6, width: contentWidth - 8, font: Palette.cellFont, color: Palette.secondary, align: .left)
+        y += height
     }
 
-    func drawTable(rows: [PeriodReportLine], rowHeights: [CGFloat], accent: Bool) {
-        let height = 8 + rowHeights.reduce(0, +)
-        let rect = CGRect(x: margin, y: y, width: contentWidth, height: height)
-        Palette.card.setFill()
-        UIBezierPath(roundedRect: rect, cornerRadius: 8).fill()
-        if accent {
-            Palette.gold.setFill()
-            UIRectFill(CGRect(x: rect.minX, y: rect.minY, width: rect.width, height: 3))
-        }
-        y = rect.minY + (accent ? 8 : 4)
-        drawRows(rows, heights: rowHeights, inset: true)
-        y = rect.maxY + 12
-    }
-
-    func drawRows(_ rows: [PeriodReportLine], heights: [CGFloat], inset: Bool) {
-        let x = margin + (inset ? 14 : 0)
-        let width = contentWidth - (inset ? 28 : 0)
-        let labelWidth = min(180, width * 0.42)
-        for (index, row) in rows.enumerated() {
-            if index > 0 {
-                Palette.divider.setFill()
-                UIRectFill(CGRect(x: x, y: y, width: width, height: 0.6))
-            }
-            let rowHeight = heights[index]
-            _ = draw(row.label, x: x, y: y + 5, width: labelWidth - 8, font: Palette.labelFont, color: Palette.secondary)
-            _ = draw(row.value, x: x + labelWidth, y: y + 5, width: width - labelWidth, font: Palette.valueFont, color: Palette.ink)
-            y += rowHeight
+    func drawSummary() {
+        let titleHeight = measure(statement.summaryTitle, width: contentWidth, font: Palette.sectionFont, align: .left) + 16
+        ensure(titleHeight + 20, repeatingHeader: false)
+        y += 16
+        _ = draw(statement.summaryTitle, x: margin, y: y, width: contentWidth, font: Palette.sectionFont, color: Palette.midnight, align: .left)
+        y += titleHeight - 8
+        for line in statement.summary {
+            let text = "\(line.label): \(line.value)"
+            let height = measure(text, width: contentWidth, font: Palette.summaryFont, align: .left) + 4
+            ensure(height, repeatingHeader: false)
+            _ = draw(text, x: margin, y: y, width: contentWidth, font: Palette.summaryFont, color: Palette.ink, align: .left)
+            y += height
         }
     }
 
-    func drawNoteCard(_ message: String) {
-        let height = measure(message, width: contentWidth - 28, font: Palette.valueFont) + 24
-        ensure(height)
-        let rect = CGRect(x: margin, y: y, width: contentWidth, height: height)
-        Palette.card.setFill()
-        UIBezierPath(roundedRect: rect, cornerRadius: 8).fill()
-        _ = draw(message, x: rect.minX + 14, y: rect.minY + 12, width: contentWidth - 28, font: Palette.valueFont, color: Palette.secondary)
-        y = rect.maxY + 12
+    func ensure(_ height: CGFloat, repeatingHeader: Bool) {
+        guard y + height > contentBottom else { return }
+        beginPage()
+        if repeatingHeader {
+            drawColumnHeader()
+        }
+    }
+
+    func drawCells(_ cells: [String], font: UIFont, color: UIColor, boldRow: Bool) {
+        var x = margin
+        let rowFont = font
+        let height = rowHeight(cells, font: rowFont)
+        for (index, cell) in cells.enumerated() {
+            let width = index < widths.count ? widths[index] : 40
+            let align: NSTextAlignment = index >= 5 ? .right : .left
+            let inset: CGFloat = 3
+            _ = draw(
+                cell,
+                x: x + inset,
+                y: y + 4,
+                width: max(width - inset * 2, 4),
+                font: rowFont,
+                color: color,
+                align: align
+            )
+            x += width
+            _ = boldRow
+        }
+        _ = height
+    }
+
+    func rowHeight(_ cells: [String], font: UIFont) -> CGFloat {
+        var tallest: CGFloat = font.lineHeight
+        for (index, cell) in cells.enumerated() {
+            let width = index < widths.count ? widths[index] : 40
+            let align: NSTextAlignment = index >= 5 ? .right : .left
+            tallest = max(tallest, measure(cell, width: max(width - 6, 4), font: font, align: align))
+        }
+        return max(18, tallest + 8)
     }
 
     func drawPageFooter() {
-        let baseline = page.height - 22
-        Palette.divider.setFill()
-        UIRectFill(CGRect(x: margin, y: baseline - 8, width: contentWidth, height: 0.6))
-        _ = draw(report.footer, x: margin, y: baseline - 4, width: contentWidth, font: Palette.footerFont, color: Palette.secondary)
-    }
-
-    func rowHeight(_ row: PeriodReportLine) -> CGFloat {
-        let width = contentWidth - 28
-        let labelWidth = min(180, width * 0.42)
-        let label = measure(row.label, width: labelWidth - 8, font: Palette.labelFont)
-        let value = measure(row.value, width: width - labelWidth, font: Palette.valueFont)
-        return max(label, value) + 12
+        let baseline = page.height - 18
+        _ = draw(
+            "\(report.brand)  ·  \(report.footer)",
+            x: margin,
+            y: baseline,
+            width: contentWidth,
+            font: Palette.footerFont,
+            color: Palette.secondary,
+            align: .left
+        )
     }
 
     @discardableResult
-    func draw(_ text: String, x: CGFloat, y: CGFloat, width: CGFloat, font: UIFont, color: UIColor) -> CGFloat {
-        let height = measure(text, width: width, font: font)
-        let style = paragraph
+    func draw(
+        _ text: String,
+        x: CGFloat,
+        y: CGFloat,
+        width: CGFloat,
+        font: UIFont,
+        color: UIColor,
+        align: NSTextAlignment
+    ) -> CGFloat {
+        let height = measure(text, width: width, font: font, align: align)
+        let style = NSMutableParagraphStyle()
+        style.alignment = align
+        style.lineBreakMode = .byWordWrapping
         let attributes: [NSAttributedString.Key: Any] = [
             .font: font,
             .foregroundColor: color,
             .paragraphStyle: style,
         ]
-        let rect = CGRect(x: x, y: y, width: width, height: height)
+        let rect = CGRect(x: x, y: y, width: max(width, 1), height: max(height, 1))
         (text as NSString).draw(with: rect, options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil)
         return height
     }
 
-    func measureWidth(_ text: String, font: UIFont) -> CGFloat {
-        let size = (text as NSString).size(withAttributes: [.font: font])
-        return ceil(size.width)
-    }
-
-    func measure(_ text: String, width: CGFloat, font: UIFont) -> CGFloat {
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .paragraphStyle: paragraph,
-        ]
+    func measure(_ text: String, width: CGFloat, font: UIFont, align: NSTextAlignment) -> CGFloat {
+        let style = NSMutableParagraphStyle()
+        style.alignment = align
+        style.lineBreakMode = .byWordWrapping
         let bounds = (text as NSString).boundingRect(
-            with: CGSize(width: max(width, 1), height: 4000),
+            with: CGSize(width: max(width, 1), height: 2000),
             options: [.usesLineFragmentOrigin, .usesFontLeading],
-            attributes: attributes,
+            attributes: [.font: font, .paragraphStyle: style],
             context: nil
         )
         return ceil(bounds.height)
-    }
-
-    var paragraph: NSParagraphStyle {
-        let style = NSMutableParagraphStyle()
-        style.lineBreakMode = .byWordWrapping
-        return style
     }
 }
 
 private enum Palette {
     static let midnight = UIColor(red: 0x1E / 255, green: 0x21 / 255, blue: 0x50 / 255, alpha: 1)
-    static let midnightDeep = UIColor(red: 0x0F / 255, green: 0x12 / 255, blue: 0x30 / 255, alpha: 1)
     static let gold = UIColor(red: 0xC8 / 255, green: 0xA8 / 255, blue: 0x67 / 255, alpha: 1)
-    static let cream = UIColor(red: 0xF7 / 255, green: 0xF2 / 255, blue: 0xE6 / 255, alpha: 1)
-    static let creamMuted = UIColor(red: 0xD9 / 255, green: 0xCF / 255, blue: 0xB4 / 255, alpha: 1)
-    static let page = UIColor(red: 0xF5 / 255, green: 0xF4 / 255, blue: 0xF1 / 255, alpha: 1)
-    static let card = UIColor(red: 0xFD / 255, green: 0xFC / 255, blue: 0xFA / 255, alpha: 1)
-    static let ink = UIColor(red: 0x16 / 255, green: 0x18 / 255, blue: 0x2B / 255, alpha: 1)
-    static let secondary = UIColor(red: 0x58 / 255, green: 0x5A / 255, blue: 0x6E / 255, alpha: 1)
-    static let divider = UIColor(red: 0xE6 / 255, green: 0xE2 / 255, blue: 0xD8 / 255, alpha: 1)
-    static let espresso = UIColor(red: 0x1D / 255, green: 0x17 / 255, blue: 0x08 / 255, alpha: 1)
+    static let ink = UIColor(red: 0x22 / 255, green: 0x22 / 255, blue: 0x22 / 255, alpha: 1)
+    static let secondary = UIColor(red: 0x66 / 255, green: 0x66 / 255, blue: 0x66 / 255, alpha: 1)
+    static let headerFill = UIColor(red: 0xE6 / 255, green: 0xE6 / 255, blue: 0xE6 / 255, alpha: 1)
+    static let stripe = UIColor(red: 0xF5 / 255, green: 0xF5 / 255, blue: 0xF5 / 255, alpha: 1)
 
-    static let brandFont = UIFont.systemFont(ofSize: 22, weight: .bold)
-    static let headerFont = UIFont.systemFont(ofSize: 12, weight: .medium)
-    static let headerMutedFont = UIFont.systemFont(ofSize: 11, weight: .regular)
-    static let sectionFont = UIFont.systemFont(ofSize: 14, weight: .bold)
-    static let labelFont = UIFont.systemFont(ofSize: 10, weight: .regular)
-    static let valueFont = UIFont.systemFont(ofSize: 11, weight: .semibold)
-    static let loadTitleFont = UIFont.systemFont(ofSize: 12, weight: .semibold)
-    static let badgeFont = UIFont.systemFont(ofSize: 11, weight: .bold)
-    static let footerFont = UIFont.systemFont(ofSize: 9, weight: .medium)
+    static let nameFont = UIFont.systemFont(ofSize: 12, weight: .semibold)
+    static let titleFont = UIFont.systemFont(ofSize: 16, weight: .bold)
+    static let metaFont = UIFont.systemFont(ofSize: 9, weight: .regular)
+    static let headerFont = UIFont.systemFont(ofSize: 8, weight: .bold)
+    static let cellFont = UIFont.systemFont(ofSize: 8, weight: .regular)
+    static let totalFont = UIFont.systemFont(ofSize: 8, weight: .bold)
+    static let sectionFont = UIFont.systemFont(ofSize: 13, weight: .bold)
+    static let summaryFont = UIFont.systemFont(ofSize: 11, weight: .regular)
+    static let footerFont = UIFont.systemFont(ofSize: 8, weight: .regular)
 }

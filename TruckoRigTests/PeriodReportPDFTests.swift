@@ -2,28 +2,39 @@ import PDFKit
 import XCTest
 @testable import TruckoRig
 
-/// The branded PDF is the same report as the plain text: header, summary, then each load.
+/// US Letter statement: load table first, summary after, header row on every page.
 final class PeriodReportPDFTests: XCTestCase {
 
     func testPDFCarriesTheReportTextAndStartsANewPage() throws {
-        let report = sample(loadCount: 14)
+        let report = sample(loadCount: 48)
         let data = PeriodReportPDF.data(for: report)
 
         XCTAssertTrue(data.starts(with: Data("%PDF".utf8)))
         let document = try XCTUnwrap(PDFDocument(data: data))
         XCTAssertGreaterThanOrEqual(document.pageCount, 2)
+        let first = document.page(at: 0)
+        let box = try XCTUnwrap(first).bounds(for: .mediaBox)
+        XCTAssertEqual(box.width, 612, accuracy: 0.5)
+        XCTAssertEqual(box.height, 792, accuracy: 0.5)
         let text = pageText(document)
-        XCTAssertTrue(text.contains("Khaidar Safarov"))
-        XCTAssertTrue(text.contains("Summary"))
+        XCTAssertTrue(text.contains("Alex Rivera"))
+        XCTAssertTrue(text.contains("Load Report"))
+        XCTAssertTrue(text.contains("Load #"))
+        XCTAssertTrue(text.contains("Origin"))
         XCTAssertTrue(text.contains("T-01"))
-        XCTAssertTrue(text.contains("T-14"))
+        XCTAssertTrue(text.contains("T-48"))
+        XCTAssertTrue(text.contains("Loads total"))
         XCTAssertTrue(text.contains("Only on this device"))
         XCTAssertFalse(text.contains("T-OUT"))
-        let summary = text.range(of: "Summary")
+        XCTAssertFalse(text.contains("Fuel"))
+        XCTAssertFalse(text.contains("Expenses"))
+        XCTAssertFalse(text.contains("Deductions"))
+        XCTAssertFalse(text.contains("IFTA"))
         let firstLoad = text.range(of: "T-01")
-        let lastLoad = text.range(of: "T-14")
-        XCTAssertLessThan(summary?.lowerBound ?? text.endIndex, firstLoad?.lowerBound ?? text.startIndex)
-        XCTAssertLessThan(firstLoad?.lowerBound ?? text.endIndex, lastLoad?.lowerBound ?? text.startIndex)
+        let summary = text.range(of: "Loads total")
+        XCTAssertLessThan(firstLoad?.lowerBound ?? text.endIndex, summary?.lowerBound ?? text.startIndex)
+        XCTAssertTrue(document.page(at: 0)?.string?.contains("Load #") == true)
+        XCTAssertTrue(document.page(at: 1)?.string?.contains("Load #") == true)
     }
 
     func testHomeFilterMapsOntoTheSharePeriod() {
@@ -44,8 +55,11 @@ final class PeriodReportPDFTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(document.pageCount, 1)
         let text = pageText(document)
         XCTAssertTrue(text.contains("No loads in this period."))
-        XCTAssertTrue(text.contains("Gross revenue"))
+        XCTAssertTrue(text.contains("Load Report"))
+        XCTAssertTrue(text.contains("Gross total"))
         XCTAssertFalse(text.contains("T-01"))
+        XCTAssertFalse(text.contains("Fuel"))
+        XCTAssertFalse(text.contains("Deductions"))
     }
 
     private func pageText(_ document: PDFDocument) -> String {
@@ -92,7 +106,7 @@ final class PeriodReportPDFTests: XCTestCase {
         )
         return PeriodReportBuilder.build(
             PeriodReportRequest(
-                driverName: "Khaidar Safarov",
+                driverName: "Alex Rivera",
                 scope: .week(ref),
                 loads: loads + [outsider],
                 fuel: [PeriodReportFuelFill(totalCost: 40, gallons: 10, date: day)],
