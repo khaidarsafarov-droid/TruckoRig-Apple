@@ -199,6 +199,10 @@ final class TelegramCoordinator {
 
     func refresh() { refreshLocal() }
 
+    func noteScheduleFailure(_ message: String) {
+        statusMessage = message
+    }
+
     private func refreshLocal() {
         hasToken = (try? tokens.read()) != nil
         paired = prefs.chatId != nil
@@ -232,7 +236,14 @@ enum TelegramBackgroundRegistrar {
         let request = BGProcessingTaskRequest(identifier: identifier)
         request.requiresNetworkConnectivity = true
         request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60)
-        try? BGTaskScheduler.shared.submit(request)
+        do {
+            try BGTaskScheduler.shared.submit(request)
+        } catch {
+            AppLog.persistence.error("Could not schedule Telegram sync: \(error.localizedDescription, privacy: .public)")
+            Task { @MainActor in
+                TelegramRuntime.coordinator?.noteScheduleFailure(String(localized: "settings.telegram.scheduleFailed"))
+            }
+        }
     }
 }
 

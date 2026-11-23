@@ -134,7 +134,11 @@ enum MaintenanceReminderCenter {
             guard var task = appState.catalog.maintenance.first(where: { $0.id == id }) else { continue }
             task.notifiedAt = millis
             task.updatedAt = millis
-            try? appState.persistence.database.save(task)
+            do {
+                try appState.persistence.database.save(task)
+            } catch {
+                appState.noteJournalFailure(error)
+            }
         }
         appState.reloadJournal(.maintenance)
     }
@@ -147,7 +151,11 @@ enum MaintenanceReminderCenter {
             guard var task = appState.catalog.maintenance.first(where: { $0.id == id }) else { continue }
             task.notifiedAt = nil
             task.updatedAt = millis
-            try? appState.persistence.database.save(task)
+            do {
+                try appState.persistence.database.save(task)
+            } catch {
+                appState.noteJournalFailure(error)
+            }
         }
         appState.reloadJournal(.maintenance)
     }
@@ -161,9 +169,13 @@ enum MaintenanceReminderCenter {
         )
         MaintenanceSnoozeStore.clear(task.id)
         let repository = appState.financeRepository()
-        try? repository.complete(task, now: now)
-        if let next {
-            try? repository.addTask(next)
+        do {
+            try repository.complete(task, now: now)
+            if let next {
+                try repository.addTask(next)
+            }
+        } catch {
+            appState.noteJournalFailure(error)
         }
     }
 
@@ -173,7 +185,11 @@ enum MaintenanceReminderCenter {
         let millis = Int64(now.timeIntervalSince1970 * 1000)
         task.notifiedAt = nil
         task.updatedAt = millis
-        try? appState.persistence.database.save(task)
+        do {
+            try appState.persistence.database.save(task)
+        } catch {
+            appState.noteJournalFailure(error)
+        }
         MaintenanceSnoozeStore.set(now.addingTimeInterval(MaintenanceReminderSchedule.snoozeInterval), for: taskID)
         appState.reloadJournal(.maintenance)
     }

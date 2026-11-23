@@ -52,6 +52,14 @@ final class AppState {
     /// True after the driver refuses the alert that a ТО reminder asked for.
     var maintenanceAlertsDenied = false
 
+    /// A journal read or maintenance save that did not stick. Settings shows this.
+    var journalWriteFailure: String?
+
+    func noteJournalFailure(_ error: Error) {
+        journalWriteFailure = error.localizedDescription
+        AppLog.persistence.error("Journal write failed: \(error.localizedDescription, privacy: .public)")
+    }
+
     /// Active App Store subscription, including the free month. StoreKit is the only source.
     var premiumIsActive: Bool { premium.isActive }
 
@@ -108,6 +116,9 @@ final class AppState {
         }
         journalSaves.deliver = { [weak self] tables in
             self?.reloadJournal(tables)
+        }
+        catalog.onReadFailure = { [weak self] message in
+            self?.journalWriteFailure = message
         }
     }
 

@@ -18966,6 +18966,35 @@
         }
       }
     },
+    "settings.telegram.scheduleFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram could not be scheduled to check for messages."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo programar Telegram para buscar mensajes."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось запланировать проверку сообщений Telegram."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de planifier la vérification des messages Telegram."
+          }
+        }
+      }
+    },
     "settings.telegram.active": {
       "extractionState": "manual",
       "localizations": {

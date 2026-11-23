@@ -21,6 +21,8 @@ final class RecordCatalog {
     private(set) var perDiemOverrides: [PerDiemOverride] = []
 
     @ObservationIgnored private var generation = 0
+    /// Set when a reload cannot read the database. The previous arrays stay on screen.
+    @ObservationIgnored var onReadFailure: ((String) -> Void)?
 
     /// Reads `tables` on a background queue, then publishes them on the main actor.
     func reload(
@@ -46,7 +48,7 @@ final class RecordCatalog {
                     MainActor.assumeIsolated {
                         guard let self, self.generation == token else { return }
                         AppLog.persistence.error("Could not reload the journal: \(description, privacy: .public)")
-                        completion?()
+                        self.onReadFailure?(description)
                     }
                 }
             }
@@ -62,7 +64,9 @@ final class RecordCatalog {
             }
             apply(graph, tables: tables)
         } catch {
-            AppLog.persistence.error("Could not reload the journal: \(error.localizedDescription, privacy: .public)")
+            let description = error.localizedDescription
+            AppLog.persistence.error("Could not reload the journal: \(description, privacy: .public)")
+            onReadFailure?(description)
         }
     }
 
