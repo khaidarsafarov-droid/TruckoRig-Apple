@@ -93,28 +93,36 @@ jobs:
               handle.write(f"ipad_name={pad['name']}\n")
           PY
 
-      - name: Build the app and widget, then run unit tests
-        run: |
-          set -euo pipefail
-          xcodebuild test \
-            -project TruckoRig.xcodeproj \
-            -scheme TruckoRig \
-            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}" \
-            -only-testing:TruckoRigTests \
-            -skipPackagePluginValidation \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY=-
+      - name: Use the software keyboard for UI tests
+        run: defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
 
-      - name: Build and test on iPad
+      - name: Unit tests on iPhone
         run: |
           set -euo pipefail
-          xcodebuild test \
-            -project TruckoRig.xcodeproj \
-            -scheme TruckoRig \
-            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.ipad_udid }}" \
-            -only-testing:TruckoRigTests \
-            -skipPackagePluginValidation \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY=-
+          Tools/run_simulator_tests.sh \
+            --udid "${{ steps.simulator.outputs.udid }}" \
+            --derived "$RUNNER_TEMP/iphone" \
+            --result "$RUNNER_TEMP/iphone.xcresult" \
+            --only-testing TruckoRigTests \
+            --coverage \
+            --require-keychain
+
+      - name: UI tests on iPhone
+        run: |
+          set -euo pipefail
+          Tools/run_simulator_tests.sh \
+            --udid "${{ steps.simulator.outputs.udid }}" \
+            --derived "$RUNNER_TEMP/iphone" \
+            --result "$RUNNER_TEMP/ui.xcresult" \
+            --only-testing TruckoRigUITests \
+            --no-build
+
+      - name: Unit tests on iPad
+        run: |
+          set -euo pipefail
+          Tools/run_simulator_tests.sh \
+            --udid "${{ steps.simulator.outputs.ipad_udid }}" \
+            --derived "$RUNNER_TEMP/ipad" \
+            --result "$RUNNER_TEMP/ipad.xcresult" \
+            --only-testing TruckoRigTests \
+            --require-keychain

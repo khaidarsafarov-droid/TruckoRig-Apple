@@ -15,11 +15,11 @@ final class TelegramEngine {
     let database: AppDatabase
     let settings: AppSettings
     let prefs: TelegramPrefs
-    let session: TelegramSession
+    let session: any TelegramTransport
     var onJournalChanged: (() -> Void)?
     var onStateChanged: (() -> Void)?
 
-    init(database: AppDatabase, settings: AppSettings, prefs: TelegramPrefs, session: TelegramSession) {
+    init(database: AppDatabase, settings: AppSettings, prefs: TelegramPrefs, session: any TelegramTransport) {
         self.database = database
         self.settings = settings
         self.prefs = prefs

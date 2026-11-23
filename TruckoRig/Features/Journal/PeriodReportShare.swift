@@ -56,12 +56,16 @@ enum PeriodReportShare {
         )
     }
 
-    static func activity(for report: PeriodReport, format: Format) throws -> PeriodReportActivity {
+    static func activity(
+        for report: PeriodReport,
+        format: Format,
+        directory: URL = FileManager.default.temporaryDirectory
+    ) throws -> PeriodReportActivity {
         let subject = "\(report.brand) — \(report.periodTitle)"
         switch format {
         case .pdf:
             let statement = PeriodReportStatementBuilder.make(report)
-            let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(report.fileStem).pdf")
+            let url = directory.appendingPathComponent("\(report.fileStem).pdf")
             try PeriodReportPDF.data(for: report).write(to: url, options: .atomic)
             let englishSubject = "\(report.brand) — \(statement.periodLine)"
             return PeriodReportActivity(items: [PeriodReportActivityItem(file: url, subject: englishSubject)])

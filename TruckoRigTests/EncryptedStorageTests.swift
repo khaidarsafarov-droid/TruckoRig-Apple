@@ -61,10 +61,11 @@ final class EncryptedStorageTests: XCTestCase {
         let created: Data
         do {
             created = try store.getOrCreate()
-        } catch DatabasePassphraseError.keychainFailed(let status) where status == errSecMissingEntitlement {
-            // An unsigned simulator process has no keychain-access-groups entitlement.
-            // The workflow does not sign. The accessibility constant above is what `write` stores.
-            throw XCTSkip("Keychain refused the unsigned simulator (\(status)).")
+        } catch DatabasePassphraseError.keychainFailed(let status) {
+            // The macOS job ad-hoc signs the test host with keychain-access-groups.
+            // A skip would hide a broken passphrase, so this failure fails the job.
+            XCTFail("Keychain refused the simulator host (\(status)).")
+            return
         }
         XCTAssertEqual(created.count, DatabasePassphraseStore.byteCount)
         let again = try store.getOrCreate()

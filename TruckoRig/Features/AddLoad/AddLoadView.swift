@@ -85,6 +85,7 @@ struct AddLoadView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("action.save") { save() }
                         .disabled(!viewModel.canSave)
+                        .accessibilityIdentifier("addLoad.save")
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("action.cancel") { dismiss() }
@@ -150,12 +151,14 @@ struct LoadFormFields: View {
                 title: "load.tripId",
                 text: $draft.tripId,
                 placeholder: "T-116KYL6KW",
-                autocapitalization: .characters
+                autocapitalization: .characters,
+                fieldID: "addLoad.tripId"
             )
-            SoftNumberField(title: "load.totalRate", value: $draft.totalRate, money: true)
+            SoftNumberField(title: "load.totalRate", value: $draft.totalRate, money: true, fieldID: "addLoad.rate")
             SoftNumberField(
                 title: system == .kilometers ? "load.totalKilometers" : "load.totalMiles",
-                value: UnitEntry.distance(stored: $draft.totalMiles, system: system)
+                value: UnitEntry.distance(stored: $draft.totalMiles, system: system),
+                fieldID: "addLoad.miles"
             )
             DatePicker("load.date", selection: $draft.date, displayedComponents: .date)
 

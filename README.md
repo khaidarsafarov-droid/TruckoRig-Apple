@@ -46,10 +46,14 @@ swift test
 периоды, полигоны GeoJSON).
 
 Шифрование, Keychain и одноразовый перенос из SwiftData проверяются целью `TruckoRigTests` на
-симуляторе iPhone. Это делает workflow `.github/workflows/macos.yml`: бесплатный раннер
-`macos-latest`, последний стабильный Xcode на этом образе, сборка приложения и виджета без
-подписи (`CODE_SIGNING_ALLOWED=NO`) и `xcodebuild test` только для `TruckoRigTests`. Запуск —
-каждый push и pull request в `main`. Linux-workflow по-прежнему гоняет только доменные тесты.
+симуляторе. Workflow `.github/workflows/macos.yml` на бесплатном `macos-latest` собирает приложение
+без команды разработчика, затем подписывает симулятор ad-hoc с `keychain-access-groups`
+(`Tools/SimulatorHost.entitlements`), чтобы тесты пароля базы и токена бота реально выполнялись.
+Пропуск этих тестов валит job. Тот же job гоняет `TruckoRigUITests` на iPhone, включая сохранение
+рейса, и пишет сводку code coverage в summary. Проверки идут на каждый push и pull request в `main`.
+Какие status checks владелец включает как обязательные — в
+[docs/CI_REQUIRED_CHECKS.md](docs/CI_REQUIRED_CHECKS.md). Linux-workflow по-прежнему гоняет доменные
+тесты, файл проекта, каталог строк и SwiftLint.
 
 Установка на iPhone с Windows и бесплатным Apple ID: [docs/SIDELOAD_RU.md](docs/SIDELOAD_RU.md).
 Workflow **Sideload IPA** кладёт неподписанный `.ipa` в артефакт `TruckoRig-unsigned-ipa`.
@@ -226,6 +230,7 @@ Swift-файла не превращалось в ручную правку pbxp
 python3 Tools/generate_xcodeproj.py   # после добавления/переименования файлов
 python3 Tools/validate_pbxproj.py     # проверка ссылок и структуры, без Xcode
 python3 Tools/check_strings.py        # ключи в коде против каталога строк
+swiftlint lint --strict               # новые замечания сверх swiftlint-baseline.json
 ```
 
 Виджет собирает общий с приложением набор файлов (снапшот цели, deep link, тема, форматтеры) —

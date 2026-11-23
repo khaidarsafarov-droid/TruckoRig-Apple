@@ -12,9 +12,10 @@ enum ShareImportProcessor {
     static func importPending(
         loads: [Load],
         repository: LoadRepository,
-        media: MediaRepository
+        media: MediaRepository,
+        inboxRoot: URL? = nil
     ) -> Outcome {
-        guard let root = ShareImportContainer.rootURL() else { return Outcome() }
+        guard let root = inboxRoot ?? ShareImportContainer.rootURL() else { return Outcome() }
         let inbox = ShareImportInbox(root: root)
         inbox.sweep()
         let pending: [ShareImportRecord]
