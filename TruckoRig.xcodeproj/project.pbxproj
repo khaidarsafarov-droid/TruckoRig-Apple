@@ -14,6 +14,7 @@
 		02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */ = {isa = PBXBuildFile; fileRef = A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */; };
 		5A9BCDF30C20AD26B24C47F4 /* BackupIdentity.swift */ = {isa = PBXBuildFile; fileRef = E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */; };
 		8B5A088FC7272F60C4AE8CC9 /* BackupJournalMapper.swift */ = {isa = PBXBuildFile; fileRef = 4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */; };
+		AA3F49AF32913287AB976ED3 /* DeviceLink.swift */ = {isa = PBXBuildFile; fileRef = EE05B477F44AF7227F1984AC /* DeviceLink.swift */; };
 		3F896985C84EB47E4D48BE10 /* ICloudBackupController.swift */ = {isa = PBXBuildFile; fileRef = B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */; };
 		4974FB1BBA7336ABA2F45C25 /* ICloudBackupSync.swift */ = {isa = PBXBuildFile; fileRef = 21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */; };
 		BF8ADDD0C055C6967BBC8C46 /* ICloudDriveStore.swift */ = {isa = PBXBuildFile; fileRef = 812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */; };
@@ -498,6 +499,7 @@
 		A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestLaunch.swift"; sourceTree = "<group>"; };
 		E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupIdentity.swift"; sourceTree = "<group>"; };
 		4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BackupJournalMapper.swift"; sourceTree = "<group>"; };
+		EE05B477F44AF7227F1984AC /* DeviceLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceLink.swift"; sourceTree = "<group>"; };
 		B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupController.swift"; sourceTree = "<group>"; };
 		21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupSync.swift"; sourceTree = "<group>"; };
 		812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudDriveStore.swift"; sourceTree = "<group>"; };
@@ -929,6 +931,7 @@
 			children = (
 				E47BC1BB85D69309838F79B6 /* BackupIdentity.swift */,
 				4D6A0CD7262CE632C6604370 /* BackupJournalMapper.swift */,
+				EE05B477F44AF7227F1984AC /* DeviceLink.swift */,
 				B3B50EF8DD1DA66B8D5B6806 /* ICloudBackupController.swift */,
 				21D16F4BE528B10060B4D5C6 /* ICloudBackupSync.swift */,
 				812EB567FDD9989D1CA65D3D /* ICloudDriveStore.swift */,
@@ -2013,6 +2016,7 @@
 				02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */,
 				5A9BCDF30C20AD26B24C47F4 /* BackupIdentity.swift */,
 				8B5A088FC7272F60C4AE8CC9 /* BackupJournalMapper.swift */,
+				AA3F49AF32913287AB976ED3 /* DeviceLink.swift */,
 				3F896985C84EB47E4D48BE10 /* ICloudBackupController.swift */,
 				4974FB1BBA7336ABA2F45C25 /* ICloudBackupSync.swift */,
 				BF8ADDD0C055C6967BBC8C46 /* ICloudDriveStore.swift */,

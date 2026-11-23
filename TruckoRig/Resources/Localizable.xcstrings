@@ -18937,6 +18937,35 @@
         }
       }
     },
+    "settings.sync.offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not synced. This phone is offline. The journal on the phone still works."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin sincronizar. Este teléfono está sin conexión. El diario en el teléfono sigue funcionando."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не синхронизировано. Телефон не в сети. Журнал на телефоне по-прежнему работает."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas synchronisé. Ce téléphone est hors ligne. Le journal sur le téléphone fonctionne toujours."
+          }
+        }
+      }
+    },
     "settings.telegram.saved": {
       "extractionState": "manual",
       "localizations": {

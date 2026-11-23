@@ -40,6 +40,7 @@ final class AppState {
     let premium: PremiumController
     let telegram: TelegramCoordinator
     let icloud: ICloudBackupController
+    let link = DeviceLink()
 
     var selectedTab: MainTab = .journal
 
@@ -144,6 +145,7 @@ final class AppState {
         telegram.launch()
         TelegramBackgroundRegistrar.submit()
         icloud.start()
+        link.start()
     }
 
     /// Reloads the tables a write changed. The SQL runs off the main actor. Widget, share index,
