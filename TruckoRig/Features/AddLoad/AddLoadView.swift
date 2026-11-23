@@ -154,7 +154,7 @@ struct LoadFormFields: View {
             )
             SoftNumberField(title: "load.totalRate", value: $draft.totalRate, money: true)
             SoftNumberField(
-                title: system == .kilometers ? "load.totalKilometers" : "load.totalMiles",
+                title: UnitCopy.totalDistance(system),
                 value: UnitEntry.distance(stored: $draft.totalMiles, system: system)
             )
             DatePicker("load.date", selection: $draft.date, displayedComponents: .date)

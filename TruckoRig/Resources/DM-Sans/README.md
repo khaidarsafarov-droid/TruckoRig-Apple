@@ -12,7 +12,7 @@ Android is drawn by Roboto. The same two families are committed here and registe
 - `TruckoRig/Resources/Fonts/Roboto-Medium.ttf`
 - `TruckoRig/Resources/Fonts/Roboto-Bold.ttf`
 
-Licenses, committed next to the files:
+Licenses, committed next to the files and copied into the app bundle (About shows them):
 
 - DM Sans — SIL Open Font License 1.1 (`DMSans-OFL.txt`)
 - Roboto — Apache License 2.0 (`Roboto-LICENSE.txt`)

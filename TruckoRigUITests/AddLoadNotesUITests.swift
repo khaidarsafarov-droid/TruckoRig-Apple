@@ -2,7 +2,8 @@ import XCTest
 
 /// Focuses the notes field opened from Add load and checks the keyboard does not cover it.
 ///
-/// The launch argument and environment match `UITestLaunch`. They skip onboarding and the first-run offer.
+/// The UI test target compiles `UITestLaunch.swift`, so the launch argument is not copied here.
+/// Those arguments skip onboarding and the first-run offer.
 final class AddLoadNotesUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -10,8 +11,8 @@ final class AddLoadNotesUITests: XCTestCase {
 
     func testNotesFieldStaysHittableWhenFocused() {
         let app = XCUIApplication()
-        app.launchArguments = [UITestLaunchArgument.argument, "YES"]
-        app.launchEnvironment = [UITestLaunchArgument.environmentKey: "1"]
+        app.launchArguments = [UITestLaunch.argument, "YES"]
+        app.launchEnvironment = [UITestLaunch.environmentKey: "1"]
         addUIInterruptionMonitor(withDescription: "System alert") { alert in
             let deny = alert.buttons["Don’t Allow"]
             if deny.exists {
@@ -68,12 +69,6 @@ final class AddLoadNotesUITests: XCTestCase {
             XCTAssertTrue(notesField(app).isHittable)
         }
         XCTAssertTrue(notesField(app).isHittable)
-    }
-
-    /// The UI test bundle cannot import the app target, so the launch contract is duplicated here.
-    private enum UITestLaunchArgument {
-        static let argument = "-TruckoRigUITest"
-        static let environmentKey = "TRUCKORIG_UI_TEST"
     }
 
     private func button(_ app: XCUIApplication, id: String, labels: [String]) -> XCUIElement {

@@ -81,7 +81,7 @@ struct LoadDetailView: View {
             HStack {
                 StatTile(title: "stat.gross", value: Formatters.moneyPrecise(load.totalRate))
                 StatTile(
-                    title: appState.settings.measurementSystem == .kilometers ? "stat.kilometers" : "stat.miles",
+                    title: UnitCopy.distanceStat(appState.settings.measurementSystem),
                     value: Formatters.miles(load.drivenMiles, system: appState.settings.measurementSystem)
                 )
                 StatTile(

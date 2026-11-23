@@ -223,7 +223,7 @@ struct MaintenanceListView: View {
         let system = appState.settings.measurementSystem
         let driven = USMoneyFormat.number(MeasurementUnits.displayDistance(item.milesDrivenSinceStart, system: system))
         let remaining = USMoneyFormat.number(MeasurementUnits.displayDistance(max(0, item.milesRemaining ?? 0), system: system))
-        Text(milesProgress(driven: driven, loads: item.loadsCounted, remaining: remaining, system: system))
+        Text(UnitCopy.maintenanceProgress(driven: driven, loads: item.loadsCounted, remaining: remaining, system: system))
             .font(.appBody)
             .foregroundStyle(urgent ? Color.forestError : Color.forestText)
         if urgent {
@@ -398,20 +398,10 @@ private func serviceDate(_ iso: String) -> String {
     String(localized: "maintenance.serviceDate \(iso)")
 }
 
-private func milesProgress(driven: String, loads: Int, remaining: String, system: MeasurementSystem) -> String {
-    if system == .kilometers {
-        return String(localized: "maintenance.kilometers.progress \(driven) \(loads) \(remaining)")
-    }
-    return String(localized: "maintenance.miles.progress \(driven) \(loads) \(remaining)")
-}
-
 private func odometerLine(_ item: MaintenanceProgress, system: MeasurementSystem) -> String {
     let estimated = USMoneyFormat.number(MeasurementUnits.displayDistance(item.estimatedOdometer ?? 0, system: system))
     let target = USMoneyFormat.number(MeasurementUnits.displayDistance(item.targetOdometer ?? 0, system: system))
-    if system == .kilometers {
-        return String(localized: "maintenance.odometer.estimate.km \(estimated) \(target)")
-    }
-    return String(localized: "maintenance.odometer.estimate \(estimated) \(target)")
+    return UnitCopy.maintenanceOdometerEstimate(current: estimated, target: target, system: system)
 }
 
 private func dateStatus(_ item: MaintenanceProgress) -> String {

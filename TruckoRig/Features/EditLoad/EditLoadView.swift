@@ -111,7 +111,7 @@ struct EditLoadView: View {
     private var titleKey: LocalizedStringKey {
         switch focus {
         case .miles:
-            return appState.settings.measurementSystem == .kilometers ? "load.totalKilometers" : "load.totalMiles"
+            return UnitCopy.totalDistance(appState.settings.measurementSystem)
         case .deadhead:
             return "load.deadhead"
         case .finish:
@@ -126,7 +126,7 @@ struct EditLoadView: View {
     private var milesSection: some View {
         Section {
             SoftNumberField(
-                title: appState.settings.measurementSystem == .kilometers ? "load.totalKilometers" : "load.totalMiles",
+                title: UnitCopy.totalDistance(appState.settings.measurementSystem),
                 value: UnitEntry.distance(stored: $draft.totalMiles, system: appState.settings.measurementSystem)
             )
             Text("load.chip.miles.hint")

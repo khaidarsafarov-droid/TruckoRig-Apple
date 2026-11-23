@@ -60,7 +60,7 @@ struct AnalyticsView: View {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundStyle(Color.heroText)
-                            .frame(width: 36, height: 36)
+                            .minimumHitTarget()
                     }
                     .accessibilityLabel("action.back")
                 }
@@ -276,8 +276,8 @@ struct AnalyticsView: View {
     private func routeDetail(_ route: RouteStat) -> String {
         let system = appState.settings.measurementSystem
         let gross = USMoneyFormat.currency(route.gross)
-        let miles = USMoneyFormat.miles(route.miles, system: system)
-        let rpm = route.miles > 0 ? USMoneyFormat.rpmPerMile(route.ratePerMile, system: system) : "—"
+        let miles = Formatters.miles(route.miles, system: system)
+        let rpm = route.miles > 0 ? Formatters.ratePerMile(route.ratePerMile, system: system) : "—"
         return "\(gross) · \(miles) · \(rpm)"
     }
 

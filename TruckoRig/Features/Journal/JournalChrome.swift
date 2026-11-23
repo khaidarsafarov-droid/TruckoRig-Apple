@@ -65,7 +65,7 @@ struct JournalHomeHeader: View {
             Image(systemName: symbol)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.forestText)
-                .frame(width: 40, height: 40)
+                .minimumHitTarget()
         }
         .accessibilityLabel(label)
         .modifier(ActionIdentifier(identifier: identifier))
@@ -130,9 +130,9 @@ struct HomeWeekHeroCard: View {
             .padding(.top, 14)
 
             HStack(alignment: .top) {
-                heroStat(measurementSystem == .kilometers ? "home.stat.perKilometer" : "home.stat.rpm", rpmText)
+                heroStat(UnitCopy.homeRate(measurementSystem), rpmText)
                 Spacer()
-                heroStat(measurementSystem == .kilometers ? "home.stat.kilometers" : "home.stat.miles", milesText)
+                heroStat(UnitCopy.homeDistance(measurementSystem), milesText)
                 Spacer()
                 heroStat("home.stat.loads", "\(loadCount)")
             }
@@ -239,7 +239,7 @@ struct JournalLoadCard: View {
         .overlay {
             if appState.highlightedLoadIDs.contains(load.id) {
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .strokeBorder(Color.brandGold, lineWidth: 2)
+                    .strokeBorder(Color.brandGoldInk, lineWidth: 2)
             }
         }
         .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
@@ -381,6 +381,7 @@ struct JournalLoadCard: View {
                 .foregroundStyle(Color.forestSecondary)
                 .frame(width: 40, height: 40)
                 .background(Color.forestSurfaceMuted, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .minimumHitTarget()
         }
         .buttonStyle(.borderless)
         .accessibilityLabel(label)
@@ -388,10 +389,7 @@ struct JournalLoadCard: View {
 }
 
 private func journalDate(_ date: Date, locale: Locale) -> String {
-    let formatter = DateFormatter()
-    formatter.locale = locale
-    formatter.setLocalizedDateFormatFromTemplate("EEEMMMd")
-    return formatter.string(from: date)
+    DateUtils.weekdayShortDay(date, locale: locale)
 }
 
 private func stopsPhrase(_ count: Int, locale: Locale) -> String {
