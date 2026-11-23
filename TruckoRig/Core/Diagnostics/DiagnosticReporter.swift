@@ -26,11 +26,8 @@ enum DiagnosticReporter {
                     let type = Self.number(crash.exceptionType)
                     let code = Self.number(crash.exceptionCode)
                     let signal = Self.number(crash.signal)
-                    AppLog.diagnostics.error(
-                        "MetricKit crash type=\(type, privacy: .public)"
-                            + " code=\(code, privacy: .public)"
-                            + " signal=\(signal, privacy: .public)"
-                    )
+                    let summary = "MetricKit crash type=\(type) code=\(code) signal=\(signal)"
+                    AppLog.diagnostics.error("\(summary, privacy: .public)")
                 }
                 for hang in hangs {
                     let seconds = hang.hangDuration.converted(to: .seconds).value
