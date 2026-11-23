@@ -169,16 +169,14 @@ public enum CrowdMapAggregator {
                 return after.uppercased()
             }
         }
-        let range = NSRange(trimmed.startIndex..., in: trimmed)
-        guard let match = trailingStateRegex.firstMatch(in: trimmed, range: range),
-              let capture = Range(match.range(at: 1), in: trimmed)
-        else { return nil }
-        let token = String(trimmed[capture])
+        guard let match = trimmed.firstMatch(of: trailingState) else { return nil }
+        let token = String(match.1)
         guard token.count == 2, token.allSatisfy(\.isLetter) else { return nil }
         return token.uppercased()
     }
 
-    private static let trailingStateRegex = try! NSRegularExpression(pattern: #"\b([A-Za-z]{2})\s*$"#)
+    /// Two trailing letters. A regex literal, so a bad pattern fails the build instead of crashing.
+    private static let trailingState = /\b([A-Za-z]{2})\s*$/
 
     private static func twoLetterState(_ location: String) -> String? {
         guard let code = extractState(from: location) else { return nil }
