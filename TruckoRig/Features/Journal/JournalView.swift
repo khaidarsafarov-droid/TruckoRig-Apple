@@ -428,11 +428,11 @@ struct JournalView: View {
     /// Lets the action sheet finish dismissing before the system share sheet is presented.
     private func queueShare(_ format: PeriodReportShare.Format) {
         Task { @MainActor in
-            presentShare(format)
+            await presentShare(format)
         }
     }
 
-    private func presentShare(_ format: PeriodReportShare.Format) {
+    private func presentShare(_ format: PeriodReportShare.Format) async {
         let settings = appState.settings
         let week = settings.truckingWeek
         let now = Date()
@@ -442,7 +442,7 @@ struct JournalView: View {
             now: now,
             week: week
         )
-        let report = PeriodReportShare.report(
+        let request = PeriodReportShare.request(
             scope: scope,
             loads: loads,
             diesel: appState.catalog.diesel,
@@ -454,8 +454,11 @@ struct JournalView: View {
             week: week,
             generatedAt: now
         )
+        let prepared = await Task.detached(priority: .userInitiated) {
+            PeriodReportShare.prepare(request, format: format)
+        }.value
         do {
-            shareActivity = try PeriodReportShare.activity(for: report, format: format)
+            shareActivity = try PeriodReportShare.activity(for: prepared)
         } catch {
             viewModel.errorMessage = error.localizedDescription
         }
