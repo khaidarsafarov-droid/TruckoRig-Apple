@@ -8,10 +8,10 @@ struct ShareExtensionScreen: View {
         VStack(alignment: .leading, spacing: 18) {
             HStack(spacing: 10) {
                 Image(systemName: "truck.box.fill")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(Color.brandGold)
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(Color.brandGoldInk)
                 Text("share.title")
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(.title2.weight(.semibold))
                     .foregroundStyle(Color.heroText)
                 Spacer(minLength: 0)
             }
@@ -20,14 +20,14 @@ struct ShareExtensionScreen: View {
                 if model.phase == .checking {
                     HStack(spacing: 12) {
                         ProgressView()
-                            .tint(Color.brandGold)
+                            .tint(Color.brandGoldInk)
                         Text("share.checking")
-                            .font(.system(size: 17))
+                            .font(.body)
                             .foregroundStyle(Color.heroText)
                     }
                 } else {
                     Text(message)
-                        .font(.system(size: 17))
+                        .font(.body)
                         .foregroundStyle(Color.heroText)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -41,7 +41,7 @@ struct ShareExtensionScreen: View {
                     if showsOpen {
                         Button(action: model.openHost) {
                             Text("share.open")
-                                .font(.system(size: 17, weight: .semibold))
+                                .font(.body.weight(.semibold))
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
                         }
@@ -54,7 +54,7 @@ struct ShareExtensionScreen: View {
                     }
                     Button(action: model.finish) {
                         Text("share.done")
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.body.weight(.semibold))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
                     }

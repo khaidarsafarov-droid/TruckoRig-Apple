@@ -47,14 +47,14 @@ struct MaintenanceTaskEditor: View {
                 )
                 DatePicker("maintenance.field.date", selection: $start, displayedComponents: .date)
                 Picker("maintenance.add.task", selection: $reminderType) {
-                    Text(system == .kilometers ? "maintenance.byKilometers" : "maintenance.byMiles")
+                    Text(UnitCopy.maintenanceBasis(system))
                         .tag(MaintenanceReminderType.miles)
                     Text("maintenance.byDate").tag(MaintenanceReminderType.date)
                 }
                 .pickerStyle(.segmented)
                 if reminderType == .miles {
                     SoftTextField(
-                        title: system == .kilometers ? "maintenance.interval.kilometers" : "maintenance.interval",
+                        title: UnitCopy.maintenanceInterval(system),
                         text: $interval,
                         keyboard: .decimalPad
                     )
@@ -62,7 +62,7 @@ struct MaintenanceTaskEditor: View {
                     DatePicker("maintenance.dueDate", selection: $due, displayedComponents: .date)
                 }
                 SoftTextField(
-                    title: system == .kilometers ? "maintenance.odometer.current.kilometers" : "maintenance.odometer.current",
+                    title: UnitCopy.maintenanceOdometer(system),
                     text: $odometer,
                     keyboard: .decimalPad
                 )
@@ -220,9 +220,9 @@ extension MaintenanceTaskDraft.Failure {
         switch self {
         case .emptyTitle: return "maintenance.error.title"
         case .invalidInterval:
-            return system == .kilometers ? "maintenance.error.kilometers" : "maintenance.error.interval"
+            return UnitCopy.maintenanceIntervalError(system)
         case .invalidOdometer:
-            return system == .kilometers ? "maintenance.error.odometer.kilometers" : "maintenance.error.odometer"
+            return UnitCopy.maintenanceOdometerError(system)
         case .invalidDueDate: return "maintenance.error.due"
         }
     }

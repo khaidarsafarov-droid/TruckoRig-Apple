@@ -35,6 +35,15 @@ struct AboutView: View {
             guide("about.telegram.title", "about.telegram.body")
             guide("about.backup.title", "about.backup.body")
             guide("about.settings.title", "about.settings.body")
+
+            Section {
+                NavigationLink {
+                    LicenseNoticesView()
+                } label: {
+                    Text("about.licenses")
+                }
+            }
+            .listRowBackground(Color.forestCard)
         }
         .scrollContentBackground(.hidden)
         .forestBackground()
@@ -50,6 +59,38 @@ struct AboutView: View {
             Text(title)
         }
         .listRowBackground(Color.forestCard)
+    }
+}
+
+/// DM Sans, Roboto, GRDB, SQLCipher, and the Maps terms, read from the app bundle.
+struct LicenseNoticesView: View {
+    private var notice: String {
+        let names = ["NOTICE", "DMSans-OFL", "Roboto-LICENSE"]
+        let parts = names.compactMap { name -> String? in
+            guard let url = Bundle.main.url(forResource: name, withExtension: "txt"),
+                  let text = try? String(contentsOf: url, encoding: .utf8),
+                  !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            else { return nil }
+            return text
+        }
+        if parts.count == names.count {
+            return parts.joined(separator: "\n\n")
+        }
+        return String(localized: "about.licenses.missing")
+    }
+
+    var body: some View {
+        ScrollView {
+            Text(notice)
+                .font(.body)
+                .foregroundStyle(Color.forestText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .textSelection(.enabled)
+                .padding(Spacing.standard)
+        }
+        .forestBackground()
+        .navigationTitle("about.licenses")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

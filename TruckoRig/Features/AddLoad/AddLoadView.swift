@@ -156,7 +156,7 @@ struct LoadFormFields: View {
             )
             SoftNumberField(title: "load.totalRate", value: $draft.totalRate, money: true, fieldID: "addLoad.rate")
             SoftNumberField(
-                title: system == .kilometers ? "load.totalKilometers" : "load.totalMiles",
+                title: UnitCopy.totalDistance(system),
                 value: UnitEntry.distance(stored: $draft.totalMiles, system: system),
                 fieldID: "addLoad.miles"
             )

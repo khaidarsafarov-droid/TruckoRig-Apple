@@ -187,11 +187,15 @@ struct TaxTrackerView: View {
 
     private var monthPager: some View {
         HStack {
-            Button { shiftMonth(-1) } label: { Image(systemName: "chevron.left") }
+            Button { shiftMonth(-1) } label: {
+                Image(systemName: "chevron.left").minimumHitTarget()
+            }
             Spacer()
             Text(monthTitle).font(.appBodyMedium)
             Spacer()
-            Button { shiftMonth(1) } label: { Image(systemName: "chevron.right") }
+            Button { shiftMonth(1) } label: {
+                Image(systemName: "chevron.right").minimumHitTarget()
+            }
         }
     }
 
@@ -201,11 +205,7 @@ struct TaxTrackerView: View {
         components.month = month
         components.day = 1
         let date = calendar.date(from: components) ?? Date()
-        let formatter = DateFormatter()
-        formatter.calendar = calendar
-        formatter.locale = AppLocale.locale
-        formatter.setLocalizedDateFormatFromTemplate("MMMM y")
-        return formatter.string(from: date)
+        return DateUtils.string(date, template: "MMMM y", locale: AppLocale.locale, calendar: calendar)
     }
 
     private func dayButton(_ day: Int) -> some View {
@@ -216,12 +216,15 @@ struct TaxTrackerView: View {
         } label: {
             Text("\(day)")
                 .font(.appCaptionMedium)
-                .frame(maxWidth: .infinity, minHeight: 32)
+                .frame(maxWidth: .infinity)
+                .frame(height: 32)
                 .background(
                     on ? AnyShapeStyle(Color.forestPrimary) : AnyShapeStyle(Color.forestSurfaceMuted),
                     in: Circle()
                 )
                 .foregroundStyle(on ? Color.forestOnPrimary : Color.forestText)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(iso)

@@ -57,7 +57,7 @@ struct JournalToolsMenu: View {
             Image(systemName: "line.3.horizontal")
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Color.forestText)
-                .frame(width: 40, height: 40)
+                .minimumHitTarget()
         }
         .accessibilityLabel("profile.records")
     }

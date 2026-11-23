@@ -13,7 +13,7 @@
 | Данные | Только на телефоне, без логина |
 | Карты | Google Maps SDK for iOS 11.4.0 |
 | OCR | Vision (`VNRecognizeTextRequest`, ru + en) |
-| Локализация | String Catalog (`.xcstrings`), RU + EN, и ES для Premium |
+| Локализация | String Catalog (`.xcstrings`): английский, русский, испанский и французский для каждой строки |
 
 ## Как открыть
 
@@ -56,7 +56,7 @@ swift test
 тесты, файл проекта, каталог строк и SwiftLint.
 
 Установка на iPhone с Windows и бесплатным Apple ID: [docs/SIDELOAD_RU.md](docs/SIDELOAD_RU.md).
-Workflow **Sideload IPA** кладёт неподписанный `.ipa` в артефакт `TruckoRig-unsigned-ipa`.
+Workflow **Sideload IPA** собирает пакет на pull request и по кнопке Run workflow, а неподписанный `.ipa` выкладывает только после push в `main`. Имя артефакта — `TruckoRig-unsigned-ipa-<sha коммита>`.
 
 ## TestFlight
 
@@ -239,11 +239,13 @@ swiftlint lint --strict               # новые замечания сверх
 Манифест приватности (`PrivacyInfo.xcprivacy`) лежит в приложении и в виджете: трекинга нет,
 данные разработчику не отправляются. `UserDefaults` объявлен причиной `CA92.1` (только свои
 настройки). Размер файла внутри контейнера приложения — `C617.1`. `ITSAppUsesNonExemptEncryption`
-уже `false`, поэтому при загрузке в App Store Connect вопросник про экспорт шифрования не открывается.
+стоит `false`: шифрование стандартное и защищает журнал водителя (ECCN 5D992). Основание и то,
+что владелец отвечает в App Store Connect, — в [docs/EXPORT_COMPLIANCE.md](docs/EXPORT_COMPLIANCE.md).
+Ключ в plist снимает вопросник с каждой сборки, но не заменяет запись в App Information.
 
 ## Локализация
 
-Все строки — в `TruckoRig/Resources/Localizable.xcstrings` (RU + EN; у Premium есть ещё ES).
+Все строки — в `TruckoRig/Resources/Localizable.xcstrings` (английский, русский, испанский и французский; испанский не ограничен Premium). Суммы остаются в долларах США при любом языке.
 Ключи в коде литеральные, а `Tools/check_strings.py` в CI сверяет каталог с кодом: пропущенный
 перевод, осиротевший ключ или несовпадение числа `%@`/`%lld` между языками валят проверку.
 Доменный слой локализации не знает: ошибки — типизированные значения, а их текст живёт в
