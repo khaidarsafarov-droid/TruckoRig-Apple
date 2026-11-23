@@ -36,10 +36,10 @@ struct SoftTextField: View {
             Group {
                 if isSecure {
                     SecureField(placeholder, text: $text)
-                        .modifier(FieldIdentifier(fieldID))
+                        .modifier(FieldIdentifier(id: fieldID))
                 } else {
                     TextField(placeholder, text: $text)
-                        .modifier(FieldIdentifier(fieldID))
+                        .modifier(FieldIdentifier(id: fieldID))
                 }
             }
             .font(.appBody)
