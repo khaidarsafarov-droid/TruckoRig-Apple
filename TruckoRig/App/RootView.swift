@@ -14,10 +14,10 @@ struct RootView: View {
                 appState.open(url)
             }
             .onChange(of: appState.settings.language) { _, _ in
-                appState.publishWidgetSnapshot()
+                WidgetBridge.publishWeek(loads: appState.catalog.loads, settings: appState.settings)
             }
             .onChange(of: appState.settings.weekStart) { _, _ in
-                appState.publishWidgetSnapshot()
+                WidgetBridge.publishWeek(loads: appState.catalog.loads, settings: appState.settings)
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {

@@ -50,7 +50,7 @@ enum MaintenanceReminderCenter {
             appState.settings.missingNotifiedWeek = "\(previous.year)-W\(previous.weekNumber)"
         }
         if !decision.markNotifiedIDs.isEmpty {
-            appState.markMaintenanceNotified(ids: decision.markNotifiedIDs, now: now)
+            markNotified(decision.markNotifiedIDs, in: appState, now: now)
         }
         await MaintenanceAlertPoster.post(appState, now: now)
     }
@@ -125,5 +125,72 @@ enum MaintenanceReminderCenter {
         if fireAt.timeIntervalSince(now) <= 1 { return nil }
         let parts = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: fireAt)
         return UNCalendarNotificationTrigger(dateMatching: parts, repeats: false)
+    }
+
+    /// Records that a maintenance alert was handed to the system.
+    static func markNotified(_ ids: [String], in appState: AppState, now: Date = Date()) {
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
+        for id in ids {
+            guard var task = appState.catalog.maintenance.first(where: { $0.id == id }) else { continue }
+            task.notifiedAt = millis
+            task.updatedAt = millis
+            try? appState.persistence.database.save(task)
+        }
+        appState.reloadJournal(.maintenance)
+    }
+
+    /// Drops the "already alerted" stamp when a mileage interval is no longer due.
+    static func clearNotified(_ ids: [String], in appState: AppState, now: Date = Date()) {
+        guard !ids.isEmpty else { return }
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
+        for id in ids {
+            guard var task = appState.catalog.maintenance.first(where: { $0.id == id }) else { continue }
+            task.notifiedAt = nil
+            task.updatedAt = millis
+            try? appState.persistence.database.save(task)
+        }
+        appState.reloadJournal(.maintenance)
+    }
+
+    /// Marks the service done and, when it repeats, files the next occurrence.
+    static func complete(_ task: MaintenanceTask, in appState: AppState, now: Date = Date()) {
+        let next = MaintenanceReminderSchedule.nextTask(
+            after: task,
+            now: now,
+            calendar: appState.settings.truckingWeek.calendar
+        )
+        MaintenanceSnoozeStore.clear(task.id)
+        let repository = appState.financeRepository()
+        try? repository.complete(task, now: now)
+        if let next {
+            try? repository.addTask(next)
+        }
+    }
+
+    /// Delivers the same alert again tomorrow. Quiet hours still shift the fire time.
+    static func snooze(taskID: String, in appState: AppState, now: Date = Date()) {
+        guard var task = appState.catalog.maintenance.first(where: { $0.id == taskID }) else { return }
+        let millis = Int64(now.timeIntervalSince1970 * 1000)
+        task.notifiedAt = nil
+        task.updatedAt = millis
+        try? appState.persistence.database.save(task)
+        MaintenanceSnoozeStore.set(now.addingTimeInterval(MaintenanceReminderSchedule.snoozeInterval), for: taskID)
+        appState.reloadJournal(.maintenance)
+    }
+
+    static func handle(action: String, taskID: String, in appState: AppState) {
+        if appState.catalog.maintenance.contains(where: { $0.id == taskID }) == false {
+            appState.catalog.reloadNow(.maintenance, from: appState.persistence.database)
+        }
+        guard let task = appState.catalog.maintenance.first(where: { $0.id == taskID }) else { return }
+        if action == MaintenanceAlertPoster.doneAction {
+            complete(task, in: appState)
+            return
+        }
+        if action == MaintenanceAlertPoster.snoozeAction {
+            snooze(taskID: taskID, in: appState)
+            return
+        }
+        markNotified([taskID], in: appState)
     }
 }

@@ -53,7 +53,7 @@ struct WeeklyGoalView: View {
         // current week when this screen recomputes it.
         .task(id: progress) {
             if viewModel.isCurrentWeek(in: calendar) {
-                appState.publishWidgetSnapshot()
+                WidgetBridge.publishWeek(loads: appState.catalog.loads, settings: appState.settings)
             }
         }
     }

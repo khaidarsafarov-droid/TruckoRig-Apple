@@ -68,6 +68,7 @@
 		4E657CC15645CAF0EE570312 /* SystemSQLite.swift */ = {isa = PBXBuildFile; fileRef = F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */; };
 		F1B2BB637FC0E34C47B8D28C /* WeekReindexer.swift */ = {isa = PBXBuildFile; fileRef = 97345C3015F38C2FED601B83 /* WeekReindexer.swift */; };
 		977D401F0F8FA8D7C9F8E27E /* WidgetBridge.swift */ = {isa = PBXBuildFile; fileRef = E30048804E0843EB21F639BF /* WidgetBridge.swift */; };
+		05FE1F4EE23C614F0660D86C /* WidgetGoalPublish.swift */ = {isa = PBXBuildFile; fileRef = 71A05DAC2FCBC835324F8483 /* WidgetGoalPublish.swift */; };
 		C5F261ADC67C57B65C4210FC /* PremiumController.swift */ = {isa = PBXBuildFile; fileRef = 58E3D822C67F417420AB1A00 /* PremiumController.swift */; };
 		1F731BD062337EAC85294CF1 /* PremiumLocalStore.swift */ = {isa = PBXBuildFile; fileRef = 6E2880B814B3D0BE6D75ADAA /* PremiumLocalStore.swift */; };
 		8C9E0FFCDEAB74E4A0F037D0 /* StoreKitPremiumGateway.swift */ = {isa = PBXBuildFile; fileRef = 1B04FD251467F771AED17E12 /* StoreKitPremiumGateway.swift */; };
@@ -550,6 +551,7 @@
 		F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemSQLite.swift"; sourceTree = "<group>"; };
 		97345C3015F38C2FED601B83 /* WeekReindexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekReindexer.swift"; sourceTree = "<group>"; };
 		E30048804E0843EB21F639BF /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetBridge.swift"; sourceTree = "<group>"; };
+		71A05DAC2FCBC835324F8483 /* WidgetGoalPublish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetGoalPublish.swift"; sourceTree = "<group>"; };
 		58E3D822C67F417420AB1A00 /* PremiumController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumController.swift"; sourceTree = "<group>"; };
 		6E2880B814B3D0BE6D75ADAA /* PremiumLocalStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumLocalStore.swift"; sourceTree = "<group>"; };
 		1B04FD251467F771AED17E12 /* StoreKitPremiumGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoreKitPremiumGateway.swift"; sourceTree = "<group>"; };
@@ -1027,6 +1029,7 @@
 				F7FB67ABED043EBB9F0CBCF0 /* SystemSQLite.swift */,
 				97345C3015F38C2FED601B83 /* WeekReindexer.swift */,
 				E30048804E0843EB21F639BF /* WidgetBridge.swift */,
+				71A05DAC2FCBC835324F8483 /* WidgetGoalPublish.swift */,
 			);
 			path = "Persistence";
 			sourceTree = "<group>";
@@ -2053,6 +2056,7 @@
 				4E657CC15645CAF0EE570312 /* SystemSQLite.swift */,
 				F1B2BB637FC0E34C47B8D28C /* WeekReindexer.swift */,
 				977D401F0F8FA8D7C9F8E27E /* WidgetBridge.swift */,
+				05FE1F4EE23C614F0660D86C /* WidgetGoalPublish.swift */,
 				C5F261ADC67C57B65C4210FC /* PremiumController.swift */,
 				1F731BD062337EAC85294CF1 /* PremiumLocalStore.swift */,
 				8C9E0FFCDEAB74E4A0F037D0 /* StoreKitPremiumGateway.swift */,

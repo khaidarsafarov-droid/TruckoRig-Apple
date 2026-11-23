@@ -131,7 +131,7 @@ final class AppState {
 
     private func publishAfterReload(_ tables: JournalTables) {
         if tables.contains(.loads) || tables.contains(.profile) {
-            publishWidgetSnapshot()
+            WidgetBridge.publishWeek(loads: catalog.loads, settings: settings)
         }
         if tables.contains(.loads) {
             ShareImportIndexPublisher.publish(loads: catalog.loads)
@@ -151,124 +151,25 @@ final class AppState {
         }
     }
 
-    /// Records that a maintenance alert was handed to the system. Skips another reminder pass.
-    func markMaintenanceNotified(ids: [String], now: Date = Date()) {
-        let millis = Int64(now.timeIntervalSince1970 * 1000)
-        for id in ids {
-            guard var task = catalog.maintenance.first(where: { $0.id == id }) else { continue }
-            task.notifiedAt = millis
-            task.updatedAt = millis
-            try? persistence.database.save(task)
-        }
-        reloadJournal(.maintenance)
-    }
-
-    /// Drops the "already alerted" stamp when a mileage interval is no longer due.
-    func clearMaintenanceNotified(ids: [String], now: Date = Date()) {
-        guard !ids.isEmpty else { return }
-        let millis = Int64(now.timeIntervalSince1970 * 1000)
-        for id in ids {
-            guard var task = catalog.maintenance.first(where: { $0.id == id }) else { continue }
-            task.notifiedAt = nil
-            task.updatedAt = millis
-            try? persistence.database.save(task)
-        }
-        reloadJournal(.maintenance)
-    }
-
-    /// Marks the service done and, when it repeats, files the next occurrence.
-    func completeMaintenance(_ task: MaintenanceTask, now: Date = Date()) {
-        let next = MaintenanceReminderSchedule.nextTask(
-            after: task,
-            now: now,
-            calendar: settings.truckingWeek.calendar
-        )
-        MaintenanceSnoozeStore.clear(task.id)
-        let repository = financeRepository()
-        try? repository.complete(task, now: now)
-        if let next {
-            try? repository.addTask(next)
-        }
-    }
-
-    /// Delivers the same alert again tomorrow. Quiet hours still shift the fire time.
-    func snoozeMaintenance(taskID: String, now: Date = Date()) {
-        guard var task = catalog.maintenance.first(where: { $0.id == taskID }) else { return }
-        let millis = Int64(now.timeIntervalSince1970 * 1000)
-        task.notifiedAt = nil
-        task.updatedAt = millis
-        try? persistence.database.save(task)
-        MaintenanceSnoozeStore.set(now.addingTimeInterval(MaintenanceReminderSchedule.snoozeInterval), for: taskID)
-        reloadJournal()
-    }
-
     func installNotificationHandling() {
         premium.observeMaintenanceActions { [weak self] action, taskID in
-            self?.handleMaintenanceNotification(action: action, taskID: taskID)
+            guard let self else { return }
+            MaintenanceReminderCenter.handle(action: action, taskID: taskID, in: self)
         }
         premium.installNotificationDelegate()
     }
 
-    func handleMaintenanceNotification(action: String, taskID: String) {
-        if catalog.maintenance.contains(where: { $0.id == taskID }) == false {
-            catalog.reloadNow(.maintenance, from: persistence.database)
-        }
-        guard let task = catalog.maintenance.first(where: { $0.id == taskID }) else { return }
-        if action == MaintenanceAlertPoster.doneAction {
-            completeMaintenance(task)
-            return
-        }
-        if action == MaintenanceAlertPoster.snoozeAction {
-            snoozeMaintenance(taskID: taskID)
-            return
-        }
-        markMaintenanceNotified(ids: [taskID])
-    }
-
     @ObservationIgnored private var reminderTask: Task<Void, Never>?
-    @ObservationIgnored private var highlightClear: Task<Void, Never>?
-
-    /// Refreshes the home-screen widget from the current week.
-    ///
-    /// The SQLCipher key stays in this process. Only the finished numbers are written to the App Group.
-    func publishWidgetSnapshot(now: Date = Date()) {
-        let week = settings.truckingWeek
-        let ref = week.currentWeek(now: now)
-        let loads = catalog.loads.filter { $0.weekNumber == ref.weekNumber && $0.year == ref.year }
-        let progress = WeeklyGoalCalculator(week: week, locale: snapshotLocale).calculate(
-            target: settings.weeklyGoal,
-            loads: loads.map(\.summary),
-            for: ref,
-            now: now
-        )
-        guard let start = week.startDate(of: ref), let end = week.endDate(of: ref) else { return }
-        let snapshot = WidgetSnapshotBuilder.make(
-            progress: progress,
-            weekStart: start,
-            weekEnd: end,
-            calendar: week.calendar,
-            locale: snapshotLocale,
-            now: now
-        )
-        WidgetBridge.publish(snapshot)
-    }
 
     /// Pulls share-sheet loads into the journal. Safe to call when the App Group is missing.
     func importSharedLoads() {
-        let outcome = ShareImportProcessor.importPending(
+        ShareImportProcessor.receive(
             loads: catalog.loads,
             repository: loadRepository(),
-            media: mediaRepository()
+            media: mediaRepository(),
+            highlight: { [weak self] ids in self?.highlightedLoadIDs = ids },
+            showJournal: { [weak self] in self?.selectedTab = .journal }
         )
-        guard !outcome.inserted.isEmpty else { return }
-        highlightedLoadIDs = Set(outcome.inserted)
-        selectedTab = .journal
-        highlightClear?.cancel()
-        highlightClear = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: 8_000_000_000)
-            guard !Task.isCancelled else { return }
-            self?.highlightedLoadIDs = []
-        }
     }
 
     /// Widget and home-screen links. Unknown `truckorig://` paths open the journal.
@@ -297,13 +198,6 @@ final class AppState {
             selectedTab = .journal
             pendingPresentation = .addLoad
         }
-    }
-
-    private var snapshotLocale: Locale {
-        if let identifier = settings.language.localeIdentifier {
-            return Locale(identifier: identifier)
-        }
-        return .current
     }
 
     /// The only way views should obtain a load repository: writes also refresh the journal.
