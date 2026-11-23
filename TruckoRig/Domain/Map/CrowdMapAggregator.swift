@@ -176,7 +176,7 @@ public enum CrowdMapAggregator {
     }
 
     /// Two trailing letters. A regex literal, so a bad pattern fails the build instead of crashing.
-    private static let trailingState = /\b([A-Za-z]{2})\s*$/
+    private static let trailingState = #/\b([A-Za-z]{2})\s*$/#
 
     private static func twoLetterState(_ location: String) -> String? {
         guard let code = extractState(from: location) else { return nil }

@@ -43,10 +43,11 @@ final class JournalSaveNotifier {
         depth += 1
         defer {
             depth -= 1
-            guard depth == 0 else { return }
-            let tables = pending
-            pending = []
-            if !tables.isEmpty { deliver?(tables) }
+            if depth == 0 {
+                let tables = pending
+                pending = []
+                if !tables.isEmpty { deliver?(tables) }
+            }
         }
         try work()
     }
