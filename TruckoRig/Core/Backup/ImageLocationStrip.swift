@@ -26,9 +26,11 @@ enum ImageLocationStrip {
             throw ImageLocationStripError.encodeFailed
         }
         for index in 0..<count {
-            var properties = (CGImageSourceCopyPropertiesAtIndex(source, index, nil) as? [CFString: Any]) ?? [:]
-            properties.removeValue(forKey: kCGImagePropertyGPSDictionary)
-            CGImageDestinationAddImageFromSource(destination, source, index, properties as CFDictionary)
+            guard let image = CGImageSourceCreateImageAtIndex(source, index, nil) else {
+                throw ImageLocationStripError.encodeFailed
+            }
+            // Pixels only. Copying the source with edited properties can keep the GPS IFD.
+            CGImageDestinationAddImage(destination, image, nil)
         }
         guard CGImageDestinationFinalize(destination), output.length > 0 else {
             throw ImageLocationStripError.encodeFailed
