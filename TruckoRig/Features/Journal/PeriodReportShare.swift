@@ -60,9 +60,11 @@ enum PeriodReportShare {
         let subject = "\(report.brand) — \(report.periodTitle)"
         switch format {
         case .pdf:
+            let statement = PeriodReportStatementBuilder.make(report)
             let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(report.fileStem).pdf")
             try PeriodReportPDF.data(for: report).write(to: url, options: .atomic)
-            return PeriodReportActivity(items: [PeriodReportActivityItem(file: url, subject: subject)])
+            let englishSubject = "\(report.brand) — \(statement.periodLine)"
+            return PeriodReportActivity(items: [PeriodReportActivityItem(file: url, subject: englishSubject)])
         case .text:
             return PeriodReportActivity(items: [
                 PeriodReportActivityItem(text: PeriodReportText.render(report), subject: subject),

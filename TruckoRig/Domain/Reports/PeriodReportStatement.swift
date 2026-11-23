@@ -17,6 +17,7 @@ public struct PeriodReportStatement: Equatable, Sendable {
     public var summaryTitle: String
     public var summary: [PeriodReportLine]
     public var emptyMessage: String
+    public var footer: String
 
     public init(
         title: String,
@@ -29,7 +30,8 @@ public struct PeriodReportStatement: Equatable, Sendable {
         totalRow: [String],
         summaryTitle: String,
         summary: [PeriodReportLine],
-        emptyMessage: String
+        emptyMessage: String,
+        footer: String
     ) {
         self.title = title
         self.driverName = driverName
@@ -42,14 +44,17 @@ public struct PeriodReportStatement: Equatable, Sendable {
         self.summaryTitle = summaryTitle
         self.summary = summary
         self.emptyMessage = emptyMessage
+        self.footer = footer
     }
 }
 
 public enum PeriodReportStatementBuilder {
 
+    /// Always English, including when the journal that produced `report` is Russian.
     public static func make(_ report: PeriodReport) -> PeriodReportStatement {
-        let copy = PeriodReportCopy.resolve(report.language)
+        let copy = PeriodReportCopy.english
         let system = report.measurementSystem
+        let week = PeriodReportBuilder.englishWeek(from: report)
         let columns = [
             copy.loadNumber,
             copy.originHeader,
@@ -65,8 +70,8 @@ public enum PeriodReportStatementBuilder {
                 load.tripId,
                 load.origin,
                 load.destination,
-                load.shipDate,
-                load.deliveryDate,
+                PeriodReportBuilder.englishShortDate(load.shipAt, week: week),
+                load.deliveredAt.map { PeriodReportBuilder.englishShortDate($0, week: week) } ?? "",
                 load.tableMiles,
                 load.tableGross,
                 load.tableRate,
@@ -91,15 +96,16 @@ public enum PeriodReportStatementBuilder {
         return PeriodReportStatement(
             title: copy.statementTitle,
             driverName: report.driverName,
-            periodLine: report.periodTitle,
-            generatedLine: "\(report.generatedLabel): \(report.generatedOn)",
+            periodLine: PeriodReportBuilder.periodTitle(scope: report.scope, week: week, language: .english),
+            generatedLine: "\(copy.generated): \(PeriodReportBuilder.englishMediumDate(report.generatedAt, week: week))",
             columns: columns,
             rows: rows,
             totalLabel: copy.total,
             totalRow: totalRow,
             summaryTitle: copy.summary,
             summary: summary,
-            emptyMessage: report.emptyLoadsMessage
+            emptyMessage: copy.emptyLoads,
+            footer: copy.footer
         )
     }
 }

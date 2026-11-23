@@ -184,7 +184,7 @@ private final class Canvas {
     func drawPageFooter() {
         let baseline = page.height - 18
         _ = draw(
-            "\(report.brand)  ·  \(report.footer)",
+            "\(report.brand)  ·  \(statement.footer)",
             x: margin,
             y: baseline,
             width: contentWidth,

@@ -266,6 +266,9 @@ public struct PeriodReportLoadBlock: Equatable, Sendable {
     public var tableMiles: String
     public var tableGross: String
     public var tableRate: String
+    /// Pickup instant. The PDF formats this in en_US even when the plain text is not English.
+    public var shipAt: Date
+    public var deliveredAt: Date?
 
     public init(
         number: Int,
@@ -278,7 +281,9 @@ public struct PeriodReportLoadBlock: Equatable, Sendable {
         deliveryDate: String = "",
         tableMiles: String = "",
         tableGross: String = "",
-        tableRate: String = ""
+        tableRate: String = "",
+        shipAt: Date = Date(timeIntervalSince1970: 0),
+        deliveredAt: Date? = nil
     ) {
         self.number = number
         self.tripId = tripId
@@ -291,6 +296,8 @@ public struct PeriodReportLoadBlock: Equatable, Sendable {
         self.tableMiles = tableMiles
         self.tableGross = tableGross
         self.tableRate = tableRate
+        self.shipAt = shipAt
+        self.deliveredAt = deliveredAt
     }
 }
 
@@ -313,6 +320,10 @@ public struct PeriodReport: Equatable, Sendable {
     public var fileStem: String
     public var language: PeriodReportLanguage
     public var measurementSystem: MeasurementSystem
+    public var generatedAt: Date
+    public var scope: PeriodReportScope
+    public var weekStart: WeekStartDay
+    public var timeZoneIdentifier: String
 
     public init(
         brand: String,
@@ -331,7 +342,11 @@ public struct PeriodReport: Equatable, Sendable {
         totals: PeriodReportTotals,
         fileStem: String,
         language: PeriodReportLanguage,
-        measurementSystem: MeasurementSystem
+        measurementSystem: MeasurementSystem,
+        generatedAt: Date,
+        scope: PeriodReportScope,
+        weekStart: WeekStartDay,
+        timeZoneIdentifier: String
     ) {
         self.brand = brand
         self.driverLabel = driverLabel
@@ -350,6 +365,10 @@ public struct PeriodReport: Equatable, Sendable {
         self.fileStem = fileStem
         self.language = language
         self.measurementSystem = measurementSystem
+        self.generatedAt = generatedAt
+        self.scope = scope
+        self.weekStart = weekStart
+        self.timeZoneIdentifier = timeZoneIdentifier
     }
 }
 
@@ -470,7 +489,11 @@ public enum PeriodReportBuilder {
             totals: totals,
             fileStem: fileStem(scope: request.scope),
             language: request.language,
-            measurementSystem: system
+            measurementSystem: system,
+            generatedAt: request.generatedAt,
+            scope: request.scope,
+            weekStart: request.week.weekStart,
+            timeZoneIdentifier: request.week.calendar.timeZone.identifier
         )
     }
 
@@ -699,7 +722,9 @@ public enum PeriodReportBuilder {
             deliveryDate: delivery.map { shortDate($0, calendar: calendar, locale: locale) } ?? "",
             tableMiles: milesNumber(load.drivenMiles, system: system),
             tableGross: dollars(load.rate),
-            tableRate: perMile > 0 ? rateAmount(perMile, system: system) : "—"
+            tableRate: perMile > 0 ? rateAmount(perMile, system: system) : "—",
+            shipAt: ship,
+            deliveredAt: delivery
         )
     }
 
@@ -753,6 +778,20 @@ public enum PeriodReportBuilder {
         let shown = MeasurementUnits.displayDistance(miles, system: system)
         let digits = abs(shown.rounded() - shown) < 0.05 ? 0 : 1
         return USMoneyFormat.number(shown, fractionDigits: digits)
+    }
+
+    /// en_US numeric date for the PDF, independent of the plain-text language.
+    static func englishShortDate(_ date: Date, week: TruckingWeek) -> String {
+        shortDate(date, calendar: week.calendar, locale: Locale(identifier: "en_US"))
+    }
+
+    static func englishMediumDate(_ date: Date, week: TruckingWeek) -> String {
+        mediumDate(date, calendar: week.calendar, locale: Locale(identifier: "en_US"))
+    }
+
+    static func englishWeek(from report: PeriodReport) -> TruckingWeek {
+        let zone = TimeZone(identifier: report.timeZoneIdentifier) ?? .current
+        return TruckingWeek(weekStart: report.weekStart, timeZone: zone)
     }
 
     private static func shortDate(_ date: Date, calendar: Calendar, locale: Locale) -> String {

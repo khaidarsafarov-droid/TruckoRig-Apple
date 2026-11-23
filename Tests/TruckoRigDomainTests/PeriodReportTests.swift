@@ -381,23 +381,49 @@ final class PeriodReportTests: XCTestCase {
         XCTAssertTrue(text.contains("Expenses:"))
     }
 
-    func testRussianStatementUsesTheLoadReportTitle() {
+    func testStatementStaysEnglishWhenTheAppIsRussian() {
         let report = build(
-            loads: [load(trip: "L-1", rate: 100, loaded: 40, empty: 0, on: makeDate(2026, 11, 16))],
+            loads: [load(
+                trip: "L-1",
+                rate: 1971,
+                loaded: 500,
+                empty: 0,
+                on: makeDate(2026, 11, 16, 8),
+                delivery: makeDate(2026, 11, 17, 15),
+                origin: "Boise, ID",
+                destination: "Reno, NV"
+            )],
             fuel: [],
             expenses: [],
             goal: 0,
             language: .russian,
             driver: "Alex Rivera"
         )
+        let text = PeriodReportText.render(report)
         let statement = PeriodReportStatementBuilder.make(report)
 
-        XCTAssertEqual(statement.title, "Отчёт по грузам")
-        XCTAssertEqual(statement.columns[0], "№ груза")
-        XCTAssertEqual(statement.columns[1], "Откуда")
-        XCTAssertEqual(statement.columns[2], "Куда")
-        XCTAssertEqual(statement.totalRow[0], "Итого")
-        XCTAssertEqual(statement.summary.first?.label, "Всего грузов")
+        XCTAssertEqual(statement.title, "Load Report")
+        XCTAssertEqual(statement.columns, [
+            "Load #", "Origin", "Destination", "Ship date", "Delivery", "Miles", "Gross", "Rate/mi",
+        ])
+        XCTAssertEqual(statement.rows[0][3], "11/16/26")
+        XCTAssertEqual(statement.rows[0][4], "11/17/26")
+        XCTAssertEqual(statement.rows[0][6], "$1,971.00")
+        XCTAssertEqual(statement.totalRow[0], "Total")
+        XCTAssertEqual(statement.summaryTitle, "Summary")
+        XCTAssertEqual(statement.summary.map(\.label), [
+            "Loads total", "Gross total", "Miles total", "Average rate",
+        ])
+        XCTAssertTrue(statement.periodLine.hasPrefix("Week "))
+        XCTAssertTrue(statement.periodLine.contains("Nov"))
+        XCTAssertTrue(statement.generatedLine.hasPrefix("Generated:"))
+        XCTAssertEqual(statement.footer, "Only on this device")
+        XCTAssertEqual(statement.emptyMessage, "No loads in this period.")
+        XCTAssertFalse(statement.periodLine.contains("Неделя"))
+        XCTAssertFalse(statement.generatedLine.contains("Создан"))
+        XCTAssertTrue(text.contains("Сводка"))
+        XCTAssertTrue(text.contains("Период: Неделя"))
+        XCTAssertTrue(text.contains("Создан:"))
     }
 
     func testScopeFollowsTheDayInsideTheWeekOrMonth() {
