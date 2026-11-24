@@ -13,7 +13,16 @@ def pdf_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
 
 
-def make_pdf(page_texts: list[str]) -> bytes:
+def page_stream(text: str | list[str]) -> str:
+    if isinstance(text, str):
+        return f"BT /F1 12 Tf 72 720 Td ({pdf_escape(text)}) Tj ET"
+    # Many short lines in a small font, so every character sits inside the MediaBox.
+    # PDFKit only returns text that is drawn on the page.
+    shown = " T* ".join(f"({pdf_escape(line)}) Tj" for line in text)
+    return f"BT /F1 4 Tf 5 TL 20 780 Td {shown} ET"
+
+
+def make_pdf(page_texts: list[str | list[str]]) -> bytes:
     n_pages = len(page_texts)
     font_id = 3 + n_pages * 2
     objects: dict[int, object] = {}
@@ -22,7 +31,7 @@ def make_pdf(page_texts: list[str]) -> bytes:
         page_id = 3 + index * 2
         content_id = page_id + 1
         kids.append(f"{page_id} 0 R")
-        stream = f"BT /F1 12 Tf 72 720 Td ({pdf_escape(text)}) Tj ET"
+        stream = page_stream(text)
         objects[page_id] = (
             f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
             f"/Contents {content_id} 0 R /Resources << /Font << /F1 {font_id} 0 R >> >> >>"
@@ -71,11 +80,14 @@ def main() -> None:
             pages.append(
                 f"PAGE{number:02d} SWF2 Garner NC rate confirmation stays on this page"
             )
-    long_text = ("A" * 100_050) + "ENDMARKER"
+    # 100,050 characters as 200-character lines, 150 lines per page (4 pages),
+    # then ENDMARKER on its own line past the 100,000-character limit.
+    long_lines = ["A" * 200] * 500 + ["A" * 50, "ENDMARKER"]
+    long_pages = [long_lines[start:start + 150] for start in range(0, len(long_lines), 150)]
     files = {
         "text-layer.pdf": make_pdf([text_layer]),
         "thirty-one-pages.pdf": make_pdf(pages),
-        "long-text.pdf": make_pdf([long_text]),
+        "long-text.pdf": make_pdf(long_pages),
         "pixel.jpg": bytes([0xFF, 0xD8, 0xFF, 0xD9]),
         "rejected.jpg": b"GIF89a this is not a jpeg",
     }
