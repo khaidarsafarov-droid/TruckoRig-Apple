@@ -47,8 +47,9 @@ swift test
 
 Шифрование, Keychain и одноразовый перенос из SwiftData проверяются целью `TruckoRigTests` на
 симуляторе. Workflow `.github/workflows/macos.yml` на бесплатном `macos-latest` собирает приложение
-без команды разработчика, затем подписывает симулятор ad-hoc с `keychain-access-groups`
-(`Tools/SimulatorHost.entitlements`), чтобы тесты пароля базы и токена бота реально выполнялись.
+без команды разработчика и вшивает `keychain-access-groups` (`Tools/SimulatorHost.entitlements`)
+в секцию `__entitlements` хоста, как Xcode для симулятора, чтобы тесты пароля базы и токена бота
+реально выполнялись.
 Пропуск этих тестов валит job. Тот же job гоняет `TruckoRigUITests` на iPhone, включая сохранение
 рейса, и пишет сводку code coverage в summary. Проверки идут на каждый push и pull request в `main`.
 Какие status checks владелец включает как обязательные — в

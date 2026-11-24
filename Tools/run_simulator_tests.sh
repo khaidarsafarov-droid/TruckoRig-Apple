@@ -1,7 +1,9 @@
 #!/bin/bash
-# Build the simulator host without a development team, ad-hoc sign it so Keychain works,
+# Build the simulator host without a development team, give it Keychain entitlements,
 # then run one test bundle. A skipped Keychain test fails the process.
-# application-identifier must be -.com.truckorig; a bare bundle id is rejected by launchd.
+# The entitlements go into the __entitlements linker section, the way Xcode builds for the
+# simulator. They must not go into the ad-hoc signature: macOS AMFI refuses to spawn an
+# ad-hoc binary that claims keychain-access-groups ("Launchd job spawn failed", POSIX 162).
 # macOS runners ship bash 3.2, so this script avoids empty arrays under `set -u`.
 set -euo pipefail
 
@@ -33,8 +35,9 @@ if [[ -z "$UDID" || -z "$DERIVED" || -z "$RESULT" || -z "$ONLY" ]]; then
 fi
 
 HOST_ENTITLEMENTS="$ROOT/Tools/SimulatorHost.entitlements"
+HOST_ENTITLEMENTS_DER="$DERIVED/SimulatorHost.entitlements.der"
 LOG="$RESULT.log"
-mkdir -p "$(dirname "$RESULT")"
+mkdir -p "$(dirname "$RESULT")" "$DERIVED"
 rm -rf "$RESULT"
 
 if [[ "$BUILD" == 1 ]]; then
@@ -48,6 +51,12 @@ if [[ "$BUILD" == 1 ]]; then
     set -- "$@" -enableCodeCoverage YES
   fi
   set -- "$@" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=-
+  # Signing is off, so Xcode skips its simulated entitlements; link them in ourselves.
+  set -- "$@" LD_ENTITLEMENTS_SECTION="$HOST_ENTITLEMENTS"
+  if [[ -x /usr/bin/derq ]]; then
+    /usr/bin/derq query -f xml -i "$HOST_ENTITLEMENTS" -o "$HOST_ENTITLEMENTS_DER" --raw
+    set -- "$@" LD_ENTITLEMENTS_SECTION_DER="$HOST_ENTITLEMENTS_DER"
+  fi
   "$@"
 fi
 
@@ -66,20 +75,9 @@ if [[ -z "$APP" || -z "$XCTESTRUN" ]]; then
   exit 1
 fi
 
-CODESIGN_HELP="$(codesign --help 2>&1 || true)"
 sign_item() {
-  local item="$1"
-  local entitlements="${2:-}"
-  if [[ -n "$entitlements" ]]; then
-    if [[ "$CODESIGN_HELP" == *generate-entitlement-der* ]]; then
-      codesign --force --sign - --timestamp=none --generate-entitlement-der \
-        --entitlements "$entitlements" "$item"
-    else
-      codesign --force --sign - --timestamp=none --entitlements "$entitlements" "$item"
-    fi
-  else
-    codesign --force --sign - --timestamp=none "$item"
-  fi
+  # Plain ad-hoc signature with no entitlements, like Xcode's simulator signing.
+  codesign --force --sign - --timestamp=none "$1"
 }
 
 while IFS= read -r framework; do
@@ -93,24 +91,32 @@ done < <(find "$APP" -depth -type d -name '*.framework')
 
 while IFS= read -r appex; do
   [[ -z "$appex" ]] && continue
-  case "$(basename "$appex")" in
-    TruckoRigWidget.appex) sign_item "$appex" "$ROOT/TruckoRigWidget/TruckoRigWidget.entitlements" ;;
-    TruckoRigShare.appex) sign_item "$appex" "$ROOT/TruckoRigShare/TruckoRigShare.entitlements" ;;
-    *) sign_item "$appex" ;;
-  esac
+  sign_item "$appex"
 done < <(find "$APP" -type d -name '*.appex')
 
-sign_item "$APP" "$HOST_ENTITLEMENTS"
+sign_item "$APP"
 
 while IFS= read -r xctest; do
   [[ -z "$xctest" ]] && continue
   sign_item "$xctest"
 done < <(find "$DERIVED/Build/Products" -type d -path '*Debug-iphonesimulator/*.xctest')
 
-echo "Signed host entitlements:"
-codesign -d --entitlements :- "$APP" > "$DERIVED/host-entitlements.plist"
+HOST_BINARY="$APP/$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP/Info.plist")"
+echo "Host __entitlements section:"
+rm -f "$DERIVED/host-entitlements.plist"
+xcrun segedit "$HOST_BINARY" -extract __TEXT __entitlements "$DERIVED/host-entitlements.plist"
 cat "$DERIVED/host-entitlements.plist"
-grep -q "keychain-access-groups" "$DERIVED/host-entitlements.plist"
+if ! grep -q "keychain-access-groups" "$DERIVED/host-entitlements.plist"; then
+  echo "::error::The test host has no keychain-access-groups in __entitlements" >&2
+  exit 1
+fi
+echo "Host signature entitlements (no restricted keys allowed):"
+codesign -d --entitlements - "$APP" > "$DERIVED/host-signature-entitlements.txt" 2>&1 || true
+cat "$DERIVED/host-signature-entitlements.txt"
+if grep -Eq "keychain-access-groups|application-identifier" "$DERIVED/host-signature-entitlements.txt"; then
+  echo "::error::Restricted entitlements in the ad-hoc signature stop launchd from spawning the host" >&2
+  exit 1
+fi
 
 boot_simulator() {
   # boot exits non-zero when the device is already booted.

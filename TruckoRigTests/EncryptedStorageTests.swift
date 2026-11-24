@@ -62,7 +62,7 @@ final class EncryptedStorageTests: XCTestCase {
         do {
             created = try store.getOrCreate()
         } catch DatabasePassphraseError.keychainFailed(let status) {
-            // The macOS job ad-hoc signs the test host with keychain-access-groups.
+            // The macOS job links keychain-access-groups into the test host's __entitlements section.
             // A skip would hide a broken passphrase, so this failure fails the job.
             XCTFail("Keychain refused the simulator host (\(status)).")
             return

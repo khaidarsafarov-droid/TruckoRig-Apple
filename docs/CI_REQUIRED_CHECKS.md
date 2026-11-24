@@ -29,7 +29,7 @@ Do not mark **TestFlight** required. `.github/workflows/testflight.yml` does not
 - Unit tests on the iPhone simulator and again on the iPad simulator.
 - UI tests on the iPhone simulator, including a test that saves a load.
 - Code coverage for the iPhone unit-test run. The line-coverage table is appended to the job summary.
-- The database-passphrase test and the Telegram token test. The job ad-hoc signs the simulator host with `Tools/SimulatorHost.entitlements` (`keychain-access-groups`). If either test is skipped, or the log says the Keychain refused the host, the job fails.
+- The database-passphrase test and the Telegram token test. The job links `Tools/SimulatorHost.entitlements` (`keychain-access-groups`) into the simulator host's `__entitlements` section, as Xcode does for simulator builds, and keeps the ad-hoc signature free of entitlements. If either test is skipped, or the log says the Keychain refused the host, the job fails.
 
 `Tools/SimulatorHost.entitlements` is only applied on that CI host. Device, Sideload, and App Store signing still use `TruckoRig/Resources/TruckoRig.entitlements` and do not gain a Keychain Sharing capability.
 
