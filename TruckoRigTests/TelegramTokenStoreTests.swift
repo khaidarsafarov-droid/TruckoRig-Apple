@@ -1,7 +1,7 @@
 import XCTest
 @testable import TruckoRig
 
-/// The BotFather token is a Keychain item. An unsigned simulator has no keychain entitlement.
+/// The BotFather token is a Keychain item. CI signs the simulator host so this cannot skip.
 final class TelegramTokenStoreTests: XCTestCase {
 
     func testTokenRoundTripsInTheKeychainAndIsNotLeftBehind() throws {
@@ -11,8 +11,9 @@ final class TelegramTokenStoreTests: XCTestCase {
         let token = "123456789:AAHabcdefghijklmnopqrstuvwxyz0123456789"
         do {
             try store.write("  \(token)  ")
-        } catch TelegramTokenStoreError.keychain(let status) where status == errSecMissingEntitlement {
-            throw XCTSkip("Keychain refused the unsigned simulator (\(status)).")
+        } catch TelegramTokenStoreError.keychain(let status) {
+            XCTFail("Keychain refused the simulator host (\(status)).")
+            return
         }
         XCTAssertEqual(try store.read(), token)
         XCTAssertEqual(

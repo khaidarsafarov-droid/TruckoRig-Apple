@@ -263,6 +263,7 @@
 		DFB3BB2E44147CF06640401A /* SoftButton.swift */ = {isa = PBXBuildFile; fileRef = 78E4700C12FAFE14A48EA814 /* SoftButton.swift */; };
 		946A6773234047F83B13F72E /* SoftCard.swift */ = {isa = PBXBuildFile; fileRef = 9A0E18B200B7FA69FB005B28 /* SoftCard.swift */; };
 		7CFEE8CD71969E6F1E1D7400 /* SoftTextField.swift */ = {isa = PBXBuildFile; fileRef = E9A91E3DC8256945501586BD /* SoftTextField.swift */; };
+		8F35E555ED5D2DA4F7B15650 /* SharePayloadReader.swift */ = {isa = PBXBuildFile; fileRef = FE1AD2F57FBBE9B545B66FAA /* SharePayloadReader.swift */; };
 		DDAF9B2294A4D505B3CEB210 /* InfoPlist.xcstrings */ = {isa = PBXBuildFile; fileRef = 5CA4F59FB6D78AAC4D68338D /* InfoPlist.xcstrings */; };
 		D0C6607B983873E3DC978456 /* Localizable.xcstrings */ = {isa = PBXBuildFile; fileRef = 1E65A644EB70BB6C3B22229A /* Localizable.xcstrings */; };
 		9E4A96F6ADAC038EF264220F /* NOTICE.txt */ = {isa = PBXBuildFile; fileRef = D8002F7259DED006B002B593 /* NOTICE.txt */; };
@@ -430,18 +431,29 @@
 		1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */; };
 		4642AF0070CC137D07B08CE0 /* ICloudMediaBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */; };
 		1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */ = {isa = PBXBuildFile; fileRef = 95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */; };
+		497AE1E180E3605AFD8DDFEB /* LoadRepositoryCreateTests.swift */ = {isa = PBXBuildFile; fileRef = 20C5C2760E0DAC8DAA623F68 /* LoadRepositoryCreateTests.swift */; };
 		A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */ = {isa = PBXBuildFile; fileRef = CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */; };
 		37CD9B83B4C55F33E93FED80 /* PaletteContrastTests.swift */ = {isa = PBXBuildFile; fileRef = 69F2AB5101F3E86B196C2558 /* PaletteContrastTests.swift */; };
 		BED13CCC0571EE417B8B2DD5 /* PayloadSealerTests.swift */ = {isa = PBXBuildFile; fileRef = 86338EDA7815F17A781F9FEA /* PayloadSealerTests.swift */; };
 		1E927A95D6A9FACC9A0457FF /* PaywallFeatureListTests.swift */ = {isa = PBXBuildFile; fileRef = 5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */; };
 		2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = 7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */; };
 		300046D00DC011C923CD534B /* PeriodReportPDFTests.swift */ = {isa = PBXBuildFile; fileRef = F11A03133B521EF1294F7811 /* PeriodReportPDFTests.swift */; };
+		C16A31C292BEB0B98546A6AE /* PeriodReportShareTests.swift */ = {isa = PBXBuildFile; fileRef = CC19CF9C45F07E3A839FB5AB /* PeriodReportShareTests.swift */; };
+		B73F68E186EBA6E6366F267C /* ShareImportProcessorTests.swift */ = {isa = PBXBuildFile; fileRef = EEE124AC09734D80806413A4 /* ShareImportProcessorTests.swift */; };
+		DF83CA8EEC054906699FE39F /* SharePayloadReaderTests.swift */ = {isa = PBXBuildFile; fileRef = 350F33DB299D2A42FA86975F /* SharePayloadReaderTests.swift */; };
+		F5D582F2CBB5F45E6FC4485D /* TelegramEngineTests.swift */ = {isa = PBXBuildFile; fileRef = 58ABDAD7AE95814CAC3DEB9D /* TelegramEngineTests.swift */; };
 		73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */ = {isa = PBXBuildFile; fileRef = 275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */; };
 		9C8948936BC8981F577782E7 /* ThemeSettingsTests.swift */ = {isa = PBXBuildFile; fileRef = C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */; };
 		43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */ = {isa = PBXBuildFile; fileRef = F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */; };
 		E2C87B3C6FEE89C6DC18615F /* UnitSettingsTests.swift */ = {isa = PBXBuildFile; fileRef = F5B65FB147624C2CD30BA9F4 /* UnitSettingsTests.swift */; };
 		8C92BA158F040C1659892D89 /* WidgetLayoutTests.swift */ = {isa = PBXBuildFile; fileRef = C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */; };
+		F77294220412F337EAFAD077 /* long-text.pdf */ = {isa = PBXBuildFile; fileRef = 06D8BAC7C7FDB04CC014C660 /* long-text.pdf */; };
+		1058CE2CE313AB075CD393AD /* pixel.jpg */ = {isa = PBXBuildFile; fileRef = 114E5BA909A27D322AB07E55 /* pixel.jpg */; };
+		1EA06CE23CC74738B997C8A3 /* rejected.jpg */ = {isa = PBXBuildFile; fileRef = A9D1F4655CBC1AFBECAAF8BF /* rejected.jpg */; };
+		7B55C2CEA4A8499E3AC308E2 /* text-layer.pdf */ = {isa = PBXBuildFile; fileRef = 755527CE9885FC3DCA21BB87 /* text-layer.pdf */; };
+		550671FF54D7EFA635673525 /* thirty-one-pages.pdf */ = {isa = PBXBuildFile; fileRef = AAF1792221783A8B468B10F2 /* thirty-one-pages.pdf */; };
 		B0CBF53E11D3FEA8B2A90041 /* AddLoadNotesUITests.swift */ = {isa = PBXBuildFile; fileRef = 47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */; };
+		A9A5EFE6FD69DB339C20C88F /* SaveLoadUITests.swift */ = {isa = PBXBuildFile; fileRef = D135338696325A080395E7BB /* SaveLoadUITests.swift */; };
 		F142BC8232520AC9CB344823 /* UITestLaunch.swift */ = {isa = PBXBuildFile; fileRef = A9C8223763F5A332C63B60F2 /* UITestLaunch.swift */; };
 		109E7A66906193EF84584997 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 1B12FA89457B475550D08A7A /* GRDB */; };
 		15526688769DC7F70FA1BACC /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = C282B09B29FB0A5E9CF3F42D /* GoogleMaps */; };
@@ -789,21 +801,32 @@
 		ECA68A40924FB86CCC9F2B91 /* DateFormatCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatCacheTests.swift"; sourceTree = "<group>"; };
 		A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditLoadRoundTripTests.swift"; sourceTree = "<group>"; };
 		952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EncryptedStorageTests.swift"; sourceTree = "<group>"; };
+		06D8BAC7C7FDB04CC014C660 /* long-text.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "long-text.pdf"; sourceTree = "<group>"; };
+		114E5BA909A27D322AB07E55 /* pixel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "pixel.jpg"; sourceTree = "<group>"; };
+		A9D1F4655CBC1AFBECAAF8BF /* rejected.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "rejected.jpg"; sourceTree = "<group>"; };
+		755527CE9885FC3DCA21BB87 /* text-layer.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "text-layer.pdf"; sourceTree = "<group>"; };
+		AAF1792221783A8B468B10F2 /* thirty-one-pages.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "thirty-one-pages.pdf"; sourceTree = "<group>"; };
 		6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupTests.swift"; sourceTree = "<group>"; };
 		9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaBackupTests.swift"; sourceTree = "<group>"; };
 		95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidanceTests.swift"; sourceTree = "<group>"; };
+		20C5C2760E0DAC8DAA623F68 /* LoadRepositoryCreateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadRepositoryCreateTests.swift"; sourceTree = "<group>"; };
 		CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaRecordTests.swift"; sourceTree = "<group>"; };
 		69F2AB5101F3E86B196C2558 /* PaletteContrastTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaletteContrastTests.swift"; sourceTree = "<group>"; };
 		86338EDA7815F17A781F9FEA /* PayloadSealerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PayloadSealerTests.swift"; sourceTree = "<group>"; };
 		5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallFeatureListTests.swift"; sourceTree = "<group>"; };
 		7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallLayoutTests.swift"; sourceTree = "<group>"; };
 		F11A03133B521EF1294F7811 /* PeriodReportPDFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportPDFTests.swift"; sourceTree = "<group>"; };
+		CC19CF9C45F07E3A839FB5AB /* PeriodReportShareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeriodReportShareTests.swift"; sourceTree = "<group>"; };
+		EEE124AC09734D80806413A4 /* ShareImportProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareImportProcessorTests.swift"; sourceTree = "<group>"; };
+		350F33DB299D2A42FA86975F /* SharePayloadReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SharePayloadReaderTests.swift"; sourceTree = "<group>"; };
+		58ABDAD7AE95814CAC3DEB9D /* TelegramEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramEngineTests.swift"; sourceTree = "<group>"; };
 		275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TelegramTokenStoreTests.swift"; sourceTree = "<group>"; };
 		C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeSettingsTests.swift"; sourceTree = "<group>"; };
 		F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrialReminderControllerTests.swift"; sourceTree = "<group>"; };
 		F5B65FB147624C2CD30BA9F4 /* UnitSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnitSettingsTests.swift"; sourceTree = "<group>"; };
 		C14E0FACB026AC31873F73FD /* WidgetLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetLayoutTests.swift"; sourceTree = "<group>"; };
 		47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddLoadNotesUITests.swift"; sourceTree = "<group>"; };
+		D135338696325A080395E7BB /* SaveLoadUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SaveLoadUITests.swift"; sourceTree = "<group>"; };
 		3D08B4495962CCBD862A7377 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		36EEC8C9B9960C1F23E20838 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
 		2B7BAA61007F68480C7DE32B /* TruckoRigWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TruckoRigWidget.entitlements"; sourceTree = "<group>"; };
@@ -1763,6 +1786,7 @@
 		D699D40C0DE22C80CB771F02 /* TruckoRigTests */ = {
 			isa = PBXGroup;
 			children = (
+				3599A9817DF8C0771C5BF21A /* Fixtures */,
 				366E62CEF35F2A92F020456E /* BackupRestoreTests.swift */,
 				ECA68A40924FB86CCC9F2B91 /* DateFormatCacheTests.swift */,
 				A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */,
@@ -1770,12 +1794,17 @@
 				6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */,
 				9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */,
 				95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */,
+				20C5C2760E0DAC8DAA623F68 /* LoadRepositoryCreateTests.swift */,
 				CA0FF0504ABA280602F2B4D5 /* MediaRecordTests.swift */,
 				69F2AB5101F3E86B196C2558 /* PaletteContrastTests.swift */,
 				86338EDA7815F17A781F9FEA /* PayloadSealerTests.swift */,
 				5B10F04FE472582C9514EAF3 /* PaywallFeatureListTests.swift */,
 				7AEAB90FB41C740A8813A809 /* PaywallLayoutTests.swift */,
 				F11A03133B521EF1294F7811 /* PeriodReportPDFTests.swift */,
+				CC19CF9C45F07E3A839FB5AB /* PeriodReportShareTests.swift */,
+				EEE124AC09734D80806413A4 /* ShareImportProcessorTests.swift */,
+				350F33DB299D2A42FA86975F /* SharePayloadReaderTests.swift */,
+				58ABDAD7AE95814CAC3DEB9D /* TelegramEngineTests.swift */,
 				275912DA75FAEE15BA3EA2B2 /* TelegramTokenStoreTests.swift */,
 				C0F00487D2E98C3F6364BD52 /* ThemeSettingsTests.swift */,
 				F7305FAC908320297959AC8C /* TrialReminderControllerTests.swift */,
@@ -1785,10 +1814,23 @@
 			path = "TruckoRigTests";
 			sourceTree = "<group>";
 		};
+		3599A9817DF8C0771C5BF21A /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				06D8BAC7C7FDB04CC014C660 /* long-text.pdf */,
+				114E5BA909A27D322AB07E55 /* pixel.jpg */,
+				A9D1F4655CBC1AFBECAAF8BF /* rejected.jpg */,
+				755527CE9885FC3DCA21BB87 /* text-layer.pdf */,
+				AAF1792221783A8B468B10F2 /* thirty-one-pages.pdf */,
+			);
+			path = "Fixtures";
+			sourceTree = "<group>";
+		};
 		23876982F4FAC5BD0024AE63 /* TruckoRigUITests */ = {
 			isa = PBXGroup;
 			children = (
 				47D50E1D4AF8308CD5BD8328 /* AddLoadNotesUITests.swift */,
+				D135338696325A080395E7BB /* SaveLoadUITests.swift */,
 			);
 			path = "TruckoRigUITests";
 			sourceTree = "<group>";
@@ -2014,6 +2056,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F77294220412F337EAFAD077 /* long-text.pdf */,
+				1058CE2CE313AB075CD393AD /* pixel.jpg */,
+				1EA06CE23CC74738B997C8A3 /* rejected.jpg */,
+				7B55C2CEA4A8499E3AC308E2 /* text-layer.pdf */,
+				550671FF54D7EFA635673525 /* thirty-one-pages.pdf */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2286,6 +2333,7 @@
 				DFB3BB2E44147CF06640401A /* SoftButton.swift */,
 				946A6773234047F83B13F72E /* SoftCard.swift */,
 				7CFEE8CD71969E6F1E1D7400 /* SoftTextField.swift */,
+				8F35E555ED5D2DA4F7B15650 /* SharePayloadReader.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2447,12 +2495,17 @@
 				1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */,
 				4642AF0070CC137D07B08CE0 /* ICloudMediaBackupTests.swift */,
 				1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */,
+				497AE1E180E3605AFD8DDFEB /* LoadRepositoryCreateTests.swift */,
 				A047FDBC9FD6827F263DDA65 /* MediaRecordTests.swift */,
 				37CD9B83B4C55F33E93FED80 /* PaletteContrastTests.swift */,
 				BED13CCC0571EE417B8B2DD5 /* PayloadSealerTests.swift */,
 				1E927A95D6A9FACC9A0457FF /* PaywallFeatureListTests.swift */,
 				2D05C0C61945CFE7F90AFE27 /* PaywallLayoutTests.swift */,
 				300046D00DC011C923CD534B /* PeriodReportPDFTests.swift */,
+				C16A31C292BEB0B98546A6AE /* PeriodReportShareTests.swift */,
+				B73F68E186EBA6E6366F267C /* ShareImportProcessorTests.swift */,
+				DF83CA8EEC054906699FE39F /* SharePayloadReaderTests.swift */,
+				F5D582F2CBB5F45E6FC4485D /* TelegramEngineTests.swift */,
 				73213EAE71277EC33DD9BBE6 /* TelegramTokenStoreTests.swift */,
 				9C8948936BC8981F577782E7 /* ThemeSettingsTests.swift */,
 				43D54791D61086D4D2F17BED /* TrialReminderControllerTests.swift */,
@@ -2466,6 +2519,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0CBF53E11D3FEA8B2A90041 /* AddLoadNotesUITests.swift */,
+				A9A5EFE6FD69DB339C20C88F /* SaveLoadUITests.swift */,
 				F142BC8232520AC9CB344823 /* UITestLaunch.swift */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

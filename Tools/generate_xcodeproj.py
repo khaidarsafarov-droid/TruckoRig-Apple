@@ -93,6 +93,10 @@ FILE_TYPES = {
     ".xcstrings": "text.json.xcstrings",
     ".md": "net.daringfireball.markdown",
     ".png": "image.png",
+    ".jpg": "image.jpeg",
+    ".jpeg": "image.jpeg",
+    ".gif": "image.gif",
+    ".pdf": "image.pdf",
     ".caf": "file",
     ".json": "text.json",
     ".ttf": "file",
@@ -185,7 +189,13 @@ def build() -> str:
         f"{APP_DIR}/Core/Share/PayloadSealer.swift",
     ]
     test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(TESTS_DIR + os.sep)]
+    test_resources = [
+        p for p in tree.files
+        if p.startswith(TESTS_DIR + os.sep) and not p.endswith(".swift")
+    ]
     ui_test_sources = [p for p in tree.files if p.endswith(".swift") and p.startswith(UITESTS_DIR + os.sep)]
+    # The share reader stays in the extension. The app compiles the same file so hosted tests can call it.
+    app_sources.append(f"{SHARE_DIR}/SharePayloadReader.swift")
     # The UI test target cannot import the app, so it compiles the launch contract itself.
     ui_test_sources.append(f"{APP_DIR}/App/UITestLaunch.swift")
 
@@ -237,7 +247,7 @@ def build() -> str:
         ("app", app_sources + app_resources),
         ("widget", widget_sources + widget_resources),
         ("share", share_sources + share_resources),
-        ("tests", test_sources),
+        ("tests", test_sources + test_resources),
         ("uitests", ui_test_sources),
     ):
         for path in paths:
@@ -509,7 +519,7 @@ def build() -> str:
         ("app", app_resources),
         ("widget", widget_resources),
         ("share", share_resources),
-        ("tests", []),
+        ("tests", test_resources),
         ("uitests", []),
     ):
         add(f"\t\t{object_id('phase-resources', key)} /* Resources */ = {{")
@@ -880,6 +890,7 @@ SCHEME_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
+      codeCoverageEnabled = "YES"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">

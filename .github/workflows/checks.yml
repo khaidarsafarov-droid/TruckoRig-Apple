@@ -37,3 +37,19 @@ jobs:
           python3 Tools/generate_xcodeproj.py
           git diff --exit-code -- TruckoRig.xcodeproj \
             || (echo "::error::TruckoRig.xcodeproj is stale — run python3 Tools/generate_xcodeproj.py" && exit 1)
+
+  swiftlint:
+    name: SwiftLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5 Node 24
+      - name: Install SwiftLint 0.65.1
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/swiftlint.zip https://github.com/realm/SwiftLint/releases/download/0.65.1/swiftlint_linux_amd64.zip
+          echo "caeed6f4a679c35539ffaf124f6c4ab4a8416917f7d8796279dc52b74026059d  /tmp/swiftlint.zip" | sha256sum -c -
+          unzip -p /tmp/swiftlint.zip swiftlint-static > /usr/local/bin/swiftlint
+          chmod +x /usr/local/bin/swiftlint
+          swiftlint version
+      - name: Lint
+        run: swiftlint lint --strict

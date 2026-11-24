@@ -69,7 +69,12 @@ enum PeriodReportShare {
             return .text(PeriodReportText.render(report), subject: subject)
         case .pdf:
             let statement = PeriodReportStatementBuilder.make(report)
-            return .pdf(report, statement, fileStem: report.fileStem, subject: "\(report.brand) — \(statement.periodLine)")
+            return .pdf(
+                report,
+                statement,
+                fileStem: report.fileStem,
+                subject: "\(report.brand) — \(statement.periodLine)"
+            )
         }
     }
 
@@ -99,7 +104,11 @@ enum PeriodReportShare {
         ))
     }
 
-    static func activity(for report: PeriodReport, format: Format) throws -> PeriodReportActivity {
+    static func activity(
+        for report: PeriodReport,
+        format: Format,
+        directory: URL = FileManager.default.temporaryDirectory
+    ) throws -> PeriodReportActivity {
         switch format {
         case .pdf:
             let statement = PeriodReportStatementBuilder.make(report)
@@ -108,20 +117,23 @@ enum PeriodReportShare {
                 statement,
                 fileStem: report.fileStem,
                 subject: "\(report.brand) — \(statement.periodLine)"
-            ))
+            ), directory: directory)
         case .text:
             return try activity(for: .text(
                 PeriodReportText.render(report),
                 subject: "\(report.brand) — \(report.periodTitle)"
-            ))
+            ), directory: directory)
         }
     }
 
     /// Draws a PDF on the caller. Call this on the main thread. Text does not touch UIKit.
-    static func activity(for prepared: Prepared) throws -> PeriodReportActivity {
+    static func activity(
+        for prepared: Prepared,
+        directory: URL = FileManager.default.temporaryDirectory
+    ) throws -> PeriodReportActivity {
         switch prepared {
         case .pdf(let report, let statement, let fileStem, let subject):
-            let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileStem).pdf")
+            let url = directory.appendingPathComponent("\(fileStem).pdf")
             try PeriodReportPDF.data(for: report, statement: statement).write(to: url, options: .atomic)
             return PeriodReportActivity(items: [PeriodReportActivityItem(file: url, subject: subject)])
         case .text(let text, let subject):

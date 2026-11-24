@@ -255,7 +255,9 @@ enum TelegramBackgroundRegistrar {
         do {
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            AppLog.persistence.error("Could not schedule Telegram sync: \(error.localizedDescription, privacy: .public)")
+            AppLog.persistence.error(
+                "Could not schedule Telegram sync: \(error.localizedDescription, privacy: .public)"
+            )
             Task { @MainActor in
                 TelegramRuntime.coordinator?.noteScheduleFailure(String(localized: "settings.telegram.scheduleFailed"))
             }

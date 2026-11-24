@@ -23,9 +23,11 @@ enum DiagnosticReporter {
                     "MetricKit crashes=\(crashes.count, privacy: .public) hangs=\(hangs.count, privacy: .public)"
                 )
                 for crash in crashes {
-                    AppLog.diagnostics.error(
-                        "MetricKit crash type=\(Self.number(crash.exceptionType), privacy: .public) code=\(Self.number(crash.exceptionCode), privacy: .public) signal=\(Self.number(crash.signal), privacy: .public)"
-                    )
+                    let type = Self.number(crash.exceptionType)
+                    let code = Self.number(crash.exceptionCode)
+                    let signal = Self.number(crash.signal)
+                    let summary = "MetricKit crash type=\(type) code=\(code) signal=\(signal)"
+                    AppLog.diagnostics.error("\(summary, privacy: .public)")
                 }
                 for hang in hangs {
                     let seconds = hang.hangDuration.converted(to: .seconds).value
@@ -49,7 +51,9 @@ enum DiagnosticReporter {
                 let url = folder.appendingPathComponent("metrickit-\(Int(Date().timeIntervalSince1970)).json")
                 try data.write(to: url, options: [.atomic, .completeFileProtection])
             } catch {
-                AppLog.diagnostics.error("Could not store a MetricKit report: \(error.localizedDescription, privacy: .public)")
+                AppLog.diagnostics.error(
+                    "Could not store a MetricKit report: \(error.localizedDescription, privacy: .public)"
+                )
             }
         }
     }

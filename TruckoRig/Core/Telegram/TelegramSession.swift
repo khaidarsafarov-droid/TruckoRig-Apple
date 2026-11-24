@@ -1,7 +1,14 @@
 import Foundation
 
+/// Device calls to `api.telegram.org`. Tests substitute a scripted transport.
+protocol TelegramTransport: Sendable {
+    func send(_ request: TelegramHTTPRequest) async throws -> TelegramHTTPResponse
+    func download(token: String, fileId: String) async throws -> Data
+    func setProfilePhoto(token: String, jpeg: Data) async -> Bool
+}
+
 /// Device calls to `api.telegram.org`. No other host is used.
-final class TelegramSession: @unchecked Sendable {
+final class TelegramSession: TelegramTransport, @unchecked Sendable {
     private let session: URLSession
 
     init() {

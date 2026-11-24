@@ -88,7 +88,7 @@ enum SharePayloadReader {
         )
     }
 
-    private static func pdfText(_ bytes: Data) async -> (text: String, pages: Int) {
+    static func pdfText(_ bytes: Data) async -> (text: String, pages: Int) {
         guard bytes.count <= ShareFileRules.maxBytes else { return ("", 0) }
         guard let document = PDFDocument(data: bytes) else { return ("", 0) }
         let pages = min(document.pageCount, ShareFileRules.maxPages)
@@ -154,6 +154,30 @@ enum SharePayloadReader {
         var name: String
     }
 
+    /// Size and header check used by the share sheet. A mismatched image is refused before OCR.
+    static func storedFile(at url: URL) throws -> (bytes: Data, name: String) {
+        guard let size = byteCount(url), size <= ShareFileRules.maxBytes else {
+            throw CocoaError(.fileReadTooLarge)
+        }
+        let handle = try FileHandle(forReadingFrom: url)
+        defer { try? handle.close() }
+        var buffer = Data()
+        buffer.reserveCapacity(size)
+        while buffer.count < size {
+            let chunk = handle.readData(ofLength: min(1024 * 1024, size - buffer.count))
+            if chunk.isEmpty { break }
+            buffer.append(chunk)
+        }
+        let header = Data(buffer.prefix(32))
+        guard buffer.count == size,
+              let ext = ShareFileRules.storedExtension(pathExtension: url.pathExtension, header: header)
+        else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        let name = url.pathExtension.isEmpty ? "attachment." + ext : url.lastPathComponent
+        return (buffer, name)
+    }
+
     /// One buffer: the provider file is read once, checked, and that buffer is what gets sealed.
     private static func readFile(_ provider: NSItemProvider, type: String) async throws -> SharedFile {
         try await withCheckedThrowingContinuation { continuation in
@@ -167,27 +191,8 @@ enum SharePayloadReader {
                     return
                 }
                 do {
-                    guard let size = byteCount(url), size <= ShareFileRules.maxBytes else {
-                        continuation.resume(throwing: CocoaError(.fileReadTooLarge))
-                        return
-                    }
-                    let handle = try FileHandle(forReadingFrom: url)
-                    defer { try? handle.close() }
-                    var buffer = Data()
-                    buffer.reserveCapacity(size)
-                    while buffer.count < size {
-                        let chunk = handle.readData(ofLength: min(1024 * 1024, size - buffer.count))
-                        if chunk.isEmpty { break }
-                        buffer.append(chunk)
-                    }
-                    guard buffer.count == size,
-                          let ext = ShareFileRules.storedExtension(pathExtension: url.pathExtension, header: Data(buffer.prefix(32)))
-                    else {
-                        continuation.resume(throwing: CocoaError(.fileReadCorruptFile))
-                        return
-                    }
-                    let name = url.pathExtension.isEmpty ? "attachment." + ext : url.lastPathComponent
-                    continuation.resume(returning: SharedFile(bytes: buffer, name: name))
+                    let file = try storedFile(at: url)
+                    continuation.resume(returning: SharedFile(bytes: file.bytes, name: file.name))
                 } catch {
                     continuation.resume(throwing: error)
                 }

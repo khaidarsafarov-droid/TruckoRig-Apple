@@ -232,7 +232,12 @@ struct WeeklyGoalView: View {
     }
 
     private func dayName(_ date: Date) -> String {
-        DateUtils.string(date, format: "EEEE", locale: AppLocale.locale, calendar: appState.settings.truckingWeek.calendar)
+        DateUtils.string(
+            date,
+            format: "EEEE",
+            locale: AppLocale.locale,
+            calendar: appState.settings.truckingWeek.calendar
+        )
     }
 
     private func dayDate(_ date: Date) -> String {

@@ -80,7 +80,12 @@ enum UnitCopy {
         }
     }
 
-    static func maintenanceProgress(driven: String, loads: Int, remaining: String, system: MeasurementSystem) -> String {
+    static func maintenanceProgress(
+        driven: String,
+        loads: Int,
+        remaining: String,
+        system: MeasurementSystem
+    ) -> String {
         switch system {
         case .miles:
             return String(localized: "maintenance.miles.progress \(driven) \(loads) \(remaining)")

@@ -10,6 +10,8 @@ struct SoftTextField: View {
     var isSecure = false
     var autocapitalization: TextInputAutocapitalization = .sentences
     var errorMessage: String?
+    /// UI tests look up the field by this id. Production screens leave it unset.
+    var fieldID: String? = nil
     /// When set, focusing this field publishes `focusTag` so a parent `ScrollViewReader` can scroll to it.
     var focusTag: String?
     var activeFocus: Binding<String?>?
@@ -34,8 +36,10 @@ struct SoftTextField: View {
             Group {
                 if isSecure {
                     SecureField(placeholder, text: $text)
+                        .modifier(FieldIdentifier(id: fieldID))
                 } else {
                     TextField(placeholder, text: $text)
+                        .modifier(FieldIdentifier(id: fieldID))
                 }
             }
             .font(.appBody)
@@ -90,6 +94,20 @@ struct SoftTextField: View {
     }
 }
 
+/// Puts an accessibility identifier on the text field itself so a UI test can type into it.
+private struct FieldIdentifier: ViewModifier {
+    var id: String?
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if let id {
+            content.accessibilityIdentifier(id)
+        } else {
+            content
+        }
+    }
+}
+
 /// Applies a scroll id only when the field participates in keyboard avoidance.
 private struct FocusTagID: ViewModifier {
     var tag: String?
@@ -116,6 +134,7 @@ struct SoftNumberField: View {
     var money = false
     var focusTag: String?
     var activeFocus: Binding<String?>?
+    var fieldID: String? = nil
 
     @State private var text: String = ""
 
@@ -148,7 +167,8 @@ struct SoftNumberField: View {
             title: title,
             text: $text,
             placeholder: placeholder,
-            keyboard: allowsDecimal ? .decimalPad : .numberPad
+            keyboard: allowsDecimal ? .decimalPad : .numberPad,
+            fieldID: fieldID
         )
         return Group {
             if let focusTag, let activeFocus {

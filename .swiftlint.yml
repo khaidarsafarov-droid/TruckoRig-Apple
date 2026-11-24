@@ -1,0 +1,32 @@
+# New violations fail the pull request. Existing ones are listed in swiftlint-baseline.json.
+# Regenerate that file with: swiftlint lint --write-baseline swiftlint-baseline.json
+baseline: swiftlint-baseline.json
+strict: true
+included:
+  - TruckoRig
+  - TruckoRigShare
+  - TruckoRigWidget
+  - TruckoRigTests
+  - TruckoRigUITests
+  - Tests
+excluded:
+  - .build
+  - DerivedData
+  - TruckoRig.xcodeproj
+# Custom regex rules need SourceKit. The Linux CI binary does not load SourceKit, so the
+# gate is the built-in rules that run there: force cast, force try, force unwrap, line length, TODO.
+only_rules:
+  - force_cast
+  - force_try
+  - force_unwrapping
+  - line_length
+  - todo
+line_length:
+  warning: 120
+  error: 200
+  ignores_urls: true
+  ignores_comments: true
+force_cast: error
+force_try: error
+force_unwrapping: warning
+reporter: "xcode"

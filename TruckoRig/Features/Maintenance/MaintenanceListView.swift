@@ -223,7 +223,14 @@ struct MaintenanceListView: View {
         let system = appState.settings.measurementSystem
         let driven = USMoneyFormat.number(MeasurementUnits.displayDistance(item.milesDrivenSinceStart, system: system))
         let remaining = USMoneyFormat.number(MeasurementUnits.displayDistance(max(0, item.milesRemaining ?? 0), system: system))
-        Text(UnitCopy.maintenanceProgress(driven: driven, loads: item.loadsCounted, remaining: remaining, system: system))
+        Text(
+            UnitCopy.maintenanceProgress(
+                driven: driven,
+                loads: item.loadsCounted,
+                remaining: remaining,
+                system: system
+            )
+        )
             .font(.appBody)
             .foregroundStyle(urgent ? Color.forestError : Color.forestText)
         if urgent {
