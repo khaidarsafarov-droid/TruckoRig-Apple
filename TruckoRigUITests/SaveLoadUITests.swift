@@ -51,7 +51,11 @@ final class SaveLoadUITests: XCTestCase {
         wait(for: [XCTNSPredicateExpectation(predicate: enabled, object: save)], timeout: 8)
         save.tap()
 
-        let saved = app.staticTexts["UITESTLOAD1"]
+        // The journal row is one combined accessibility element ("… · #UITESTLOAD1, $3.75/mi, …"),
+        // so the trip ID is part of its label rather than its own static text.
+        let saved = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label CONTAINS %@", "UITESTLOAD1"))
+            .firstMatch
         XCTAssertTrue(saved.waitForExistence(timeout: 12), app.debugDescription)
     }
 
