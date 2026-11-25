@@ -149,8 +149,8 @@ final class BackupRestoreTests: XCTestCase {
         XCTAssertTrue(photoNames.contains("loose.jpg"))
         // A photo of a load the file does not restore is unlinked, never deleted.
         XCTAssertTrue(photoNames.contains("dropped.jpg"))
-        let dropped = try XCTUnwrap(graph.photos.first { $0.fileName == "dropped.jpg" })
-        XCTAssertNil(dropped.loadId)
+        let droppedRow = try XCTUnwrap(graph.photos.first { $0.fileName == "dropped.jpg" })
+        XCTAssertNil(droppedRow.loadId)
         let loose = try XCTUnwrap(graph.photos.first { $0.fileName == "loose.jpg" })
         XCTAssertNil(loose.loadId)
         let keptRow = try XCTUnwrap(graph.photos.first { $0.fileName == "kept.jpg" })
