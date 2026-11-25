@@ -258,7 +258,7 @@ final class BackupRestoreTests: XCTestCase {
 
     private func extrasFixture() throws -> (AppDatabase, AppSettings, BackupIdentityStore) {
         let database = try AppDatabase.ephemeral()
-        let defaults = UserDefaults(suiteName: "backup-extras-\(UUID().uuidString)")!
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "backup-extras-\(UUID().uuidString)"))
         let settings = AppSettings(scope: .local, defaults: defaults)
         return (database, settings, BackupIdentityStore(defaults: defaults))
     }
