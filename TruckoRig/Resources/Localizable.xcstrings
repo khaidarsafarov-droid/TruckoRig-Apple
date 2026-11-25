@@ -15398,25 +15398,25 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Menu → Taxes: a quarterly estimate from paycheck gross, diesel, and per diem ($69/day). It is a guide, not tax advice."
+            "value": "Menu → Taxes: a quarterly estimate from paycheck gross, diesel, and per diem ($80/day). It is a guide, not tax advice."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Menú → Impuestos: una estimación trimestral a partir del bruto de la nómina, el diésel y el per diem ($69/día). Es una guía, no asesoramiento fiscal."
+            "value": "Menú → Impuestos: una estimación trimestral a partir del bruto de la nómina, el diésel y el per diem ($80/día). Es una guía, no asesoramiento fiscal."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Меню → Налоги: квартальная оценка из gross зарплаты, дизеля и per diem ($69 в день). Это ориентир, не налоговая консультация."
+            "value": "Меню → Налоги: квартальная оценка из gross зарплаты, дизеля и per diem ($80 в день). Это ориентир, не налоговая консультация."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Menu → Impôts : une estimation trimestrielle à partir du brut de paie, du diesel et du per diem (69 $/jour). C'est un guide, pas un conseil fiscal."
+            "value": "Menu → Impôts : une estimation trimestrielle à partir du brut de paie, du diesel et du per diem (80 $/jour). C'est un guide, pas un conseil fiscal."
           }
         }
       }
@@ -17916,19 +17916,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per diem (%lld days × $69): -%@"
+            "value": "Per diem (%lld days × $80 × 80%%): -%@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per diem (%lld días × $69): -%@"
+            "value": "Per diem (%lld días × $80 × 80%%): -%@"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per diem (%lld дн. × $69): -%@"
+            "value": "Per diem (%lld дн. × $80 × 80%%): -%@"
           }
         },
         "fr": {
@@ -17937,13 +17937,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Per diem (%lld jour × 69 $) : -%@"
+                  "value": "Per diem (%lld jour × 80 $ × 80 %%) : -%@"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Per diem (%lld jours × 69 $) : -%@"
+                  "value": "Per diem (%lld jours × 80 $ × 80 %%) : -%@"
                 }
               }
             }

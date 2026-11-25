@@ -39,8 +39,14 @@ public enum PerDiemDayOverrides {
 }
 
 /// IRS-style trucker per-diem estimate. Days are the same on-road windows as the weekly goal.
+///
+/// `dailyRate` is the IRS special transportation-industry M&IE rate for the continental US
+/// ($80 since Oct 1 2024; Notices 2024-68, 2025-54, 2026-60). Drivers under DOT hours-of-service
+/// rules deduct `deductibleShare` of it, so the tax estimate uses `deductibleAmount`; the
+/// accountant workbook lists the full `amount`. Same as Android `PerDiemCalculator`.
 public enum PerDiemCalculator {
-    public static let dailyRate = 69.0
+    public static let dailyRate = 80.0
+    public static let deductibleShare = 0.8
 
     public static func uniqueOnDutyDates(
         loads: [LoadSummary],
@@ -59,6 +65,11 @@ public enum PerDiemCalculator {
 
     public static func amount(dayCount: Int) -> Double {
         Double(dayCount) * dailyRate
+    }
+
+    /// Part of the per diem a DOT-regulated driver can deduct (80% meal limit), rounded to cents.
+    public static func deductibleAmount(dayCount: Int) -> Double {
+        (amount(dayCount: dayCount) * deductibleShare * 100).rounded() / 100
     }
 }
 
@@ -98,7 +109,7 @@ public struct TaxEstimate: Equatable, Sendable {
         today: Date,
         calendar: Calendar
     ) -> TaxEstimate {
-        let perDiemAmount = PerDiemCalculator.amount(dayCount: perDiemDays)
+        let perDiemAmount = PerDiemCalculator.deductibleAmount(dayCount: perDiemDays)
         let taxable = max(0, grossIncome - dieselDeductions - perDiemAmount)
         let selfEmployment = taxable * 0.153 * 0.9235
         let federal = federalTax(taxable)
