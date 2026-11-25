@@ -347,8 +347,10 @@ final class BackupRestoreTests: XCTestCase {
         let backup = try BackupDataCodec.decode(
             #"{"schemaVersion":2,"accountId":"local_dev","loads":[{"id":"L-NY","tripId":"T-NY","date":"2026-12-31","#
                 + #""totalRate":100000,"weekNumber":1,"year":2027,"stops":["#
-                + #"{"id":1,"loadId":"L-NY","stopNumber":1,"type":"PU","scheduledTime":"12/31 08:00 EST","timezone":"EST"},"#
-                + #"{"id":2,"loadId":"L-NY","stopNumber":2,"type":"DEL","scheduledTime":"01/03 18:00 EST","timezone":"EST"}]}]}"#
+                + #"{"id":1,"loadId":"L-NY","stopNumber":1,"type":"PU","#
+                + #""scheduledTime":"12/31 08:00 EST","timezone":"EST"},"#
+                + #"{"id":2,"loadId":"L-NY","stopNumber":2,"type":"DEL","#
+                + #""scheduledTime":"01/03 18:00 EST","timezone":"EST"}]}]}"#
         )
         let plan = BackupJournalMapper.importBackup(backup, settings: settings, identity: identity)
         let load = try XCTUnwrap(plan.loads.first)
