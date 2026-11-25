@@ -481,8 +481,8 @@ public enum PeriodReportBuilder {
     }
 
     private static func monthDay(_ date: Date, calendar: Calendar, locale: Locale) -> String {
-        let formatter = dateFormatter(calendar: calendar, locale: locale, template: "MMMd")
-        return formatter.string(from: date).replacingOccurrences(of: ".", with: "")
+        DateFormatCache.string(from: date, template: "MMMd", locale: locale, calendar: calendar)
+            .replacingOccurrences(of: ".", with: "")
     }
 
     private static func mediumDate(_ date: Date, calendar: Calendar, locale: Locale) -> String {
