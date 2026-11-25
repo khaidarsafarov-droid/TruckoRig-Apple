@@ -187,17 +187,14 @@ public enum USMoneyFormat {
     /// `$2.94/mi`, or `$1.83/km`. `value` is dollars per stored mile.
     public static func rpmPerMile(_ value: Double, system: MeasurementSystem = .miles) -> String {
         let shown = MeasurementUnits.displayPerDistance(value, system: system)
-        if system == .kilometers {
-            return String(format: "$%.2f/km", locale: Locale(identifier: "en_US"), shown)
-        }
-        return String(format: "$%.2f/mi", locale: Locale(identifier: "en_US"), shown)
+        let rate = String(format: "$%.2f", locale: Locale(identifier: "en_US"), shown)
+        return "\(rate)/\(system.distanceSymbol)"
     }
 
     /// `850 mi` or `1,368 km`. `value` is stored miles.
     public static func miles(_ value: Double, system: MeasurementSystem = .miles) -> String {
         let shown = MeasurementUnits.displayDistance(value, system: system)
-        let suffix = system == .kilometers ? "km" : "mi"
-        return "\(number(shown)) \(suffix)"
+        return "\(number(shown)) \(system.distanceSymbol)"
     }
 
     /// `89%` or `72.4%`. Drops a decimal that would only be noise, matching `formatRingPercent`.
@@ -233,12 +230,13 @@ public enum SplitWeekRange {
     }
 
     private static func month(_ date: Date, calendar: Calendar, locale: Locale) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = "LLL"
-        return formatter.string(from: date)
+        DateFormatCache.string(
+            from: date,
+            pattern: "LLL",
+            locale: locale,
+            calendar: calendar,
+            timeZone: calendar.timeZone
+        )
             .replacingOccurrences(of: ".", with: "")
             .lowercased(with: locale)
     }

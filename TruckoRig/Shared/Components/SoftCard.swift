@@ -114,7 +114,7 @@ struct ActionIdentifier: ViewModifier {
             SectionHeader(title: "screen.analytics")
             HStack {
                 StatTile(title: "stat.gross", value: "$6,240")
-                StatTile(title: "stat.miles", value: "2,410 mi")
+                StatTile(title: "stat.miles", value: Formatters.miles(2_410))
                 StatTile(title: "stat.rpm", value: "$2.59", tint: .forestSuccess)
             }
         }

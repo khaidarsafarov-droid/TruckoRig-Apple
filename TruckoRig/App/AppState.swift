@@ -258,7 +258,7 @@ final class AppState {
         if let profile = catalog.profile {
             profile.weeklyGoal = amount
             profile.updatedAt = Date()
-            try? persistence.database.save(profile)
+            persist(profile)
         }
         reloadJournal(.profile)
     }
@@ -273,7 +273,7 @@ final class AppState {
 
     func saveProfile(_ profile: DriverProfile) {
         profile.updatedAt = Date()
-        try? persistence.database.save(profile)
+        persist(profile)
         reloadJournal(.profile)
     }
 
@@ -282,7 +282,13 @@ final class AppState {
     private func hydrateImportedLoadFields() {
         let book = BackupIdentityStore.standard().load()
         guard !book.loadExtras.isEmpty else { return }
-        guard let loads = try? persistence.database.loads() else { return }
+        let loads: [Load]
+        do {
+            loads = try persistence.database.loads()
+        } catch {
+            noteJournalFailure(error)
+            return
+        }
         for load in loads {
             guard let extra = book.loadExtras[load.id.uuidString] else { continue }
             var changed = false
@@ -303,18 +309,40 @@ final class AppState {
                 changed = true
             }
             if changed {
-                try? persistence.database.save(load)
+                persist(load)
             }
         }
     }
 
     private func ensureProfileExists() {
-        if (try? persistence.database.fetchSlice(.profile).profile) != nil { return }
+        do {
+            if try persistence.database.fetchSlice(.profile).profile != nil { return }
+        } catch {
+            noteJournalFailure(error)
+            return
+        }
         let profile = DriverProfile(
             name: LocalStoreMigration.inheritedDisplayName,
             preferredLanguage: settings.language,
             weeklyGoal: settings.weeklyGoal
         )
-        try? persistence.database.save(profile)
+        persist(profile)
+    }
+
+    /// Saves one row. A failure is logged and shown in Settings instead of being dropped.
+    private func persist(_ profile: DriverProfile) {
+        do {
+            try persistence.database.save(profile)
+        } catch {
+            noteJournalFailure(error)
+        }
+    }
+
+    private func persist(_ load: Load) {
+        do {
+            try persistence.database.save(load)
+        } catch {
+            noteJournalFailure(error)
+        }
     }
 }

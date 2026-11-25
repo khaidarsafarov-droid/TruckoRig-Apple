@@ -66,6 +66,7 @@ WIDGET_SHARED_SOURCES = [
     "TruckoRig/Core/Utils/StringUtils.swift",
     "TruckoRig/Core/Localization/AppLanguage.swift",
     "TruckoRig/Core/Localization/AppLocale.swift",
+    "TruckoRig/Domain/Calculators/DateFormatCache.swift",
     "TruckoRig/Domain/DeepLink/WidgetDeepLink.swift",
     "TruckoRig/Domain/Models/RPMBand.swift",
     "TruckoRig/Domain/Models/WeeklyGoalProgress.swift",

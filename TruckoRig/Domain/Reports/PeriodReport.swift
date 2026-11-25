@@ -423,20 +423,23 @@ public enum PeriodReportBuilder {
     }
 
     private static func shortDate(_ date: Date, calendar: Calendar, locale: Locale) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
         let code = locale.language.languageCode?.identifier ?? "en"
+        let pattern: String
         switch code {
         case "ru":
-            formatter.dateFormat = "dd.MM.yy"
+            pattern = "dd.MM.yy"
         case "fr", "es":
-            formatter.dateFormat = "dd/MM/yy"
+            pattern = "dd/MM/yy"
         default:
-            formatter.dateFormat = "M/d/yy"
+            pattern = "M/d/yy"
         }
-        return formatter.string(from: date)
+        return DateFormatCache.string(
+            from: date,
+            pattern: pattern,
+            locale: locale,
+            calendar: calendar,
+            timeZone: calendar.timeZone
+        )
     }
 
     // MARK: - Dates and names
@@ -478,25 +481,16 @@ public enum PeriodReportBuilder {
     }
 
     private static func monthDay(_ date: Date, calendar: Calendar, locale: Locale) -> String {
-        let formatter = dateFormatter(calendar: calendar, locale: locale, template: "MMMd")
-        return formatter.string(from: date).replacingOccurrences(of: ".", with: "")
+        DateFormatCache.string(from: date, template: "MMMd", locale: locale, calendar: calendar)
+            .replacingOccurrences(of: ".", with: "")
     }
 
     private static func mediumDate(_ date: Date, calendar: Calendar, locale: Locale) -> String {
-        dateFormatter(calendar: calendar, locale: locale, template: "MMMdyyyy").string(from: date)
+        DateFormatCache.string(from: date, template: "MMMdyyyy", locale: locale, calendar: calendar)
     }
 
     private static func monthName(_ date: Date, calendar: Calendar, locale: Locale) -> String {
-        dateFormatter(calendar: calendar, locale: locale, template: "MMMMy").string(from: date)
-    }
-
-    private static func dateFormatter(calendar: Calendar, locale: Locale, template: String) -> DateFormatter {
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.setLocalizedDateFormatFromTemplate(template)
-        return formatter
+        DateFormatCache.string(from: date, template: "MMMMy", locale: locale, calendar: calendar)
     }
 
     private static func fileStem(scope: PeriodReportScope) -> String {

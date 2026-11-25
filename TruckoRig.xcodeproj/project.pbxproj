@@ -112,6 +112,7 @@
 		9E78766E42AD96F871B06E6B /* ICloudBackupPolicy.swift */ = {isa = PBXBuildFile; fileRef = 7F129C433867C02F18FD644D /* ICloudBackupPolicy.swift */; };
 		C593829C85260A5B0B9554D6 /* ICloudMediaPolicy.swift */ = {isa = PBXBuildFile; fileRef = 441C9F73ED83409F5854B29A /* ICloudMediaPolicy.swift */; };
 		CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */ = {isa = PBXBuildFile; fileRef = 2875D2376898F097057DD656 /* AnalyticsCalculator.swift */; };
+		83CD9B859D55E2203BE15087 /* DateFormatCache.swift */ = {isa = PBXBuildFile; fileRef = 5F2C3151E13094EEB1620E61 /* DateFormatCache.swift */; };
 		A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */ = {isa = PBXBuildFile; fileRef = 9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */; };
 		B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */ = {isa = PBXBuildFile; fileRef = 6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */; };
 		FBB26F7A7CEBA02D76DCC57B /* OnRoadCalendar.swift */ = {isa = PBXBuildFile; fileRef = C9586AD73DA70791A70A65EE /* OnRoadCalendar.swift */; };
@@ -290,6 +291,7 @@
 		1055F1E229C6F4E59AC89121 /* StringUtils.swift */ = {isa = PBXBuildFile; fileRef = C438ECB4AB213A39EAE5C7E4 /* StringUtils.swift */; };
 		0983EDBBBE69B967C60E805C /* AppLanguage.swift */ = {isa = PBXBuildFile; fileRef = 9D41EA27C99F31A7B3FCE7B6 /* AppLanguage.swift */; };
 		6BF207316B61EC74887D1BBF /* AppLocale.swift */ = {isa = PBXBuildFile; fileRef = 203C0259857B749C5803EE78 /* AppLocale.swift */; };
+		B03E2FFC026BD49197CA0A77 /* DateFormatCache.swift */ = {isa = PBXBuildFile; fileRef = 5F2C3151E13094EEB1620E61 /* DateFormatCache.swift */; };
 		598FE9C7AB2A3D99CAC606D3 /* WidgetDeepLink.swift */ = {isa = PBXBuildFile; fileRef = 3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */; };
 		F1F19CEEDC02C02E3D379573 /* RPMBand.swift */ = {isa = PBXBuildFile; fileRef = 889A5FD9FA5E5F8A14B08645 /* RPMBand.swift */; };
 		B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */ = {isa = PBXBuildFile; fileRef = FCE29958ABE39B524970D198 /* WeeklyGoalProgress.swift */; };
@@ -323,6 +325,7 @@
 		77495E2186BCB564480AA11C /* ICloudBackupPolicy.swift */ = {isa = PBXBuildFile; fileRef = 7F129C433867C02F18FD644D /* ICloudBackupPolicy.swift */; };
 		F77F5B35AC59CBC4AB45C491 /* ICloudMediaPolicy.swift */ = {isa = PBXBuildFile; fileRef = 441C9F73ED83409F5854B29A /* ICloudMediaPolicy.swift */; };
 		7355D436AF250ADEB5A35316 /* AnalyticsCalculator.swift */ = {isa = PBXBuildFile; fileRef = 2875D2376898F097057DD656 /* AnalyticsCalculator.swift */; };
+		B8F39BCE2F5F853C1462161A /* DateFormatCache.swift */ = {isa = PBXBuildFile; fileRef = 5F2C3151E13094EEB1620E61 /* DateFormatCache.swift */; };
 		9C2431F7BCA060C8598B645B /* GoalMoneyMath.swift */ = {isa = PBXBuildFile; fileRef = 9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */; };
 		F86AED66F39751207C742F2C /* LoadYieldCalculator.swift */ = {isa = PBXBuildFile; fileRef = 6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */; };
 		8D4F186D0BE353553EF9A512 /* OnRoadCalendar.swift */ = {isa = PBXBuildFile; fileRef = C9586AD73DA70791A70A65EE /* OnRoadCalendar.swift */; };
@@ -617,6 +620,7 @@
 		7F129C433867C02F18FD644D /* ICloudBackupPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupPolicy.swift"; sourceTree = "<group>"; };
 		441C9F73ED83409F5854B29A /* ICloudMediaPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaPolicy.swift"; sourceTree = "<group>"; };
 		2875D2376898F097057DD656 /* AnalyticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCalculator.swift"; sourceTree = "<group>"; };
+		5F2C3151E13094EEB1620E61 /* DateFormatCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatCache.swift"; sourceTree = "<group>"; };
 		9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoalMoneyMath.swift"; sourceTree = "<group>"; };
 		6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoadYieldCalculator.swift"; sourceTree = "<group>"; };
 		C9586AD73DA70791A70A65EE /* OnRoadCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OnRoadCalendar.swift"; sourceTree = "<group>"; };
@@ -1201,6 +1205,7 @@
 			isa = PBXGroup;
 			children = (
 				2875D2376898F097057DD656 /* AnalyticsCalculator.swift */,
+				5F2C3151E13094EEB1620E61 /* DateFormatCache.swift */,
 				9EAEBE3183224DD8538AFFEC /* GoalMoneyMath.swift */,
 				6276B810B4D94930DEACA223 /* LoadYieldCalculator.swift */,
 				C9586AD73DA70791A70A65EE /* OnRoadCalendar.swift */,
@@ -2182,6 +2187,7 @@
 				9E78766E42AD96F871B06E6B /* ICloudBackupPolicy.swift */,
 				C593829C85260A5B0B9554D6 /* ICloudMediaPolicy.swift */,
 				CAA15F3749734C7DF1F06C21 /* AnalyticsCalculator.swift */,
+				83CD9B859D55E2203BE15087 /* DateFormatCache.swift */,
 				A2B2C1D2AECD92AEDCC57D80 /* GoalMoneyMath.swift */,
 				B9201D8E99B6550737AC9D20 /* LoadYieldCalculator.swift */,
 				FBB26F7A7CEBA02D76DCC57B /* OnRoadCalendar.swift */,
@@ -2351,6 +2357,7 @@
 				1055F1E229C6F4E59AC89121 /* StringUtils.swift */,
 				0983EDBBBE69B967C60E805C /* AppLanguage.swift */,
 				6BF207316B61EC74887D1BBF /* AppLocale.swift */,
+				B03E2FFC026BD49197CA0A77 /* DateFormatCache.swift */,
 				598FE9C7AB2A3D99CAC606D3 /* WidgetDeepLink.swift */,
 				F1F19CEEDC02C02E3D379573 /* RPMBand.swift */,
 				B9F17AC48D3CAA18669C7844 /* WeeklyGoalProgress.swift */,
@@ -2382,6 +2389,7 @@
 				77495E2186BCB564480AA11C /* ICloudBackupPolicy.swift */,
 				F77F5B35AC59CBC4AB45C491 /* ICloudMediaPolicy.swift */,
 				7355D436AF250ADEB5A35316 /* AnalyticsCalculator.swift */,
+				B8F39BCE2F5F853C1462161A /* DateFormatCache.swift */,
 				9C2431F7BCA060C8598B645B /* GoalMoneyMath.swift */,
 				F86AED66F39751207C742F2C /* LoadYieldCalculator.swift */,
 				8D4F186D0BE353553EF9A512 /* OnRoadCalendar.swift */,

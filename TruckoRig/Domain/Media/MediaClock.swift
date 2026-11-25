@@ -12,14 +12,15 @@ public enum MediaClock {
         timeZone: TimeZone,
         locale: Locale = Locale(identifier: "en_US_POSIX")
     ) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.timeZone = timeZone
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
-        formatter.calendar = calendar
-        formatter.dateFormat = pattern
-        return formatter.string(from: date)
+        return DateFormatCache.string(
+            from: date,
+            pattern: pattern,
+            locale: locale,
+            calendar: calendar,
+            timeZone: timeZone
+        )
     }
 
     public static func epochMillis(_ date: Date) -> Int64 {

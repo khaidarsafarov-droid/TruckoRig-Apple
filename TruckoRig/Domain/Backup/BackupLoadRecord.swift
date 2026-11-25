@@ -17,12 +17,17 @@ public enum BackupSchema {
 
     /// Android `BackupSchema.jsonFileName`: `<FILE_PREFIX>_Backup_yyyyMMdd_HHmmss.json`.
     public static func jsonFileName(exportedAt: Int64, timeZone: TimeZone = .current) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = timeZone
-        formatter.dateFormat = "yyyyMMdd_HHmmss"
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
         let date = Date(timeIntervalSince1970: Double(exportedAt) / 1000)
-        return "\(filePrefix)_Backup_\(formatter.string(from: date)).json"
+        let stamp = DateFormatCache.string(
+            from: date,
+            pattern: "yyyyMMdd_HHmmss",
+            locale: Locale(identifier: "en_US_POSIX"),
+            calendar: calendar,
+            timeZone: timeZone
+        )
+        return "\(filePrefix)_Backup_\(stamp).json"
     }
 }
 

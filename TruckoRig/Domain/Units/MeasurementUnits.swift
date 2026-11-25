@@ -6,6 +6,20 @@ public enum MeasurementSystem: String, Codable, Equatable, Sendable, CaseIterabl
     case kilometers
 }
 
+extension MeasurementSystem {
+    /// Foundation's own length unit for this system, so "mi" and "km" are never typed by hand.
+    public var lengthUnit: UnitLength {
+        switch self {
+        case .miles: return .miles
+        case .kilometers: return .kilometers
+        }
+    }
+
+    /// `mi` or `km`, taken from `lengthUnit`. English by design: reports, the widget and
+    /// Telegram replies are English-only or carry their own copy. App screens use catalog keys.
+    public var distanceSymbol: String { lengthUnit.symbol }
+}
+
 /// Exact factors shared by the app, the widget and the accountant workbook.
 ///
 /// 1 mile = 1.609344 kilometers. 1 US gallon = 3.785411784 liters.
