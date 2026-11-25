@@ -306,12 +306,21 @@ enum BackupJournalMapper {
             actualFinishDate: load.actualFinishDate.flatMap(parseFinish),
             durationDays: load.durationDays
         )
-        imported.stops = load.stops.map { importStop($0, loadID: id, book: &book) }
+        imported.stops = load.stops.map { importStop($0, loadID: id, loadDate: date, book: &book) }
+        // Stop appointments carry instants again. Only the PU/DEL caches are filled here: the
+        // file's own date, week and duration stay exactly as they were saved.
+        imported.firstPickupAt = imported.pickups.compactMap(\.scheduledTime).min()
+        imported.lastDeliveryAt = imported.deliveries.compactMap(\.scheduledTime).max()
         imported.penalties = load.penalties.map { importPenalty($0, loadID: id, fallback: date, book: &book) }
         return imported
     }
 
-    private static func importStop(_ stop: BackupStop, loadID: UUID, book: inout BackupIdentityBook) -> Stop {
+    private static func importStop(
+        _ stop: BackupStop,
+        loadID: UUID,
+        loadDate: Date,
+        book: inout BackupIdentityBook
+    ) -> Stop {
         let key = "\(loadID.uuidString)#\(stop.id)"
         let id: UUID
         if let saved = book.stopUUIDByKey[key], let uuid = UUID(uuidString: saved) {
@@ -332,10 +341,21 @@ enum BackupJournalMapper {
             city: stop.city,
             state: stop.state,
             zip: blankToNil(stop.zip),
+            scheduledTime: scheduledInstant(stop.scheduledTime, loadDate: loadDate),
             scheduledTimeRaw: blankToNil(stop.scheduledTime),
             timezone: blankToNil(stop.timezone)
         )
         return imported
+    }
+
+    /// The backup keeps the schedule only as printed text (`07/06 08:00 EDT`, `2026-07-06 08:00`).
+    /// Without resolving it a restored trip had no appointment times, so every load collapsed to
+    /// one day (on-road days, per diem, daily yield) and showed no PU/DEL times. Yearless Relay
+    /// text takes the year nearest the load's date, which keeps a 12/31 → 01/03 trip together.
+    static func scheduledInstant(_ raw: String, loadDate: Date) -> Date? {
+        let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
+        return RelayTimeParser().resolve(text, reference: loadDate)?.date
     }
 
     private static func importPenalty(

@@ -339,4 +339,37 @@ final class BackupRestoreTests: XCTestCase {
         XCTAssertNil(graph.expenses[0].receiptFileName)
         XCTAssertEqual(graph.perDiemOverrides.count, 1)
     }
+
+    func testRestoredStopsKeepAppointmentTimesAcrossNewYear() throws {
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "drive-stops-\(UUID().uuidString)"))
+        let settings = AppSettings(scope: .local, defaults: defaults)
+        let identity = BackupIdentityStore(defaults: defaults)
+        let backup = try BackupDataCodec.decode(
+            #"{"schemaVersion":2,"accountId":"local_dev","loads":[{"id":"L-NY","tripId":"T-NY","date":"2026-12-31","#
+                + #""totalRate":100000,"weekNumber":1,"year":2027,"stops":["#
+                + #"{"id":1,"loadId":"L-NY","stopNumber":1,"type":"PU","#
+                + #""scheduledTime":"12/31 08:00 EST","timezone":"EST"},"#
+                + #"{"id":2,"loadId":"L-NY","stopNumber":2,"type":"DEL","#
+                + #""scheduledTime":"01/03 18:00 EST","timezone":"EST"}]}]}"#
+        )
+        let plan = BackupJournalMapper.importBackup(backup, settings: settings, identity: identity)
+        let load = try XCTUnwrap(plan.loads.first)
+        let pickup = try XCTUnwrap(load.pickups.first?.scheduledTime)
+        let delivery = try XCTUnwrap(load.deliveries.first?.scheduledTime)
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = try XCTUnwrap(TimeZone(identifier: "UTC"))
+        XCTAssertEqual(utc.component(.year, from: delivery), 2027)
+        XCTAssertEqual(delivery.timeIntervalSince(pickup), Double((3 * 24 + 10) * 3600), accuracy: 1)
+        XCTAssertEqual(load.firstPickupAt, pickup)
+        XCTAssertEqual(load.lastDeliveryAt, delivery)
+        XCTAssertEqual(load.weekNumber, 1)
+        XCTAssertEqual(load.pickups.first?.scheduledTimeRaw, "12/31 08:00 EST")
+    }
+
+    func testBlankOrUnreadableScheduleStaysEmpty() {
+        let noon = Date(timeIntervalSince1970: 1_798_718_400)
+        XCTAssertNil(BackupJournalMapper.scheduledInstant("", loadDate: noon))
+        XCTAssertNil(BackupJournalMapper.scheduledInstant("tomorrow morning", loadDate: noon))
+        XCTAssertNotNil(BackupJournalMapper.scheduledInstant("2026-07-06 08:00", loadDate: noon))
+    }
 }

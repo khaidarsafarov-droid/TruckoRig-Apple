@@ -19,8 +19,8 @@ final class AccountantWorkbookTests: XCTestCase {
         XCTAssertTrue(summary.contains(["Заправок дизеля", "1"]))
         XCTAssertTrue(summary.contains(["Дизель всего, USD", "120.50"]))
         XCTAssertTrue(summary.contains(["Дней на рейсах (суточные)", "2"]))
-        XCTAssertTrue(summary.contains(["Ставка суточных, USD/день", "69.00"]))
-        XCTAssertTrue(summary.contains(["Суточные всего, USD", "138.00"]))
+        XCTAssertTrue(summary.contains(["Ставка суточных, USD/день", "80.00"]))
+        XCTAssertTrue(summary.contains(["Суточные всего, USD", "160.00"]))
         XCTAssertTrue(summary.contains(["Записей ТО", "1"]))
         XCTAssertTrue(summary.contains(["ТО всего, USD", "350.00"]))
         XCTAssertEqual(summary.last?.first, "Подсказка")
@@ -45,9 +45,9 @@ final class AccountantWorkbookTests: XCTestCase {
 
         let perDiem = try rows(named: "Суточные", names: names, files: files)
         XCTAssertEqual(perDiem[0], ["Дата на рейсе", "Ставка, USD", "Сумма, USD"])
-        XCTAssertEqual(perDiem[1], ["46174", "69.00", "69.00"])
-        XCTAssertEqual(perDiem[2], ["46175", "69.00", "69.00"])
-        XCTAssertEqual(perDiem[3], ["ИТОГО (2 дн.)", "69.00", "138.00"])
+        XCTAssertEqual(perDiem[1], ["46174", "80.00", "80.00"])
+        XCTAssertEqual(perDiem[2], ["46175", "80.00", "80.00"])
+        XCTAssertEqual(perDiem[3], ["ИТОГО (2 дн.)", "80.00", "160.00"])
 
         let maintenance = try rows(named: "ТО", names: names, files: files)
         XCTAssertEqual(maintenance[0], ["Дата ТО", "Услуга", "Описание", "Сумма, USD"])
@@ -101,8 +101,8 @@ final class AccountantWorkbookTests: XCTestCase {
         XCTAssertEqual(frenchPerDiem[0], ["Date en voyage", "Taux, USD", "Montant, USD"])
         XCTAssertEqual(frenchPerDiem[0].count, russianPerDiem[0].count)
         XCTAssertEqual(Array(frenchPerDiem.dropFirst().dropLast()), Array(russianPerDiem.dropFirst().dropLast()))
-        XCTAssertEqual(frenchPerDiem.last, ["TOTAL (2 jours)", "69.00", "138.00"])
-        XCTAssertEqual(russianPerDiem.last, ["ИТОГО (2 дн.)", "69.00", "138.00"])
+        XCTAssertEqual(frenchPerDiem.last, ["TOTAL (2 jours)", "80.00", "160.00"])
+        XCTAssertEqual(russianPerDiem.last, ["ИТОГО (2 дн.)", "80.00", "160.00"])
 
         let russianMaintenance = try rows(named: "ТО", names: russianNames, files: russian)
         let frenchMaintenance = try rows(named: "Entretien", names: frenchNames, files: french)
@@ -199,7 +199,7 @@ final class AccountantWorkbookTests: XCTestCase {
         let loadTotal = try XCTUnwrap(summary.first { $0.first?.value == "Сумма ставок грузов, USD" })
         assertNumber(loadTotal[1], value: "3500.00", format: "#,##0.00", formats: formats)
         let perDiemTotalSummary = try XCTUnwrap(summary.first { $0.first?.value == "Суточные всего, USD" })
-        assertNumber(perDiemTotalSummary[1], value: "138.00", format: "#,##0.00", formats: formats)
+        assertNumber(perDiemTotalSummary[1], value: "160.00", format: "#,##0.00", formats: formats)
 
         let loads = try typedRows(named: "Грузы", names: names, files: files)
         XCTAssertTrue(loads[0].allSatisfy { $0.kind == .text })
@@ -226,11 +226,11 @@ final class AccountantWorkbookTests: XCTestCase {
 
         let perDiem = try typedRows(named: "Суточные", names: names, files: files)
         assertNumber(perDiem[1][0], value: "46174", format: "yyyy-mm-dd", formats: formats)
-        assertNumber(perDiem[1][1], value: "69.00", format: "#,##0.00", formats: formats)
+        assertNumber(perDiem[1][1], value: "80.00", format: "#,##0.00", formats: formats)
         let perDiemTotal = perDiem[3]
         assertText(perDiemTotal[0], "ИТОГО (2 дн.)")
-        assertNumber(perDiemTotal[1], value: "69.00", format: "#,##0.00", formats: formats)
-        assertNumber(perDiemTotal[2], value: "138.00", format: "#,##0.00", formats: formats)
+        assertNumber(perDiemTotal[1], value: "80.00", format: "#,##0.00", formats: formats)
+        assertNumber(perDiemTotal[2], value: "160.00", format: "#,##0.00", formats: formats)
 
         let maintenance = try typedRows(named: "ТО", names: names, files: files)
         assertNumber(maintenance[1][0], value: "46083", format: "yyyy-mm-dd", formats: formats)
@@ -367,7 +367,7 @@ final class AccountantWorkbookTests: XCTestCase {
         let perDiem = try typedRows(named: "Суточные", names: names, files: files)
         XCTAssertEqual(perDiem.count, 2)
         assertText(perDiem[1][0], "ИТОГО (0 дн.)")
-        assertNumber(perDiem[1][1], value: "69.00", format: "#,##0.00", formats: formats)
+        assertNumber(perDiem[1][1], value: "80.00", format: "#,##0.00", formats: formats)
         assertNumber(perDiem[1][2], value: "0.00", format: "#,##0.00", formats: formats)
 
         let maintenance = try typedRows(named: "ТО", names: names, files: files)

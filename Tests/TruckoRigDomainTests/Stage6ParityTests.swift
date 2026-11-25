@@ -152,7 +152,7 @@ final class Stage6ParityTests: XCTestCase {
             calendar: calendar
         )
         XCTAssertEqual(dates, ["2026-08-01", "2026-08-02", "2026-08-03", "2026-08-04"])
-        XCTAssertEqual(PerDiemCalculator.amount(dayCount: dates.count), 276, accuracy: 0.001)
+        XCTAssertEqual(PerDiemCalculator.amount(dayCount: dates.count), 320, accuracy: 0.001)
     }
 
     func testPerDiemToggleMutations() {
@@ -198,8 +198,9 @@ final class Stage6ParityTests: XCTestCase {
             today: makeDate(2026, 3, 1),
             calendar: calendar
         )
-        XCTAssertEqual(estimate.perDiemAmount, 138, accuracy: 0.001)
-        XCTAssertEqual(estimate.taxableIncome, 8_862, accuracy: 0.001)
+        XCTAssertEqual(estimate.perDiemAmount, 128, accuracy: 0.001) // 2 days × $80 × 80%
+        XCTAssertEqual(estimate.taxableIncome, 8_872, accuracy: 0.001)
+        XCTAssertEqual(PerDiemCalculator.amount(dayCount: 2), 160, accuracy: 0.001)
     }
 
     func testMiscExpenseValidationAndCsv() {

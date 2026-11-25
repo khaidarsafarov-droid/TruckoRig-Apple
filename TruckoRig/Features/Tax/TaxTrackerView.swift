@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Quarterly tax estimate: paycheck gross, diesel, and $69 per on-duty day.
+/// Quarterly tax estimate: paycheck gross, diesel, and the deductible 80% of $80 per on-duty day.
 struct TaxTrackerView: View {
 
     @Environment(AppState.self) private var appState
