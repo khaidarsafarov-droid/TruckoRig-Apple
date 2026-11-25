@@ -318,6 +318,30 @@ final class EncryptedStorageTests: XCTestCase {
         }
     }
 
+    func testKeyLossMovesTheUnreadableJournalAsideAndKeepsEverySidecar() throws {
+        let url = try temporaryFile("TruckoRig_local.sqlite")
+        try Data("encrypted journal".utf8).write(to: url)
+        try Data("wal".utf8).write(to: URL(fileURLWithPath: url.path + "-wal"))
+        try Data("shm".utf8).write(to: URL(fileURLWithPath: url.path + "-shm"))
+        XCTAssertTrue(JournalKeyLoss.journalExists(at: url))
+
+        let moved = try JournalKeyLoss.moveAside(databaseURL: url, stamp: 1_700_000_000)
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: url.path))
+        XCTAssertEqual(try String(contentsOf: moved, encoding: .utf8), "encrypted journal")
+        XCTAssertTrue(moved.lastPathComponent.hasSuffix(".unreadable-1700000000"))
+        XCTAssertEqual(try String(contentsOfFile: moved.path + "-wal", encoding: .utf8), "wal")
+        XCTAssertEqual(try String(contentsOfFile: moved.path + "-shm", encoding: .utf8), "shm")
+        XCTAssertFalse(JournalKeyLoss.journalExists(at: url))
+    }
+
+    func testAnEmptyOrMissingJournalIsNotKeyLoss() throws {
+        let url = try temporaryFile("TruckoRig_local.sqlite")
+        XCTAssertFalse(JournalKeyLoss.journalExists(at: url))
+        try Data().write(to: url)
+        XCTAssertFalse(JournalKeyLoss.journalExists(at: url))
+    }
+
     private func temporaryDirectory() throws -> URL {
         let url = FileManager.default.temporaryDirectory
             .appendingPathComponent("truckorig-tests-\(UUID().uuidString)", isDirectory: true)

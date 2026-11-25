@@ -104,9 +104,16 @@ final class AppState {
         )
         self.telegram = telegram
         let icloud = ICloudBackupController()
-        icloud.bind(database: persistence.database, settings: resolved, scope: persistence.scope)
+        // A throwaway in-memory journal must never reach iCloud: a few fresh rows would look
+        // "newer" and replace the real backup. Unbound, the controller has nothing to upload
+        // or restore into.
+        if !persistence.isEphemeral {
+            icloud.bind(database: persistence.database, settings: resolved, scope: persistence.scope)
+        }
         self.icloud = icloud
-        TelegramRuntime.coordinator = telegram
+        if !persistence.isEphemeral {
+            TelegramRuntime.coordinator = telegram
+        }
         ICloudBackupRuntime.controller = icloud
         telegram.isPremium = { [weak controller] in controller?.isActive ?? false }
         telegram.onJournalChanged = { [weak self] tables in
@@ -142,8 +149,10 @@ final class AppState {
         ShareImportNotifier.shared.start()
         importSharedLoads()
         premium.start()
-        telegram.launch()
-        TelegramBackgroundRegistrar.submit()
+        if !persistence.isEphemeral {
+            telegram.launch()
+            TelegramBackgroundRegistrar.submit()
+        }
         icloud.start()
         link.start()
     }
@@ -190,6 +199,9 @@ final class AppState {
 
     /// Pulls share-sheet loads into the journal. Safe to call when the App Group is missing.
     func importSharedLoads() {
+        // The share inbox is emptied after an import. Into a journal that saves nothing, that
+        // would lose the shared loads, so they wait until the real journal opens.
+        guard !persistence.isEphemeral else { return }
         ShareImportProcessor.receive(
             loads: catalog.loads,
             repository: loadRepository(),

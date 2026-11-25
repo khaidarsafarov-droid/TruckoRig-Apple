@@ -93,6 +93,11 @@ public enum ICloudBackupPolicy {
         case waitingForDebounce
     }
 
+    /// - Parameter overwritesUnseenRemote: `false` for automatic and background runs. An iCloud
+    ///   file that this install has never uploaded or restored is not replaced by them: a new
+    ///   phone, a reinstall, or a journal that failed to open starts with a few fresh rows that
+    ///   would otherwise look "newer" and wipe the only full backup. Only an explicit
+    ///   "Sync now", or a restore, settles it.
     public static func autoSync(
         availability: Availability,
         autoSyncEnabled: Bool,
@@ -100,7 +105,8 @@ public enum ICloudBackupPolicy {
         debounceElapsed: Bool,
         localNewestMillis: Int64,
         remoteExportedAt: Int64?,
-        lastUploadedExportedAt: Int64
+        lastUploadedExportedAt: Int64,
+        overwritesUnseenRemote: Bool = false
     ) -> AutoSync {
         if availability != .available { return .unavailable }
         if !autoSyncEnabled { return .autoOff }
@@ -111,10 +117,21 @@ public enum ICloudBackupPolicy {
             remoteExportedAt: remoteExportedAt,
             lastUploadedExportedAt: lastUploadedExportedAt
         ) {
-        case .uploadLocal: return .upload
+        case .uploadLocal:
+            if isUnseenRemote(remoteExportedAt: remoteExportedAt, lastUploadedExportedAt: lastUploadedExportedAt),
+               !overwritesUnseenRemote {
+                return .keepRemote
+            }
+            return .upload
         case .keepRemote: return .keepRemote
         case .inSync: return .inSync
         }
+    }
+
+    /// A remote file exists and this install has never uploaded to it or restored from it.
+    public static func isUnseenRemote(remoteExportedAt: Int64?, lastUploadedExportedAt: Int64) -> Bool {
+        guard let remoteExportedAt, remoteExportedAt > 0 else { return false }
+        return lastUploadedExportedAt <= 0
     }
 
     public enum ApplyBlock: Equatable, Sendable {

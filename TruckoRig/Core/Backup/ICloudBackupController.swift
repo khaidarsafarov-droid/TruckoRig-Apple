@@ -220,6 +220,12 @@ final class ICloudBackupController {
     func remoteIsNewer() -> Bool {
         guard let remote, let database else { return false }
         let newest = (try? BackupService.newestLoadMillis(in: database)) ?? 0
+        if ICloudBackupPolicy.isUnseenRemote(
+            remoteExportedAt: remote.exportedAt,
+            lastUploadedExportedAt: prefs.lastUploadedExportedAt
+        ) {
+            return true
+        }
         return ICloudBackupPolicy.resolution(
             localNewestMillis: newest,
             remoteExportedAt: remote.exportedAt,

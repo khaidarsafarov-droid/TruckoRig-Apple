@@ -147,13 +147,17 @@ final class BackupRestoreTests: XCTestCase {
         let photoNames = Set(graph.photos.map(\.fileName))
         XCTAssertTrue(photoNames.contains("kept.jpg"))
         XCTAssertTrue(photoNames.contains("loose.jpg"))
-        XCTAssertFalse(photoNames.contains("dropped.jpg"))
+        // A photo of a load the file does not restore is unlinked, never deleted.
+        XCTAssertTrue(photoNames.contains("dropped.jpg"))
+        let droppedRow = try XCTUnwrap(graph.photos.first { $0.fileName == "dropped.jpg" })
+        XCTAssertNil(droppedRow.loadId)
         let loose = try XCTUnwrap(graph.photos.first { $0.fileName == "loose.jpg" })
         XCTAssertNil(loose.loadId)
         let keptRow = try XCTUnwrap(graph.photos.first { $0.fileName == "kept.jpg" })
         XCTAssertEqual(keptRow.loadId, graph.loads[0].id)
         XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "kept.jpg", kind: .photo)).path))
-        XCTAssertFalse(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "dropped.jpg", kind: .photo)).path))
+        let droppedFile = try XCTUnwrap(media.url(for: "dropped.jpg", kind: .photo))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: droppedFile.path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "loose.jpg", kind: .photo)).path))
 
         let second = BackupJournalMapper.export(

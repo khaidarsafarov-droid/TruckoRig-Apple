@@ -1260,6 +1260,64 @@
         }
       }
     },
+    "error.store.ephemeral": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your journal could not be opened, so nothing you enter now will be saved. Close the app and open it again. Your data on this phone is not deleted."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo abrir tu diario, así que lo que escribas ahora no se guardará. Cierra la app y vuelve a abrirla. Tus datos en este teléfono no se han borrado."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журнал не удалось открыть, поэтому всё, что вы вводите сейчас, не сохранится. Закройте приложение и откройте его снова. Ваши данные на этом телефоне не удалены."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre journal n’a pas pu être ouvert : ce que vous saisissez maintenant ne sera pas enregistré. Fermez l’app puis rouvrez-la. Vos données sur ce téléphone ne sont pas supprimées."
+          }
+        }
+      }
+    },
+    "error.store.recovered": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your journal from the old phone could not be unlocked on this one, so it was set aside and a new journal was started. Restore from iCloud in Settings to bring your loads back."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu diario del teléfono anterior no se pudo desbloquear en este, así que se apartó y se empezó uno nuevo. Restaura desde iCloud en Ajustes para recuperar tus viajes."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журнал со старого телефона не удалось разблокировать на этом, поэтому он отложен, а начат новый. Восстановите данные из iCloud в настройках, чтобы вернуть рейсы."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre journal de l’ancien téléphone n’a pas pu être déverrouillé ici : il a été mis de côté et un nouveau journal a été créé. Restaurez depuis iCloud dans Réglages pour retrouver vos voyages."
+          }
+        }
+      }
+    },
     "error.title": {
       "extractionState": "manual",
       "localizations": {
