@@ -29,11 +29,15 @@ enum MapLoadAdapter {
     }
 
     private static func isoDay(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
+        let zone = TimeZone(secondsFromGMT: 0) ?? .gmt
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = zone
+        return DateFormatCache.string(
+            from: date,
+            pattern: "yyyy-MM-dd",
+            locale: Locale(identifier: "en_US_POSIX"),
+            calendar: calendar,
+            timeZone: zone
+        )
     }
 }

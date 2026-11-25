@@ -47,7 +47,11 @@ enum LocalStoreMigration {
               FileManager.default.fileExists(atPath: previousURL.path)
         else { return }
 
-        try? AccountScopedContainer.destroyStore(for: current)
+        do {
+            try AccountScopedContainer.destroyStore(for: current)
+        } catch {
+            AppLog.persistence.error("Could not clear local store: \(error.localizedDescription, privacy: .public)")
+        }
         moveStoreFiles(from: previousURL, toScope: current)
     }
 
@@ -74,7 +78,11 @@ enum LocalStoreMigration {
         let destination = mediaRoot.appendingPathComponent(current.storeKey, isDirectory: true)
         guard FileManager.default.fileExists(atPath: source.path) else { return }
         if FileManager.default.fileExists(atPath: destination.path) {
-            try? FileManager.default.removeItem(at: destination)
+            do {
+                try FileManager.default.removeItem(at: destination)
+            } catch {
+                AppLog.persistence.error("Could not clear media: \(error.localizedDescription, privacy: .public)")
+            }
         }
         do {
             try FileManager.default.moveItem(at: source, to: destination)

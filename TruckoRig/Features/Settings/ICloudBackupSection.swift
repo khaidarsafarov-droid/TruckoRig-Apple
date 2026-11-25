@@ -4,11 +4,12 @@ import SwiftUI
 enum ICloudCopyPresentation {
     static func dateText(_ exportedAt: Int64, locale: Locale = AppLocale.locale) -> String {
         guard exportedAt > 0 else { return String(localized: "settings.icloud.unknown") }
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: Date(timeIntervalSince1970: Double(exportedAt) / 1000))
+        return DateFormatCache.string(
+            from: Date(timeIntervalSince1970: Double(exportedAt) / 1000),
+            dateStyle: .medium,
+            timeStyle: .short,
+            locale: locale
+        )
     }
 
     static func deviceName(_ raw: String?) -> String {

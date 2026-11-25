@@ -28,12 +28,7 @@ public struct WeekLabelFormatter: Sendable {
               let midweek = week.calendar.date(byAdding: .day, value: 3, to: start)
         else { return String(ref.year) }
 
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.calendar = week.calendar
-        formatter.timeZone = week.calendar.timeZone
-        formatter.setLocalizedDateFormatFromTemplate("MMMMy")
-        return formatter.string(from: midweek)
+        return DateFormatCache.string(from: midweek, template: "MMMMy", locale: locale, calendar: week.calendar)
     }
 
     /// Month caption to show above `ref`, or `nil` when `previous` is already in the same month.
@@ -46,11 +41,7 @@ public struct WeekLabelFormatter: Sendable {
     }
 
     private func monthDay(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.calendar = week.calendar
-        formatter.timeZone = week.calendar.timeZone
-        formatter.setLocalizedDateFormatFromTemplate("MMMd")
-        return formatter.string(from: date).replacingOccurrences(of: ".", with: "")
+        DateFormatCache.string(from: date, template: "MMMd", locale: locale, calendar: week.calendar)
+            .replacingOccurrences(of: ".", with: "")
     }
 }

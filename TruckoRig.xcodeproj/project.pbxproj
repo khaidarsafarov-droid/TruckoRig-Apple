@@ -460,6 +460,9 @@
 		7B43C390EBB8B22568B48FAB /* SQLCipher in Frameworks */ = {isa = PBXBuildFile; productRef = D6CD1C47710D92ED4C29ED1A /* SQLCipher */; };
 		ADD14D21F915C76FF9FEE31E /* TruckoRigWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DDD86A75AA62346AD3980EEB /* TruckoRigWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		58F8B67CE2266E1DA60504C7 /* TruckoRigShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 78B6573733A64FD352B69A03 /* TruckoRigShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DE8F8B03749C97DA6EC91473 /* DateFormatCache.swift */ = {isa = PBXBuildFile; fileRef = 5F1F12CCEC0DCCE967FD7D11 /* DateFormatCache.swift */; };
+		ED25ACEBDAF6C344A2592D0F /* DateFormatCache.swift */ = {isa = PBXBuildFile; fileRef = 5F1F12CCEC0DCCE967FD7D11 /* DateFormatCache.swift */; };
+		D2928AA9AF40CD013E380A09 /* DateFormatCache.swift */ = {isa = PBXBuildFile; fileRef = 5F1F12CCEC0DCCE967FD7D11 /* DateFormatCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -625,6 +628,7 @@
 		67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TruckingWeek.swift"; sourceTree = "<group>"; };
 		2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekDayGross.swift"; sourceTree = "<group>"; };
 		AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeekLabelFormatter.swift"; sourceTree = "<group>"; };
+		5F1F12CCEC0DCCE967FD7D11 /* DateFormatCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatCache.swift"; sourceTree = "<group>"; };
 		E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyDayPlan.swift"; sourceTree = "<group>"; };
 		F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeeklyGoalCalculator.swift"; sourceTree = "<group>"; };
 		3C8B47E15EBBEEDE09204E25 /* WidgetDeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WidgetDeepLink.swift"; sourceTree = "<group>"; };
@@ -1209,6 +1213,7 @@
 				67FBFB71566EC9ECE9113221 /* TruckingWeek.swift */,
 				2823B4250C4884EF9292E2D8 /* WeekDayGross.swift */,
 				AD71B64F0572FDFDB929BF4A /* WeekLabelFormatter.swift */,
+				5F1F12CCEC0DCCE967FD7D11 /* DateFormatCache.swift */,
 				E1E69E99FCEF206BFD997286 /* WeeklyDayPlan.swift */,
 				F70CA2C94A250A7D12B376A4 /* WeeklyGoalCalculator.swift */,
 			);
@@ -2079,6 +2084,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				41DA95A7C29163C7C1E90A2A /* AppState.swift */,
+				DE8F8B03749C97DA6EC91473 /* DateFormatCache.swift */,
 				EBF90D2D9284729C26F6619A /* RootView.swift */,
 				CAA4B3CE3C304ACBFEC5F216 /* TruckoRigApp.swift */,
 				02F5A88B4493524F0C362DF1 /* UITestLaunch.swift */,
@@ -2342,6 +2348,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AFD346263F287F83DE5C514 /* TruckoRigWidgetBundle.swift */,
+				ED25ACEBDAF6C344A2592D0F /* DateFormatCache.swift */,
 				AF2C0CD82B4242B21A1B98D5 /* WeeklyGoalWidget.swift */,
 				0DCBFDEB8878E75C542B812B /* WidgetBridge.swift */,
 				6C5943D6F84A9D3260457359 /* Colors.swift */,
@@ -2365,6 +2372,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9A238A9E0F675D4165B4DEC /* ShareExtensionModel.swift */,
+				D2928AA9AF40CD013E380A09 /* DateFormatCache.swift */,
 				B69A1F7D6BAE16DD6CE3DE0C /* ShareExtensionScreen.swift */,
 				93FD9D8F35007BA5F671E261 /* SharePayloadReader.swift */,
 				315F1F4DC4F5157307DE7266 /* ShareViewController.swift */,

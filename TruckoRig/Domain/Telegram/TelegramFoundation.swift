@@ -235,8 +235,7 @@ public struct TelegramLoadReply: Equatable, Sendable {
     ) -> String {
         let money = rate > 0 ? TelegramFigures.dollars(Int64((rate * 100).rounded())) : ""
         let shown = MeasurementUnits.displayDistance(miles, system: system)
-        let suffix = system == .kilometers ? "km" : "mi"
-        let milesText = miles > 0 ? "\(TelegramFigures.miles(shown)) \(suffix)" : ""
+        let milesText = miles > 0 ? "\(TelegramFigures.miles(shown)) \(system.distanceSymbol)" : ""
         let figures = [money, milesText].filter { !$0.isEmpty }.joined(separator: " · ")
         let route = route(origin: origin, destination: destination)
         return [figures, route].filter { !$0.isEmpty }.joined(separator: "\n")

@@ -734,22 +734,25 @@ enum BackupJournalMapper {
     }
 
     private static func finishString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = .current
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-        return formatter.string(from: date)
+        DateFormatCache.string(
+            from: date,
+            pattern: "yyyy-MM-dd HH:mm",
+            locale: Locale(identifier: "en_US_POSIX"),
+            calendar: Calendar(identifier: .gregorian),
+            timeZone: .current
+        )
     }
 
     private static func parseFinish(_ raw: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = .current
         for pattern in ["yyyy-MM-dd HH:mm", "yyyy-MM-dd"] {
-            formatter.dateFormat = pattern
-            if let date = formatter.date(from: String(raw.prefix(16))) {
-                return date
-            }
+            let date = DateFormatCache.date(
+                from: String(raw.prefix(16)),
+                pattern: pattern,
+                locale: Locale(identifier: "en_US_POSIX"),
+                calendar: Calendar(identifier: .gregorian),
+                timeZone: .current
+            )
+            if let date { return date }
         }
         return noon(raw)
     }
