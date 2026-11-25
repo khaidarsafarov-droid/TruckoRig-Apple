@@ -8,6 +8,9 @@ struct BackupJournalPlan {
     var replaceMaintenance: Bool
     var maintenanceTasks: [MaintenanceTask]
     var maintenanceArchive: [MaintenanceArchiveEntry]
+    /// `nil` when the file does not carry the table: the phone's rows stay.
+    var miscExpenses: [MiscExpense]? = nil
+    var perDiemOverrides: [PerDiemOverride]? = nil
 }
 
 /// iOS journal ↔ Android `BackupData`.
@@ -62,7 +65,11 @@ enum BackupJournalMapper {
             diesel: diesel,
             maintenanceTasks: tasks,
             maintenanceArchive: archive,
-            appSettings: exportSettings(settings, extra: book.settingsExtra)
+            appSettings: exportSettings(settings, extra: book.settingsExtra),
+            miscExpenses: exportExpenses(graph.expenses),
+            perDiemOverrides: graph.perDiemOverrides.map {
+                BackupPerDiemOverride(date: $0.isoDate, included: $0.included)
+            }
         )
     }
 
@@ -88,7 +95,56 @@ enum BackupJournalMapper {
             diesel: diesel,
             replaceMaintenance: BackupDataCodec.carriesMaintenance(backup),
             maintenanceTasks: tasks,
-            maintenanceArchive: archive
+            maintenanceArchive: archive,
+            miscExpenses: backup.miscExpenses.map { rows in rows.map(importExpense) },
+            perDiemOverrides: backup.perDiemOverrides.map { rows in
+                rows.filter { !$0.date.isEmpty }.map { PerDiemOverride(isoDate: $0.date, included: $0.included) }
+            }
+        )
+    }
+
+    // MARK: - Misc expenses
+
+    /// Android ids are positive Ints. They are derived from the iOS UUID, which travels as `uuid`.
+    private static func exportExpenses(_ expenses: [MiscExpense]) -> [BackupMiscExpense] {
+        var saved: [String: Int] = [:]
+        var used = Set<Int>()
+        return expenses.sorted { $0.id.uuidString < $1.id.uuidString }.map { expense in
+            BackupMiscExpense(
+                id: BackupIdentity.positiveInt(for: expense.id.uuidString, saved: &saved, used: &used),
+                amountCents: MoneyCents.fromDollars(expense.amount).cents,
+                description: expense.expenseDescription,
+                date: isoDay(expense.date),
+                receiptPhotoPath: expense.receiptFileName,
+                createdAt: millis(expense.updatedAt),
+                updatedAt: millis(expense.updatedAt),
+                uuid: expense.id.uuidString
+            )
+        }
+    }
+
+    private static func importExpense(_ row: BackupMiscExpense) -> MiscExpense {
+        let id = row.uuid.flatMap(UUID.init(uuidString:))
+            ?? BackupIdentity.deterministicUUID("misc-expense-\(row.id)")
+        // An Android path names a file on that phone; only an iOS file name is kept.
+        let receipt = row.receiptPhotoPath.flatMap { $0.contains("/") ? nil : blankToNil($0) }
+        return MiscExpense(
+            id: id,
+            amount: Double(row.amountCents) / 100,
+            expenseDescription: row.description,
+            date: noon(row.date) ?? instant(row.createdAt) ?? Date(timeIntervalSince1970: 0),
+            receiptFileName: receipt,
+            updatedAt: instant(row.updatedAt) ?? instant(row.createdAt) ?? Date(timeIntervalSince1970: 0)
+        )
+    }
+
+    private static func isoDay(_ date: Date) -> String {
+        DateFormatCache.string(
+            from: date,
+            pattern: "yyyy-MM-dd",
+            locale: Locale(identifier: "en_US_POSIX"),
+            calendar: Calendar(identifier: .gregorian),
+            timeZone: .current
         )
     }
 

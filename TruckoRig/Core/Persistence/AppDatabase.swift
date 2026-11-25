@@ -405,6 +405,22 @@ final class AppDatabase {
                     try Self.upsert(db, entry)
                 }
             }
+            // Only when the file carries the table; an older file leaves these rows alone.
+            if let expenses = plan.miscExpenses {
+                try db.execute(sql: "DELETE FROM misc_expense")
+                for expense in expenses {
+                    try Self.upsert(db, expense)
+                }
+            }
+            if let overrides = plan.perDiemOverrides {
+                try db.execute(sql: "DELETE FROM per_diem_override")
+                for override in overrides {
+                    try db.execute(
+                        sql: "INSERT OR REPLACE INTO per_diem_override (isoDate, included) VALUES (?, ?)",
+                        arguments: [override.isoDate, override.included ? 1 : 0]
+                    )
+                }
+            }
             return RemovedMedia(photos: [], scans: [])
         }
     }

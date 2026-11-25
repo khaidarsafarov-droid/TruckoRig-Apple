@@ -8,6 +8,7 @@ public enum BackupDataCodec {
             || !backup.diesel.isEmpty
             || !backup.maintenanceTasks.isEmpty
             || !backup.maintenanceArchive.isEmpty
+            || !(backup.miscExpenses ?? []).isEmpty
     }
 
     public static func carriesMaintenance(_ backup: BackupData) -> Bool {
@@ -36,6 +37,12 @@ public enum BackupDataCodec {
         fields.append(("maintenanceArchive", array(backup.maintenanceArchive.map(encodeArchive))))
         if let settings = backup.appSettings {
             fields.append(("appSettings", encodeSettings(settings)))
+        }
+        if let expenses = backup.miscExpenses {
+            fields.append(("miscExpenses", array(expenses.map(encodeExpense))))
+        }
+        if let overrides = backup.perDiemOverrides {
+            fields.append(("perDiemOverrides", array(overrides.map(encodeOverride))))
         }
         return object(fields)
     }
@@ -79,7 +86,9 @@ public enum BackupDataCodec {
                 return settings(value)
             },
             originDevice: string(root["originDevice"]),
-            originPlatform: string(root["originPlatform"])
+            originPlatform: string(root["originPlatform"]),
+            miscExpenses: try optionalArray(root["miscExpenses"], encode: expense),
+            perDiemOverrides: try optionalArray(root["perDiemOverrides"], encode: perDiemOverride)
         )
     }
 
@@ -112,6 +121,13 @@ public enum BackupDataCodec {
         }
         if let settings = backup.appSettings {
             next.appSettings = settings
+        }
+        // Absent in the file: keep the phone's rows.
+        if let expenses = backup.miscExpenses {
+            next.miscExpenses = expenses
+        }
+        if let overrides = backup.perDiemOverrides {
+            next.perDiemOverrides = overrides
         }
         return .replaced(next)
     }
@@ -278,6 +294,24 @@ public enum BackupDataCodec {
         return object(fields)
     }
 
+    private static func encodeExpense(_ expense: BackupMiscExpense) -> String {
+        var fields: [(String, String)] = [
+            ("id", String(expense.id)),
+            ("amountCents", String(expense.amountCents)),
+            ("description", BackupJSON.escape(expense.description)),
+            ("date", BackupJSON.escape(expense.date)),
+        ]
+        if let path = expense.receiptPhotoPath { fields.append(("receiptPhotoPath", BackupJSON.escape(path))) }
+        fields.append(("createdAt", String(expense.createdAt)))
+        fields.append(("updatedAt", String(expense.updatedAt)))
+        if let uuid = expense.uuid { fields.append(("uuid", BackupJSON.escape(uuid))) }
+        return object(fields)
+    }
+
+    private static func encodeOverride(_ override: BackupPerDiemOverride) -> String {
+        object([("date", BackupJSON.escape(override.date)), ("included", bool(override.included))])
+    }
+
     private static func encodeSettings(_ settings: BackupAppSettings) -> String {
         var fields: [(String, String)] = []
         func intField(_ key: String, _ value: Int?) {
@@ -353,6 +387,12 @@ public enum BackupDataCodec {
         if value == nil || value is NSNull { return [] }
         guard let items = value as? [Any] else { throw BackupDecodeError.corrupted }
         return try items.map(encode)
+    }
+
+    /// `nil` when the key is absent or null: the file does not carry that table.
+    private static func optionalArray<T>(_ value: Any?, encode: (Any) throws -> T) throws -> [T]? {
+        if value == nil || value is NSNull { return nil }
+        return try array(value, encode: encode)
     }
 
     private static func dictionary(_ value: Any) throws -> [String: Any] {
@@ -495,6 +535,25 @@ public enum BackupDataCodec {
             ocrText: string(row["ocrText"]),
             createdAt: int64(row["createdAt"]) ?? 0
         )
+    }
+
+    private static func expense(_ value: Any) throws -> BackupMiscExpense {
+        let row = try dictionary(value)
+        return BackupMiscExpense(
+            id: int(row["id"]) ?? 0,
+            amountCents: int64(row["amountCents"]) ?? 0,
+            description: string(row["description"]) ?? "",
+            date: string(row["date"]) ?? "",
+            receiptPhotoPath: string(row["receiptPhotoPath"]),
+            createdAt: int64(row["createdAt"]) ?? 0,
+            updatedAt: int64(row["updatedAt"]) ?? 0,
+            uuid: string(row["uuid"])
+        )
+    }
+
+    private static func perDiemOverride(_ value: Any) throws -> BackupPerDiemOverride {
+        let row = try dictionary(value)
+        return BackupPerDiemOverride(date: string(row["date"]) ?? "", included: boolValue(row["included"]) ?? false)
     }
 
     private static func settings(_ value: Any) -> BackupAppSettings? {
