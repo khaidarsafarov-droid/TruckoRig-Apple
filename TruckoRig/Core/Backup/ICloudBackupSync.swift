@@ -182,7 +182,8 @@ final class ICloudSyncEngine {
             debounceElapsed: true,
             localNewestMillis: request.localNewestMillis,
             remoteExportedAt: remote?.exportedAt,
-            lastUploadedExportedAt: prefs.lastUploadedExportedAt
+            lastUploadedExportedAt: prefs.lastUploadedExportedAt,
+            overwritesUnseenRemote: !request.respectsAutoSwitch
         )
         switch action {
         case .upload:

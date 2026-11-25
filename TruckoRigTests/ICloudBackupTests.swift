@@ -123,9 +123,20 @@ final class ICloudBackupTests: XCTestCase {
         let stillRemote = try XCTUnwrap(try store.read(accountId: BackupAccount.localDev))
         XCTAssertTrue(String(decoding: stillRemote, as: UTF8.self).contains("REMOTE"))
 
-        let uploaded = engine.perform(request(
+        // This install has never uploaded or restored: an automatic pass must not replace the file.
+        let automatic = engine.perform(request(
             localNewest: 9_000,
             payload: Data(payload(exportedAt: 9_000, accountId: "local_dev", trip: "LOCAL").utf8)
+        ))
+        XCTAssertEqual(automatic, .keepRemote(5_000))
+        let unchanged = try XCTUnwrap(try store.read(accountId: BackupAccount.localDev))
+        XCTAssertTrue(String(decoding: unchanged, as: UTF8.self).contains("REMOTE"))
+
+        // An explicit "Sync now" settles it.
+        let uploaded = engine.perform(request(
+            localNewest: 9_000,
+            payload: Data(payload(exportedAt: 9_000, accountId: "local_dev", trip: "LOCAL").utf8),
+            manual: true
         ))
         XCTAssertEqual(uploaded, .uploaded(9_000))
         XCTAssertEqual(prefs.lastUploadedExportedAt, 9_000)
@@ -257,7 +268,7 @@ final class ICloudBackupTests: XCTestCase {
         return root
     }
 
-    private func request(localNewest: Int64, payload: Data) -> ICloudSyncRequest {
+    private func request(localNewest: Int64, payload: Data, manual: Bool = false) -> ICloudSyncRequest {
         ICloudSyncRequest(
             accountId: BackupAccount.localDev,
             localNewestMillis: localNewest,
@@ -265,7 +276,7 @@ final class ICloudBackupTests: XCTestCase {
             payload: payload,
             debounceElapsed: true,
             autoSyncEnabled: true,
-            respectsAutoSwitch: true,
+            respectsAutoSwitch: !manual,
             now: localNewest
         )
     }

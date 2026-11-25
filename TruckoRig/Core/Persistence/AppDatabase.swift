@@ -350,16 +350,17 @@ final class AppDatabase {
 
     /// Full replace of loads, paychecks and diesel. Maintenance is replaced only for schema v2.
     ///
-    /// Photos and scans linked to a load that is not in the backup are deleted. Unlinked media
-    /// stays. Receipt files are not deleted here; the caller removes the returned photo and scan files.
+    /// Photos and scans linked to a load that is not in the backup are unlinked, never deleted.
+    /// Unlinked media stays. `RemovedMedia` is empty and kept so callers need no change.
     /// Loads are upserted rather than deleted first, so a kept load does not lose its photos.
     func applyBackupJournal(_ plan: BackupJournalPlan) throws -> RemovedMedia {
         try queue.write { db in
             let kept = plan.loads.map(\.id.uuidString)
-            let removedPhotos = try Self.mediaRows(db, table: "photo", kept: kept).map(Self.photo(from:))
-            let removedScans = try Self.mediaRows(db, table: "scan", kept: kept).map(Self.scan(from:))
-            try Self.deleteMedia(db, table: "photo", kept: kept)
-            try Self.deleteMedia(db, table: "scan", kept: kept)
+            // Records for loads that this file does not restore are unlinked, not deleted: the row
+            // (GPS, date and time) and the file stay, so restoring an older copy cannot destroy
+            // evidence photos. The driver can delete them on purpose from the gallery.
+            try Self.unlinkMedia(db, table: "photo", kept: kept)
+            try Self.unlinkMedia(db, table: "scan", kept: kept)
 
             for load in plan.loads {
                 try db.execute(
@@ -404,30 +405,18 @@ final class AppDatabase {
                     try Self.upsert(db, entry)
                 }
             }
-            return RemovedMedia(photos: removedPhotos, scans: removedScans)
+            return RemovedMedia(photos: [], scans: [])
         }
     }
 
-    private static func mediaRows(_ db: Database, table: String, kept: [String]) throws -> [Row] {
+    private static func unlinkMedia(_ db: Database, table: String, kept: [String]) throws {
         if kept.isEmpty {
-            return try Row.fetchAll(db, sql: "SELECT * FROM \(table) WHERE loadId IS NOT NULL AND loadId != ''")
-        }
-        let marks = Array(repeating: "?", count: kept.count).joined(separator: ",")
-        return try Row.fetchAll(
-            db,
-            sql: "SELECT * FROM \(table) WHERE loadId IS NOT NULL AND loadId != '' AND loadId NOT IN (\(marks))",
-            arguments: StatementArguments(kept.map { $0 as (any DatabaseValueConvertible)? })
-        )
-    }
-
-    private static func deleteMedia(_ db: Database, table: String, kept: [String]) throws {
-        if kept.isEmpty {
-            try db.execute(sql: "DELETE FROM \(table) WHERE loadId IS NOT NULL AND loadId != ''")
+            try db.execute(sql: "UPDATE \(table) SET loadId = NULL WHERE loadId IS NOT NULL AND loadId != ''")
             return
         }
         let marks = Array(repeating: "?", count: kept.count).joined(separator: ",")
         try db.execute(
-            sql: "DELETE FROM \(table) WHERE loadId IS NOT NULL AND loadId != '' AND loadId NOT IN (\(marks))",
+            sql: "UPDATE \(table) SET loadId = NULL WHERE loadId IS NOT NULL AND loadId != '' AND loadId NOT IN (\(marks))",
             arguments: StatementArguments(kept.map { $0 as (any DatabaseValueConvertible)? })
         )
     }

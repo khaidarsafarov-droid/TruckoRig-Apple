@@ -205,4 +205,51 @@ final class ICloudBackupPolicyTests: XCTestCase {
             lastUploadedExportedAt: 0
         ), .autoOff)
     }
+
+    func testAutomaticSyncNeverReplacesARemoteFileThisInstallHasNotSeen() {
+        // New phone or reinstall: a fresh row is "newer" than the remote file, but the file is the
+        // only full backup.
+        XCTAssertEqual(ICloudBackupPolicy.autoSync(
+            availability: .available,
+            autoSyncEnabled: true,
+            hasExportableContent: true,
+            debounceElapsed: true,
+            localNewestMillis: 9_000,
+            remoteExportedAt: 5_000,
+            lastUploadedExportedAt: 0
+        ), .keepRemote)
+        XCTAssertEqual(ICloudBackupPolicy.autoSync(
+            availability: .available,
+            autoSyncEnabled: true,
+            hasExportableContent: true,
+            debounceElapsed: true,
+            localNewestMillis: 9_000,
+            remoteExportedAt: 5_000,
+            lastUploadedExportedAt: 0,
+            overwritesUnseenRemote: true
+        ), .upload)
+        // After this install uploaded or restored once, newer local data uploads again.
+        XCTAssertEqual(ICloudBackupPolicy.autoSync(
+            availability: .available,
+            autoSyncEnabled: true,
+            hasExportableContent: true,
+            debounceElapsed: true,
+            localNewestMillis: 9_000,
+            remoteExportedAt: 5_000,
+            lastUploadedExportedAt: 5_000
+        ), .upload)
+        // No remote file yet: the first upload is automatic.
+        XCTAssertEqual(ICloudBackupPolicy.autoSync(
+            availability: .available,
+            autoSyncEnabled: true,
+            hasExportableContent: true,
+            debounceElapsed: true,
+            localNewestMillis: 9_000,
+            remoteExportedAt: nil,
+            lastUploadedExportedAt: 0
+        ), .upload)
+        XCTAssertTrue(ICloudBackupPolicy.isUnseenRemote(remoteExportedAt: 5_000, lastUploadedExportedAt: 0))
+        XCTAssertFalse(ICloudBackupPolicy.isUnseenRemote(remoteExportedAt: nil, lastUploadedExportedAt: 0))
+        XCTAssertFalse(ICloudBackupPolicy.isUnseenRemote(remoteExportedAt: 5_000, lastUploadedExportedAt: 5_000))
+    }
 }

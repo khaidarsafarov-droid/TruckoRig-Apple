@@ -9,6 +9,12 @@ struct RootView: View {
 
     var body: some View {
         screens
+            .safeAreaInset(edge: .top, spacing: 0) {
+                StoreStatusBanner(
+                    isEphemeral: appState.persistence.isEphemeral,
+                    recoveredFromKeyLoss: appState.persistence.recoveredFromKeyLoss
+                )
+            }
             .id(appState.settings.language)
             .onOpenURL { url in
                 appState.open(url)
@@ -68,6 +74,31 @@ struct RootView: View {
             get: { appState.pendingPresentation },
             set: { appState.pendingPresentation = $0 }
         )
+    }
+}
+
+/// Says so, on every screen, when the journal is not being saved or an unreadable one was set aside.
+struct StoreStatusBanner: View {
+    let isEphemeral: Bool
+    let recoveredFromKeyLoss: Bool
+
+    var body: some View {
+        if isEphemeral {
+            banner("error.store.ephemeral", systemImage: "exclamationmark.triangle.fill")
+        } else if recoveredFromKeyLoss {
+            banner("error.store.recovered", systemImage: "icloud.and.arrow.down")
+        }
+    }
+
+    private func banner(_ key: LocalizedStringKey, systemImage: String) -> some View {
+        Label(key, systemImage: systemImage)
+            .font(.appCaption)
+            .foregroundStyle(Color.forestText)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.forestWarning.opacity(0.22))
+            .accessibilityElement(children: .combine)
     }
 }
 
