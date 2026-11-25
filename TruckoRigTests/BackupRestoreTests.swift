@@ -156,7 +156,8 @@ final class BackupRestoreTests: XCTestCase {
         let keptRow = try XCTUnwrap(graph.photos.first { $0.fileName == "kept.jpg" })
         XCTAssertEqual(keptRow.loadId, graph.loads[0].id)
         XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "kept.jpg", kind: .photo)).path))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "dropped.jpg", kind: .photo)).path))
+        let droppedFile = try XCTUnwrap(media.url(for: "dropped.jpg", kind: .photo))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: droppedFile.path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: try XCTUnwrap(media.url(for: "loose.jpg", kind: .photo)).path))
 
         let second = BackupJournalMapper.export(

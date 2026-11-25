@@ -416,7 +416,8 @@ final class AppDatabase {
         }
         let marks = Array(repeating: "?", count: kept.count).joined(separator: ",")
         try db.execute(
-            sql: "UPDATE \(table) SET loadId = NULL WHERE loadId IS NOT NULL AND loadId != '' AND loadId NOT IN (\(marks))",
+            sql: "UPDATE \(table) SET loadId = NULL "
+                + "WHERE loadId IS NOT NULL AND loadId != '' AND loadId NOT IN (\(marks))",
             arguments: StatementArguments(kept.map { $0 as (any DatabaseValueConvertible)? })
         )
     }
