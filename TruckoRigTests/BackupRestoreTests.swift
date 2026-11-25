@@ -253,4 +253,90 @@ final class BackupRestoreTests: XCTestCase {
             XCTAssertEqual(error as? BackupService.Failure, .schemaTooNew(99))
         }
     }
+
+    // MARK: - Misc expenses and per-diem days
+
+    private func extrasFixture() throws -> (AppDatabase, AppSettings, BackupIdentityStore) {
+        let database = try AppDatabase.ephemeral()
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "backup-extras-\(UUID().uuidString)"))
+        let settings = AppSettings(scope: .local, defaults: defaults)
+        return (database, settings, BackupIdentityStore(defaults: defaults))
+    }
+
+    func testMiscExpensesAndPerDiemSurviveExportAndRestoreIntoAnEmptyJournal() throws {
+        let (source, settings, identity) = try extrasFixture()
+        let expense = MiscExpense(
+            amount: 42.5,
+            expenseDescription: "Scale ticket",
+            date: Date(timeIntervalSince1970: 1_751_457_600),
+            receiptFileName: "receipt.jpg",
+            updatedAt: Date(timeIntervalSince1970: 1_751_460_000)
+        )
+        try source.save(expense)
+        try source.savePerDiemOverride(isoDate: "2026-07-04", included: false)
+        try source.savePerDiemOverride(isoDate: "2026-07-05", included: true)
+
+        let exported = BackupJournalMapper.export(
+            graph: try source.fetchGraph(),
+            settings: settings,
+            identity: identity,
+            accountId: BackupAccount.localDev,
+            exportedAt: 1
+        )
+        let decoded = try BackupDataCodec.decode(BackupDataCodec.encode(exported))
+        XCTAssertEqual(decoded.miscExpenses?.first?.amountCents, 4_250)
+        XCTAssertEqual(decoded.miscExpenses?.first?.uuid, expense.id.uuidString)
+
+        let (target, targetSettings, targetIdentity) = try extrasFixture()
+        let plan = BackupJournalMapper.importBackup(decoded, settings: targetSettings, identity: targetIdentity)
+        _ = try target.applyBackupJournal(plan)
+        let graph = try target.fetchGraph()
+        let restored = try XCTUnwrap(graph.expenses.first)
+        XCTAssertEqual(graph.expenses.count, 1)
+        XCTAssertEqual(restored.id, expense.id)
+        XCTAssertEqual(restored.amount, 42.5, accuracy: 0.001)
+        XCTAssertEqual(restored.expenseDescription, "Scale ticket")
+        XCTAssertEqual(restored.receiptFileName, "receipt.jpg")
+        XCTAssertEqual(
+            graph.perDiemOverrides.map { "\($0.isoDate)=\($0.included)" },
+            ["2026-07-04=false", "2026-07-05=true"]
+        )
+    }
+
+    func testOlderFileLeavesMiscExpensesAndPerDiemInPlace() throws {
+        let (database, settings, identity) = try extrasFixture()
+        try database.save(MiscExpense(amount: 10, expenseDescription: "Keep me"))
+        try database.savePerDiemOverride(isoDate: "2026-01-02", included: true)
+        let old = try BackupDataCodec.decode(
+            #"{"schemaVersion":2,"accountId":"local_dev","#
+                + #""loads":[{"id":"L-1","tripId":"T-1","date":"2026-07-21","totalRate":100}]}"#
+        )
+        let plan = BackupJournalMapper.importBackup(old, settings: settings, identity: identity)
+        XCTAssertNil(plan.miscExpenses)
+        XCTAssertNil(plan.perDiemOverrides)
+        _ = try database.applyBackupJournal(plan)
+        let graph = try database.fetchGraph()
+        XCTAssertEqual(graph.loads.map(\.tripId), ["T-1"])
+        XCTAssertEqual(graph.expenses.map(\.expenseDescription), ["Keep me"])
+        XCTAssertEqual(graph.perDiemOverrides.map(\.isoDate), ["2026-01-02"])
+    }
+
+    func testAndroidExtrasImportTwiceWithoutDuplicates() throws {
+        let (database, settings, identity) = try extrasFixture()
+        let android = try BackupDataCodec.decode(
+            #"{"schemaVersion":2,"accountId":"local_dev","loads":[],"miscExpenses":[{"id":3,"amountCents":999,"#
+                + #""description":"Wash","date":"2026-07-01","receiptPhotoPath":"/data/files/a.jpg","createdAt":1,"#
+                + #""updatedAt":2}],"perDiemOverrides":[{"date":"2026-07-05","included":true}]}"#
+        )
+        for _ in 0..<2 {
+            let plan = BackupJournalMapper.importBackup(android, settings: settings, identity: identity)
+            _ = try database.applyBackupJournal(plan)
+        }
+        let graph = try database.fetchGraph()
+        XCTAssertEqual(graph.expenses.count, 1)
+        XCTAssertEqual(graph.expenses[0].amount, 9.99, accuracy: 0.001)
+        // An Android path is not a file on this phone.
+        XCTAssertNil(graph.expenses[0].receiptFileName)
+        XCTAssertEqual(graph.perDiemOverrides.count, 1)
+    }
 }

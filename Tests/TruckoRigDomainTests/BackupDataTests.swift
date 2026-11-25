@@ -514,5 +514,92 @@ final class BackupFileFormatTests: XCTestCase {
         XCTAssertTrue(BackupSyncPolicy.shouldWarnBeforeFileRestore(localNewestMillis: 20, backupExportedAt: 10))
         XCTAssertTrue(BackupSyncPolicy.shouldWarnBeforeFileRestore(localNewestMillis: 5, backupExportedAt: 0))
     }
-}
 
+    // MARK: - Misc expenses and per-diem days
+
+    func testMiscExpensesAndPerDiemRoundTrip() throws {
+        let backup = BackupData(
+            schemaVersion: 2,
+            version: 2,
+            accountId: "local_dev",
+            miscExpenses: [
+                BackupMiscExpense(
+                    id: 7,
+                    amountCents: 4_250,
+                    description: "Scale \"CAT\"",
+                    date: "2026-07-02",
+                    receiptPhotoPath: "receipt.jpg",
+                    createdAt: 10,
+                    updatedAt: 20,
+                    uuid: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
+                ),
+            ],
+            perDiemOverrides: [BackupPerDiemOverride(date: "2026-07-04", included: false)]
+        )
+        let json = BackupDataCodec.encode(backup)
+        XCTAssertTrue(json.contains(#""miscExpenses":[{"id":7,"amountCents":4250"#))
+        XCTAssertTrue(json.contains(#""perDiemOverrides":[{"date":"2026-07-04","included":false}]"#))
+        let decoded = try BackupDataCodec.decode(json)
+        XCTAssertEqual(decoded.miscExpenses, backup.miscExpenses)
+        XCTAssertEqual(decoded.perDiemOverrides, backup.perDiemOverrides)
+        XCTAssertTrue(BackupDataCodec.hasExportableContent(BackupData(miscExpenses: backup.miscExpenses)))
+    }
+
+    func testAndroidShapedExtrasDecodeWithoutUuid() throws {
+        let android = #"{"schemaVersion":2,"accountId":"u","loads":[],"#
+            + #""miscExpenses":[{"id":3,"amountCents":999,"description":"Wash","date":"2026-07-01","#
+            + #""receiptPhotoPath":"/data/user/0/app/files/misc_receipts/a.jpg","createdAt":1,"updatedAt":2}],"#
+            + #""perDiemOverrides":[{"date":"2026-07-05","included":true}],"photos":[{"id":"p","latitude":35.7}]}"#
+        let decoded = try BackupDataCodec.decode(android)
+        XCTAssertEqual(decoded.miscExpenses?.first?.id, 3)
+        XCTAssertEqual(decoded.miscExpenses?.first?.amountCents, 999)
+        XCTAssertNil(decoded.miscExpenses?.first?.uuid)
+        XCTAssertEqual(decoded.perDiemOverrides, [BackupPerDiemOverride(date: "2026-07-05", included: true)])
+    }
+
+    func testOlderFilesDoNotCarryExtrasAndLeaveThemAlone() throws {
+        let old = try BackupDataCodec.decode(#"{"schemaVersion":2,"accountId":"local_dev","loads":[]}"#)
+        XCTAssertNil(old.miscExpenses)
+        XCTAssertNil(old.perDiemOverrides)
+        XCTAssertFalse(BackupDataCodec.encode(old).contains("miscExpenses"))
+
+        let journal = BackupJournal(
+            miscExpenses: [BackupMiscExpense(id: 1, description: "keep")],
+            perDiemOverrides: [BackupPerDiemOverride(date: "2026-01-01", included: true)]
+        )
+        guard case .replaced(let kept) = BackupDataCodec.restore(
+            old,
+            onto: journal,
+            activeAccountId: "local_dev",
+            allowUnboundAccount: false
+        ) else {
+            return XCTFail("expected replace")
+        }
+        XCTAssertEqual(kept.miscExpenses.map(\.description), ["keep"])
+        XCTAssertEqual(kept.perDiemOverrides.count, 1)
+
+        let empty = BackupData(
+            schemaVersion: 2,
+            version: 2,
+            accountId: "local_dev",
+            miscExpenses: [],
+            perDiemOverrides: []
+        )
+        guard case .replaced(let wiped) = BackupDataCodec.restore(
+            empty,
+            onto: journal,
+            activeAccountId: "local_dev",
+            allowUnboundAccount: false
+        ) else {
+            return XCTFail("expected replace")
+        }
+        XCTAssertTrue(wiped.miscExpenses.isEmpty)
+        XCTAssertTrue(wiped.perDiemOverrides.isEmpty)
+    }
+
+    func testNullExtrasAreTreatedAsAbsent() throws {
+        let decoded = try BackupDataCodec.decode(#"{"schemaVersion":2,"miscExpenses":null,"perDiemOverrides":null}"#)
+        XCTAssertNil(decoded.miscExpenses)
+        XCTAssertNil(decoded.perDiemOverrides)
+    }
+}
