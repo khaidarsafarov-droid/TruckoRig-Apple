@@ -50,6 +50,16 @@ final class Load: Identifiable, Hashable {
     /// Cached PU→DEL duration in days, for rows fetched without their stops.
     var durationDays: Double
 
+    /// Broker or shipper cancelled the load. While true, `totalRate` holds the TONU pay and
+    /// `totalMiles` is 0. See `LoadCancellation`.
+    var isCancelled: Bool
+    /// When the driver marked the load cancelled.
+    var cancelledAt: Date?
+    /// Rate before the cancellation, restored by "Restore load".
+    var originalRate: Double?
+    /// Loaded miles before the cancellation, restored by "Restore load".
+    var originalMiles: Double?
+
     var stops: [Stop]?
     var penalties: [Penalty]?
     var photos: [Photo]?
@@ -86,7 +96,11 @@ final class Load: Identifiable, Hashable {
         actualFinishDate: Date? = nil,
         firstPickupAt: Date? = nil,
         lastDeliveryAt: Date? = nil,
-        durationDays: Double = 0
+        durationDays: Double = 0,
+        isCancelled: Bool = false,
+        cancelledAt: Date? = nil,
+        originalRate: Double? = nil,
+        originalMiles: Double? = nil
     ) {
         self.id = id
         self.tripId = TripID.normalize(tripId)
@@ -115,5 +129,9 @@ final class Load: Identifiable, Hashable {
         self.firstPickupAt = firstPickupAt
         self.lastDeliveryAt = lastDeliveryAt
         self.durationDays = durationDays
+        self.isCancelled = isCancelled
+        self.cancelledAt = cancelledAt
+        self.originalRate = originalRate
+        self.originalMiles = originalMiles
     }
 }

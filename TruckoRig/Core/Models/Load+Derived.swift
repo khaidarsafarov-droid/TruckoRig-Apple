@@ -44,8 +44,10 @@ extension Load {
     /// Loaded miles plus deadhead. Android `Load.drivenMiles`.
     var drivenMiles: Double { totalMiles + max(0, deadheadMiles) }
 
+    /// 0 for a cancelled load: TONU pay over deadhead is not a rate per mile.
     var ratePerMile: Double {
-        RPMCalculator.ratePerMile(rate: totalRate, miles: drivenMiles)
+        guard !isCancelled else { return 0 }
+        return RPMCalculator.ratePerMile(rate: totalRate, miles: drivenMiles)
     }
 
     /// Projection consumed by the pure calculators.
@@ -66,7 +68,8 @@ extension Load {
             originState: pickups.first?.state ?? "",
             destinationState: deliveries.last?.state ?? "",
             originLabel: pointA ?? pickups.first?.cityState ?? "",
-            destinationLabel: pointB ?? deliveries.last?.cityState ?? ""
+            destinationLabel: pointB ?? deliveries.last?.cityState ?? "",
+            isCancelled: isCancelled
         )
     }
 

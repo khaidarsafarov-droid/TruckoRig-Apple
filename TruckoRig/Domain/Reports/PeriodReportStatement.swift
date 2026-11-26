@@ -67,7 +67,7 @@ public enum PeriodReportStatementBuilder {
         ]
         let rows = report.loads.map { load in
             [
-                load.tripId,
+                load.isCancelled ? "\(load.tripId) (TONU)" : load.tripId,
                 load.origin,
                 load.destination,
                 PeriodReportBuilder.englishShortDate(load.shipAt, week: week),

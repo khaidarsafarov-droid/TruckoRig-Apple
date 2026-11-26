@@ -231,6 +231,15 @@ final class AppDatabase {
             try db.execute(sql: "DROP TABLE profile")
             try db.execute(sql: "ALTER TABLE profile_name_only RENAME TO profile")
         }
+        migrator.registerMigration("v7_load_cancellation") { db in
+            // Additive only: existing loads read as active (isCancelled = 0, no originals).
+            try db.alter(table: "load") { table in
+                table.add(column: "isCancelled", .integer).notNull().defaults(to: 0)
+                table.add(column: "cancelledAt", .double)
+                table.add(column: "originalRate", .double)
+                table.add(column: "originalMiles", .double)
+            }
+        }
         try migrator.migrate(queue)
     }
 

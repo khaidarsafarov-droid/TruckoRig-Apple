@@ -12,6 +12,8 @@ public struct LoadCSVRecord: Equatable, Sendable {
     public var stopCount: Int
     public var weekNumber: Int
     public var year: Int
+    /// Cancelled (TONU) loads export an RPM of 0: TONU over deadhead is not a rate per mile.
+    public var isCancelled: Bool
 
     public init(
         tripId: String,
@@ -22,7 +24,8 @@ public struct LoadCSVRecord: Equatable, Sendable {
         totalMiles: Double,
         stopCount: Int = 0,
         weekNumber: Int = 0,
-        year: Int = 0
+        year: Int = 0,
+        isCancelled: Bool = false
     ) {
         self.tripId = tripId
         self.date = date
@@ -33,10 +36,12 @@ public struct LoadCSVRecord: Equatable, Sendable {
         self.stopCount = stopCount
         self.weekNumber = weekNumber
         self.year = year
+        self.isCancelled = isCancelled
     }
 
     public var ratePerMile: Double {
-        RPMCalculator.ratePerMile(rate: totalRate, miles: totalMiles)
+        guard !isCancelled else { return 0 }
+        return RPMCalculator.ratePerMile(rate: totalRate, miles: totalMiles)
     }
 }
 

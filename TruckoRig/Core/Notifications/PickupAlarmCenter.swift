@@ -11,7 +11,7 @@ enum PickupAlarmCenter {
         let center = UNUserNotificationCenter.current()
         let identifier = identifier(for: load.id)
         center.removePendingNotificationRequests(withIdentifiers: [identifier])
-        guard let when = load.firstPickupAt, when.timeIntervalSinceNow > 60 else { return }
+        guard !load.isCancelled, let when = load.firstPickupAt, when.timeIntervalSinceNow > 60 else { return }
         if UITestLaunch.suppressesSystemPrompts { return }
         Task {
             guard await authorized(center) else { return }

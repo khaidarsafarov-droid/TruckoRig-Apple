@@ -12,6 +12,8 @@ struct LoadDetailView: View {
     @State private var editorFocus: LoadEditorFocus?
     @State private var isConfirmingDelete = false
     @State private var errorMessage: String?
+    @State private var isCancelSheetShown = false
+    @State private var isConfirmingRestore = false
 
     private var band: RPMBand {
         RPMCalculator.band(for: load.ratePerMile, thresholds: appState.settings.rpmThresholds)
@@ -21,6 +23,13 @@ struct LoadDetailView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: Spacing.section) {
                 headerCard
+                if load.isCancelled {
+                    LoadCancelledCard(
+                        load: load,
+                        onEdit: { isCancelSheetShown = true },
+                        onRestore: { isConfirmingRestore = true }
+                    )
+                }
                 stopsCard
                 if !(load.penalties ?? []).isEmpty { penaltiesCard }
                 if load.isDispute { disputeCard }
@@ -52,6 +61,19 @@ struct LoadDetailView: View {
         .sheet(item: $editorFocus) { focus in
             EditLoadView(load: load, focus: focus)
         }
+        .sheet(isPresented: $isCancelSheetShown) {
+            LoadCancelSheet(load: load) { tonu in cancelLoad(tonu: tonu) }
+        }
+        .confirmationDialog(
+            "load.cancel.undo.title",
+            isPresented: $isConfirmingRestore,
+            titleVisibility: .visible
+        ) {
+            Button("load.cancel.undo") { restoreLoad() }
+            Button("action.back", role: .cancel) {}
+        } message: {
+            Text(restoreMessage)
+        }
         .confirmationDialog("journal.delete.confirm", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("action.delete", role: .destructive) { delete() }
             Button("action.cancel", role: .cancel) {}
@@ -79,7 +101,10 @@ struct LoadDetailView: View {
             Divider().padding(.vertical, 4)
 
             HStack {
-                StatTile(title: "stat.gross", value: Formatters.moneyPrecise(load.totalRate))
+                StatTile(
+                    title: load.isCancelled ? "load.cancel.stat.tonu" : "stat.gross",
+                    value: Formatters.moneyPrecise(load.totalRate)
+                )
                 StatTile(
                     title: UnitCopy.distanceStat(appState.settings.measurementSystem),
                     value: Formatters.miles(load.drivenMiles, system: appState.settings.measurementSystem)
@@ -95,7 +120,7 @@ struct LoadDetailView: View {
                 StatTile(title: "stat.duration", value: DateUtils.durationDays(load.durationDays))
                 StatTile(
                     title: "stat.pace",
-                    value: Formatters.perDay(LoadYieldCalculator.pace(of: load.summary))
+                    value: load.isCancelled ? "—" : Formatters.perDay(LoadYieldCalculator.pace(of: load.summary))
                 )
                 StatTile(title: "stat.stops", value: "\(load.stopCount)")
             }
@@ -117,7 +142,8 @@ struct LoadDetailView: View {
                 onMiles: { editorFocus = .miles },
                 onDeadhead: { editorFocus = .deadhead },
                 onFinish: { editorFocus = .finish },
-                onDispute: { editorFocus = .dispute }
+                onDispute: { editorFocus = .dispute },
+                onCancel: { isCancelSheetShown = true }
             )
             .padding(.top, 4)
         }
@@ -277,6 +303,28 @@ struct LoadDetailView: View {
                 Text("load.source")
                     .font(.appHeadline)
             }
+        }
+    }
+
+    private var restoreMessage: String {
+        let rate = Formatters.moneyPrecise(load.originalRate ?? load.totalRate)
+        let miles = Formatters.miles(load.originalMiles ?? 0, system: appState.settings.measurementSystem)
+        return String(localized: "load.cancel.undo.body \(rate) \(miles)")
+    }
+
+    private func cancelLoad(tonu: Double) {
+        do {
+            try appState.loadRepository().cancel(load, tonu: tonu)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func restoreLoad() {
+        do {
+            try appState.loadRepository().restore(load)
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 

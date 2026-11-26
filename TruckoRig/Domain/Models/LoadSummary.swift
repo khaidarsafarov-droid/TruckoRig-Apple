@@ -25,6 +25,8 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
     /// `"City, ST"` when the journal has it. Empty falls back to the state code.
     public var originLabel: String
     public var destinationLabel: String
+    /// Broker cancelled the load: `totalRate` is the TONU pay and loaded miles are 0.
+    public var isCancelled: Bool
 
     public init(
         id: UUID = UUID(),
@@ -42,7 +44,8 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
         originState: String = "",
         destinationState: String = "",
         originLabel: String = "",
-        destinationLabel: String = ""
+        destinationLabel: String = "",
+        isCancelled: Bool = false
     ) {
         self.id = id
         self.tripId = tripId
@@ -60,6 +63,7 @@ public struct LoadSummary: Equatable, Identifiable, Sendable {
         self.destinationState = destinationState
         self.originLabel = originLabel
         self.destinationLabel = destinationLabel
+        self.isCancelled = isCancelled
     }
 
     /// Date the analytics charts file the load under.

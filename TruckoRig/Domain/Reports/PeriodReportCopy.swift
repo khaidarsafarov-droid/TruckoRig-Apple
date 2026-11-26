@@ -38,6 +38,7 @@ struct PeriodReportCopy: Equatable, Sendable {
     var statusDelivered: String
     var statusDisputeOpen: String
     var statusDisputeSettled: String
+    var statusCancelledTonu: String
     var sourceRelay: String
     var sourceManual: String
     var sourceBroker: String
@@ -143,6 +144,7 @@ struct PeriodReportCopy: Equatable, Sendable {
         statusDelivered: "Delivered",
         statusDisputeOpen: "Dispute open",
         statusDisputeSettled: "Dispute settled",
+        statusCancelledTonu: "Cancelled · TONU",
         sourceRelay: "Amazon Relay",
         sourceManual: "Manual",
         sourceBroker: "Broker",
@@ -211,6 +213,7 @@ struct PeriodReportCopy: Equatable, Sendable {
         statusDelivered: "Доставлен",
         statusDisputeOpen: "Спор открыт",
         statusDisputeSettled: "Спор закрыт",
+        statusCancelledTonu: "Отменён · TONU",
         sourceRelay: "Amazon Relay",
         sourceManual: "Вручную",
         sourceBroker: "Брокер",
@@ -279,6 +282,7 @@ struct PeriodReportCopy: Equatable, Sendable {
         statusDelivered: "Livré",
         statusDisputeOpen: "Litige ouvert",
         statusDisputeSettled: "Litige réglé",
+        statusCancelledTonu: "Annulé · TONU",
         sourceRelay: "Amazon Relay",
         sourceManual: "Manuel",
         sourceBroker: "Courtier",
@@ -347,6 +351,7 @@ struct PeriodReportCopy: Equatable, Sendable {
         statusDelivered: "Entregada",
         statusDisputeOpen: "Disputa abierta",
         statusDisputeSettled: "Disputa cerrada",
+        statusCancelledTonu: "Cancelada · TONU",
         sourceRelay: "Amazon Relay",
         sourceManual: "Manual",
         sourceBroker: "Bróker",

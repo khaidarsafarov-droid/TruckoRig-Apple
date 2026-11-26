@@ -81,6 +81,8 @@ public struct PeriodReportLoadInput: Equatable, Sendable {
     public var disputeCompleted: Bool
     public var notes: [String]
     public var penalties: [PeriodReportPenalty]
+    /// Cancelled load: `rate` is the TONU pay and `loadedMiles` is 0.
+    public var isCancelled: Bool
 
     public init(
         tripId: String,
@@ -100,7 +102,8 @@ public struct PeriodReportLoadInput: Equatable, Sendable {
         isDispute: Bool = false,
         disputeCompleted: Bool = false,
         notes: [String] = [],
-        penalties: [PeriodReportPenalty] = []
+        penalties: [PeriodReportPenalty] = [],
+        isCancelled: Bool = false
     ) {
         self.tripId = tripId
         self.rate = rate
@@ -120,6 +123,7 @@ public struct PeriodReportLoadInput: Equatable, Sendable {
         self.disputeCompleted = disputeCompleted
         self.notes = notes
         self.penalties = penalties
+        self.isCancelled = isCancelled
     }
 
     var drivenMiles: Double { loadedMiles + max(0, emptyMiles) }
@@ -269,6 +273,8 @@ public struct PeriodReportLoadBlock: Equatable, Sendable {
     /// Pickup instant. The PDF formats this in en_US even when the plain text is not English.
     public var shipAt: Date
     public var deliveredAt: Date?
+    /// Cancelled (TONU) load. The statement marks the load number.
+    public var isCancelled: Bool
 
     public init(
         number: Int,
@@ -283,7 +289,8 @@ public struct PeriodReportLoadBlock: Equatable, Sendable {
         tableGross: String = "",
         tableRate: String = "",
         shipAt: Date = Date(timeIntervalSince1970: 0),
-        deliveredAt: Date? = nil
+        deliveredAt: Date? = nil,
+        isCancelled: Bool = false
     ) {
         self.number = number
         self.tripId = tripId
@@ -298,6 +305,7 @@ public struct PeriodReportLoadBlock: Equatable, Sendable {
         self.tableRate = tableRate
         self.shipAt = shipAt
         self.deliveredAt = deliveredAt
+        self.isCancelled = isCancelled
     }
 }
 

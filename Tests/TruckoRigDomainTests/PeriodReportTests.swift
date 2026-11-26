@@ -452,6 +452,40 @@ final class PeriodReportTests: XCTestCase {
         XCTAssertNotEqual(other, chosen)
     }
 
+    func testCancelledLoadCountsTonuAsGrossKeepsDeadheadAndIsMarkedTonu() {
+        var cancelled = load(
+            trip: "L-9",
+            rate: 175,
+            loaded: 0,
+            empty: 25,
+            on: makeDate(2026, 11, 17, 8),
+            origin: "Boise, ID",
+            destination: "Reno, NV"
+        )
+        cancelled.isCancelled = true
+        let delivered = load(
+            trip: "L-8",
+            rate: 600,
+            loaded: 200,
+            empty: 0,
+            on: makeDate(2026, 11, 16, 8),
+            delivery: makeDate(2026, 11, 16, 18)
+        )
+        let report = build(loads: [cancelled, delivered], fuel: [], expenses: [], goal: 0)
+        let statement = PeriodReportStatementBuilder.make(report)
+        let text = PeriodReportText.render(report)
+
+        XCTAssertEqual(report.totals.gross, 775)
+        XCTAssertEqual(report.totals.loadCount, 2)
+        XCTAssertEqual(report.totals.loadedMiles, 200)
+        XCTAssertEqual(report.totals.emptyMiles, 25)
+        XCTAssertEqual(statement.rows.map { $0[0] }, ["L-8", "L-9 (TONU)"])
+        XCTAssertEqual(statement.rows[1][5], "25")
+        XCTAssertEqual(statement.rows[1][6], "$175.00")
+        XCTAssertEqual(statement.rows[1][7], "—")
+        XCTAssertTrue(text.contains("Cancelled · TONU"))
+    }
+
     private func englishWeek() -> PeriodReport {
         let pair = sampleLoads()
         return build(

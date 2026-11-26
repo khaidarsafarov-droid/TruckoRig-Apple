@@ -200,6 +200,9 @@ struct JournalLoadCard: View {
         VStack(spacing: 0) {
             header
             VStack(alignment: .leading, spacing: 10) {
+                if load.isCancelled {
+                    LoadCancelledBadge(tonu: load.totalRate)
+                }
                 if load.isActiveDispute {
                     Text("load.dispute")
                         .font(.appCaptionMedium)

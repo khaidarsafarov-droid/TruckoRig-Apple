@@ -124,6 +124,13 @@ public struct BackupLoad: Equatable, Sendable {
     public var penalties: [BackupPenalty]
     public var equipmentType: String?
     public var deadheadMiles: Double
+    /// Android `Load.isCancelled`. Older files have no key and read as active.
+    public var isCancelled: Bool
+    /// Android `Load.cancelledAt`, epoch millis.
+    public var cancelledAt: Int64?
+    /// Android `Load.originalRate`: nullable `Money`, so Gson boxes it as `{"cents":…}`.
+    public var originalRateCents: Int64?
+    public var originalMiles: Double?
 
     public init(
         id: String = "",
@@ -156,7 +163,11 @@ public struct BackupLoad: Equatable, Sendable {
         stops: [BackupStop] = [],
         penalties: [BackupPenalty] = [],
         equipmentType: String? = nil,
-        deadheadMiles: Double = 0
+        deadheadMiles: Double = 0,
+        isCancelled: Bool = false,
+        cancelledAt: Int64? = nil,
+        originalRateCents: Int64? = nil,
+        originalMiles: Double? = nil
     ) {
         self.id = id
         self.tripId = tripId
@@ -189,5 +200,9 @@ public struct BackupLoad: Equatable, Sendable {
         self.penalties = penalties
         self.equipmentType = equipmentType
         self.deadheadMiles = deadheadMiles
+        self.isCancelled = isCancelled
+        self.cancelledAt = cancelledAt
+        self.originalRateCents = originalRateCents
+        self.originalMiles = originalMiles
     }
 }

@@ -72,6 +72,11 @@ struct LoadDTO: Codable, Equatable {
     var isDeleted: Bool = false
     var stops: [StopDTO]
     var penalties: [PenaltyDTO]
+    /// Optional so snapshots written before load cancellation still decode.
+    var isCancelled: Bool? = nil
+    var cancelledAt: Date? = nil
+    var originalRate: Double? = nil
+    var originalMiles: Double? = nil
 }
 
 struct StopDTO: Codable, Equatable {

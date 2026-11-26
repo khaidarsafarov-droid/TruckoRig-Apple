@@ -222,7 +222,11 @@ enum BackupJournalMapper {
             stops: driveStops,
             penalties: penalties,
             equipmentType: extra.equipmentType,
-            deadheadMiles: extra.deadheadMiles
+            deadheadMiles: extra.deadheadMiles,
+            isCancelled: load.isCancelled,
+            cancelledAt: load.cancelledAt.map(millis),
+            originalRateCents: load.originalRate.map { MoneyCents.fromDollars($0).cents },
+            originalMiles: load.originalMiles
         )
     }
 
@@ -304,7 +308,11 @@ enum BackupJournalMapper {
             equipmentType: load.equipmentType,
             deadheadMiles: load.deadheadMiles,
             actualFinishDate: load.actualFinishDate.flatMap(parseFinish),
-            durationDays: load.durationDays
+            durationDays: load.durationDays,
+            isCancelled: load.isCancelled,
+            cancelledAt: load.cancelledAt.flatMap(instant),
+            originalRate: load.originalRateCents.map { Double($0) / 100 },
+            originalMiles: load.originalMiles
         )
         imported.stops = load.stops.map { importStop($0, loadID: id, loadDate: date, book: &book) }
         // Stop appointments carry instants again. Only the PU/DEL caches are filled here: the

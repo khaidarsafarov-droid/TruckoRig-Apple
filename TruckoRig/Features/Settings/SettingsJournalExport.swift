@@ -39,7 +39,8 @@ struct SettingsJournalExport: View {
                 totalMiles: load.drivenMiles,
                 stopCount: load.stopCount,
                 weekNumber: load.weekNumber,
-                year: load.year
+                year: load.year,
+                isCancelled: load.isCancelled
             )
         }
         let csv = CSVExportParser.csv(from: records)

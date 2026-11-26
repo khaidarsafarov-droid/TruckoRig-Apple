@@ -203,6 +203,44 @@ struct LoadRepository {
         load.disputeAmount = settled.disputeAmount
     }
 
+    // MARK: - Cancellation (TONU)
+
+    /// Broker cancelled the load. It stays in the journal with `tonu` as its rate and 0 loaded
+    /// miles; deadhead stays. Calling it again on a cancelled load only changes the TONU.
+    func cancel(_ load: Load, tonu: Double, now: Date = Date()) throws {
+        guard LoadCancellation.isValidTonu(tonu) else { return }
+        let previous = load.cancellationState
+        load.apply(LoadCancellation.cancel(previous, tonu: tonu, now: now))
+        load.touch(now: now)
+        load.refreshDerivedFields(week: week)
+        do {
+            try persist(load)
+        } catch {
+            load.apply(previous)
+            load.refreshDerivedFields(week: week)
+            throw error
+        }
+        // Nobody is driving to this pickup any more.
+        PickupAlarmCenter.cancel(loadID: load.id)
+    }
+
+    /// Undoes `cancel`: the original rate and loaded miles come back.
+    func restore(_ load: Load, now: Date = Date()) throws {
+        guard load.isCancelled else { return }
+        let previous = load.cancellationState
+        load.apply(LoadCancellation.undo(previous))
+        load.touch(now: now)
+        load.refreshDerivedFields(week: week)
+        do {
+            try persist(load)
+        } catch {
+            load.apply(previous)
+            load.refreshDerivedFields(week: week)
+            throw error
+        }
+        PickupAlarmCenter.schedule(for: load)
+    }
+
     func addPenalty(to load: Load, summary: String, amount: Double, date: Date) throws {
         let penalty = Penalty(summary: summary, amount: amount, date: date)
         penalty.load = load
