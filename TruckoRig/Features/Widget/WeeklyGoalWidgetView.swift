@@ -9,9 +9,10 @@ final class WidgetLayoutProbe {
 /// Midnight & Gold split header.
 ///
 /// Both sizes keep three labeled actions — Камера, Сканер, Дизель — in that order. Medium shows
-/// the week, the total, the RPM pill, the goal line and an indigo bar. Small keeps the total,
-/// the `% · goal` line and a thin gold bar inside the dark header, then three icon-over-label
-/// tiles. There is no per-day chart: the approved mockup dropped it so nothing is clipped.
+/// the week, the total, the RPM pill beside that total, the goal line and an indigo bar. Small
+/// keeps the total, the `% · goal` line and a thin gold bar inside the dark header, then three
+/// icon-over-label tiles. There is no per-day chart: the approved mockup dropped it so nothing
+/// is clipped.
 struct WeeklyGoalWidgetView: View {
 
     let snapshot: WidgetGoalSnapshot?
@@ -71,33 +72,27 @@ struct WeeklyGoalWidgetView: View {
     }
 
     private var mediumHeader: some View {
-        HStack(alignment: .center, spacing: 8) {
+        VStack(alignment: .leading, spacing: 1) {
             Link(destination: WidgetDeepLink.url(for: .home)) {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(data.weekRange)
-                        .font(widgetFont(.medium, 12))
-                        .foregroundStyle(Color.heroText)
-                        .lineLimit(1)
-                        .reportFrame("wg.week", probe)
+                Text(data.weekRange)
+                    .font(widgetFont(.medium, 12))
+                    .foregroundStyle(Color.heroText)
+                    .lineLimit(1)
+                    .reportFrame("wg.week", probe)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            HStack(alignment: .center, spacing: 8) {
+                Link(destination: WidgetDeepLink.url(for: .home)) {
                     Text(USMoneyFormat.currency(data.gross))
                         .font(widgetFont(.bold, 24))
                         .foregroundStyle(Color.heroText)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
                         .reportFrame("wg.gross", probe)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            if data.rpm > 0 {
-                Link(destination: WidgetDeepLink.url(for: .analytics)) {
-                    Text(String(localized: "widget.rpm.pill \(USMoneyFormat.rpm(MeasurementUnits.displayPerDistance(data.rpm, system: measurementSystem)))"))
-                        .font(widgetFont(.bold, 11))
-                        .foregroundStyle(Color.forestSuccess)
-                        .lineLimit(1)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.successContainer, in: Capsule())
-                        .reportFrame("wg.rpm", probe)
+                if data.rpm > 0 {
+                    rpmPill
                 }
             }
         }
@@ -105,6 +100,31 @@ struct WeeklyGoalWidgetView: View {
         .padding(.vertical, 6)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(HeroGradient())
+    }
+
+    /// Dark-hero capsule. The header gradient stays midnight in light, dark, and OLED
+    /// (the widget does not apply `oledDarkActive`), so the pill does not switch palettes.
+    private var rpmPill: some View {
+        Link(destination: WidgetDeepLink.url(for: .analytics)) {
+            Text(rpmLabel)
+                .font(widgetFont(.semibold, RpmPillChrome.fontSize))
+                .foregroundStyle(RpmPillChrome.text)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(RpmPillChrome.fill, in: Capsule())
+                .overlay {
+                    Capsule().strokeBorder(RpmPillChrome.stroke, lineWidth: 1)
+                }
+                .reportFrame("wg.rpm", probe)
+        }
+        .layoutPriority(1)
+    }
+
+    private var rpmLabel: String {
+        let shown = MeasurementUnits.displayPerDistance(data.rpm, system: measurementSystem)
+        return String(localized: "widget.rpm.pill \(USMoneyFormat.rpm(shown))")
     }
 
     private var small: some View {
@@ -243,6 +263,16 @@ struct WeeklyGoalWidgetView: View {
 private enum WidgetActionStyle {
     case labeled
     case stacked
+}
+
+/// Hero RPM capsule. The goal line and the week caption are both 12pt medium;
+/// 13pt semibold sits with that goal line and reads larger than the caption.
+private enum RpmPillChrome {
+    static let fontSize: CGFloat = 13
+    static let text = Color(hex: "6EE7A0")
+    static let fill = Color(hex: "124030")
+    /// Same green as the label, thinned to a 1pt hairline.
+    static let stroke = Color(hex: "6EE7A0").opacity(0.45)
 }
 
 enum WidgetActionKind: String, CaseIterable {
