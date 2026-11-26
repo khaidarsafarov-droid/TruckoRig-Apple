@@ -50,6 +50,8 @@ struct WeeklyGoalWidgetView: View {
             Image(systemName: "target")
         } currentValueLabel: {
             Text(USMoneyFormat.ringPercent(data.progressPercent))
+                .lineLimit(1)
+                .minimumScaleFactor(0.4)
         }
         .gaugeStyle(.accessoryCircularCapacity)
     }
@@ -142,7 +144,7 @@ struct WeeklyGoalWidgetView: View {
                             .font(widgetFont(.medium, 11))
                             .foregroundStyle(Color.heroText)
                             .lineLimit(1)
-                            .minimumScaleFactor(0.7)
+                            .minimumScaleFactor(0.45)
                             .reportFrame("wg.percent", probe)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -170,7 +172,8 @@ struct WeeklyGoalWidgetView: View {
                 .font(widgetFont(.medium, 12))
                 .foregroundStyle(Color.forestText)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.45)
+                .layoutPriority(1)
                 .reportFrame("wg.percent", probe)
             Spacer(minLength: 4)
             if data.hasGoal {
@@ -178,7 +181,7 @@ struct WeeklyGoalWidgetView: View {
                     .font(widgetFont(.medium, 12))
                     .foregroundStyle(Color.forestTextSecondary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.45)
                     .reportFrame("wg.remaining", probe)
             }
         }

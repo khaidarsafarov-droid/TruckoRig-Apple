@@ -24,8 +24,8 @@ final class GoalPercentScreenshotTests: XCTestCase {
         XCTAssertEqual(progress.currentGross, 13_000, accuracy: 0.01)
         XCTAssertEqual(progress.targetAmount, 10_000, accuracy: 0.01)
         XCTAssertEqual(progress.currentGross / progress.targetAmount, 1.3, accuracy: 0.001)
-        // The displayed text follows production. A cap still in place reports 100 here.
-        XCTAssertGreaterThanOrEqual(progress.progressPercent, 100)
+        XCTAssertEqual(progress.progressPercent, 130, accuracy: 0.001)
+        XCTAssertEqual(progress.progressFraction, 1, accuracy: 0.001)
 
         let locale = Locale(identifier: "ru")
         let goal = NavigationStack {

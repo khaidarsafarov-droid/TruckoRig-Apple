@@ -108,7 +108,7 @@ struct HomeWeekHeroCard: View {
                 Spacer(minLength: 8)
                 if goal > 0 {
                     goalRing
-                        .accessibilityLabel(String(localized: "home.goal.percent \(Int(percent.rounded()))"))
+                        .accessibilityLabel(String(localized: "home.goal.percent \(Int(shownPercent.rounded()))"))
                 }
             }
             .padding(.top, 8)
@@ -149,20 +149,28 @@ struct HomeWeekHeroCard: View {
             Circle()
                 .stroke(Color.heroText.opacity(0.28), lineWidth: 8)
             Circle()
-                .trim(from: 0, to: min(1, max(0, percent / 100)))
+                .trim(from: 0, to: min(1, shownPercent / 100))
                 .stroke(Color.heroText, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             VStack(spacing: 0) {
-                Text("\(Int(percent.rounded()))%")
+                Text("\(Int(shownPercent.rounded()))%")
                     .font(widgetNumber)
                     .foregroundStyle(Color.heroText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .frame(maxWidth: 64)
                 Text("home.goal.caption")
                     .font(.appCaption)
                     .foregroundStyle(Color.heroText.opacity(0.85))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
         }
         .frame(width: 92, height: 92)
     }
+
+    /// The ring stays full past the goal. The digits keep going: 130%, 1000%.
+    private var shownPercent: Double { max(0, percent) }
 
     private var widgetNumber: Font { Font(AppFont.uiFont(.bold, size: 16)) }
 

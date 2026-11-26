@@ -34,7 +34,8 @@ final class WeeklyGoalCalculatorTests: XCTestCase {
         let progress = currentWeekLoads([load])
 
         XCTAssertEqual(progress.paceStatus, .goalMet)
-        XCTAssertEqual(progress.progressPercent, 100, accuracy: 0.001)
+        XCTAssertEqual(progress.progressPercent, 6_200 / 6_000 * 100, accuracy: 0.001)
+        XCTAssertEqual(progress.progressFraction, 1, accuracy: 0.001)
         XCTAssertEqual(progress.remainingAmount, 0, accuracy: 0.001)
         XCTAssertEqual(progress.dailyTargetNeeded, 0, accuracy: 0.001)
     }
@@ -113,6 +114,37 @@ final class WeeklyGoalCalculatorTests: XCTestCase {
         let progress = calculator.calculate(target: 6000, loads: [load], for: lastWeek, now: wednesday)
 
         XCTAssertEqual(progress.paceStatus, .goalMet)
+    }
+
+    func testProgressPercentIsTheRealShareAndTheBarStopsAtFull() {
+        func load(_ rate: Double) -> LoadSummary {
+            LoadSummary.spanning(
+                rate: rate,
+                from: makeDate(2025, 8, 4, 8, 0),
+                to: makeDate(2025, 8, 6, 8, 0)
+            )
+        }
+
+        let empty = currentWeekLoads([])
+        XCTAssertEqual(empty.progressPercent, 0, accuracy: 0.001)
+        XCTAssertEqual(empty.progressFraction, 0, accuracy: 0.001)
+
+        let half = currentWeekLoads([load(3_000)])
+        XCTAssertEqual(half.progressPercent, 50, accuracy: 0.001)
+        XCTAssertEqual(half.progressFraction, 0.5, accuracy: 0.001)
+
+        let exact = currentWeekLoads([load(6_000)])
+        XCTAssertEqual(exact.progressPercent, 100, accuracy: 0.001)
+        XCTAssertEqual(exact.progressFraction, 1, accuracy: 0.001)
+
+        let over = currentWeekLoads([load(7_800)])
+        XCTAssertEqual(over.progressPercent, 130, accuracy: 0.001)
+        XCTAssertEqual(over.progressFraction, 1, accuracy: 0.001)
+
+        let noGoal = calculator.calculateCurrentWeek(target: 0, loads: [load(7_800)], now: wednesday)
+        XCTAssertEqual(noGoal.progressPercent, 0, accuracy: 0.001)
+        XCTAssertEqual(noGoal.progressFraction, 0, accuracy: 0.001)
+        XCTAssertEqual(noGoal.paceStatus, .behind)
     }
 
     func testZeroGoalNeverDividesByZero() {

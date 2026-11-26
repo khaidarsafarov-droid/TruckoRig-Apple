@@ -87,9 +87,11 @@ public struct WeeklyGoalCalculator: Sendable {
         return calculate(target: target, loads: loads, for: ref, now: now)
     }
 
+    /// Real share of the goal. The ring and the bar clamp this; the label does not.
+    /// A goal of 0 stays 0 so the screen never divides by zero.
     private func progressPercent(gross: MoneyCents, target: MoneyCents) -> Double {
         guard target.cents > 0 else { return 0 }
-        return min(100, Double(gross.cents) / Double(target.cents) * 100)
+        return max(0, Double(gross.cents) / Double(target.cents) * 100)
     }
 
     private func paceStatus(

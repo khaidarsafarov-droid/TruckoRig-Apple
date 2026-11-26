@@ -12,7 +12,7 @@ public enum PaceStatus: String, Sendable {
 public struct WeeklyGoalProgress: Equatable, Sendable {
     public var targetAmount: Double
     public var currentGross: Double
-    /// 0…100.
+    /// Share of the goal, from 0 upward. Not capped at 100. A goal of 0 stays 0.
     public var progressPercent: Double
     public var remainingAmount: Double
     /// Calendar days from the week start through today, used for the ring marker.
@@ -68,6 +68,6 @@ public struct WeeklyGoalProgress: Equatable, Sendable {
         self.totalMiles = totalMiles
     }
 
-    /// 0…1 for progress bars.
+    /// 0…1 for the ring and the bar. Anything past the goal stays filled.
     public var progressFraction: Double { min(1, max(0, progressPercent / 100)) }
 }
