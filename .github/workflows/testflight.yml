@@ -233,9 +233,14 @@ jobs:
             echo "- Build number: ${GITHUB_RUN_NUMBER}"
           } >> "$GITHUB_STEP_SUMMARY"
           # Release keeps iCloud, the App Group, the widget, and the share extension.
-          # Automatic signing creates the App Store profiles with the API key.
-          # App Manager can create those profiles only when the key has
-          # Certificates, Identifiers & Profiles access. Admin can always create them.
+          # Archive with automatic signing only. A global CODE_SIGN_IDENTITY,
+          # PROVISIONING_PROFILE, or PROVISIONING_PROFILE_SPECIFIER is applied to
+          # every target, including Swift packages that stay signed for development
+          # (GRDB, GoogleMaps). That conflict failed the archive. Distribution
+          # signing happens in the export step.
+          # -allowProvisioningUpdates creates the App Store profiles with the API key.
+          # Admin can create distribution profiles. App Manager can only when
+          # Certificates, Identifiers & Profiles access was granted.
           # https://developer.apple.com/help/account/access/roles/
           xcodebuild archive \
             -project TruckoRig.xcodeproj \
@@ -250,7 +255,6 @@ jobs:
             -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
             CODE_SIGN_STYLE=Automatic \
-            "CODE_SIGN_IDENTITY=Apple Distribution" \
             CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER"
 
       - name: Export the App Store ipa
@@ -260,6 +264,8 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
           set -euo pipefail
+          # Distribution identity is selected here, after the archive, so it does
+          # not override the development signing of the app or package targets.
           python3 - <<'PY'
           import os
           import plistlib
