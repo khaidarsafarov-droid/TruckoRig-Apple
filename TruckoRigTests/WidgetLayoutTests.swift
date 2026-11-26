@@ -16,6 +16,24 @@ final class WidgetLayoutTests: XCTestCase {
         await assertFits(family: .systemSmall, size: CGSize(width: 155, height: 155), showsRemaining: false)
     }
 
+    func testRpmPillStaysBesideALongGross() async {
+        var snapshot = WidgetGoalSnapshot.placeholder
+        snapshot.gross = 12_345_678
+        snapshot.rpm = 3.60
+        await assertFits(
+            family: .systemMedium,
+            size: CGSize(width: 329, height: 155),
+            showsRemaining: true,
+            snapshot: snapshot
+        )
+        await assertFits(
+            family: .systemSmall,
+            size: CGSize(width: 155, height: 155),
+            showsRemaining: false,
+            snapshot: snapshot
+        )
+    }
+
     func testButtonOrderIsCameraScannerDiesel() {
         XCTAssertEqual(
             WidgetActionKind.allCases.map(\.route),
@@ -26,10 +44,15 @@ final class WidgetLayoutTests: XCTestCase {
         XCTAssertEqual(WidgetDeepLink.route(from: WidgetActionKind.diesel.url), .addDiesel)
     }
 
-    private func assertFits(family: WidgetFamily, size: CGSize, showsRemaining: Bool) async {
+    private func assertFits(
+        family: WidgetFamily,
+        size: CGSize,
+        showsRemaining: Bool,
+        snapshot: WidgetGoalSnapshot = .placeholder
+    ) async {
         let probe = WidgetLayoutProbe()
         let host = UIHostingController(
-            rootView: WeeklyGoalWidgetView(snapshot: .placeholder, probe: probe, familyOverride: family)
+            rootView: WeeklyGoalWidgetView(snapshot: snapshot, probe: probe, familyOverride: family)
                 .environment(\.locale, Locale(identifier: "ru"))
                 .frame(width: size.width, height: size.height)
                 .ignoresSafeArea()
@@ -73,6 +96,12 @@ final class WidgetLayoutTests: XCTestCase {
             }
             XCTAssertNotNil(probe.frames["wg.week"])
             XCTAssertNotNil(probe.frames["wg.rpm"])
+            if let gross = probe.frames["wg.gross"], let rpm = probe.frames["wg.rpm"] {
+                XCTAssertTrue(bounds.contains(rpm), "rpm \(rpm) outside \(size)")
+                XCTAssertLessThanOrEqual(gross.maxX, rpm.minX + 1, "gross \(gross) overlaps rpm \(rpm) on \(size)")
+                XCTAssertEqual(rpm.midY, gross.midY, accuracy: 4, "rpm \(rpm) is not aligned with gross \(gross)")
+                XCTAssertLessThan(rpm.height, 36, "rpm pill wrapped to more than one line \(rpm)")
+            }
         } else {
             XCTAssertNil(probe.frames["wg.remaining"])
             XCTAssertNil(probe.frames["wg.rpm"])
