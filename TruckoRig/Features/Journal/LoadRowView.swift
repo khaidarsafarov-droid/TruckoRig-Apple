@@ -47,12 +47,16 @@ struct LoadRowView: View {
 
                 Spacer()
 
-                Text(Formatters.ratePerMile(load.ratePerMile, system: system))
-                    .font(.appCaptionMedium)
-                    .foregroundStyle(band.tint)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-                    .background(band.tint.opacity(0.12), in: Capsule())
+                if load.isCancelled {
+                    LoadCancelledBadge(tonu: load.totalRate)
+                } else {
+                    Text(Formatters.ratePerMile(load.ratePerMile, system: system))
+                        .font(.appCaptionMedium)
+                        .foregroundStyle(band.tint)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(band.tint.opacity(0.12), in: Capsule())
+                }
             }
         }
         .padding(.vertical, 4)
@@ -65,7 +69,9 @@ struct LoadRowView: View {
             load.tripId,
             load.route,
             Formatters.moneyPrecise(load.totalRate),
-            Formatters.ratePerMile(load.ratePerMile, system: system),
+            load.isCancelled
+                ? String(localized: "load.cancel.badge")
+                : Formatters.ratePerMile(load.ratePerMile, system: system),
         ]
         return pieces.filter { !$0.isEmpty }.joined(separator: ", ")
     }

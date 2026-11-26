@@ -15,6 +15,8 @@ public enum LoadYieldCalculator {
 
     /// Whole days spent on a load, rounded up, minimum 1.
     public static func activeDurationDays(of load: LoadSummary) -> Double {
+        // A cancelled load was never driven: it costs the driver one day, not PU→DEL.
+        if load.isCancelled { return 1 }
         guard let start = load.firstPickupAt, let end = finishDate(of: load) else { return 1 }
         let seconds = end.timeIntervalSince(start)
         guard seconds > 0 else { return 1 }
@@ -26,6 +28,7 @@ public enum LoadYieldCalculator {
     /// Recomputes whenever schedule data is available and only falls back to the stored value
     /// for rows loaded without stops (list projections, JSON backups).
     public static func resolvedDurationDays(of load: LoadSummary) -> Double {
+        if load.isCancelled { return 1 }
         if load.firstPickupAt != nil || load.actualFinishAt != nil {
             return activeDurationDays(of: load)
         }

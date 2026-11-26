@@ -45,7 +45,11 @@ enum SnapshotBuilder {
             lastDeliveryAt: load.lastDeliveryAt,
             durationDays: load.durationDays,
             stops: load.sortedStops.map(dto),
-            penalties: (load.penalties ?? []).map(dto)
+            penalties: (load.penalties ?? []).map(dto),
+            isCancelled: load.isCancelled,
+            cancelledAt: load.cancelledAt,
+            originalRate: load.originalRate,
+            originalMiles: load.originalMiles
         )
     }
 

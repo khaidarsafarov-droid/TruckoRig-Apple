@@ -30,8 +30,9 @@ extension AppDatabase {
             id, tripId, date, totalRate, totalMiles, pointA, pointB, puCount, delCount, stopCount,
             weekNumber, year, rawMessage, parsedAt, updatedAt, isDispute, disputeCompleted,
             disputeResponseDate, disputeAmount, actualFinishDate, firstPickupAt, lastDeliveryAt, durationDays,
-            disputeApplyToLoad, disputeAmountApplied, equipmentType, deadheadMiles
-        ) VALUES (\(marks(27)))
+            disputeApplyToLoad, disputeAmountApplied, equipmentType, deadheadMiles,
+            isCancelled, cancelledAt, originalRate, originalMiles
+        ) VALUES (\(marks(31)))
         ON CONFLICT(id) DO UPDATE SET
             tripId = excluded.tripId,
             date = excluded.date,
@@ -58,7 +59,11 @@ extension AppDatabase {
             disputeApplyToLoad = excluded.disputeApplyToLoad,
             disputeAmountApplied = excluded.disputeAmountApplied,
             equipmentType = excluded.equipmentType,
-            deadheadMiles = excluded.deadheadMiles
+            deadheadMiles = excluded.deadheadMiles,
+            isCancelled = excluded.isCancelled,
+            cancelledAt = excluded.cancelledAt,
+            originalRate = excluded.originalRate,
+            originalMiles = excluded.originalMiles
         """, [
             load.id.uuidString, load.tripId, load.date.timeIntervalSince1970, load.totalRate, load.totalMiles,
             load.pointA, load.pointB, load.puCount, load.delCount, load.stopCount, load.weekNumber, load.year,
@@ -69,6 +74,7 @@ extension AppDatabase {
             load.lastDeliveryAt?.timeIntervalSince1970, load.durationDays,
             load.disputeApplyToLoad ? 1 : 0, load.disputeAmountApplied ? 1 : 0,
             load.equipmentType, load.deadheadMiles,
+            load.isCancelled ? 1 : 0, load.cancelledAt?.timeIntervalSince1970, load.originalRate, load.originalMiles,
         ])
         try db.execute(sql: "DELETE FROM stop WHERE loadId = ?", arguments: [load.id.uuidString])
         try db.execute(sql: "DELETE FROM penalty WHERE loadId = ?", arguments: [load.id.uuidString])
@@ -167,7 +173,11 @@ extension AppDatabase {
             actualFinishDate: date(row, "actualFinishDate"),
             firstPickupAt: date(row, "firstPickupAt"),
             lastDeliveryAt: date(row, "lastDeliveryAt"),
-            durationDays: double(row, "durationDays") ?? 0
+            durationDays: double(row, "durationDays") ?? 0,
+            isCancelled: bool(row, "isCancelled"),
+            cancelledAt: date(row, "cancelledAt"),
+            originalRate: double(row, "originalRate"),
+            originalMiles: double(row, "originalMiles")
         )
     }
 

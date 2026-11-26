@@ -296,7 +296,11 @@ enum SnapshotApplier {
             actualFinishDate: dto.actualFinishDate,
             firstPickupAt: dto.firstPickupAt,
             lastDeliveryAt: dto.lastDeliveryAt,
-            durationDays: dto.durationDays
+            durationDays: dto.durationDays,
+            isCancelled: dto.isCancelled ?? false,
+            cancelledAt: dto.cancelledAt,
+            originalRate: dto.originalRate,
+            originalMiles: dto.originalMiles
         )
         load.stops = dto.stops.map(makeStop)
         load.penalties = dto.penalties.map(makePenalty)

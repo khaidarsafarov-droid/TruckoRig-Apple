@@ -7,6 +7,7 @@ struct LoadDetailActionChips: View {
     var onDeadhead: () -> Void
     var onFinish: () -> Void
     var onDispute: () -> Void
+    var onCancel: () -> Void = {}
 
     @Environment(AppState.self) private var appState
 
@@ -14,31 +15,47 @@ struct LoadDetailActionChips: View {
 
     var body: some View {
         ChipFlow(spacing: 8) {
-            chip(
-                milesTitle,
-                identifier: "uitest.chip.miles",
-                tint: Color.forestPrimary,
-                action: onMiles
-            )
+            // A cancelled load has no loaded miles, finish or dispute; deadhead still counts.
+            if !load.isCancelled {
+                chip(
+                    milesTitle,
+                    identifier: "uitest.chip.miles",
+                    tint: Color.forestPrimary,
+                    action: onMiles
+                )
+            }
             chip(
                 deadheadTitle,
                 identifier: "uitest.chip.deadhead",
                 tint: load.deadheadMiles > 0 ? Color.forestPrimary : Color.forestSecondary,
                 action: onDeadhead
             )
-            chip(
-                finishTitle,
-                identifier: "uitest.chip.finish",
-                tint: load.actualFinishDate == nil ? Color.forestSecondary : Color.forestSuccess,
-                action: onFinish
-            )
-            chip(
-                disputeTitle,
-                identifier: "uitest.chip.dispute",
-                tint: disputeTint,
-                action: onDispute
-            )
+            if !load.isCancelled {
+                activeChips
+            }
         }
+    }
+
+    @ViewBuilder
+    private var activeChips: some View {
+        chip(
+            finishTitle,
+            identifier: "uitest.chip.finish",
+            tint: load.actualFinishDate == nil ? Color.forestSecondary : Color.forestSuccess,
+            action: onFinish
+        )
+        chip(
+            disputeTitle,
+            identifier: "uitest.chip.dispute",
+            tint: disputeTint,
+            action: onDispute
+        )
+        chip(
+            String(localized: "load.cancel.action"),
+            identifier: "uitest.chip.cancelLoad",
+            tint: Color.forestError,
+            action: onCancel
+        )
     }
 
     private var milesTitle: String {

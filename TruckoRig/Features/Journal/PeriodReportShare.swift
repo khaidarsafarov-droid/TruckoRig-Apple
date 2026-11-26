@@ -166,7 +166,8 @@ enum PeriodReportShare {
             isDispute: load.isDispute,
             disputeCompleted: load.disputeCompleted,
             notes: notes,
-            penalties: (load.penalties ?? []).map { PeriodReportPenalty(summary: $0.summary, amount: $0.amount) }
+            penalties: (load.penalties ?? []).map { PeriodReportPenalty(summary: $0.summary, amount: $0.amount) },
+            isCancelled: load.isCancelled
         )
     }
 }

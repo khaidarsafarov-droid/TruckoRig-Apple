@@ -180,6 +180,20 @@ public enum BackupDataCodec {
             fields.append(("equipmentType", BackupJSON.escape(equipmentType)))
         }
         fields.append(("deadheadMiles", BackupJSON.renderDouble(load.deadheadMiles)))
+        // Written only for cancelled loads, so files without cancellations stay byte-identical
+        // to older exports. A missing key reads as false on both platforms.
+        if load.isCancelled {
+            fields.append(("isCancelled", bool(true)))
+        }
+        if let cancelledAt = load.cancelledAt {
+            fields.append(("cancelledAt", String(cancelledAt)))
+        }
+        if let originalRateCents = load.originalRateCents {
+            fields.append(("originalRate", boxedCents(originalRateCents)))
+        }
+        if let originalMiles = load.originalMiles {
+            fields.append(("originalMiles", BackupJSON.renderDouble(originalMiles)))
+        }
         return object(fields)
     }
 
@@ -433,7 +447,11 @@ public enum BackupDataCodec {
             stops: try array(row["stops"], encode: stop),
             penalties: try array(row["penalties"], encode: penalty),
             equipmentType: string(row["equipmentType"]),
-            deadheadMiles: double(row["deadheadMiles"]) ?? 0
+            deadheadMiles: double(row["deadheadMiles"]) ?? 0,
+            isCancelled: boolValue(row["isCancelled"]) ?? false,
+            cancelledAt: int64(row["cancelledAt"]),
+            originalRateCents: cents(row["originalRate"]),
+            originalMiles: double(row["originalMiles"])
         )
     }
 

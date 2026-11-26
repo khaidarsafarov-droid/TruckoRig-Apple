@@ -315,7 +315,8 @@ public enum PeriodReportBuilder {
         lines.append(PeriodReportLine(label: copy.loadedDistance(system), value: distance(load.loadedMiles, system: system)))
         lines.append(PeriodReportLine(label: copy.emptyDistance(system), value: distance(max(0, load.emptyMiles), system: system)))
         lines.append(PeriodReportLine(label: copy.rate, value: dollars(load.rate)))
-        let perMile = load.drivenMiles > 0 ? load.rate / load.drivenMiles : 0
+        // TONU over deadhead is not a rate per mile.
+        let perMile = !load.isCancelled && load.drivenMiles > 0 ? load.rate / load.drivenMiles : 0
         lines.append(PeriodReportLine(label: copy.ratePerDistance(system), value: rate(perMile, system: system)))
         lines.append(PeriodReportLine(label: copy.status, value: status(of: load, copy: copy)))
         lines.append(PeriodReportLine(label: copy.source, value: sourceName(load.source, copy: copy)))
@@ -352,11 +353,13 @@ public enum PeriodReportBuilder {
             tableGross: dollars(load.rate),
             tableRate: perMile > 0 ? rateAmount(perMile, system: system) : "—",
             shipAt: ship,
-            deliveredAt: delivery
+            deliveredAt: delivery,
+            isCancelled: load.isCancelled
         )
     }
 
     private static func status(of load: PeriodReportLoadInput, copy: PeriodReportCopy) -> String {
+        if load.isCancelled { return copy.statusCancelledTonu }
         if load.isDispute && !load.disputeCompleted { return copy.statusDisputeOpen }
         if load.isDispute && load.disputeCompleted { return copy.statusDisputeSettled }
         if load.deliveryAt == nil && load.finishAt == nil { return copy.statusInProgress }
