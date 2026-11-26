@@ -74,11 +74,14 @@ Workflow **Sideload IPA** собирает пакет на pull request и по 
 [docs/RELEASE_SECRETS_RU.md](docs/RELEASE_SECRETS_RU.md).
 
 Workflow `.github/workflows/testflight.yml` не запускается на pull request. Его стартуют
-вручную или тегом `v*`. Пока секретов нет, job останавливается до подписи и остаётся зелёным.
+вручную или тегом `v*`. Если нет секрета Apple, job падает до подписи и пишет только имя
+секрета. Номер сборки — `github.run_number`. Без `GOOGLE_MAPS_API_KEY` job предупреждает
+и продолжает сборку: холст карты остаётся пустым.
 
 Release-сборка подписывается Team ID из секрета `APPLE_TEAM_ID` (файл
 `Config/Signing.local.xcconfig`, в git не входит). В ней остаются iCloud Documents
-(`iCloud.com.truckorig`), App Group `group.com.truckorig` и виджет `com.truckorig.widget`.
+(`iCloud.com.truckorig`), App Group `group.com.truckorig`, виджет `com.truckorig.widget`
+и расширение «Поделиться» `com.truckorig.share`.
 Премиум в Release закрыт. Неподписанный Sideload IPA этих возможностей не содержит.
 
 ## Структура
@@ -245,9 +248,16 @@ swiftlint lint --strict               # новые замечания сверх
 Виджет собирает общий с приложением набор файлов (снапшот цели, deep link, тема, форматтеры) —
 список в `WIDGET_SHARED_SOURCES` в генераторе. SQLCipher в расширение не попадает.
 
-Манифест приватности (`PrivacyInfo.xcprivacy`) лежит в приложении и в виджете: трекинга нет,
-данные разработчику не отправляются. `UserDefaults` объявлен причиной `CA92.1` (только свои
-настройки). Размер файла внутри контейнера приложения — `C617.1`. `ITSAppUsesNonExemptEncryption`
+Манифест приватности (`PrivacyInfo.xcprivacy`) лежит в приложении, виджете и расширении
+«Поделиться». Трекинга нет, список собранных типов пуст: журнал, фото, имя, адрес и ставки
+разработчику не отправляются. Копия в iCloud — закрытый контейнер iCloud Drive этого Apple ID,
+файл запечатывается на телефоне. `UserDefaults` объявлен причиной `CA92.1` (только свои
+настройки). Размер файла внутри контейнера приложения и расширения «Поделиться» — `C617.1`.
+Maps SDK for iOS 11.4.0 прикладывает свой манифест: когда карта открыта, Google получает
+диагностику (сбои и производительность), идентификатор устройства, «другие данные» и
+взаимодействие с продуктом. Ответы App Privacy в App Store Connect должны совпадать с этим
+манифестом SDK, а не с «Data Not Collected». Пока нет `GOOGLE_MAPS_API_KEY`, карта не
+запускается, но манифест SDK всё равно входит в отчёт архива. `ITSAppUsesNonExemptEncryption`
 стоит `false`: шифрование стандартное и защищает журнал водителя (ECCN 5D992). Основание и то,
 что владелец отвечает в App Store Connect, — в [docs/EXPORT_COMPLIANCE.md](docs/EXPORT_COMPLIANCE.md).
 Ключ в plist снимает вопросник с каждой сборки, но не заменяет запись в App Information.

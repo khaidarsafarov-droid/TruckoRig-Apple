@@ -37,6 +37,7 @@ struct AboutView: View {
             guide("about.settings.title", "about.settings.body")
 
             Section {
+                LegalDocumentLinks()
                 NavigationLink {
                     LicenseNoticesView()
                 } label: {

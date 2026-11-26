@@ -1,8 +1,8 @@
 # Что сделать перед TestFlight
 
-Платный Apple Developer Program ещё не куплен. Пока секретов нет, workflow
-**TestFlight** сам останавливается и остаётся зелёным: он не запускается на pull
-request, а ручной запуск и тег `v*` без секретов ничего не подписывают.
+Workflow **TestFlight** не запускается на pull request. Ручной запуск и тег `v*`
+без секретов Apple **падают**: подпись и загрузка не начинаются, job красный.
+Пропущенный `GOOGLE_MAPS_API_KEY` только предупреждает, сборка идёт дальше.
 
 Неподписанный IPA для Sideloadly не меняется: конфигурация **Sideload**,
 `CODE_SIGNING_ALLOWED=NO`, без iCloud, без App Group и без виджета, премиум
@@ -115,8 +115,14 @@ openssl pkcs12 -export -inkey distribution.key -in distribution.pem -out distrib
 | `ASC_KEY_P8_BASE64` | `.p8` в base64, одной строкой |
 | `DIST_CERT_P12_BASE64` | `.p12` в base64, одной строкой |
 | `DIST_CERT_PASSWORD` | Пароль экспорта `.p12` |
+| `GOOGLE_MAPS_API_KEY` | Необязательный. Ключ Maps SDK for iOS. Без него карта пустая, job не падает |
 
-Профилей в секретах нет.
+Профилей в секретах нет. Подпись автоматическая: `xcodebuild -allowProvisioningUpdates`
+и ключ API создают профили App Store для `com.truckorig`, `com.truckorig.widget` и
+`com.truckorig.share`. По [ролям Apple](https://developer.apple.com/help/account/access/roles/)
+App Manager создаёт профили дистрибуции, только если ключу дан доступ
+Certificates, Identifiers & Profiles. У Admin этот доступ есть всегда. Сертификат
+дистрибуции в секрет уже положен, workflow его не выпускает.
 
 ## 7. Запуск
 
@@ -125,13 +131,13 @@ Actions → TestFlight → Run workflow.
 Либо тег и push:
 
 ```bat
-git tag v1.5.7
-git push origin v1.5.7
+git tag v1.6.0
+git push origin v1.6.0
 ```
 
-Workflow собирает конфигурацию **Release** (не Sideload): виджет, App Group и iCloud остаются, премиум не открывается. Экспорт — IPA для App Store Connect, загрузка через `xcrun altool`.
+Workflow собирает конфигурацию **Release** (не Sideload): виджет, App Group и iCloud остаются, премиум не открывается. Номер сборки — `github.run_number`, чтобы каждая загрузка была новой. Экспорт — IPA для App Store Connect (`app-store-connect`), загрузка через `xcrun altool`.
 
-Пока хотя бы одного секрета нет, job пишет, чего не хватает, и завершается успешно.
+Если нет хотя бы одного секрета Apple, job перечисляет имена секретов и завершается с ошибкой. Значения не печатаются.
 
 ## Скриншоты iPad в App Store Connect
 

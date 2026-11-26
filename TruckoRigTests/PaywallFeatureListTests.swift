@@ -118,6 +118,49 @@ final class PaywallFeatureListTests: XCTestCase {
         window.isHidden = true
     }
 
+    func testSubscriptionLegalCopyAndLinks() {
+        XCTAssertEqual(
+            LegalDocuments.privacyPolicy.absoluteString,
+            "https://khaidarsafarov-droid.github.io/truckorig-legal/privacy/"
+        )
+        XCTAssertEqual(
+            LegalDocuments.termsOfUse.absoluteString,
+            "https://khaidarsafarov-droid.github.io/truckorig-legal/terms/"
+        )
+        let privacy = [
+            ("en", "Privacy Policy"),
+            ("ru", "Политика конфиденциальности"),
+            ("es", "Política de privacidad"),
+            ("fr", "Politique de confidentialité"),
+        ]
+        let terms = [
+            ("en", "Terms of Use (EULA)"),
+            ("ru", "Условия использования (EULA)"),
+            ("es", "Condiciones de uso (EULA)"),
+            ("fr", "Conditions d'utilisation (CLUF)"),
+        ]
+        for (locale, title) in privacy {
+            XCTAssertEqual(Self.text("premium.legal.privacy", locale: locale), title, locale)
+        }
+        for (locale, title) in terms {
+            XCTAssertEqual(Self.text("premium.legal.terms", locale: locale), title, locale)
+        }
+        let trial = Self.text("premium.legal.trial %@", locale: "en")
+        XCTAssertTrue(trial.contains("%@"))
+        XCTAssertTrue(trial.localizedCaseInsensitiveContains("month"))
+        XCTAssertTrue(trial.localizedCaseInsensitiveContains("free"))
+        XCTAssertTrue(trial.localizedCaseInsensitiveContains("Settings"))
+        let paid = Self.text("premium.legal.paid %@", locale: "en")
+        XCTAssertTrue(paid.contains("%@"))
+        XCTAssertTrue(paid.localizedCaseInsensitiveContains("month"))
+        XCTAssertTrue(paid.localizedCaseInsensitiveContains("Settings"))
+        for locale in ["ru", "es", "fr"] {
+            XCTAssertNotEqual(Self.text("premium.legal.trial %@", locale: locale), trial, locale)
+            XCTAssertTrue(Self.text("premium.legal.trial %@", locale: locale).contains("%@"), locale)
+            XCTAssertTrue(Self.text("premium.legal.paid %@", locale: locale).contains("%@"), locale)
+        }
+    }
+
     /// String Catalog lookup by `locale:` stays on English in the test host. Read the compiled
     /// language bundle instead, which is what the app ships for ru, es, and fr.
     private static func text(_ key: String, locale: String) -> String {

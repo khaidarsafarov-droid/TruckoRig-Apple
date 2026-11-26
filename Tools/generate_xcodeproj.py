@@ -52,7 +52,7 @@ CONFIG_FILES = [
     "Config/Signing.xcconfig",
     "Config/Signing.local.xcconfig.example",
 ]
-MARKETING_VERSION = "1.5.7"
+MARKETING_VERSION = "1.6.0"
 DEPLOYMENT_TARGET = "17.0"
 
 # App sources the widget extension also compiles. Kept deliberately small: the widget only needs

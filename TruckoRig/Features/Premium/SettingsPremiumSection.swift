@@ -72,10 +72,12 @@ struct SettingsPremiumSection: View {
                     .font(.appBody)
                     .foregroundStyle(Color.heroText)
                     .fixedSize(horizontal: false, vertical: true)
-                Text("premium.terms")
-                    .font(.appCaption)
-                    .foregroundStyle(Color.heroTextMuted)
-                    .fixedSize(horizontal: false, vertical: true)
+                SubscriptionLegalNotice(
+                    priceText: premium.displayPrice,
+                    includesFreeMonth: premium.includesFreeMonth,
+                    textColor: Color.heroTextMuted,
+                    linkColor: Color.heroText
+                )
                 Button {
                     showPaywall = true
                 } label: {
