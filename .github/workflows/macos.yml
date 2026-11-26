@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: ios-simulator-${{ github.workflow }}-${{ github.ref }}
@@ -107,6 +108,23 @@ jobs:
             --coverage \
             --require-keychain
 
+      - name: Copy goal percent screenshots
+        if: always()
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/goal-percent-shots"
+          mkdir -p "$out"
+          udid="${{ steps.simulator.outputs.udid }}"
+          container="$(xcrun simctl get_app_container "$udid" com.truckorig data 2>/dev/null || true)"
+          if [[ -n "${container}" && -d "${container}/Documents/goal-percent-shots" ]]; then
+            cp -R "${container}/Documents/goal-percent-shots/." "$out/"
+            echo "Copied goal percent screenshots"
+            find "$out" -type f -print
+          else
+            echo "No goal percent screenshots in the app container"
+            echo "container=${container:-missing}"
+          fi
+
       - name: UI tests on iPhone
         run: |
           set -euo pipefail
@@ -126,3 +144,11 @@ jobs:
             --result "$RUNNER_TEMP/ipad.xcresult" \
             --only-testing TruckoRigTests \
             --require-keychain
+
+      - name: Upload goal percent screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: goal-percent-shots
+          path: ${{ runner.temp }}/goal-percent-shots
+          if-no-files-found: warn
