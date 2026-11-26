@@ -24,6 +24,7 @@ struct PrivacyView: View {
             .listRowBackground(Color.forestCard)
 
             Section {
+                LegalDocumentLinks()
                 SupportContactRow()
             }
             .listRowBackground(Color.forestCard)

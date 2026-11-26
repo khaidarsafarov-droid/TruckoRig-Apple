@@ -71,10 +71,10 @@ struct PaywallView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                                 .accessibilityIdentifier("paywall.body")
                             PaywallIncludedSection()
-                            Text("premium.terms")
-                                .font(.appCaption)
-                                .foregroundStyle(Color.forestTextSecondary)
-                                .fixedSize(horizontal: false, vertical: true)
+                            SubscriptionLegalNotice(
+                                priceText: priceText,
+                                includesFreeMonth: includesFreeMonth
+                            )
                             Button(action: onSubscribe) {
                                 Text(subscribeLabel)
                             }
@@ -94,6 +94,7 @@ struct PaywallView: View {
                                     .font(.appBodyMedium)
                                     .frame(maxWidth: .infinity)
                             }
+                            .accessibilityIdentifier("paywall.restore")
                             Button(action: onClose) {
                                 Text("premium.back")
                                     .font(.appBody)

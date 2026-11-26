@@ -23,10 +23,10 @@ struct PremiumFirstRunOffer: View {
                 feature("premium.offer.feature.telegram")
                 feature("premium.offer.feature.insights")
                 feature("premium.offer.feature.tools")
-                Text("premium.terms")
-                    .font(.appCaption)
-                    .foregroundStyle(Color.forestTextSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                SubscriptionLegalNotice(
+                    priceText: premium.displayPrice,
+                    includesFreeMonth: premium.includesFreeMonth
+                )
                 Button {
                     Task { await premium.purchase() }
                 } label: {
@@ -34,6 +34,16 @@ struct PremiumFirstRunOffer: View {
                 }
                 .buttonStyle(GoldButtonStyle())
                 .accessibilityIdentifier("truckorig.firstRun.subscribe")
+                Button {
+                    Task { await premium.restore() }
+                } label: {
+                    Text("premium.restore")
+                        .font(.appBodyMedium)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                }
+                .foregroundStyle(Color.forestTextSecondary)
+                .accessibilityIdentifier("paywall.restore")
                 Button {
                     premium.declineFirstRun()
                 } label: {

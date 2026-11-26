@@ -5999,31 +5999,118 @@
         }
       }
     },
-    "premium.terms": {
+    "premium.legal.paid %@": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Renews every month through the App Store until you cancel. Cancel anytime in the App Store → Subscriptions."
+            "value": "TruckoRig Premium is a monthly subscription at %@ per month. It renews until you cancel. Cancel anytime in Settings."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se renueva cada mes en el App Store hasta que la canceles. Cancela cuando quieras en el App Store → Suscripciones."
+            "value": "TruckoRig Premium es una suscripción mensual a %@ al mes. Se renueva hasta que la canceles. Cancela cuando quieras en Ajustes."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Подписка продлевается каждый месяц через App Store, пока вы её не отмените. Отмена — в App Store → Подписки."
+            "value": "TruckoRig Premium — месячная подписка за %@ в месяц. Она продлевается, пока вы её не отмените. Отмена в любой момент в Настройках."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Renouvellement chaque mois par l'App Store jusqu'à l'annulation. Annulez en tout temps dans l'App Store → Abonnements."
+            "value": "TruckoRig Premium est un abonnement mensuel à %@ par mois. Il se renouvelle jusqu'à l'annulation. Annulez en tout temps dans Réglages."
+          }
+        }
+      }
+    },
+    "premium.legal.privacy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy Policy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Política de privacidad"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Политика конфиденциальности"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Politique de confidentialité"
+          }
+        }
+      }
+    },
+    "premium.legal.terms": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms of Use (EULA)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condiciones de uso (EULA)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Условия использования (EULA)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conditions d'utilisation (CLUF)"
+          }
+        }
+      }
+    },
+    "premium.legal.trial %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig Premium is a monthly subscription. The first month is free, then %@ per month. It renews until you cancel. Cancel anytime in Settings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig Premium es una suscripción mensual. El primer mes es gratis y después cuesta %@ al mes. Se renueva hasta que la canceles. Cancela cuando quieras en Ajustes."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig Premium — месячная подписка. Первый месяц бесплатно, затем %@ в месяц. Она продлевается, пока вы её не отмените. Отмена в любой момент в Настройках."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TruckoRig Premium est un abonnement mensuel. Le premier mois est gratuit, puis %@ par mois. Il se renouvelle jusqu'à l'annulation. Annulez en tout temps dans Réglages."
           }
         }
       }

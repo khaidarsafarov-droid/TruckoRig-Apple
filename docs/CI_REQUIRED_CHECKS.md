@@ -22,7 +22,7 @@ Protect `main`:
 | `macOS / Build and test` | `.github/workflows/macos.yml` | Simulator build, unit tests, UI tests, Keychain tests, or coverage collection failed |
 | `Sideload IPA / Unsigned device ipa` | `.github/workflows/sideload-ipa.yml` | The unsigned device build failed |
 
-Do not mark **TestFlight** required. `.github/workflows/testflight.yml` does not run on pull requests.
+Do not mark **TestFlight** required. `.github/workflows/testflight.yml` does not run on pull requests. A manual run or a `v*` tag fails if an Apple secret is missing. A missing `GOOGLE_MAPS_API_KEY` warns and the archive continues.
 
 ## What the macOS check covers
 

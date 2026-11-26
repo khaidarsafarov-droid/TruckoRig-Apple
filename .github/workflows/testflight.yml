@@ -1,8 +1,7 @@
 name: TestFlight
 
-# Not a pull-request check. It runs only when someone starts it by hand or
-# pushes a version tag. Without the secrets in docs/RELEASE_SECRETS_RU.md it
-# stops before signing and exits green, so a PR never goes red because of it.
+# Manual run or a version tag. Not a pull-request check.
+# Missing Apple secrets fail the job. A missing Maps key warns and the archive continues.
 on:
   workflow_dispatch:
   push:
@@ -21,7 +20,6 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5 Node 24
 
       - name: Require the App Store secrets
-        id: gate
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
@@ -31,30 +29,35 @@ jobs:
           DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
         run: |
           set -euo pipefail
-          missing=0
-          for name in \
-            APPLE_TEAM_ID \
-            ASC_KEY_ID \
-            ASC_ISSUER_ID \
-            ASC_KEY_P8_BASE64 \
-            DIST_CERT_P12_BASE64 \
-            DIST_CERT_PASSWORD
-          do
-            if [ -z "${!name}" ]; then
-              echo "Missing secret: $name"
-              missing=1
-            fi
-          done
-          if [ "$missing" = 1 ]; then
-            echo "::notice::TestFlight skipped. Add the secrets in docs/RELEASE_SECRETS_RU.md, then run this workflow again. Nothing was signed or uploaded."
-            echo "TestFlight пропущен: нет секретов Apple. Список и шаги — docs/RELEASE_SECRETS_RU.md. Подпись и загрузка не запускались."
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "enabled=true" >> "$GITHUB_OUTPUT"
+          python3 - <<'PY'
+          import os
+          import sys
+
+          missing = []
+          for name in (
+              "APPLE_TEAM_ID",
+              "ASC_KEY_ID",
+              "ASC_ISSUER_ID",
+              "ASC_KEY_P8_BASE64",
+              "DIST_CERT_P12_BASE64",
+              "DIST_CERT_PASSWORD",
+          ):
+              if not os.environ.get(name, "").strip():
+                  missing.append(name)
+          if missing:
+              print("TestFlight cannot sign or upload. Missing Apple secrets:", file=sys.stderr)
+              for name in missing:
+                  print(f"  - {name}", file=sys.stderr)
+              print("Add them as repository secrets, then run this workflow again.", file=sys.stderr)
+              sys.exit(1)
+          team = os.environ["APPLE_TEAM_ID"].strip()
+          if len(team) != 10 or not team.isalnum() or team != team.upper():
+              print("APPLE_TEAM_ID must be 10 uppercase letters or digits. The value was not logged.", file=sys.stderr)
+              sys.exit(1)
+          print("Apple secrets are present. Values were not logged.")
+          PY
 
       - name: Select the latest stable Xcode
-        if: steps.gate.outputs.enabled == 'true'
         run: |
           set -euo pipefail
           developer_dir="$(python3 - <<'PY'
@@ -88,52 +91,152 @@ jobs:
           sudo xcode-select -s "$developer_dir"
           xcodebuild -version
 
+      - name: Write the Maps key when it is set
+        env:
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import re
+          import sys
+
+          key = os.environ.get("GOOGLE_MAPS_API_KEY", "").strip()
+          if not key:
+              print(
+                  "::warning title=Maps key not set::GOOGLE_MAPS_API_KEY is not set. "
+                  "The archive continues. The map canvas stays empty until that secret is added."
+              )
+              sys.exit(0)
+          if not re.fullmatch(r"[A-Za-z0-9_\-]+", key):
+              print(
+                  "GOOGLE_MAPS_API_KEY has characters this workflow will not write into an xcconfig. "
+                  "The value was not logged.",
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+          path = "Config/Secrets.xcconfig"
+          with open(path, "w", encoding="utf-8") as handle:
+              handle.write("// Written by the TestFlight workflow. Not committed.\n")
+              handle.write(f"GOOGLE_MAPS_API_KEY = {key}\n")
+          os.chmod(path, 0o600)
+          print("Wrote Config/Secrets.xcconfig. The Maps key value was not logged.")
+          PY
+
       - name: Import the distribution certificate
-        if: steps.gate.outputs.enabled == 'true'
         env:
           DIST_CERT_P12_BASE64: ${{ secrets.DIST_CERT_P12_BASE64 }}
           DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
         run: |
           set -euo pipefail
+          python3 - <<'PY'
+          import base64
+          import binascii
+          import os
+          import pathlib
+          import sys
+
+          raw = "".join(os.environ["DIST_CERT_P12_BASE64"].split())
+          try:
+              data = base64.b64decode(raw, validate=False)
+          except (binascii.Error, ValueError):
+              print("DIST_CERT_P12_BASE64 is not valid base64. The value was not logged.", file=sys.stderr)
+              sys.exit(1)
+          if not data or data[0] != 0x30:
+              print("DIST_CERT_P12_BASE64 did not decode to a PKCS#12 file. The value was not logged.", file=sys.stderr)
+              sys.exit(1)
+          path = pathlib.Path(os.environ["RUNNER_TEMP"]) / "distribution.p12"
+          path.write_bytes(data)
+          os.chmod(path, 0o600)
+          print(f"Decoded the distribution certificate ({len(data)} bytes). Contents were not logged.")
+          PY
           KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
           KEYCHAIN_PASSWORD="$(openssl rand -base64 32)"
-          echo "$DIST_CERT_P12_BASE64" | base64 --decode > "$RUNNER_TEMP/distribution.p12"
           security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          # Import the certificate and the private key. `-t cert` would drop the key.
           security import "$RUNNER_TEMP/distribution.p12" \
+            -f pkcs12 \
             -P "$DIST_CERT_PASSWORD" \
-            -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | sed 's/"//g')
+            -k "$KEYCHAIN_PATH" \
+            -A \
+            -T /usr/bin/codesign \
+            -T /usr/bin/security
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" \
+            "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH"
+          security default-keychain -s "$KEYCHAIN_PATH"
+          identities="$(security find-identity -v -p codesigning "$KEYCHAIN_PATH")"
+          case "$identities" in
+            *"Apple Distribution"*|*"iPhone Distribution"*)
+              echo "Distribution identity is in the temporary keychain."
+              ;;
+            *)
+              echo "The keychain has no Apple Distribution identity. The p12 must contain the certificate and its private key."
+              exit 1
+              ;;
+          esac
           rm -f "$RUNNER_TEMP/distribution.p12"
 
       - name: Write the App Store Connect key and the team id
-        if: steps.gate.outputs.enabled == 'true'
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/private_keys"
-          echo "$ASC_KEY_P8_BASE64" | base64 --decode > "$RUNNER_TEMP/private_keys/AuthKey_${ASC_KEY_ID}.p8"
-          chmod 600 "$RUNNER_TEMP/private_keys/AuthKey_${ASC_KEY_ID}.p8"
-          # Release and the widget read DEVELOPMENT_TEAM from this file.
-          # It is gitignored, so the team id never lands in the repository.
-          printf 'DEVELOPMENT_TEAM = %s\n' "$APPLE_TEAM_ID" > Config/Signing.local.xcconfig
+          python3 - <<'PY'
+          import base64
+          import binascii
+          import os
+          import pathlib
+          import sys
+
+          key_id = os.environ["ASC_KEY_ID"].strip()
+          if not key_id.isalnum():
+              print("ASC_KEY_ID is not an alphanumeric key id. The value was not logged.", file=sys.stderr)
+              sys.exit(1)
+          raw = "".join(os.environ["ASC_KEY_P8_BASE64"].split())
+          try:
+              data = base64.b64decode(raw, validate=False)
+          except (binascii.Error, ValueError):
+              print("ASC_KEY_P8_BASE64 is not valid base64. The value was not logged.", file=sys.stderr)
+              sys.exit(1)
+          if b"PRIVATE KEY" not in data:
+              print("ASC_KEY_P8_BASE64 did not decode to a PEM private key. The value was not logged.", file=sys.stderr)
+              sys.exit(1)
+          directory = pathlib.Path(os.environ["RUNNER_TEMP"]) / "private_keys"
+          directory.mkdir(parents=True, exist_ok=True)
+          path = directory / f"AuthKey_{key_id}.p8"
+          path.write_bytes(data)
+          os.chmod(path, 0o600)
+          team = os.environ["APPLE_TEAM_ID"].strip()
+          signing = pathlib.Path("Config/Signing.local.xcconfig")
+          signing.write_text(f"DEVELOPMENT_TEAM = {team}\n", encoding="utf-8")
+          os.chmod(signing, 0o600)
+          print("Wrote the API key and Config/Signing.local.xcconfig. Values were not logged.")
+          PY
 
       - name: Archive the signed Release build
-        if: steps.gate.outputs.enabled == 'true'
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
           set -euo pipefail
-          # Release, not Sideload: iCloud Documents, the App Group, and the widget
-          # stay in the archive. Premium stays locked. Signing is automatic; the
-          # API key creates the profiles, so no profile secret is required.
+          echo "Marketing version comes from the project. Build number is ${GITHUB_RUN_NUMBER}."
+          {
+            echo "### TestFlight archive"
+            echo "- Build number: ${GITHUB_RUN_NUMBER}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Release keeps iCloud, the App Group, the widget, and the share extension.
+          # Automatic signing creates the App Store profiles with the API key.
+          # App Manager can create those profiles only when the key has
+          # Certificates, Identifiers & Profiles access. Admin can always create them.
+          # https://developer.apple.com/help/account/access/roles/
           xcodebuild archive \
             -project TruckoRig.xcodeproj \
             -scheme TruckoRig \
@@ -146,34 +249,35 @@ jobs:
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
-            CODE_SIGN_STYLE=Automatic
+            CODE_SIGN_STYLE=Automatic \
+            "CODE_SIGN_IDENTITY=Apple Distribution" \
+            CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER"
 
       - name: Export the App Store ipa
-        if: steps.gate.outputs.enabled == 'true'
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
           set -euo pipefail
-          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store-connect</string>
-            <key>destination</key>
-            <string>export</string>
-            <key>signingStyle</key>
-            <string>automatic</string>
-            <key>teamID</key>
-            <string>${APPLE_TEAM_ID}</string>
-            <key>uploadSymbols</key>
-            <true/>
-          </dict>
-          </plist>
-          EOF
+          python3 - <<'PY'
+          import os
+          import plistlib
+
+          options = {
+              "method": "app-store-connect",
+              "destination": "export",
+              "signingStyle": "automatic",
+              "teamID": os.environ["APPLE_TEAM_ID"].strip(),
+              "signingCertificate": "Apple Distribution",
+              "uploadSymbols": True,
+              "manageAppVersionAndBuildNumber": False,
+          }
+          path = os.path.join(os.environ["RUNNER_TEMP"], "ExportOptions.plist")
+          with open(path, "wb") as handle:
+              plistlib.dump(options, handle)
+          print("Wrote export options for app-store-connect. The team id was not logged.")
+          PY
           xcodebuild -exportArchive \
             -archivePath "$RUNNER_TEMP/TruckoRig.xcarchive" \
             -exportPath "$RUNNER_TEMP/export" \
@@ -183,15 +287,24 @@ jobs:
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID"
 
-      - name: Upload to TestFlight
-        if: steps.gate.outputs.enabled == 'true'
+      - name: Upload to App Store Connect
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
           set -euo pipefail
-          ipa="$(find "$RUNNER_TEMP/export" -name '*.ipa' -print -quit)"
-          test -n "$ipa"
+          ipa=""
+          for candidate in "$RUNNER_TEMP/export"/*.ipa; do
+            if [ -f "$candidate" ]; then
+              ipa="$candidate"
+              break
+            fi
+          done
+          if [ -z "$ipa" ]; then
+            echo "Export produced no .ipa."
+            exit 1
+          fi
+          echo "Uploading $(basename "$ipa")"
           mkdir -p "$HOME/.appstoreconnect/private_keys"
           cp "$RUNNER_TEMP/private_keys/AuthKey_${ASC_KEY_ID}.p8" \
             "$HOME/.appstoreconnect/private_keys/"
@@ -206,5 +319,6 @@ jobs:
         run: |
           set +e
           security delete-keychain "$RUNNER_TEMP/app-signing.keychain-db"
-          rm -f "$RUNNER_TEMP/distribution.p12"
+          rm -f "$RUNNER_TEMP/distribution.p12" "$RUNNER_TEMP/ExportOptions.plist"
+          rm -f Config/Secrets.xcconfig Config/Signing.local.xcconfig
           rm -rf "$RUNNER_TEMP/private_keys" "$HOME/.appstoreconnect/private_keys"

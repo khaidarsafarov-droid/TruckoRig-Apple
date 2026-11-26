@@ -244,6 +244,7 @@
 		2D3672F813B7FB59D8DDFBDE /* PaywallView.swift */ = {isa = PBXBuildFile; fileRef = E6F6385037EBC6925ABF5B23 /* PaywallView.swift */; };
 		15247D5697CC3848FA27C74F /* PremiumFirstRunOffer.swift */ = {isa = PBXBuildFile; fileRef = 029899EC67D9FD842A110C9A /* PremiumFirstRunOffer.swift */; };
 		9FA7DCF58924CE102D93233A /* SettingsPremiumSection.swift */ = {isa = PBXBuildFile; fileRef = 33C057DFBF51F53B533AA866 /* SettingsPremiumSection.swift */; };
+		53B9404D76B5BAA5EFB4C637 /* SubscriptionLegalNotice.swift */ = {isa = PBXBuildFile; fileRef = D96C4B13AD5DDB79AD6CA0BA /* SubscriptionLegalNotice.swift */; };
 		A6BA626E0C65B68CD84F2610 /* PrivacyView.swift */ = {isa = PBXBuildFile; fileRef = 8B4F45F160AE48F03A3BF4B8 /* PrivacyView.swift */; };
 		F8DE66E3C688B334B7EBDE76 /* ProfileView.swift */ = {isa = PBXBuildFile; fileRef = 42D25AE24CEB99D7943D1DDF /* ProfileView.swift */; };
 		0E6682067DBA3801417D8711 /* ScannerView.swift */ = {isa = PBXBuildFile; fileRef = C6D31BCFC3156C00E82B3F68 /* ScannerView.swift */; };
@@ -757,6 +758,7 @@
 		E6F6385037EBC6925ABF5B23 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaywallView.swift"; sourceTree = "<group>"; };
 		029899EC67D9FD842A110C9A /* PremiumFirstRunOffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PremiumFirstRunOffer.swift"; sourceTree = "<group>"; };
 		33C057DFBF51F53B533AA866 /* SettingsPremiumSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsPremiumSection.swift"; sourceTree = "<group>"; };
+		D96C4B13AD5DDB79AD6CA0BA /* SubscriptionLegalNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubscriptionLegalNotice.swift"; sourceTree = "<group>"; };
 		8B4F45F160AE48F03A3BF4B8 /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PrivacyView.swift"; sourceTree = "<group>"; };
 		42D25AE24CEB99D7943D1DDF /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileView.swift"; sourceTree = "<group>"; };
 		C6D31BCFC3156C00E82B3F68 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScannerView.swift"; sourceTree = "<group>"; };
@@ -1642,6 +1644,7 @@
 				E6F6385037EBC6925ABF5B23 /* PaywallView.swift */,
 				029899EC67D9FD842A110C9A /* PremiumFirstRunOffer.swift */,
 				33C057DFBF51F53B533AA866 /* SettingsPremiumSection.swift */,
+				D96C4B13AD5DDB79AD6CA0BA /* SubscriptionLegalNotice.swift */,
 			);
 			path = "Premium";
 			sourceTree = "<group>";
@@ -2332,6 +2335,7 @@
 				2D3672F813B7FB59D8DDFBDE /* PaywallView.swift */,
 				15247D5697CC3848FA27C74F /* PremiumFirstRunOffer.swift */,
 				9FA7DCF58924CE102D93233A /* SettingsPremiumSection.swift */,
+				53B9404D76B5BAA5EFB4C637 /* SubscriptionLegalNotice.swift */,
 				A6BA626E0C65B68CD84F2610 /* PrivacyView.swift */,
 				F8DE66E3C688B334B7EBDE76 /* ProfileView.swift */,
 				0E6682067DBA3801417D8711 /* ScannerView.swift */,
@@ -2687,7 +2691,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited) -ObjC";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -2711,7 +2715,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited) -ObjC";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -2735,7 +2739,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited) -ObjC";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -2761,7 +2765,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2783,7 +2787,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2804,7 +2808,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2829,7 +2833,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.share;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2851,7 +2855,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.share;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2872,7 +2876,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "TruckoRig";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.share;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2892,7 +2896,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2908,7 +2912,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2924,7 +2928,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2938,7 +2942,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2952,7 +2956,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2966,7 +2970,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.5.7;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.truckorig.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
