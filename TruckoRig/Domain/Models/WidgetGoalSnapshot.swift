@@ -199,13 +199,20 @@ public enum USMoneyFormat {
 
     /// `89%`, `130%`, or `72.4%`. Drops a decimal that would only be noise.
     /// The words are not capped at 100. The bar uses `progressFraction`.
+    /// Grouping stays off: `String(format:)` prints `1,000%` on Linux and `1000%` on Apple.
     public static func ringPercent(_ progress: Double) -> String {
         let shown = max(0, progress)
         let nearest = shown.rounded()
-        if abs(shown - nearest) < 0.05 {
-            return String(format: "%.0f%%", locale: Locale(identifier: "en_US"), nearest)
-        }
-        return String(format: "%.1f%%", locale: Locale(identifier: "en_US"), shown)
+        let whole = abs(shown - nearest) < 0.05
+        let value = whole ? nearest : (shown * 10).rounded() / 10
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = false
+        formatter.minimumFractionDigits = whole ? 0 : 1
+        formatter.maximumFractionDigits = whole ? 0 : 1
+        let text = formatter.string(from: NSNumber(value: value)) ?? "0"
+        return text + "%"
     }
 }
 
