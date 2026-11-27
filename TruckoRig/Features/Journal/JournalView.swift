@@ -24,6 +24,13 @@ struct JournalView: View {
     @Environment(\.suppressesJournalSplit) private var suppressesJournalSplit
 
     private var showsSplit: Bool { horizontalSizeClass == .regular && !suppressesJournalSplit }
+    /// iPad sidebar: list and load side by side in the sidebar's detail column (no nested split).
+    private var showsInlineSplit: Bool { horizontalSizeClass == .regular && suppressesJournalSplit }
+
+    private var selectedLoad: Load? {
+        guard let selectedLoadID else { return nil }
+        return loads.first(where: { $0.id == selectedLoadID })
+    }
 
     private var sections: [JournalSection] {
         viewModel.sections(from: loads, week: appState.settings.truckingWeek, locale: AppLocale.locale)
@@ -49,8 +56,32 @@ struct JournalView: View {
                 }
             }
             .navigationSplitViewStyle(.balanced)
+        } else if showsInlineSplit {
+            HStack(spacing: 0) {
+                journalList
+                    .frame(minWidth: 320, idealWidth: 400, maxWidth: 440)
+                Divider()
+                inlineDetail
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         } else {
             journalList
+        }
+    }
+
+    @ViewBuilder
+    private var inlineDetail: some View {
+        if let load = selectedLoad {
+            LoadDetailView(load: load)
+                .id(load.id)
+        } else {
+            ContentUnavailableView {
+                Label("journal.select.title", systemImage: "list.bullet.rectangle")
+            } description: {
+                Text("journal.select.message")
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .forestBackground()
         }
     }
 
@@ -174,8 +205,9 @@ struct JournalView: View {
                     }
             }
         }
-        .navigationTitle("")
-        .toolbar(.hidden, for: .navigationBar)
+        // Inline iPad split: the bar carries the selected load's title and edit/delete menu.
+        .navigationTitle(showsInlineSplit ? (selectedLoad?.tripId ?? "") : "")
+        .toolbar(showsInlineSplit && selectedLoad != nil ? .automatic : .hidden, for: .navigationBar)
         .onAppear {
             revealSharedLoad(using: proxy)
         }
@@ -413,7 +445,7 @@ struct JournalView: View {
             onScan: { scannerLoad = load }
         )
         return Group {
-            if showsSplit {
+            if showsSplit || showsInlineSplit {
                 Button { selectedLoadID = load.id } label: { card }
             } else {
                 NavigationLink(value: load) { card }
