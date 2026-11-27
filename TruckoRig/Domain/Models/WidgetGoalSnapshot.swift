@@ -10,7 +10,7 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
     public var target: Double
     public var gross: Double
     public var remaining: Double
-    /// 0…100, the same scale as `WeeklyGoalProgress.progressPercent`.
+    /// Same scale as `WeeklyGoalProgress.progressPercent`: 0 upward, not capped at 100.
     public var progressPercent: Double
     /// Weekly gross ÷ miles. Zero when the week has no miles.
     public var rpm: Double
@@ -91,9 +91,9 @@ public struct WidgetGoalSnapshot: Codable, Equatable, Sendable {
         updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? Date()
         remaining = try container.decodeIfPresent(Double.self, forKey: .remaining) ?? max(0, target - gross)
         if let stored = try container.decodeIfPresent(Double.self, forKey: .progressPercent) {
-            progressPercent = stored
+            progressPercent = max(0, stored)
         } else if target > 0 {
-            progressPercent = min(100, gross / target * 100)
+            progressPercent = max(0, gross / target * 100)
         } else {
             progressPercent = 0
         }
@@ -197,14 +197,22 @@ public enum USMoneyFormat {
         return "\(number(shown)) \(system.distanceSymbol)"
     }
 
-    /// `89%` or `72.4%`. Drops a decimal that would only be noise, matching `formatRingPercent`.
+    /// `89%`, `130%`, or `72.4%`. Drops a decimal that would only be noise.
+    /// The words are not capped at 100. The bar uses `progressFraction`.
+    /// Grouping stays off: `String(format:)` prints `1,000%` on Linux and `1000%` on Apple.
     public static func ringPercent(_ progress: Double) -> String {
-        let clamped = min(100, max(0, progress))
-        let nearest = clamped.rounded()
-        if abs(clamped - nearest) < 0.05 {
-            return String(format: "%.0f%%", locale: Locale(identifier: "en_US"), nearest)
-        }
-        return String(format: "%.1f%%", locale: Locale(identifier: "en_US"), clamped)
+        let shown = max(0, progress)
+        let nearest = shown.rounded()
+        let whole = abs(shown - nearest) < 0.05
+        let value = whole ? nearest : (shown * 10).rounded() / 10
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = false
+        formatter.minimumFractionDigits = whole ? 0 : 1
+        formatter.maximumFractionDigits = whole ? 0 : 1
+        let text = formatter.string(from: NSNumber(value: value)) ?? "0"
+        return text + "%"
     }
 }
 

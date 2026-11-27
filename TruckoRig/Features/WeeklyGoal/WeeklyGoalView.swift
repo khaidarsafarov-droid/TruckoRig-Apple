@@ -296,15 +296,25 @@ struct GoalProgressRing: View {
                 .rotationEffect(.degrees(-90))
 
             VStack(spacing: 0) {
-                Text(Formatters.percent(progress.progressFraction))
+                Text(percentText)
                     .font(.appNumber)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .frame(maxWidth: 92)
                 Text("goal.complete")
                     .font(.appCaption)
                     .foregroundStyle(Color.forestTextSecondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("goal.a11y.progress \(Formatters.percent(progress.progressFraction))"))
+        .accessibilityLabel(Text("goal.a11y.progress \(percentText)"))
+    }
+
+    /// The ring stops at a full circle. The label keeps the real percent, including 130% and 1000%.
+    private var percentText: String {
+        Formatters.percent(max(0, progress.progressPercent) / 100)
     }
 }
 

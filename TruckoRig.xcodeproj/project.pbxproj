@@ -436,6 +436,7 @@
 		B62E97EEA50E15943D9B5BB3 /* DateFormatCacheTests.swift */ = {isa = PBXBuildFile; fileRef = ECA68A40924FB86CCC9F2B91 /* DateFormatCacheTests.swift */; };
 		6247BB683169494C6B36A700 /* EditLoadRoundTripTests.swift */ = {isa = PBXBuildFile; fileRef = A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */; };
 		2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */ = {isa = PBXBuildFile; fileRef = 952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */; };
+		47F6D44E7427AC01610001EE /* GoalPercentScreenshotTests.swift */ = {isa = PBXBuildFile; fileRef = E126AD03D5292D7F308814B2 /* GoalPercentScreenshotTests.swift */; };
 		1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */; };
 		4642AF0070CC137D07B08CE0 /* ICloudMediaBackupTests.swift */ = {isa = PBXBuildFile; fileRef = 9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */; };
 		1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */ = {isa = PBXBuildFile; fileRef = 95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */; };
@@ -820,6 +821,7 @@
 		A9D1F4655CBC1AFBECAAF8BF /* rejected.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "rejected.jpg"; sourceTree = "<group>"; };
 		755527CE9885FC3DCA21BB87 /* text-layer.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "text-layer.pdf"; sourceTree = "<group>"; };
 		AAF1792221783A8B468B10F2 /* thirty-one-pages.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "thirty-one-pages.pdf"; sourceTree = "<group>"; };
+		E126AD03D5292D7F308814B2 /* GoalPercentScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoalPercentScreenshotTests.swift"; sourceTree = "<group>"; };
 		6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudBackupTests.swift"; sourceTree = "<group>"; };
 		9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICloudMediaBackupTests.swift"; sourceTree = "<group>"; };
 		95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyboardAvoidanceTests.swift"; sourceTree = "<group>"; };
@@ -1811,6 +1813,7 @@
 				ECA68A40924FB86CCC9F2B91 /* DateFormatCacheTests.swift */,
 				A5FD89269DC169C691F2A901 /* EditLoadRoundTripTests.swift */,
 				952652FDC1BDB5C490DB198A /* EncryptedStorageTests.swift */,
+				E126AD03D5292D7F308814B2 /* GoalPercentScreenshotTests.swift */,
 				6511DF39B7B8E45287539E86 /* ICloudBackupTests.swift */,
 				9595EDD8D59EE79E652EAB60 /* ICloudMediaBackupTests.swift */,
 				95A565CE116AF696569A67FA /* KeyboardAvoidanceTests.swift */,
@@ -2521,6 +2524,7 @@
 				B62E97EEA50E15943D9B5BB3 /* DateFormatCacheTests.swift */,
 				6247BB683169494C6B36A700 /* EditLoadRoundTripTests.swift */,
 				2E4801860170A42AFFC101B0 /* EncryptedStorageTests.swift */,
+				47F6D44E7427AC01610001EE /* GoalPercentScreenshotTests.swift */,
 				1BB577DD4A824CB360EC7467 /* ICloudBackupTests.swift */,
 				4642AF0070CC137D07B08CE0 /* ICloudMediaBackupTests.swift */,
 				1A968F5BDDA3146F80E6548D /* KeyboardAvoidanceTests.swift */,

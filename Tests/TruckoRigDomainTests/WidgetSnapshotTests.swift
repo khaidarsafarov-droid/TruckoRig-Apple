@@ -78,6 +78,41 @@ final class WidgetSnapshotTests: XCTestCase {
         XCTAssertEqual(USMoneyFormat.rpm(2.82), "$2.82")
     }
 
+    func testRingPercentKeepsValuesPastTheGoalAndFloorsAtZero() {
+        XCTAssertEqual(USMoneyFormat.ringPercent(0), "0%")
+        XCTAssertEqual(USMoneyFormat.ringPercent(50), "50%")
+        XCTAssertEqual(USMoneyFormat.ringPercent(100), "100%")
+        XCTAssertEqual(USMoneyFormat.ringPercent(130), "130%")
+        XCTAssertEqual(USMoneyFormat.ringPercent(130.04), "130%")
+        XCTAssertEqual(USMoneyFormat.ringPercent(250.4), "250.4%")
+        XCTAssertEqual(USMoneyFormat.ringPercent(1_000), "1000%")
+        XCTAssertEqual(USMoneyFormat.ringPercent(-4), "0%")
+    }
+
+    func testOverGoalSnapshotKeepsTheWordsAndFillsTheBar() {
+        var snapshot = WidgetGoalSnapshot.placeholder
+        snapshot.progressPercent = 130
+        snapshot.target = 10_000
+        snapshot.gross = 13_000
+        XCTAssertEqual(snapshot.progressFraction, 1, accuracy: 0.001)
+        XCTAssertEqual(USMoneyFormat.ringPercent(snapshot.progressPercent), "130%")
+    }
+
+    func testLegacySnapshotWithoutAStoredPercentCanExceedOneHundred() throws {
+        let raw = """
+        {"target":1000,"gross":1300,"dailyTargetNeeded":0,\
+        "daysRemaining":0,"paceStatus":"goalMet",\
+        "weekLabel":"Aug 3 – Aug 9","updatedAt":"2025-08-06T14:00:00Z"}
+        """
+        let json = try XCTUnwrap(raw.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let snapshot = try decoder.decode(WidgetGoalSnapshot.self, from: json)
+        XCTAssertEqual(snapshot.progressPercent, 130, accuracy: 0.001)
+        XCTAssertEqual(snapshot.progressFraction, 1, accuracy: 0.001)
+        XCTAssertEqual(snapshot.remaining, 0, accuracy: 0.001)
+    }
+
     func testOlderSnapshotStillDecodes() throws {
         let json = """
         {"target":6000,"gross":3820,"dailyTargetNeeded":545,"daysRemaining":4,"paceStatus":"onTrack","weekLabel":"Aug 3 – Aug 9","updatedAt":"2025-08-06T14:00:00Z"}

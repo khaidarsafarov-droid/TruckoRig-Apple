@@ -34,6 +34,27 @@ final class WidgetLayoutTests: XCTestCase {
         )
     }
 
+    func testOneThousandPercentStaysInsideTheWidget() async {
+        var snapshot = WidgetGoalSnapshot.placeholder
+        snapshot.progressPercent = 1_000
+        snapshot.target = 10_000
+        snapshot.gross = 100_000
+        snapshot.remaining = 0
+        snapshot.rpm = 2.5
+        await assertFits(
+            family: .systemMedium,
+            size: CGSize(width: 329, height: 155),
+            showsRemaining: true,
+            snapshot: snapshot
+        )
+        await assertFits(
+            family: .systemSmall,
+            size: CGSize(width: 155, height: 155),
+            showsRemaining: false,
+            snapshot: snapshot
+        )
+    }
+
     func testButtonOrderIsCameraScannerDiesel() {
         XCTAssertEqual(
             WidgetActionKind.allCases.map(\.route),
@@ -93,6 +114,13 @@ final class WidgetLayoutTests: XCTestCase {
             XCTAssertNotNil(remaining, "medium widget should show the amount left")
             if let remaining {
                 XCTAssertTrue(bounds.contains(remaining), "remaining \(remaining) outside \(size)")
+            }
+            if let percent = probe.frames["wg.percent"], let remaining = probe.frames["wg.remaining"] {
+                XCTAssertLessThanOrEqual(
+                    percent.maxX,
+                    remaining.minX + 1,
+                    "percent \(percent) overlaps remaining \(remaining) on \(size)"
+                )
             }
             XCTAssertNotNil(probe.frames["wg.week"])
             XCTAssertNotNil(probe.frames["wg.rpm"])
