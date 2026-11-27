@@ -37,6 +37,8 @@ struct LoadDetailView: View {
                 if let rawMessage = load.rawMessage?.nonEmpty { sourceCard(rawMessage) }
             }
             .padding(Spacing.standard)
+            // iPad pushes the load full width from the sidebar journal; keep the phone column.
+            .padReadable(maxWidth: 960)
         }
         .forestBackground()
         .navigationTitle(load.tripId)
