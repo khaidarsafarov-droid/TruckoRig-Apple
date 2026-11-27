@@ -153,6 +153,8 @@ struct JournalView: View {
         .listStyle(.plain)
         .scrollDismissesKeyboard(.interactively)
         .scrollContentBackground(.hidden)
+        // iPad sidebar shows the journal as one column; stop cards stretching across 13 inches.
+        .padReadable()
         .forestBackground()
         .refreshable {
             syncNotice = await appState.telegram.pullToRefresh()
